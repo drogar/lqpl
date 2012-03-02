@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="qface" default="all">
+  
+  
+  <property file="qface.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.zip"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+    <include name="**/?*.ftl"/>
+  </patternset>
+
+    <patternset id="ruby.resources">
+        <include name="**/*.rb"/>
+        <include name="**/run_configuration"/>
+    </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.6" value="${jdk.home.1.6}/bin"/>
+  <path id="jdk.classpath.1.6">
+    <fileset dir="${jdk.home.1.6}">
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/deploy.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/dt.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/javaws.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/jce.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/management-agent.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/plugin.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/sa-jdi.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/charsets.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/classes.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/dt.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/jce.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/jconsole.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/jsse.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/laf.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/management-agent.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/../Classes/ui.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/apple_provider.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/dnsns.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/localedata.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/sunjce_provider.jar"/>
+      <include name="../../../../../Frameworks/JavaVM.framework/Versions/1.6.0/Home/lib/ext/sunpkcs11.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.6}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.6}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.6"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.java.classpath">
+    <pathelement location="${basedir}/lib/java/jruby-complete.jar"/>
+    <pathelement location="${basedir}/lib/java/miglayout-3.7.3.1.jar"/>
+    <pathelement location="${basedir}/lib/java/monkeybars-1.1.1.jar"/>
+      <pathelement location="${basedir}/lib/java/forms_rt.jar"/>
+  </path>
+  
+  <path id="library.jemmy.classpath">
+    <pathelement location="${basedir}/lib/java/jemmy.jar"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  
+  <path id="library.builder_(v3.0.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/builder-3.0.0/lib"/>
+  </path>
+  
+  <path id="library.bundler_(v1.0.22,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/bundler-1.0.22/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/bundler-1.0.22/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/bundler-1.0.22/man"/>
+  </path>
+  
+  <path id="library.cucumber_(v1.1.4,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/cucumber-1.1.4/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/cucumber-1.1.4/fixtures"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/cucumber-1.1.4/gem_tasks"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/cucumber-1.1.4/legacy_features"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/cucumber-1.1.4/lib"/>
+  </path>
+  
+  <path id="library.diff-lcs_(v1.1.3,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/diff-lcs-1.1.3/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/diff-lcs-1.1.3/lib"/>
+  </path>
+  
+  <path id="library.gherkin_(v2.7.7,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/gherkin-2.7.7-java/js"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/gherkin-2.7.7-java/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/gherkin-2.7.7-java/ragel"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/gherkin-2.7.7-java/tasks"/>
+  </path>
+  
+  <path id="library.hoe_(v2.13.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/hoe-2.13.1/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/hoe-2.13.1/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/hoe-2.13.1/template"/>
+  </path>
+  
+  <path id="library.json_(v1.6.5,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/json-1.6.5-java/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/json-1.6.5-java/tests"/>
+  </path>
+  
+  <path id="library.monkeybars_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/monkeybars-1.1.1/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/monkeybars-1.1.1/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/monkeybars-1.1.1/skeleton"/>
+  </path>
+  
+  <path id="library.rake_(v0.8.7,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rake-0.8.7/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rake-0.8.7/lib"/>
+  </path>
+  
+  <path id="library.rawr_(v1.5.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rawr-1.5.0/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rawr-1.5.0/data"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rawr-1.5.0/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rawr-1.5.0/o-rdoc"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rawr-1.5.0/tasks.deprecated"/>
+  </path>
+  
+  <path id="library.rspec-core_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rspec-core-2.8.0/exe"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rspec-core-2.8.0/lib"/>
+  </path>
+  
+  <path id="library.rspec-expectations_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rspec-expectations-2.8.0/lib"/>
+  </path>
+  
+  <path id="library.rspec-mocks_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rspec-mocks-2.8.0/lib"/>
+  </path>
+  
+  <path id="library.rspec_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rspec-2.8.0/lib"/>
+  </path>
+  
+  <path id="library.rubyzip_(v0.9.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rubyzip-0.9.6.1/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/rubyzip-0.9.6.1/samples"/>
+  </path>
+  
+  <path id="library.rvm:_jruby-1.6.5.1_facet_library.classpath">
+    <pathelement location="/Users/gilesb/.rvm/rubies/jruby-1.6.5.1/lib/ruby/1.8"/>
+    <pathelement location="/Users/gilesb/.rvm/rubies/jruby-1.6.5.1/lib/ruby/site_ruby/1.8"/>
+    <pathelement location="/Users/gilesb/.rvm/rubies/jruby-1.6.5.1/lib/ruby/site_ruby/shared"/>
+    <pathelement location="/Users/gilesb/Library/Application Support/IntelliJIdea11/ruby/rubystubs/rubystubs18"/>
+  </path>
+  
+  <path id="library.s4t-utils_(v1.0.4,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/s4t-utils-1.0.4/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/s4t-utils-1.0.4/data"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/s4t-utils-1.0.4/homepage"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/s4t-utils-1.0.4/lib"/>
+  </path>
+  
+  <path id="library.spoon_(v0.0.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/spoon-0.0.1/lib"/>
+  </path>
+  
+  <path id="library.swingset_(v0.3.0,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/swingset-0.3.0/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/swingset-0.3.0/lib"/>
+  </path>
+  
+  <path id="library.term-ansicolor_(v1.0.7,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/term-ansicolor-1.0.7/bin"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/term-ansicolor-1.0.7/lib"/>
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/term-ansicolor-1.0.7/tests"/>
+  </path>
+  
+  <path id="library.user-choices_(v1.1.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/user-choices-1.1.6.1/lib"/>
+  </path>
+  
+  <path id="library.xml-simple_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath">
+    <pathelement location="/Users/gilesb/.rvm/gems/jruby-1.6.5.1/gems/xml-simple-1.1.1/lib"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm.jar"/>
+    <pathelement location="${javac2.home}/asm-commons.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module Qface -->
+  
+  <dirname property="module.qface.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.qface" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.qface" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.qface" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.qface" value="${compiler.args}"/>
+  
+  <property name="qface.output.dir" value="${module.qface.basedir}/out/production/Qface"/>
+  <property name="qface.testoutput.dir" value="${module.qface.basedir}/out/test/Qface"/>
+  
+  <path id="qface.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="qface.module.production.classpath">
+    <path refid="${module.jdk.classpath.qface}"/>
+    <path refid="library.java.classpath"/>
+    <path refid="library.rvm:_jruby-1.6.5.1_facet_library.classpath"/>
+    <path refid="library.jemmy.classpath"/>
+    <path refid="library.builder_(v3.0.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.bundler_(v1.0.22,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.cucumber_(v1.1.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.diff-lcs_(v1.1.3,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.gherkin_(v2.7.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.hoe_(v2.13.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.json_(v1.6.5,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.monkeybars_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rake_(v0.8.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rawr_(v1.5.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-core_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-expectations_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-mocks_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rubyzip_(v0.9.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.s4t-utils_(v1.0.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.spoon_(v0.0.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.swingset_(v0.3.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.term-ansicolor_(v1.0.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.user-choices_(v1.1.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.xml-simple_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+  </path>
+  
+  <path id="qface.runtime.production.module.classpath">
+    <pathelement location="${qface.output.dir}"/>
+    <path refid="library.java.classpath"/>
+    <path refid="library.jemmy.classpath"/>
+  </path>
+  
+  <path id="qface.module.classpath">
+    <path refid="${module.jdk.classpath.qface}"/>
+    <pathelement location="${qface.output.dir}"/>
+    <path refid="library.java.classpath"/>
+    <path refid="library.rvm:_jruby-1.6.5.1_facet_library.classpath"/>
+    <path refid="library.jemmy.classpath"/>
+    <path refid="library.builder_(v3.0.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.bundler_(v1.0.22,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.cucumber_(v1.1.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.diff-lcs_(v1.1.3,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.gherkin_(v2.7.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.hoe_(v2.13.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.json_(v1.6.5,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.monkeybars_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rake_(v0.8.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rawr_(v1.5.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-core_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-expectations_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-mocks_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rubyzip_(v0.9.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.s4t-utils_(v1.0.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.spoon_(v0.0.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.swingset_(v0.3.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.term-ansicolor_(v1.0.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.user-choices_(v1.1.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.xml-simple_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+  </path>
+  
+  <path id="qface.runtime.module.classpath">
+    <pathelement location="${qface.testoutput.dir}"/>
+    <pathelement location="${qface.output.dir}"/>
+    <path refid="library.java.classpath"/>
+    <path refid="library.rvm:_jruby-1.6.5.1_facet_library.classpath"/>
+    <path refid="library.jemmy.classpath"/>
+    <path refid="library.builder_(v3.0.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.bundler_(v1.0.22,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.cucumber_(v1.1.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.diff-lcs_(v1.1.3,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.gherkin_(v2.7.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.hoe_(v2.13.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.json_(v1.6.5,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.monkeybars_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rake_(v0.8.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rawr_(v1.5.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-core_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-expectations_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rspec-mocks_(v2.8.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.rubyzip_(v0.9.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.s4t-utils_(v1.0.4,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.spoon_(v0.0.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.swingset_(v0.3.0,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.term-ansicolor_(v1.0.7,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.user-choices_(v1.1.6.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+    <path refid="library.xml-simple_(v1.1.1,_rvm:_jruby-1.6.5.1)_[gem].classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.qface">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.qface">
+    <patternset refid="excluded.from.module.qface"/>
+  </patternset>
+  
+  <path id="qface.module.sourcepath">
+    <dirset dir="${module.qface.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.qface" depends="compile.module.qface.production,compile.module.qface.tests" description="Compile module Qface"/>
+  
+  <target name="compile.module.qface.production" depends="register.custom.compilers" description="Compile module Qface; production classes">
+    <mkdir dir="${qface.output.dir}"/>
+    <javac2 destdir="${qface.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.qface}/javac">
+      <compilerarg line="${compiler.args.qface}"/>
+      <bootclasspath refid="qface.module.bootclasspath"/>
+      <classpath refid="qface.module.production.classpath"/>
+      <src refid="qface.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.qface"/>
+    </javac2>
+    
+    <copy todir="${qface.output.dir}">
+      <fileset dir="${module.qface.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+      <copy todir="${qface.output.dir}">
+          <fileset dir="${module.qface.basedir}/src">
+              <patternset refid="ruby.resources"/>
+              <type type="file"/>
+          </fileset>
+      </copy>
+  </target>
+  
+  <target name="compile.module.qface.tests" depends="register.custom.compilers,compile.module.qface.production" description="compile module Qface; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.qface" description="cleanup module">
+    <delete dir="${qface.output.dir}"/>
+    <delete dir="${qface.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.qface" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.qface" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>

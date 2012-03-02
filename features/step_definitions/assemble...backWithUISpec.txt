@@ -1,0 +1,37 @@
+
+Given /^the program "([^"]*)" has started$/ do  |program|
+  start_swing_main program
+end
+
+
+Given /^the frame "([^"]*)" is visible$/ do |frame_name|
+
+  frame_name.should == @mca.get_main_window.get_title
+end
+
+Given /^I select "([a-zA-Z]*)" from the file menu$/ do |mitem|
+  mw = @mca.get_main_window
+
+  @file_dialog = mw.get_menu_bar().get_menu("File").get_sub_menu(mitem).trigger_click()
+end
+
+
+And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, dir|
+
+  java_import  org.uispec4j.interception.FileChooserHandler
+  java_import org.uispec4j.interception.WindowInterceptor
+
+  WindowInterceptor.run(@file_dialog).process(
+      FileChooserHandler.init().assert_accepts_files_only()     \
+          .assert_is_open_dialog() \
+          .title_equals("Assemble a QPL file")  \
+          .select("#{dir}/#{file}")
+      ).run()
+end
+
+
+
+
+Then /^"([^"]*)" should be created in "([^"]*)"$/ do |outfile, outdir|
+  pending # express the regexp above with the code you wish you had
+end
