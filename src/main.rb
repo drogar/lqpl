@@ -4,7 +4,6 @@
 require 'rbconfig'
 require 'java'
 
-puts 'finished reqiures'
 
 #===============================================================================
 # Platform specific operations, feel free to remove or override any of these
@@ -19,13 +18,11 @@ when /^win|mswin/i # Windows specific code
 when /linux/i # Linux specific code
 end
 
-puts "Finished host os config"
 # End of platform specific code
 #===============================================================================
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))
 require 'manifest'
 
-puts "loaded manifest"
 # Set up global error handling so that it is consistantly logged or outputed
 # You will probably want to replace the puts with your application's logger
 def show_error_dialog_and_exit(exception, thread=nil)
@@ -52,7 +49,6 @@ end
 GlobalErrorHandler.on_error {|exception, thread| show_error_dialog_and_exit(exception, thread) }
 
 begin
-  puts "starting qfacecontroller"
   QfaceController.instance.open
 rescue => e
   show_error_dialog_and_exit(e)

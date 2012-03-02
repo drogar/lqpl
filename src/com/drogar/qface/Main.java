@@ -45,8 +45,6 @@ public class Main
         }
     }
 
-      System.err.println("running ruby main");
-      //runtime.setCurrentDirectory("/Users/gilesb/programming/JRubyProjects/qface/src");
       runtime.evalScriptlet("require '" + mainRubyFile + "'");
   }
 

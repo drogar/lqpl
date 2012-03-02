@@ -10,6 +10,6 @@ Background:
 
   Scenario: I load and assemble a simple qpl program
     Given I select "Assemble" from the file menu
-    And I load "coinflip.qpl" from the directory "./qplprograms"
-    Then "coinflip.qpo" should be created in "./qpofiles"
+    And I load "coin.qpl" from the directory "testdata/qplprograms"
+    Then "coin.qpo" should be created in "testdata/qplprograms"
     

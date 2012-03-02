@@ -9,7 +9,7 @@ $CLASSPATH << "/Users/gilesb/programming/JRubyProjects/qface/lib/java"
 #$LOAD_PATH << "/Users/gilesb/programming/JRubyProjects/qface/lib/ruby"
 
 require 'java'
-require "jemmy.jar"
+require "jemmy-2.2.7.5.jar"
 
 #require "junit-4.10.jar"
 #require "uispec4j-2.4-jdk16.jar"

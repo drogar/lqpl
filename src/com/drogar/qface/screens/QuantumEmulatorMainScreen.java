@@ -45,7 +45,6 @@ public class QuantumEmulatorMainScreen extends  JFrame{
    
     private JPanel panel1;
     private JSpinner treeDepthSpinner;
-    public JButton my_button;
     public JLabel message;
     private JMenuItem file_open;
     private JMenuItem file_close;

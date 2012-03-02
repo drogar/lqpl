@@ -22,29 +22,21 @@ end
 
 require 'resolver'
 
-puts 'required resolver'
-
 def monkeybars_jar path
   Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/}.first
 end
-puts "did mbj path"
 
 case Monkeybars::Resolver.run_location
   when Monkeybars::Resolver::IN_FILE_SYSTEM
-    puts "In file system option file = #{__FILE__}"
+
     here = File.expand_path File.dirname(__FILE__)
-    puts "Expanded here to #{here}"
     mbj =   monkeybars_jar( here + '/../lib/java/*.jar' )
-    puts "set mbj path to '#{mbj}'"
     if !mbj || mbj == ''
       mbj =  monkeybars_jar( here + '/../../../lib/java/*.jar' )
-      puts "reset mbj path to '#{mbj}'"
     end
     add_to_classpath    mbj
-    puts "Added to classpath"
 end
 
-puts "Did resolver"
 
 require 'monkeybars'
 require 'application_controller'
@@ -69,7 +61,6 @@ require 'application_view'
 # add_to_load_path "../lib/java"
 #
 
-puts "Did basic requires"
 
 case Monkeybars::Resolver.run_location
 when Monkeybars::Resolver::IN_FILE_SYSTEM
@@ -78,7 +69,5 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 
-puts "doing controller"
-add_to_load_path '../lib/ruby'
 add_to_load_path 'qface'
 require "qface_controller"
