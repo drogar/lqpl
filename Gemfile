@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rake'
 gem 'rawr'
-gem 'monkeybars'
+gem 'monkeybars', '~>1.1'
 gem "spoon"
 gem "cucumber"
 
