@@ -30,11 +30,16 @@ case Monkeybars::Resolver.run_location
   when Monkeybars::Resolver::IN_FILE_SYSTEM
 
     here = File.expand_path File.dirname(__FILE__)
+    puts here
+    npath = here + '/../lib/java/*.jar'
+    puts npath
     mbj =   monkeybars_jar( here + '/../lib/java/*.jar' )
+    puts "resulting mbj=#{mbj}"
     if !mbj || mbj == ''
       mbj =  monkeybars_jar( here + '/../../../lib/java/*.jar' )
+      puts "or is #{mbj}"
     end
-    add_to_classpath    mbj
+    add_to_classpath mbj
 end
 
 
@@ -68,6 +73,7 @@ when Monkeybars::Resolver::IN_FILE_SYSTEM
 when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
-
-add_to_load_path 'qface'
-require "qface_controller"
+require "exceptions/compiler_process_not_found"
+require "communications/assembler"
+require "communications/compiler"
+require "qface/qface_controller"
