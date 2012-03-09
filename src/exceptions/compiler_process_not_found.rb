@@ -1,0 +1,2 @@
+class CompilerProcessNotFound < RuntimeError
+end
