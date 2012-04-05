@@ -1,0 +1,391 @@
+\section{Program definition}\label{sec:bnfProgramDefinition}
+\lqpl{} programs consist of a series of definitions at the
+global level. These are either \emph{data definitions} which
+give a description of an algebraic data type \emph{procedure definitions}
+which define executable code.
+
+\begin{singlespace}
+\begin{bnf}
+   <Linearqplprogram>   :: <global definitions>
+  
+   <global_definitions> :: <global_definitions> <global_definition>
+        | empty 
+  
+   <global_definition> :: <data_definition>
+        | <procedure_definition>
+\end{bnf}
+\end{singlespace}
+
+\section{Data definition}\label{sec:bnfDataDefinition}
+A data definition consists of declaring a type name, with an optional
+list of type variables and a list of constructors for that type. 
+It is a semantic error to have different types having the same 
+constructor name, or to redeclare a type name. 
+
+Constructor definitions allow either fixed types or uses of the
+type variables mentioned in the type declaration. 
+
+\begin{singlespace}
+\begin{bnf}
+   <data_definition> :: <type_definition> '=' 
+                        '\{' <constructor_list> '\}'
+  
+   <type_definition> :: 'type' <constructorid> <id_list>
+  
+   <constructor_list>:: <constructor> <more_constructor_list>
+      
+   <more_constructor_list> :: 
+        '|' <constructor> <more_constructor_list>
+        | \{- empty -\}
+  
+   <constructor> :: <constructorid> '(' <typevar_list> ')'
+        | <constructorid>
+  
+   <typevar_list> :: <typevar> <moretypevar_list>
+             
+   <moretypevar_list> :: ',' typevar moretypevar_list
+        | \{- empty -\} 
+
+   <typevar> :: <identifier> 
+        | <identifier>
+        | <constructor>
+        | <constructor> '(' <typevar_list> ')' 
+        | <builtintype>
+
+   <builtintype>:: 'Qubit'  | 'Int' | 'Bool'
+\end{bnf}
+\end{singlespace}
+
+\section{Procedure definition}\label{sec:bnfProcedureDefinition}
+Procedures may only be defined at  the global level
+in a \lqpl{} program. The definition consists of
+a procedure name, its input and output formal parameters and
+a body of code. Note that a procedure may have either no input, no
+outputs or neither.
+
+The classical and quantum inputs are  separated by a '|'. 
+Definitions with either no parameters or no classical parameters are
+specific special cases. 
+
+\begin{singlespace}
+\begin{bnf}
+   <procedure_definition> :: <identifier> '::' 
+            '(' <parameter_definitions> '|' 
+	        <parameter_definitions> ';' 	
+                <parameter_definitions>  ')'
+                    '='  <block>
+        | <identifier> '::' 
+            '(' <parameter_definitions> ';' 	
+                <parameter_definitions>  ')'
+                    '='  <block>
+        | <identifier> '::' '(' ')' '=' <block>
+  
+   <parameter_definitions> :: <parameter_definition>
+             <more_parameter_definitions>
+        | \{- empty -\}
+  
+   <more_parameter_definitions> :: ',' <parameter_definition> 
+	     <more_parameter_definitions>
+        | \{- empty -\}
+  
+   <parameter_definition> :: <identifier> ':' <constructorid>
+             '(' <typevar_list> ')' 
+        | <identifier> ':' <constructorid>
+        | <identifier> ':' <builtintype>
+     
+\end{bnf}
+\end{singlespace}
+
+\section{Statements}\label{sec:bnfStatementDefinition}
+Although \lqpl{} is a functional  language, the language retains the
+concept of \emph{statements} which provide an execution flow for the
+program. 
+
+The valid collections of statements are \emph{blocks} which
+are lists of statements.
+
+\begin{singlespace}
+\begin{bnf}   
+
+   <block> :: '\{' <stmtlist> '\}' 
+  
+   <stmtlist>:: <stmtlist> ';' <stmt>
+        | <stmtlist> ';'
+        | <stmt>
+        | \{- empty -\}
+     
+\end{bnf}
+\end{singlespace}
+
+Statements are broadly grouped into a few classes.
+\subsection{Assignment} 
+Variables are created by assigning to them. There is no 
+ability to separately declare them. Type unification will determine the
+appropriate type for the variable.
+
+\begin{singlespace}
+\begin{bnf}   
+   <stmt> :: <identifier> '=' <exp>
+\end{bnf}
+\end{singlespace}
+
+\subsection{Case statements} 
+These are \inlqpl{measure, case, use, discard} and
+the classical assign, \inlqpl{:=}. 
+These statements give the programmer the capability to
+specify different processing on the sub-stacks of
+a quantum variable. This is done with dependant statements. 
+For  \inlqpl{measure} 
+and \inlqpl{case},
+the dependent statements are in the block specified in the 
+statement. For \inlqpl{use}, they may be
+specified explicitly, or they may be all the 
+statements following the \inlqpl{use} to the end
+of the enclosing block. The classical assign is syntactic sugar for an
+assignment followed by a \inlqpl{use} with no explicit dependent statements.
+
+The \inlqpl{discard} statement is grouped here due to the quantum effects.
+Doing a discard of a \qubit{} is equivalent to measuring the \qubit{} and 
+ignoring the results. This same pattern is followed for discarding 
+quantum variables of all types.
+
+\begin{singlespace}
+\begin{bnf} 
+   (<stmt> continued)    
+        | 'case' <exp> 'of' <cases>  
+        | 'measure' <exp> 'of' <zeroalt> <onealt> 
+	| <identifier> ':=' <exp>
+        | 'use' <identifier_list> <block>
+        | 'use' <identifier_list> 
+\end{bnf}
+\end{singlespace}
+
+\subsection{Functions} 
+This category includes procedures and
+transforms. A variety of calling syntax is available, however, there
+are no semantic differences between them.
+
+\begin{singlespace}
+\begin{bnf}   
+   (<stmt> continued)  
+        | '(' <identifier_list> ') '=' 
+	      <callable>  '(' <exp_list> ')'
+        | '(' <identifier_list> ') '='
+	      <callable>  '(' <exp_list> '|' <exp_list> ')'
+        | <callable> <ids>
+        | <callable> '(' <exp_list> ')' <ids>
+        | <callable> '(' <exp_list> '|' <exp_list> ';' 
+	      <ids> ')'
+\end{bnf}
+\end{singlespace}
+
+\subsection{Blocks} 
+The block statement allows grouping of a 
+series of statements by enclosing them with \inlqpl{\{} and \inlqpl{\}}.
+An empty statement is also valid.
+
+\begin{singlespace}
+\begin{bnf}   
+   (<stmt> continued)  
+        |  <block>  
+	| \{- empty -\}  
+\end{bnf}
+\end{singlespace}
+
+\subsection{Control} 
+\lqpl{} provides a statement for classical control and
+one for quantum control. Note that quantum control affects only the semantics
+of any transformations applied within the control. Classical control requires
+the expressions in its guards (see below) to be classical and not quantum.
+
+\begin{singlespace}
+\begin{bnf}   
+   (<stmt> continued)  
+        | 'if' guards
+	| <stmt> '<=' <control_list>
+\end{bnf}
+\end{singlespace}
+
+\subsection{Divergence}
+ This signifies that this portion of the program does not
+terminate. Statements after this will have no effect. 
+\begin{singlespace}
+\begin{bnf}   
+   (<stmt> continued)  
+        | 'zero'                       
+\end{bnf}
+\end{singlespace}
+
+\section{Parts of statements}\label{sec:bnfStatementPartsDefinition}
+The portions of statements are explained below. First is
+\emph{callable} which can be either a procedure name or a 
+particular unitary transformation.
+
+\begin{singlespace}
+\begin{bnf}  
+   <callable> :: <identifer> | <transform>
+\end{bnf}
+\end{singlespace}
+
+The alternatives of a measure statement consist of choice indicators 
+for the base of the measure followed by a block of statements.
+
+\begin{singlespace}
+\begin{bnf} 
+   <zeroalt> ::  '|0>' '=>' <block>
+  
+   <onealt> :: '|1>' '=>' <block>
+\end{bnf}
+\end{singlespace}
+
+The \inlqpl{if} statement requires a list of \emph{guards} following it.
+Each guard is composed of a  classical expression that will evaluate to 
+\inlqpl{true} or \inlqpl{false}, followed by a block of guarded statements. 
+The statements guarded by the expression will be executed only when
+the expression in the guard is true. 
+The list of guards must end with a  default guard
+called \inlqpl{else}. Semantically, this is equivalent to putting a guard of
+\inlqpl{true}.
+
+\begin{singlespace}
+\begin{bnf} 
+   <guards> :: <freeguards> <owguard>
+
+   <freeguards> :: <freeguard> <freeguards>
+        | \{- empty -\}
+
+   <freeguard> :: <exp> '=>' <block>
+
+   <owguard> :: 'else' '=>' <block>
+\end{bnf}
+\end{singlespace}
+
+When deconstructing a data type with a \inlqpl{case} statement, a
+pattern match is used to determine which set of dependent 
+ statements are executed. The patterns allow the programmer
+to either throw away the data element (using the '\inlqpl{\_}' special 
+pattern), or assign it to a new identifier.
+
+\begin{singlespace}
+\begin{bnf}   
+   <cases> :: <case> <more_cases> 
+  
+   <more_cases> :: \{- empty -\}
+        | <case> <more_cases>
+  
+   <case> :: <caseclause> '=>' <block>
+  
+   <caseclause> ::  <constructorid> '(' <pattern_list> ')' 
+        | <constructorid>
+  
+   <pattern_list>:: <pattern> <more_patterns>
+
+   <more_patterns> :: ',' <pattern> <more_patterns>
+        | \{- empty -\} 
+
+   <pattern> :: <identifier> | '_'
+\end{bnf}
+\end{singlespace}
+
+\section{Expressions}\label{sec:bnfExpressionDefinition}
+\lqpl{} provides  standard expressions, with the restriction that
+ arithmetic expressions 
+ may be done only on classical values. That is, they must be 
+on the classical stack or a constant.
+
+The results of comparisons are Boolean values that will be held on
+the classical stack.
+
+\begin{singlespace}
+\begin{bnf}   
+
+   <exp>:: <exp0> 
+  
+   <exp0>:: <exp0> <or_op> <exp1> | <exp1>
+  
+   <exp1>:: <exp1> '&&' <exp2> | <exp2> 
+  
+   <exp2>:: '~' <exp2> | <exp3>  | <exp3> <compare_op> <exp3>
+  
+   <exp3>:: <exp3> <add_op> <exp4> | <exp4>
+  
+   <exp4>:: <exp4> <mul_op> <exp5> | <exp5> 
+  
+   <exp5>:: <exp5> <shift_op> <exp6> | <exp6>
+  
+   <exp6>:: <identifier> | <number> | 'true' | 'false' 
+        | '(' <exp> ')' 
+        | <constructorid> '(' <exp_list> ')' 
+        | <constructorid>
+	| <identifier> '('  ')'
+        | <identifier> '(' <exp_list> ')'  
+        | <identifier> '(' <exp_list> ';' ids ')'
+	| '|0>' | '|1>'
+  
+   <exp_list>:: <exp> <more_exp_list>
+  
+   <more_exp_list>:: ',' <exp> <more_exp_list>  
+        | \{- empty -\} 
+\end{bnf}
+\end{singlespace}
+
+\section{Miscellaneous and lexical}\label{sec:bnfMiscLexicalDefinition}
+These are the basic elements of the language as used above. Many of these
+items are differentiated at the lexing stage of the compiler.
+
+\begin{singlespace}
+\begin{bnf}   
+
+   <idlist> :: <identifier> more_ids
+        | \{- empty -\}
+ 
+   <more_ids> :: <identifier> more_ids
+        | \{- empty -\}
+ 
+   <control_list>:: <control> <more_control_list>
+
+   <more_control_list>:: ',' <control> <more_control_list>
+        | \{- empty -\}
+  
+   <control>:: <identifer>   | '~' <identifer>
+
+   <opt_identifier_list>:: <identifier_list>
+        | \{- empty -\}
+        
+   <identifier_list>:: <identifier> <more_idlist>
+
+   <more_idlist>:: ',' <identifier> <more_idlist> 
+        | \{- empty -\}
+  
+   <or_op>:: '||' | '^'
+  
+   <compare_op>:: '==' | '<' | '>' | '=<' | '>=' | '=/=' 
+
+   <add_op>::'+' | '-' 
+
+   <mul_op>::'*' | 'div'  | 'rem'
+
+   <shift_op>::'>>' | '<<'
+
+   <transform>:: <gate> 
+        | <transform> *o* transform 
+
+   <gate> :: 'Had' | 'T'  | 'Phase' | 'Not' |  'RhoX'  
+	| 'Swap' | 'Rot '| 'RhoY ' | '  RhoZ ' | 'Inv-'<gate>
+
+   <identifier> :: <lower> | <identifier><letterOrDigit>
+   <constructorid :: <upper> | <constructorid><letterOrDigit>
+   <letterOrDigit> :: <upper>|<lower>|<digit>
+   <number> :: ['+'|'-'] <digit>+
+   <lower> ::   'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' 
+        | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' 
+        | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' 
+	| 'x' | 'y' | 'z'
+   <upper> ::   'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' 
+        | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' 
+        | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' 
+        | 'X' | 'Y' | 'Z'
+   <digit> ::   '0' | '1' | '2' | '3' | '4' | '5' | '6' 
+        | '7' | '8' | '9'
+\end{bnf}
+\end{singlespace}

@@ -1,0 +1,8 @@
+main::() = 
+{  q = |0>; 
+   Had q;
+   measure q of //`\label{line:measure2}`
+     |0> => {c = 0}
+     |1> => {d = 17};
+   q = |0> //`\label{line:neitherdorc}`
+}

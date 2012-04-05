@@ -1,0 +1,17 @@
+
+# /design/
+/design/*.aux
+/design/*.log
+/design/*.out
+/design/*.synctex.gz
+
+# /distribution/doc/
+/distribution/doc/*.xyc
+/distribution/doc/*.aux
+/distribution/doc/*.bbl
+/distribution/doc/*.blg
+/distribution/doc/*.dvi
+/distribution/doc/*.log
+/distribution/doc/*.out
+/distribution/doc/*.toc
+/distribution/dist

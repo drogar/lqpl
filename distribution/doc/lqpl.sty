@@ -1,0 +1,16 @@
+%%
+%% Linear QPL
+%% (c) 2006 Brett Giles
+%%
+\ProvidesFile{lqpl.sty}
+    [Linear QPL listings language file]
+\lst@definelanguage{lqpl}%
+  {otherkeywords={=,==,:,:=,=>,::,=<,<=,+,-,/,|,\{,\},==,\%,=/=,|0>,|1>},%
+   morekeywords={call,discard,of,if,measure,new,proc,mod,rem,%
+      Qubit,Bool,Int,case,qdata,use,in,else,zero,main,%
+      Had,Not,T,Phase,RhoX,Swap, Toffoli3, Rot,RhoY,RhoZ},%
+   sensitive,%
+   morecomment=[l]=//,%
+   morecomment=[n]{/*}{*/}%
+  }[keywords,comments]
+\endinput

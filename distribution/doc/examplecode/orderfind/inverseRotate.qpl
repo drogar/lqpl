@@ -1,0 +1,13 @@
+#Import Prelude.qpl
+
+inverseRotate ::(n:Int| h:Qubit, inqs:List (Qubit); 
+		 h:Qubit, outqs:List (Qubit))= 
+{ case inqs of
+    Nil => {outqs = Nil }
+    Cons (q, inqs') => 
+      { use n;
+        m := n+1 ;
+        inverseRotate(m) q inqs'; 
+        Inv-Rot(n) h <= q;
+        outqs = Cons(q,inqs') }
+}

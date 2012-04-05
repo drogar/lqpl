@@ -1,0 +1,30 @@
+complexF1 ::(c1:Int,c2:Int | q1:Qubit ; d:Int)
+= {
+    measure q1 of
+     |0> => {d = c1 + c2}
+     |1> => {d = c1 - c2}
+}
+complexF2 ::(c1:Int,c2:Int, c3:Int | q1:Qubit, i1:Int ; a:Qubit, b:Int)
+= {
+    measure q1 of
+     |0> => {b = c1 + c2}
+     |1> => {b = c1 * c3};
+    a = |1>;
+    use i1 in {
+      if i1 > 0 => { Had a } else => {  Phase a }
+    }      
+}
+simpleClF1 :: (c1:Int | ; a:Int) 
+= {  if c1 > 0 => {a = c1} else => { a = 0-c1} }
+simpleClF2 :: (c1:Int, c2:Int | ; r:Int, d:Int}
+= { d = c1 mod c2;
+    r = c1 div c2;
+}
+
+simpleQuF1 :: (c1:Int ; a:Int) 
+= {  use c1; a = simpleClF1(c1|);}
+simpleQuF2 :: (c1:Int, c2:Int ; r:Int, d:Int}
+= { use c1, c2 in {
+    simpleClF2(c1,c2| ; r,d)
+    }
+}

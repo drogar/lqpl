@@ -1,0 +1,112 @@
+\section{Basic examples}\label{sec:examplesBasic}
+This section covers a number of the standard examples of 
+quantum algorithms covered in most introductions to the subject.
+\subsection{Quantum teleportation function}\label{subsubsec:quantumTeleportationExample}
+The \lqpl{} program shown in \vref{fig:stackTeleportation}
+ is an implementation of a function that will accomplish 
+quantum teleportation as per the circuit shown  in 
+\vref{qc:quantumTeleportation}. (See also \cite{watrous:lecnotes} or
+\cite{neilsen2000:QuantumComputationAndInfo}). It also provides a separate function
+to place two \qubits{} into the EPR state.
+
+\begin{figure}[htbp]
+\centerline{%
+\Qcircuit @C=1em @R=.7em {
+\lstick{\ket{\nu}} & \ctrl{1} & \gate{H} & \measureD{M_1} & \cw &  \control \cw  \cwx[2] \\
+\lstick{\mbox{A}}  & \targ & \qw & \measureD{M_2} & \control \cw  \cwx[1] \\
+\lstick{\mbox{B}} & \qw &\qw & \qw & \gate{X} & \gate{Z} & \qw & \rstick{\ket{\nu}}\\
+& \rstick{\ket{s_1}}& \rstick{\ket{s_2}} & & \lstick{\ket{s_3}} & &
+\lstick{\ket{s_4}} }}
+\caption{Quantum teleportation}
+\label{qc:quantumTeleportation}
+\end{figure}
+
+Note that the teleport function, similarly to the circuit,
+ does not check the precondition that \qubit{}s $a$ and $b$ are in the
+EPR state, which is required to actually have teleportation work.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/teleport.qpl}
+\caption{\lqpl{} code for a teleport routine}\label{fig:stackTeleportation}
+\end{figure}
+
+\subsection{Quantum Fourier transform}
+The \lqpl{} program to implement the quantum Fourier transform in 
+\vref{fig:qft} uses
+two recursive routines, \inlqpl{qft} and \inlqpl{rotate}. These
+functions assume the \qubits{} to transform are in a \inlqpl{List}.
+(See also \cite{selinger04:qpl} and either \cite{watrous:lecnotes} or
+\cite{neilsen2000:QuantumComputationAndInfo}).
+
+The routine \inlqpl{qft} first applies the \Had{} transform to the
+\qubit{} at the head of the list, then uses the \inlqpl{rotate} routine
+to recursively apply the correct $Rot$ transforms controlled by the
+other \qubits{} in the list. \inlqpl{qft} then recursively calls itself on
+the remaining \qubits{} in the list.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/qft.qpl}
+\caption{\lqpl{} code for a quantum Fourier transform}\label{fig:qft}
+\end{figure}
+
+\subsection{Deutsch-Jozsa algorithm}\label{appsubsec:djalgorithm}
+The \lqpl{} program to implement the Deutsch-Jozsa algorithm is in 
+\vref{fig:dj} with supporting routines in \ref{fig:initlist}, 
+\ref{fig:addnzerps}, \ref{fig:measureinps}. The 
+\inlqpl{hadList} function is defined in \vref{fig:oflistutils}.
+
+The algorithm decides if a function is balanced or constant on 
+$n$ \bits. This implementation requires supplying the number of
+\bits{} / \qubits{} used by the function, so that the input can 
+be prepared. Additionally, it currently requires hand-writing the 
+\emph{oracle} for this function, shown in \ref{fig:djoracle}. The 
+oracle in this example is for a balanced function. 
+(See also \cite{watrous:lecnotes} or
+\cite{neilsen2000:QuantumComputationAndInfo}).
+
+The function \inlqpl{dj} creates an input list for the function, 
+applies the Hadamard transform to all the elements of that list
+and  then applies the oracle. When that is completed, the initial segment
+of the list is transformed again by Hadamard and then measured. 
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/dj.qpl}
+\caption{\lqpl{} code for the Deutsch-Jozsa algorithm}\label{fig:dj}
+\end{figure}
+
+The function \inlqpl{prependNZeroqbs} creates a list of \qubits{} when given
+a length and the last value. Assuming the parameters passed to the 
+function were $3$ and \ket{1}, this would return the list:
+\[[\ket{0},\ket{0},\ket{0},\ket{1}]\]
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/prependnzeros.qpl}
+\caption{\lqpl{} code to prepend $n$ \ket{0}'s to a \qubit}\label{fig:addnzerps}
+\end{figure}
+
+The \inlqpl{initList} function removes the last element of a list.
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/initList.qpl}
+\caption{\lqpl{} code accessing initial part of list}\label{fig:initlist}
+\end{figure}
+
+The \inlqpl{measureInputs} function recursively measures the 
+\qubits{} in a list. If any of them measure to $1$, it returns the 
+value \inlqpl{Balanced}. If all of them measure to $0$, it returns
+the value \inlqpl{Constant}.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/measureInps.qpl}
+\caption{\lqpl{} code to measure a list of  \qubits}\label{fig:measureinps}
+\end{figure}
+
+The oracle for the Deutsch-Jozsa algorithm is normally assumed to be
+a given. An actual implementation such as this requires an actual function
+to be provided. The function \inlqpl{djoracle} effects a transformation on
+the \qubits{} in the input list by delegating to the function 
+\inlqpl{bal}.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/djoracle.qpl}
+\caption{\lqpl{} code for Deutsch-Jozsa oracle}\label{fig:djoracle}
+\end{figure}

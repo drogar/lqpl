@@ -1,0 +1,169 @@
+\section{Quantum arithmetic}\label{sec:examplesArithmetic}
+This section provides examples of functions that will do
+arithmetic on quantum values. The primary source of these 
+algorithms is \cite{Vedral:1995ga}, although the 
+algorithms and types used in modular arithmetic are not ones
+ I have encountered yet
+in the literature.
+
+
+\subsection{Quantum adder}\label{appsubsec:quantumadder}
+This section provides subroutines that perform \emph{carry-save}
+arithmetic on \qubits{}. The \inlqpl{carry} and \inlqpl{sum}
+routines in \vref{fig:carrysum} function as gates on four \qubits{}
+and three \qubits{} respectively. 
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/arithmetic/carrysumgates.qpl}
+\caption{\lqpl{} code to implement carry and sum gates}\label{fig:carrysum}
+\end{figure}
+
+Additionally, the reverse of the \inlqpl{carry} is 
+also defined in the same figure. In order to define a subtraction, 
+which can be defined as the reverse of the add function, 
+we would also need to define the reverse of the \inlqpl{sum} function.
+
+The addition algorithm adds two lists of \qubits{} and an input
+carried \qubit. The first list
+is unchanged by the algorithm and the second list is changed to hold the 
+sum of the lists, as shown in \vref{fig:quantumadder}.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/arithmetic/adder.qpl}
+\caption{\lqpl{} code to add two lists of \qubits}\label{fig:quantumadder}
+\end{figure}
+
+The program proceeds down the lists $A$ and $B$ of input \qubits, first applying
+the \inlqpl{carry} to the input carried \qubit, the heads of $A$ and $B$ and
+a new zeroed \qubit, $c_1$. When the ends of the lists are reached, a controlled
+not and the \inlqpl{sum} are applied. The output $A+B$ list is then started
+with $c_1$. Otherwise, the program recurses, calling itself
+with $c_1$ and the tails of the input lists. When that returns, \inlqpl{carry}
+and \inlqpl{sum} are applied, the results are ``Consed'' to the existing
+tails of the lists, $c_1$ is discarded and the program returns.
+
+\subsection{Modular arithmetic}\label{subsec:examplemodarith}
+Most treatments of quantum modular arithmetic assume the program / algorithm
+will work with a quantum register with a sufficiently large number of \qubits,
+as in \cite{Vedral:1995ga}.
+In \lqpl, we define a new datatype for quantum modular integers, called
+\inlqpl{QuintMod}.  A \inlqpl{QuintMod} consists of a triple of two integers 
+and a list of \qubits. The first integer is the maximum size of the list and 
+the second integer is the modulus.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/QuintMods.qpl}
+\caption{\lqpl{} definitions of QuintMod}\label{fig:quintmods}
+\end{figure}
+
+The code for the type definition and conversion from and to integers is 
+given in \ref{fig:quintmods}. 
+
+Given these definitions and code for adding and subtracting lists
+of \qubits (as in \ref{appsubsec:quantumadder}), it is now
+possible to define a \emph{smart constructor} for a \inlqpl{QuintMod}. 
+
+A \inlqpl{QuintMod} triplet has only one invariant that must be maintained. 
+That is the list of \qubits{} must have length less than or equal to 
+the first number of the triplet. Note this implies that the number represented
+by a \qubit{} list may be outside the range of the modulus. For example, 
+assume a modulus of $5$. This implies a length of $3$ \qubits. The (qu)bit 
+sequences of $101,\ 011,\ 111$, representing $5,6$ and $7$ are allowed.
+When converting back to a viewable integer, these would be converted to 
+$0,1,2$ respectively.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/smartConstructor.qpl}
+\caption{Semi-Smart constructor for QuintMod}\label{fig:makequintmods}
+\end{figure}
+
+The function \inlqpl{makeQuint} defined in \ref{fig:makequintmods} maintains
+the length invariant, \emph{assuming} that the length is no more than $1$ greater
+than allowed. That is, if working with \inlqpl{QuintMod} numbers of length
+$n$, the \inlqpl{List(Qubit)} argument has length at most $n + 1$. 
+
+This will imply the represented number passed in is at most $2^{n+1} -1$. As
+the modulus is at least $2^{n-1}$, at most two subtractions of the 
+modulus will ensure the passed in list represents a number in the range
+$0$ -- $2^n - 1$. The subtractions are controlled by the $n+1$st \qubit{}
+in the list. 
+
+The reason the numbers may take on the full range is due to the representation.
+For example, if we are working in $\mod{4}$, which requires $3$ \qubits{}
+ for representation we may attempt to add $7$ to itself. This will 
+result in $14$, requiring $4$ \qubits. The final \qubit, recalling we store
+numbers with least significant \qubit{} first, will be \ket{1}. Subtracting
+$4$ once leaves us with $10$, still requiring $4$ \qubits. Subtracting $4$
+once more gives us $6$ which brings us back to the correct range.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/basicArith.qpl}
+\caption{Quantum modular addition}\label{fig:quantummodularadd}
+\end{figure}
+
+\Ref{fig:quantummodularadd} shows the \lqpl{} code for implementing
+modular addition. The function \inlqpl{addM} takes in two 
+\inlqpl{QuintMod} elements and adds the first to the second. Note the
+use of the smart constructor \inlqpl{makeQuint} to produce the result.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/multSupport.qpl}
+\caption{Support functions for Quantum modular multiplication}\label{fig:quantummodularmultsupport}
+\end{figure}
+
+At this stage modular multiplication is straightforward to write. 
+First, the support functions \inlqpl{ctlCopy} and \inlqpl{ctlDouble} are
+defined  in \ref{fig:quantummodularmultsupport}. 
+The \inlqpl{ctlCopy} function
+creates a ``copy'' of a \inlqpl{QuintMod}. Note that the \qubits
+are all created by controlled-Nots of the original list, so the
+``copy'' is entangled with the original. If the control \qubit{} is
+\ket{0}, the resulting \inlqpl{QuintMod} is zero. The \inlqpl{ctlDouble}
+function uses the controlled copying and introduces a new \ket{0} at the
+beginning of the list of \qubits{} in the \inlqpl{QuintMod}. This
+effectively doubles the number by shifting it one position to the right.
+The resulting \inlqpl{QuintMod} is created using the smart constructor 
+defined previously.
+
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/multiply.qpl}
+\caption{Quantum modular multiplication}\label{fig:quantummodularmultiply}
+\end{figure}
+
+The function  \inlqpl{multiplyM} is then
+defined as a recursive function in \ref{fig:quantummodularmultiply}.  The
+algorithm used  is the standard grade school multiplication method.
+
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/powerSupport.qpl}
+\caption{Quantum modular exponentiation support}\label{fig:quantummodularexpsupport}
+\end{figure}
+
+
+Modular exponentiation is written in a similar manner. 
+First the support functions \inlqpl{ctlCopyOne} and \inlqpl{square} are
+defined in \ref{fig:quantummodularexpsupport}. \inlqpl{ctlCopyOne} 
+uses \inlqpl{ctlCopy} defined above to create a copy of a \inlqpl{QuintMod},
+but adds $1$ to the resulting \inlqpl{QuintMod} when the 
+control \qubit{} is \ket{0}, resulting in the identity for multiplication
+rather than the identity for addition. The function \inlqpl{square} 
+corresponds to \inlqpl{ctlDouble} in the multiplication case. 
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/quintmod/power.qpl}
+\caption{Quantum modular exponentiation}\label{fig:quantummodularexp}
+\end{figure}
+
+ The code
+for the actual \inlqpl{powerM} function is in \ref{fig:quantummodularexp}.
+

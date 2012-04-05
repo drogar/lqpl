@@ -1,0 +1,8 @@
+f ::(c1:Int,c2:Int, c3:Int | q1:Qubit, i1:Int ; a:Qubit, b:Int) //`\label{line:examplefc:f} `
+= { ... }
+
+g :: (c1:Int, c2:Int | ; r:Int, d:Int)  //`\label{line:examplefc:g} `
+= { ... }
+
+h :: (q1:Int, q2:Int ; r:Int, d:Int) // `\label{line:examplefc:h} `
+= { ... }

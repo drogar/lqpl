@@ -1,0 +1,30 @@
+#Import ListUtils.qpl
+// bb1 results in  1,0,0,1,0,1,1,0 when applied to combos of x,y,z
+bbox1::(dqs:List(Qubit), anc:List(Qubit);
+        dqs:List(Qubit), anc:List(Qubit))=
+{  case anc of   
+     Nil => { anc = Nil} 
+     Cons(hAnc,atail) => 
+       { case dqs of 
+           Nil => { anc = Cons(hAnc,atail); 
+	            dqs = Nil} 
+           Cons(x,tl1)=>
+             { case tl1 of 
+                 Nil  =>{anc = Cons(hAnc,atail); 
+		         dqs = Cons(x,Nil)} 
+                 Cons(y,tl2)=>
+                   { case tl2 of 
+                       Nil => {anc = Cons(hAnc,atail); 
+		               dqs = Cons(x,(Cons(y,Nil)))} 
+                       Cons(z,tl3)=>
+                         { // Now have x, y and z to work with.
+                           cq = |0>; Not cq <= y,z;
+                           Not cq <= ~y,~z;
+		           Not cq <= x;
+  		           Not hAnc <= cq;  discard cq;
+		           anc = Cons(hAnc,atail); 
+        	           dqs = Cons(x,Cons(y,Cons(z,tl3))) }
+                   }
+             }
+       }
+}

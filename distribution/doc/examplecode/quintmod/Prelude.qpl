@@ -1,0 +1,21 @@
+qdata List a = {Nil | Cons (a, List (a))}
+
+qdata Either a b = {Left (a) | Right (b)} 
+
+qdata Maybe a = {Nothing | Just (a)}
+
+qdata BTree a = {Leaf (a) | Br (BTree (a), BTree (a))}
+
+qdata STree a = {Tip | Fork (STree (a), a, STree (a))}
+
+qdata RTree a = {Rtreend (a, List (a))}
+
+qdata LL a = {LL (List (List (a)))}
+
+qdata Rose a  = {Rose (List (a, Rose (a)))}
+
+qdata Record a = {Record (Int, a, Bool)}
+
+qdata Colour = {Red | Black}
+
+qdata RBSet a ={ Empty |  RBTip (Colour, RBSet (a), a, RBSet (a))}

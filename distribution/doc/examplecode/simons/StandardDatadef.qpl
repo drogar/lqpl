@@ -1,0 +1,7 @@
+qdata List a = {Nil | Cons (a, List (a))}
+
+qdata Either a b = {Left (a) | Right (b)} 
+
+qdata Maybe a = {Nothing | Just (a)}
+
+qdata BinTree a = {Leaf (a) | Br (Tree (a), Tree (a))}

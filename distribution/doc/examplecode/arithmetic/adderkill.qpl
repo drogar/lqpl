@@ -1,0 +1,35 @@
+#Import Prelude.qpl
+#Import carrysave.qpl
+
+
+adderk::(cin:Qubit, asin:List(Qubit), bsin:List(Qubit);
+        cin:Qubit, aplusbout:List(Qubit)) =
+{
+   case asin of 
+      Nil => {  aplusbout = Nil}
+      Cons(a, taila) =>
+        { case bsin of 
+             Nil => { //Error
+                      discard taila;
+                      aplusbout = Nil;}
+             Cons(b, tailb) =>
+              { c1 = |0>;
+                carry cin a b c1;
+                case tailb of 
+                  Nil => 
+                   {Not b <= a;
+                    sum cin a b;
+                    tailb = Cons(c1,Nil);
+                    discard taila} 
+                  Cons( t, tlb') => 
+                   { tailb = Cons(t,tlb');
+                     adderk(c1, taila, tailb; c1,tailb);
+                     carry cin a b c1;
+                     sum cin a b;
+                     discard c1};
+                aplusbout = Cons(b,tailb);
+                
+              };
+          discard a;
+        }
+}

@@ -1,0 +1,6 @@
+Br(t1,_,t2) => 
+  { j := treeMaxDepth(t1); //`\label{line:tmdfragcas:assignj}`
+    k := treeMaxDepth(t2);  //`\label{line:tmdfragcas:assignk}`
+    if j > k => { depth = 1 + j}
+    else     => { depth = 1 + k}
+  }   //`\label{line:tmdfragcas:scopend}`     

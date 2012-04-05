@@ -1,0 +1,32 @@
+#Import basicArith.qpl
+
+ctlCopy::( ctl:Qubit, src:QuintMod ;
+           ctl:Qubit, src:QuintMod, dest:QuintMod)=
+{  case src of QuintMod(size,modulus,srcDig)=>
+     { use size, modulus;
+       ctlCopyList(ctl, srcDig; ctl, srcDig, destDig);
+       dest = QuintMod(size,modulus,destDig);
+       src  = QuintMod(size,modulus,srcDig)}
+}
+
+ctlDouble::( ctl:Qubit, src:QuintMod ;
+             ctl:Qubit, src:QuintMod, dest:QuintMod)=
+{  case src of QuintMod(size,modulus,srcDig)=>
+     { use size, modulus;
+       ctlCopyList(ctl, srcDig; ctl, srcDig, destDig');
+       destDig = Cons(|0>, destDig');
+       dest    = makeQuint(size,modulus,destDig);
+       src     = QuintMod(size,modulus,srcDig)}
+}
+
+ctlCopyList::(ctl:Qubit, srcList:List(Qubit);
+              ctl:Qubit, srcList:List(Qubit), destList:List(Qubit))=
+{ case srcList of
+    Nil => { srcList = Nil; destList = Nil}
+    Cons(hd,tl) => 
+           { ctlCopyList(ctl, tl; ctl, tl, desttl);
+             desthd   = |0>;
+             Not desthd <= ctl, hd;
+             srcList  = Cons(hd,tl);
+             destList = Cons(desthd,desttl)}
+}

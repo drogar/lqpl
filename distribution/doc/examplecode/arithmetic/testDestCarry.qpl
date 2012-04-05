@@ -1,0 +1,29 @@
+#Import destCarry.qpl
+
+main::()=
+{
+   c=|0>; a=|0>; b=|0>;
+   destCarry(c,a,b;c,b);
+   discard c,b; //0,0
+   c=|0>; a=|0>; b=|1>;
+   destCarry(c,a,b;c,b);
+   discard c,b; // 0,1
+   c=|0>; a=|1>; b=|0>;
+   destCarry(c,a,b;c,b);
+   discard c,b;// 0,1
+   c=|0>; a=|1>; b=|1>;
+   destCarry(c,a,b;c,b);
+   discard c,b;// 1,0
+   c=|1>; a=|0>; b=|0>;
+   destCarry(c,a,b;c,b);
+   discard c,b;// 0,1
+   c=|1>; a=|0>; b=|1>;
+   destCarry(c,a,b;c,b);
+   discard c,b;// 1,0
+   c=|1>; a=|1>; b=|0>;
+   destCarry(c,a,b;c,b);
+   discard c,b;//1,0
+   c=|1>; a=|1>; b=|1>;
+   destCarry(c,a,b;c,b);
+   discard c,b // 1,1
+}

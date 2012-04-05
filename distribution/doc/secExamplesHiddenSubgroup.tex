@@ -1,0 +1,173 @@
+\section{Hidden subgroup algorithms}\label{sec:hiddensubgroup}
+The two algorithms presented in this section, the Grover search and Simons, 
+are examples of the hidden subgroup problem.  
+
+\subsection{Grover search algorithm}\label{appsubsec:groversearchalgorithm}
+The \lqpl{} program to implement the Grover search algorithm is in 
+\vref{fig:grover} with supporting routines in \ref{fig:phase}, 
+\ref{fig:intandlist}, \ref{fig:grovertrans}. The 
+\inlqpl{hadList} function is defined in \vref{fig:oflistutils} and the oracle for
+this implementation in \vref{fig:groveroracle}.
+
+For a specific function $f:\bit^n \to \bit$, the algorithm probabalistically
+determines the solution to $f(x) = 1$.
+Classically, this would require $2^n$ applications of $f$. The 
+quantum algorithm requires $\BigO{\sqrt{2^n}}$ applications.
+For the algorithm, first define
+\[U_f \ket{x} = (-1)^{f(x)}\ket{x} \text{ and }
+U_0\ket{x}=\begin{cases}\ket{x}& \text{if any $x \neq 0$}\\
+ -\ket{x}& \text{if $x = 0^n$}\end{cases}\]
+then:
+\bi
+\item{} Start with $n$ zeroed qubits and apply Hadamard to them.
+\item{} Apply $G = - H^{\otimes n} U_0 H^{\otimes n} U_f$ 
+approximately $\sqrt{2^n}$ times.
+\item{} Measure the qubits, forming an integer and check the result.
+\ei 
+
+In the implementation that follows, $U_0$ is given by
+the function \inlqpl{phase}, $U_f$ is the function \inlqpl{oracle}
+and $G$ is given by \inlqpl{gtrans}.
+
+For a complete description and analysis of the algorithm, see \cite{watrous:lecnotes} or
+\cite{neilsen2000:QuantumComputationAndInfo}.
+
+The function \inlqpl{main} creates a zeroed \qubit{} list for the function, 
+applies the Hadamard transform to all the elements of that list
+and  then applies the $G$ transformation $4$ times as this
+example is for a $4$-\bit{} function.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/grover/grover.qpl}
+\caption{\lqpl{} code to call the grover search algorithm}\label{fig:grover}
+\end{figure}
+
+The function \inlqpl{intToZeroQubitList} creates a list of 
+zeroed \qubits{} as long as the standard binary representation
+of the input number. For example, if it were passed the value $3$, it
+would return a list of length 2. If it were passed the value $21$ it 
+would return a list of length 5.
+
+The function \inlqpl{qubitListToInt} creates a probabilistic integer based
+on the values of the \qubits{} in the list. Note that the list is 
+assumed to be least significant digit first.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/grover/intListConversion.qpl}
+\caption{\lqpl{} code to convert integers from or to lists of \qbits{}}\label{fig:intandlist}
+\end{figure}
+
+The \inlqpl{phase} uses phase kickback to implement the 
+$U_0$ transformation. Note this is an excellent example of the utility
+of both $0$-based quantum control and quantum control by a 
+data structure.
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/grover/phase.qpl}
+\caption{\lqpl{} code using phase kickback to transform the list}\label{fig:phase}
+\end{figure}
+
+The function \inlqpl{doNGrovers} calls the function \inlqpl{gtrans} 
+repeatedly, based on the input \inlqpl{n}.
+
+The \inlqpl{gtrans} function implements the $G$ transform above. Note
+that we may ignore the minus sign in $G$'s definition as we are
+using density matrices.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/grover/gtrans.qpl}
+\caption{\lqpl{} code to do the grover transformation}\label{fig:grovertrans}
+\end{figure}
+
+The oracle for the grover algorithm is normally assumed to be
+a given. We provide a specific implementation where $f(12) = 1$.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/grover/oracle.qpl}
+\caption{\lqpl{} code using phase kickback when $f(12) =1$}\label{fig:groveroracle}
+\end{figure}
+
+
+\subsection{Simon's algorithm}\label{appsubsec:simonsalgorithm}
+Simon's algorithm determines a global property of a given function, $f$,
+\emph{provided it is guaranteed to follow some rules}. The function $f$, 
+from $n$ \bits{} to $n$ \bits, must either be one-to-one, or when for
+any vectors of \bits{} $x, y$ with
+$f(x_1,\dots,x_n) = f(y_1,\dots,y_n)$ then 
+$(x_1\oplus y_1, \dots , x_n \oplus y_n) = (s_1, \dots, s_n)$ where
+$\oplus$ is exclusive-or and the vector $s$ is the same for any choices
+of $x$ or $y$.
+
+
+The \lqpl{} program to implement Simon's algorithm is in 
+\vref{fig:simons} with supporting routines in \ref{fig:listutils}.
+The 
+\inlqpl{hadList} function is defined in \vref{fig:oflistutils} and the oracle 
+and ``blackboxes'' for
+this implementation in \vref{fig:simonsoracle} and 
+\ref{fig:simonsblackboxes}.
+
+For a specific function $f:\bit^n \to \bit^n$, the quantum portion of
+the algorithm
+returns a value $r$ such that $r \cdot s = 0$. 
+The classical remainder of the algorithm usually runs the quantum portion
+a number of times to obtain different values of $r$
+and then performs Guassian elimintion on the series of linear equations
+to determine $s$.  We present only the quantum portion in this example.
+
+The quantum portion first creates a  list of length $n$ of 
+\qubits{} initialized to \ket{0}. The \Had{} transform is
+applied to the list, followed by the oracle for $f$ followed by
+another \Had{}. The \qubits{} are then measured and the
+result is $r$.
+
+For a complete description and analysis of the algorithm, see \cite{watrous:lecnotes} or
+\cite{neilsen2000:QuantumComputationAndInfo}.
+
+In \ref{fig:simons}, the type \inlqpl{ZorO} represents \bits{}. 
+The function \inlqpl{qubToBitList} converts a list of \qbits{}
+to elements of type  \inlqpl{ZorO} by repeated measures. 
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/simons/simons.qpl}
+\caption{\lqpl{} code to do Simon's algorithm}\label{fig:simons}
+\end{figure}
+
+The function \inlqpl{ndestLength} is a non-destructive measure of the 
+length of a list. The function \inlqpl{makeZeroQubitList} creates a list of 
+zeroed \qubits{} when given a length.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/simons/ListUtils.qpl}
+\caption{\lqpl{} list functions}\label{fig:listutils}
+\end{figure}
+
+
+The oracle for Simon's algorithm is one of the more complex
+in the examples given in this thesis. It makes use of the 
+decomposition of $f: \bit^3 \to \bit^3$ into three functions,
+$f_i : \bit^3 \to \bit$ where $f_i$ gives the $i$-th 
+component of $f$. These are represented by the functions 
+\inlqpl{bbox1, bbox2} and \inlqpl{bbox3}.
+
+The \inlqpl{oracle} function creates a list of ancilla \qubits{}
+which are then used in each of the \inlqpl{bbox}\emph{n} functions, with
+the ancilla's being exclusive-or'ed with the results of the functions.
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/simons/oracle.qpl}
+\caption{\lqpl{} code implementing oracle for Simon's algorithm}\label{fig:simonsoracle}
+\end{figure}
+
+The code for the black boxes simply applies various combinations 
+of controlled Nots to create the desired boolean functions. The 
+code in \ref{fig:simonsblackboxes} only shows the first component. The
+code for the second and third components is similar.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/simons/blackbox1.qpl}
+\caption{\lqpl{} code implementing first black box for Simon's algorithm}\label{fig:simonsblackboxes}
+\end{figure}

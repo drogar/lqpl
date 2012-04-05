@@ -1,0 +1,33 @@
+#Import ListUtils.qpl
+#Import ListUtils.qpl
+// f -> 1,0,0,0,0,0,1,0  when applied to x,y,z
+bbox3::(dqs : List(Qubit), anc :List(Qubit);
+     dqs : List(Qubit), anc :List(Qubit))=
+{ //Will control the first qubit of anc.
+  case anc of
+   Nil => { anc = Nil} //Error
+   Cons(a1,at1) =>{
+   case at1 of Nil =>{ anc = Cons(a1,Nil)} //Error
+   Cons(a2,at2) => {
+   case at2 of Nil => { anc = Cons(a1,Cons(a2,Nil))}//Error
+   Cons(hAnc,atail) => {
+     case dqs of Nil => { anc = Cons(a1,Cons(a2,Cons(hAnc,atail))); 
+                       dqs = Nil} //Error 
+     Cons(x,tl1)=>{
+     case tl1 of Nil => {anc = Cons(a1,Cons(a2,Cons(hAnc,atail))); 
+                      dqs = Cons(x,Nil)} //Error 
+     Cons(y,tl2)=>{
+     case tl2 of Nil => {anc = Cons(a1,Cons(a2,Cons(hAnc,atail))); 
+                      dqs = Cons(x,(Cons(y,Nil)))} //Error 
+     Cons(z,tl3)=>{
+
+        cq = |0>; 
+        Not cq <= ~x,~y,~z;
+        Not cq <= x,y,~z;
+        Not hAnc <= cq;
+        discard cq;
+        anc = Cons(a1,Cons(a2,Cons(hAnc,atail))); 
+        dqs = Cons(x,Cons(y,Cons(z,tl3))) }
+}}}}}
+
+}

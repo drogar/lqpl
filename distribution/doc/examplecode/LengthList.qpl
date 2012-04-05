@@ -1,0 +1,9 @@
+#Import Prelude.qpl
+
+len::(listIn:List(a) ; length:Int) = `\label{line:lengthlist:len}`
+{  case listIn of
+     Nil => {length = 0}
+     Cons (_, tail) => 
+       { tlLen := len(tail);
+         length = 1 + tlLen }
+}

@@ -1,0 +1,645 @@
+\section{Quantum stack machine operation}\label{sec:stackmachineoperation}
+This section describes the actual transitions of the stack
+machine for each of the instructions in the machine.
+
+\subsection{Machine transitions}\label{subsec:transitiondiagrams}
+The majority of the transitions presented in this section are 
+defined on 
+a machine of type $\bms = (\cd,S,Q,D,N)$ as was 
+introduced in \vref{subsec:basicmachinestate}.
+As discussed in that section, labelling only affects the
+transition of unitary transforms. All other instruction transitions 
+ignore it, giving us:
+\[ Ins(L(Q)) = L (Ins (Q)) \]
+where $Ins$ is the transition of some other instruction.
+
+The transition for the application of transformations will use \lbms, while
+the transition for the add/remove control instructions 
+uses the machine state of  \cms. 
+The call instruction uses the 
+state of the complete machine, \ms, which allows recursion.
+All of these stages and their associated states were defined and discussed 
+in  \vref{sec:qsmstate}.
+
+
+
+\subsection{Node creation}\label{subsec:quantumstacknodecreation}
+There are three instructions which allow us to create data on the 
+stack and one which binds sub-nodes into a data type. These are 
+\qsmins{QLoad, QCons, QMove} and \qsmins{QBind}. The transitions are shown
+in \vref{fig:trans:nodeconstruction}.
+
+The instructions do the following tasks:
+\begin{description}
+\item{\qsminswithp{QLoad}{nm\ \ket{i}}} --- Load a new \qubit{} named 
+\qsminsparm{nm} on top of the quantum stack with the value \ket{i};
+\item{\qsminswithp{QCons}{nm\ Cns}} -- Load a new datatype node on top of the
+quantum stack with name \qsminsparm{nm} and value \qsminsparm{Cns}.
+Sub-nodes are not bound  by this instruction.
+\item{\qsminswithp{QMove}{nm}} --- Load a new classical node on top of the
+quantum stack with name \qsminsparm{nm} and value taken from the
+top of the classical stack. If the classical stack is empty, the
+value is defaulted to $0$.
+\item{\qsminswithp{QBind}{nm}} --- Binds a sub-node down the 
+branch of the node to the datatype constructor on top of the 
+quantum stack. Furthermore, the act of binding will
+cause the newly bound sub-node to be renamed so that it is
+hidden until an unbind is performed. \qsmins{QBind} 
+uses the name supply,
+$N$, to create the new  name for the sub-node. The machine will
+generate an exception if the top of the quantum stack is not a
+single branched datatype or if a node named \qsminsparm{nm} is not found. 
+\end{description}
+
+
+\begin{figure}[htbp]
+\begin{tabular}{l}
+$(\mathrm{QLoad}\ x\ \ket{k}{:}\cd,S,Q,D,N)  $ \\
+$ \trspace\implies(\cd,S,x{:}[\ket{k}\to Q],D,N)$ \\
+$(\mathrm{QCons}\ x\ c{:}\cd,S,Q,D,N) $ \\
+$ \trspace\implies (\cd, S,x{:}[c\{\}\to Q],D,N) $ \\
+$ (\mathrm{QMove}\ x{:}\cd,v{:}S,Q,D,N) $ \\
+$ \trspace\implies (\cd,S,x{:}[\bar{v}\to Q],D,N)$ \\
+$(\mathrm{QBind}\ z_0{:}\cd,S,x{:}[c\{z_1',\ldots,z_n'\}\to Q],D,N) $\\
+$ \trspace \implies (\cd,S,x{:}[c\{z(N),z_1',\ldots,z_n'\}\to Q[z(N)/z_0]],D,N') $
+\end{tabular}
+\caption{Transitions for node construction}\label{fig:trans:nodeconstruction}
+\end{figure}
+
+
+
+\subsection{Node deletion}\label{subsec:nodedeletion}
+
+Three different instructions, \qsmins{QDelete, QUnbind} and \qsmins{QDiscard}
+ remove data from the 
+quantum stack.  These instructions are the converses of \qsmins{QBind}, 
+\qsmins{QLoad} and \qsmins{QMove}. Their transitions are shown in
+\ref{fig:trans:nodedestruction} and \ref{fig:trans:noderemoval}.
+The instructions do the following tasks:
+\begin{description}
+\item{\qsmins{QDelete}} --- removes the top node of the stack 
+\emph{and any bound sub-nodes}. This instruction has no restrictions on
+the number of sub-stacks or bindings in a data node;
+\item{\qsmins{QDiscard}} --- removes the top node of the stack. In all cases,
+the top node can only be removed when it has
+a single sub-stack. For datatype nodes, \qsmins{QDiscard} also requires
+there are no bound sub-nodes.
+\item{\qsminswithp{QUnbind}{nm}} --- removes the
+ first bound element from a data type 
+\emph{provided it has a single sub branch}. The datatype node must be
+ on top of the quantum stack. The newly unbound sub-node is renamed
+ to \qsminsparm{nm}.
+\end{description}
+
+
+\begin{figure}[htbp]
+\begin{tabular}{lll}
+$(\mathrm{QDelete}{:}\cd,S,Q{:}[\ket{k_{ij}}\to Q_{ij}],D,N)$&$ \implies $&$(\cd,S,(Q_{00}+Q_{11}),D,N)$ \\[12pt]
+$(\mathrm{QDelete}{:}\cd,S,DT{:}[c_i\{b_{ij}\} \to Q_i],D,N)$&$ \implies $&$(\cd,S,\sum_i(del(\{b_{ij}\}, Q_i)),D,N)$ \\[12pt]
+$(\mathrm{QDelete}{:}\cd,S,I{:}[\overline{v}_i \to Q_i],D,N)$&$ \implies $&$(\cd,S,\sum_i Q_i,D,N)$ 
+\end{tabular}
+\caption{Transitions for destruction}\label{fig:trans:nodedestruction}
+\end{figure}
+
+For the \qsmins{QDelete} instruction, the type of node is irrelevant.
+It will delete the node and, in the case of datatype nodes, any
+bound nodes. This instruction is required to implement 
+sub-routines that have parametrized datatypes as input arguments.
+For example, the algorithm for determining the length of a
+list is to return $0$ for the ``Nil'' constructor and 
+add $1$ to the length of the tail list in the ``Cons'' constructor. 
+When doing this, the elements of the list are deleted due to the 
+linearity of \lqpl.
+The compiler will have no way of determining the type of the 
+elements in the list and
+therefore could not generate the appropriate quantum split and discards.
+The solution is to use a \qsmins{QDelete} instead.
+
+The subroutine $del$ used in the transitions 
+in \ref{fig:trans:nodedestruction}
+will recursively rotate up and then delete the bound nodes of a datatype
+ node.
+
+
+\begin{figure}[htbp]
+\begin{tabular}{lll}
+$(\mathrm{QDiscard}{:}\cd,S,x{:}[\ket{k}\to Q],D,N) $&$ \implies$&$ (\cd,S,Q,D,N)$ \\[12pt]
+$(\mathrm{QDiscard}{:}\cd,S,x{:}[c\{\} \to Q],D,N) $&$\implies $&$(\cd,S,Q,D,N)$ \\[12pt]
+$(\mathrm{QDiscard}{:}\cd,S,x{:}[\overline{v} \to Q],D,N) $&$\implies$&$ (\cd,v{:}S,Q,D,N)$ \\[12pt]
+\multicolumn{3}{l}{$(\mathrm{QUnbind}\ y{:}\cd,S,x{:}[c\{z_1',\ldots,z_n'\}\to Q],D,N) $} \\
+\multicolumn{3}{r}{$\trspacefour\trspacethree\quad\ \ \implies\ \ \ (\cd,S,x{:}[c\{z_2',\ldots,z_n'\} \to Q[y/z_1']],D,N)$}
+\end{tabular}
+\caption{Transitions for removal and unbinding}\label{fig:trans:noderemoval}
+\end{figure}
+
+
+
+ The 
+renaming is an integral part of the \qsmins{QUnbind}
+instruction, as a compiler will not be able to know  the bound names of
+a particular data type node. The instruction 
+does \emph{not} delete the data type at the top of the stack or
+the unbound node. If the top node is not a data type or has more than
+a single branch or does not 
+have any bound nodes, the machine will generate an exception. 
+
+The machine ensures that it does not create  name capture issues
+by rotating the bound node to the top of the sub-stack before
+it does the rename. That is, given the situation as depicted in
+the transitions, the quantum stack machine performs the 
+following operations:
+
+{\begin{singlespace}
+\begin{enumerate}
+\item{} $ Q' \leftarrow pull(z_1',Q)$;
+\item{} $ Q'' \leftarrow  Q'[y/z_1'] $;
+\item{} $z_1'$ is removed from the list of constructors;
+\item{} The new quantum stack is now set to $x{:}[c\{z_2',\ldots,z_n'\} \to Q'']$.
+\end{enumerate}
+\end{singlespace}
+}
+
+
+
+\subsection{Stack manipulation}\label{subsec:stackmanipulation}
+Most operations on a quantum stack affect only the top of the stack.
+ Therefore,  the machine must have
+ ways to move items up the stack. This requirement is met by the instructions
+\qsmins{QPullup} and \qsmins{QName}. The transitions are shown in 
+\vref{fig:trans:manipulation}.
+
+The instructions do the following tasks:
+\begin{description}
+\item{\qsminswithp{QPullup}{nm}} --- brings the \emph{first} node named 
+\qsminsparm{nm} to the top of the quantum stack. 
+It is not an error to try pulling up a non-existent address. The original
+stack will not be changed in that case.
+\item{\qsminswithp{QName}{nm_1\ nm_2}} --- renames the first
+node in the stack having \qsminsparm{nm_1} 
+to \qsminsparm{nm_2}.
+\end{description}
+
+\begin{figure}[htbp]
+\begin{tabular}{lll}
+$(\mathrm{QPullup}\ x{:}\cd,S,Q,D,N) $&$\implies$&$ (\cd,S,\mathrm{\textsf{pull}}(x,Q),D,N)$ \\[12pt]
+$(\mathrm{QName}\ x\ y{:}\cd,S,Q,D,N) $&$\implies$&$ (\cd,S,Q[y/x],D,N)$ 
+\end{tabular}
+\caption{Transitions for quantum stack manipulation}\label{fig:trans:manipulation}
+\end{figure}
+
+A \qsminswithp{QPullup}{nm} has the potential to be
+an expensive operation as the node \qsminsparm{nm} may be 
+deep in the quantum stack . In practice, many
+ pullups interact  with only the top two or three elements of the
+quantum stack.
+
+The algorithm for pullup is based on preserving the bag of 
+\emph{path signatures}.  A {path signature} for a node
+consists of a bag of ordered pairs (consisting of the node name and
+the branch constructor) where
+every node from the top to the leaf is represented. 
+Pulling up a
+node will reorder the sub-branches below nodes to keep this invariant.
+
+Due to the way  arguments of recursive subroutines are handled in \lqpl,
+it is actually possible to get multiple nodes with the same name, however, this
+does not cause a referencing problem as only the highest such node is actually
+available in the \lqpl{} program.
+
+\subsection{Measurement and choice}\label{subsec:measurementandchoice}
+The instructions
+\qsmins{Split}, \qsmins{Measure} and \qsmins{Use} start the task of 
+operating on a node's partial stacks, while the fourth, \qsmins{SwapD} 
+is used to iterate through the partial stacks. The transitions are shown in 
+\vref{fig:trans:measures}.
+
+The instructions do the following tasks:
+\begin{description}
+\item{\qsminswithp{Use}{(Lbl,EndLbl)}} --- uses the classical node at the top
+of the quantum stack and executes the code at \qsminsparm{Lbl} for
+each of its values. When done, jump to \qsminsparm{EndLbl}.
+\item{\qsminswithp{Split}{([(c_1,lbl_1),\dots,(c_n,lbl_n)],EndLbl)}} --- uses the
+datatype node at the top of the stack and
+execute a jump to the code 
+at \qsminsparm{lbl_i} when there is a branch having constructor
+\qsminsparm{c_i}. Any constructors not mentioned in the instruction 
+are removed from the node first. There is no ordering 
+requirement on the pairs of constructors and labels in \qsmins{Split}. When all 
+pairs have been processed, jump to \qsminsparm{EndLbl}.
+\item{\qsminswithp{Measure}{(Lbl_{00},Lbl_{11},EndLbl)}} --- using the
+\qubit{} node on top of the quantum stack, executes
+ the code at the first two labels for 
+ the \qsminsparm{00} and \qsminsparm{11} branches. 
+The off-diagonal elements  of the \qubit{} will be
+discarded. This implements a 
+non-destructive measure of the \qubit. When done, jump to \qsminsparm{EndLbl}.
+\item{\qsmins{SwapD}} --- signals the end of processing of dependent 
+instructions and begins processing the next partial stack.
+ When all values are processed, merges the results and returns
+to the instruction labled by \qsminsparm{EndLbl} from the corresponding \qsmins{Measure}, \qsmins{Use}
+or \qsmins{Split} instruction.
+\end{description}
+Note that in all cases above, these instructions execute a jump and the code following the 
+instruction is not used per se. Naturally, the code following may be addressed by a label and therefore
+will be executed. The \texttt{lqpl} compiler normally generates the code from one of these in
+this layout:
+\begin{verbatim}
+      Enscope
+      Split @c lbl3 (#Cons1,lbl1) (#Cons2, lbl2)
+lbl1  Discard @c
+      ...
+      SwapD
+lbl2  Discard @c
+      ...
+      SwapD
+lbl3  Descope
+      ...
+\end{verbatim}
+\begin{figure}[htbp]
+\begin{tabular}{l}
+$(\mathrm{Use}\ (\lbl_U,\lbl_{E}){:}\_,S,x{:}[\bar{v_i}\to Q_i],D,N) $ \\
+$\trspacetwo\implies (\cd_U,S,x_1{:}v_1\to Q_1, 
+	\dmpelemqc{}(S,[(x_i{:}v_i\to Q_i,\lbl_U)]_{i=2,\ldots,n},\lbl_E, 0){:}D,N)$ \\[12pt]
+$(\mathrm{Split}\ ([(c_i,\lbl_i)],\lbl_E){:}\_,S,x{:}[c_i\{V_i\}\to Q_i],D,N) $ \\
+$\trspacetwo\implies (\cd_1,S,x_1{:}c_1\{V_1\}\to Q_1, 
+	\dmpelemqc{}(S,[(x_i{:}c_i\{V_i\}\to Q_i, \lbl_i)]_{i=2,\ldots,n},\lbl_E, 0){:}D,N)$ \\[12pt]
+$(\mathrm{Meas}\ (\lbl_0, \lbl_1,\lbl_E){:}\_,S,x{:}[\ket{0}\to Q_0,\ket{1}\to Q_1],D,N) $ \\
+$\trspacetwo\implies (\cd_0,S,(x_0{:}\ket{0}\to Q_0, 
+       \dmpelemqc{}(S,[(x_1{:}\ket{1}\to 
+	Q_1,\lbl_1)],\lbl_E, 0){:}D,N)$ \\[12pt]
+\\
+$(\mathrm{SwapD},S',Q,\dmpelemqc{}(S,
+	[(Q_i,\lbl_i)]_{i=j,\ldots,m},\cdptr, Q'){:}D,N) 
+       $ \\
+$\trspacetwo\implies (\lblcd_j,S,Q_j, \dmpelemqc{}
+	(S,[(Q_i,\lbl_i)]_{i=j+1,\ldots,m},\cdptr,Q+Q'){:}D,N)$ \\[12pt]
+$(\mathrm{SwapD},S',Q,\dmpelemqc{}(S,[],\cdptr, Q'){:}D,N) 
+       $ \\
+$\trspacetwo\implies (\cd,S,Q+Q', D,N)$\\[12pt]
+Specifically, for $\mathrm{Use}$, we have\\
+$(\mathrm{SwapD},S',Q,\dmpelemqc{}(S,
+	[(x_i{:}v_i\to Q_i,\lbl_U)]_{i=j,\ldots,m},\cdptr, Q'){:}D,N) 
+       $ \\
+$\trspacetwo\implies (\lblcd_U,S,x_j{:}v_j\to Q_j, \dmpelemqc{}
+	(S,[(x_i{:}v_i\to Q_i,\lbl_U)]_{i=j+1,\ldots,m},\cdptr,Q+Q'){:}D,N)$ \\[12pt]
+\\
+For $\mathrm{Split}$, we have\\
+$(\mathrm{SwapD},S',Q,\dmpelemqc{}(S,[(x_i{:}c_i\{V_i\}\to Q_i, \lbl_i)]_{i=j,\ldots,m},\cdptr, Q'){:}D,N) 
+       $ \\
+$\trspacetwo\implies (\lblcd_j,S,x_j, \dmpelemqc{}(S,[(x_i{:}c_i\{V_i\}\to Q_i, \lbl_i)]_{i=j+1,\ldots,m},\cdptr,Q+Q'){:}D,N)$ \\[12pt]
+Finally, for $\mathrm{Meas}$, 
+$(\mathrm{SwapD},S',Q, \dmpelemqc{}(S,
+	[(x_1{:}\ket{1}\to Q_1,\lbl_1)],\cdptr, Q'){:}D,N) 
+       $ \\
+$\trspacetwo\implies (\lblcd_1,S,x_1{:}\ket{1}\to Q_1,  
+	\dmpelemqc{}(S,[],\cdptr,Q+Q'){:}D,N)$ \\[12pt]
+\end{tabular}
+\caption{Transitions for quantum node choices}\label{fig:trans:measures}
+\end{figure}
+
+Each of the code fragments pointed to 
+by the instruction labels \emph{must} end with the instruction
+\qsmins{SwapD}. The \qsmins{SwapD} instruction  will trigger execution
+ of the code associated with the 
+next partial stack. 
+
+
+The \qsmins{QUnbind} is meant to be used at the start of the dependent
+ code of a \qsmins{Split} instruction.
+The  sequencing to process a datatype node is to
+do a \qsmins{Split}, then in each of the dependent blocks, execute
+\qsmins{QUnbind} instructions, possibly interspersed with 
+\qsmins{QDelete} instructions when the bound node is not further used
+in the code.
+This is always concluded with a \qsmins{QDiscard} that discards the data node
+which was the target of the \qsmins{Split}.
+
+In the following discussion there are no significant differences between the
+\qsmins{Split} and \qsmins{Measure}. The action of
+\qsmins{Split} is described in detail.
+
+The \qsmins{Split}, \qsmins{Measure} and \qsmins{Use}
+ instructions make  use of the dump. The dump element
+used by these instructions consists of four parts: 
+\begin{itemize}
+\item{}\emph{The return label}. This is used 
+when the control group is complete.
+\item{}\emph{The remaining partial stacks}. A list consisting 
+of pairs of quantum stacks and 
+their corresponding label. These partial stacks are the ones waiting
+ to be processed by the control group. 
+\item{}\emph{The result quantum stack}. This quantum stack 
+ accumulates the merge result of 
+processing each of the control groups partial stacks. This is initialized
+to an empty stack with a zero trace.
+\item{}\emph{The saved classical stack}. The classical stack is reset to this
+value at the start of processing a partial stack and at the end. This 
+occurs each time an \qsmins{SwapD} instruction is executed.
+\end{itemize}
+
+
+The instruction 
+\qsminswithp{Split}{[(c1,l1),(c2,l2)]} begins with the creation
+of a  dump entry holding
+$[(c2 \rightarrow Q_2,l2)]$ as the
+list of partial stacks and label pairs. The 
+dump entry will hold \qsminsparm{0} quantum stack as
+the result stack, 
+the current state of the classical stack  and the address of the 
+instruction following the \qsmins{Split}.
+The final processing of the 
+\qsmins{Split} instruction sets the current quantum stack to 
+$c0$ and sets the next code 
+to be executed to be at $l0$. 
+
+When the \qsmins{SwapD} instruction is executed, the dump will
+again be changed. First the current quantum stack will be merged with
+the result stack on the dump. Then the next pair of 
+partial quantum stack $P_q\ (=c2\rightarrow Q_2) $ 
+and code pointer $l2$ is removed from the execution list. 
+The  current quantum stack is set to $P_q$ and the code pointer 
+is set to $l2$. Finally, the classical stack is reset to the one 
+saved in the dump element.
+
+When the partial stack  list on the dump element is empty, 
+the \qsmins{SwapD} instruction
+will merge the current quantum stack with the result stack and then
+set the current quantum stack to that result. 
+The classical stack is reset to the one
+saved on the dump, the code pointer is set to the return location
+ saved in the
+dump element and the dump element is removed. Program execution then
+continues from the saved return point.
+
+Normally, the first few instructions pointed to by the \qsminsparm{Label} in 
+the pairs of constructor and code labels will unbind any bound nodes and 
+delete the node at the top of the stack. 
+QSM does not \emph{require} this, hence, it is possible to implement both
+destructive and non-destructive measurements and data type deconstruction.
+
+\paragraph{Using classical values.} The \qsmins{Use} instruction introduced
+above differs from the instructions
+ \qsmins{Split} and \qsmins{Measure} in that it works
+on a node that may an unbounded number of sub-nodes.
+The \qsminswithp{Use}{lbl} instruction moves 
+all the partial stacks to the quantum stack, one at a time, and then
+executes the code at \qsminsparm{lbl}
+ for the resulting machine states. Normally, this 
+code will start with a \qsmins{QDiscard}, which will put the node
+value for that partial stack onto the
+classical stack, and finish with an  \qsmins{SwapD} to
+ trigger the processing of the next partial stack.
+
+The dump and \qsminsparm{SwapD} processing for a \qsminswithp{Use}{lbl}
+ is the same
+as for a \qsmins{Split} or \qsmins{Measure}. The execution list pairs
+will all have the same label, the \qsminsparm{lbl} on the instruction.
+
+\subsection{Classical control}\label{subsec:classicalcontrol}
+The machine provides the three instructions \qsmins{Jump, CondJump} and
+\qsmins{NoOp} for branch control. Jumps are allowed only in a
+forward direction. The transitions for these are shown in 
+\vref{fig:trans:classicalcontrol}. The instructions do the following tasks:
+\begin{description}
+\item{\qsminswithp{Jump}{lbl}} --- causes execution to continue with 
+the code at \qsminsparm{lbl}.
+\item{\qsminswithp{CondJump}{lbl}} --- examines the top of the classical stack. 
+When it is \qsmfalse, execution will continue with 
+the code at \qsminsparm{lbl}. If it is any other value, execution continues with
+the instruction following the \qsmins{CondJump}.
+\item{\qsmins{NoOp}} --- does nothing in the machine. Execution continues with 
+the instruction following the \qsmins{NoOp}.
+\end{description}
+
+\begin{figure}[htbp]
+
+\begin{tabular}{lll}
+$(\mathrm{Jump}\ \lbl_J{:}\cd,S,Q,D,N) $&$\implies $&$ (\lblcd_J,S,Q,D,N)$ \\[12pt]
+$(\mathrm{CondJump}\ \lbl_J{:}\cd, \qsmfalse{}{:}S,Q,D,N) $ &$\implies $&$ (\lblcd_J,S,Q,D,N)$ \\[12pt]
+$(\mathrm{CondJump}\ \lbl_J{:}\cd, \qsmtrue{:}S,Q,D,N) $ &$\implies $&$ (\cd,S,Q,D,N)$ \\[12pt]
+$(\mathrm{NoOp}{:}\cd, S,Q,D,N) $ &$\implies $&$ (\cd,S,Q,D,N)$ 
+\end{tabular}
+\caption{Transitions for classical control.}\label{fig:trans:classicalcontrol}
+\end{figure}
+
+
+ No changes are made to the classical stack,
+the quantum stack or the dump by these instructions.
+While \qsmins{NoOp} does nothing, it is allowed as the target of a jump. 
+This is 
+used by the \lqpl{} compiler in the  code generation 
+ as the instruction following a \qsmins{Call}.
+
+
+\subsection{Operations on the classical stack}\label{subsec:operationsonclassicalstack}
+The machine has five instructions that affect the classical stack directly.
+They are \qsmins{CGet, CPut, CPop, CApply} and \qsmins{CLoad}, with 
+transitions shown in \ref{fig:trans:classicalops}. The instructions perform
+the following tasks:
+\begin{description}
+\item{\qsmins{CPop}} --- destructively removes the top element of the
+classical stack.
+\item{\qsminswithp{CGet}{n}} --- copies the $n^{\text{th}}$ element of the 
+classical stack to the top of the classical stack.
+\item{\qsminswithp{CApply}{\mathrm{\textsf{op}}}} --- applies the operation \qsminsparm{op} to 
+the top elements of the classical stack, replacing them with the result of 
+the operation. Typically, the \qsminsparm{\mathrm{\textsf{op}}}
+ is  a binary operation such as 
+\emph{add}.
+\item{\qsminswithp{CLoad}{v}} --- places the constant  \qsminsparm{v} on
+ top  of the classical stack.
+\end{description}
+
+\begin{figure}[htbp]
+\begin{tabular}{lll}
+$(\mathrm{CPop} {:}\cd,v{:}S,Q,D,N) $ &$\implies  $ &$(\cd,S,Q,D,N)$ \\[12pt]
+$(\mathrm{CGet}\ n {:}\cd,v_1{:}\cdots{:}v_n{:}S,Q,D,N)  $ &$\implies $ &$ (c,v_n{:}v_1{:}\cdots{:}v_n{:}S,Q,D,N)$ \\[12pt]
+$(\mathrm{CPut}\ n {:}\cd,v_1{:}\cdots{:}v_n{:}S,Q,D,N)  $ &$\implies  $ &$(c,v_1{:}\cdots{:}v_1{:}S,Q,D,N)$ \\[12pt]
+$(\mathrm{CApply}\ \mathrm{\textsf{op}}_n{:}\cd,v_1{:}\cdots{:}v_n{:}S,Q,D,N)  $ &$\implies  $ &$(\cd,\mathrm{\textsf{op}}_n(v_1,\ldots,v_n){:}S,Q,D,N)$ \\[12pt]
+$(\mathrm{CLoad}\ n\ {:}\cd,S,Q,D,N) $ &$ \implies $ &$ (\cd,n{:}S,Q,D,N)$
+\end{tabular}
+\caption{Transitions for classical stack operations.}\label{fig:trans:classicalops}
+\end{figure}
+
+\subsection{Unitary transformations and quantum control}\label{subsec:trans:unitarytransformations}
+The QS-Machine has three instructions which add or remove \qubits{} (and other nodes)
+from quantum control. The instruction transitions in this group
+are defined directly on \cms{} or \lbms,  
+as they will either affect the control
+stack (\qsmins{AddCtrl, QCtrl, UnCtrl}) or need to take into account
+ the labelling of the quantum stacks (\qsmins{QApply}). 
+
+The first three instructions do not affect the actual state
+of the quantum stack, classical stack or dump.
+The \qsmins{QApply} does affect the state of the quantum stack.
+The transitions  are
+shown in \vref{fig:trans:unitarytransform}.
+
+ The instructions perform
+the following tasks:
+\begin{description}
+\item{\qsmins{AddCtrl}} --- starts a new control point on the control stack.
+\item{\qsmins{QCtrl}} --- adds the node at the top of the 
+quantum stack, together
+with any dependent sub-nodes to the control stack.
+\item{\qsmins{UnCtrl}} --- removes \emph{all} the nodes in the top control
+point of the control stack.
+\item{\qsminswithp{QApply}{n\ T}} --- parametrized the transform 
+\qsminsparm{T} with the top $n$ elements of the classical stack and
+then applies the parametrized transform to quantum stack. Control is respected
+because of the labelling of the quantum stack.
+\end{description}
+
+\begin{figure}[htbp]
+\begin{tabular}{l}
+$(\mathrm{AddCtrl}{:}\cd,C,[(S_i,L(Q_i),D_i,N_i)]_{i=1,\cdots n})]) $ \\
+$\trspace\qquad\implies\ \quad (\cd,id{:}C,[(S_i,L(Q_i),D_i,N_i)]_{i=1,\cdots n})])$\\[12pt]
+
+$(\mathrm{QCtrl}{:}\cd,f{:}C,[(S_i,L(Q_i),D_i,N_i)]_{i=1,\cdots n})]) $ \\
+$\trspace\qquad\implies\ \quad (\cd,(g\circ f){:}C,[(S^{'}_j,L(Q_j)^{'},D^{'}_j)]_{j=1,\cdots m})])$\\[12pt] 
+$(\mathrm{UnCtrl}{:}\cd, f{:}C,[(S_i,L(Q_i),D_i,N_i)]_{i=1,\cdots n})]) $ \\
+$\trspace\qquad\implies\ \quad (\cd,C,[(S^{''}_j,L(Q_j)^{''},D^{''}_j)]_{j=1,\cdots p})])$\\[12pt]
+$(\mathrm{QApply}\ m\ t{:}\cd, (v_1{:}\cdots {:}v_m{:}S),L(Q),D,N)  $ \\
+$\trspace\qquad\implies\ \quad (\cd,S,
+           \mathrm{\textsf{cTrans}}([v_1,\ldots,v_m],t,L(Q)),D,N)$ 
+\end{tabular}
+\caption{Transitions for unitary transforms}\label{fig:trans:unitarytransform}
+\end{figure}
+
+The function $cTrans$ in the transition for \qsmins{QApply} must first 
+create the transform. In most cases, this is a fixed  transform (e.g., \nottr,
+\Had), but both \inlqpl{rotate} and the \inlqpl{UM}
+ transforms are parametrized. 
+The transform  \inlqpl{rotate} is used in the quantum Fourier transform and 
+\inlqpl{UM} is the $a^x \mod N$ transform used in order finding.
+
+When the top node is a \qubit, the function expects its required number
+of \qubits{} to be the top nodes. For example, a \Had{} expects only $1$, a 
+$swap$ expects 2 and an \inlqpl{UM}
+ will expect as many \qubits{} as $N$ requires
+\bit{}s.
+
+When a transform is applied to a  datatype node the
+ machine will attempt to rotate up the 
+required number of \qubits{} to the top, perform the operation and 
+then re-rotate the datatype node back to the top. 
+
+The first step is to rotate the bound 
+nodes of the datatype node starting at the 
+ left and proceeding to the  right. Left to right is determined by the 
+ ordering in the original constructor expression used to create
+the datatype node. The machine will throw 
+an exception if  there are insufficient bound nodes (e.g., 
+\inlqpl{Nil} for a list) or if the rotation would be indeterminate. 
+The machine considers a rotation for a transform to be 
+indeterminate whenever the subject datatype node has more than one
+sub-stack. For example, this means a transform can not be applied to
+an \inlqpl{Either} that is a mix of  \inlqpl{Left(|0>)} and
+\inlqpl{Right(|1>)}. 
+
+When the rotation of the \qubits{} succeeds
+ the function will transform the top parts of
+the stack into a matrix $Q$ of appropriate size ($2\times2$ for a 
+$1-$\qubit{} transform, $16\times16$ for 
+a $4-$\qubit{} and so forth) with entries in the matrix
+being the sub-stacks of the \qubits{} used in the transform. 
+
+At this point, the control labelling 
+of the quantum stack is considered and one of
+the following four transforms will happen. If the actual transform
+is named $T$, the result will be:
+\begin{equation*}
+\mathrm{cTrans}\ T\ L(Q) =
+\begin{cases}
+L(Q) & L= \mathrm{\texttt{IdOnly}}\\
+L(T Q) & L= \mathrm{\texttt{Left}}\\
+L(Q T^{*}) & L= \mathrm{\texttt{Right}}\\
+L(T Q T^{*}) & L= \mathrm{\texttt{Full}}
+\end{cases}
+\end{equation*}
+
+Following this the quantum stack is reformed from the resulting 
+matrix. 
+
+\subsection{Function calling and returning}\label{subsec:functioncalling}
+The \qsmins{Call} and \qsmins{Return} instructions are used for 
+function calling.
+The \qsmins{Call} instruction is the only instruction that needs to 
+directly work on \ms, the infinite list of \cms{} items. The transition
+for this is defined in terms of a subordinate function \emph{enterF}
+ which is 
+defined on \bms. Its transition is also described below.
+
+Recall the QS-machine stages have the states:
+\begin{gather*}
+\bms = (\cd,S,Q,D,N)\\
+\cms = (\cd, C , [(S,L(Q),D,N)])\\
+\ms = \Inflist{(\cd, C , [(S,L(Q),D,N)])} 
+\end{gather*}
+For the state \ms{}, an infinite list will be expressed as
+\[H_0 \ilsep T = H_0 \ilsep H_1 \ilsep H_2 \ilsep \cdots\]
+where $H$ is an element of the correct type for the infinite 
+list.
+ 
+ The instructions do the following tasks:
+\begin{description}
+\item{\qsminswithp{Call}{n\ lbl}} --- Calls the subroutine at \qsminsparm{lbl}, 
+copying the top \qsminsparm{n} elements of the classical stack to a 
+classical stack for the subroutine. 
+\item{\qsminswithp{Return}{n}} --- Uses the return label in the
+head of the dump to return from the subroutine. It also copies
+ the top \qsminsparm{n} elements from the classical stack and
+places them on top of the saved classical stack from the dump element.
+\end{description}
+
+\begin{figure}[htbp]
+\begin{tabular}{l}
+$ (\mathrm{Call}\ n\ \lbl_C{:}\cd,C, [(S_i,L(Q)_i,D_i,N_i)])_0 \ilsep T$\\
+$\trspace\implies (\cd,C, [(S_i,L(\emptyset)_i,D_i,N_i)])_0 \ilsep
+{lift\ (enterf\ n\ \lbl_C)\ T}$\\
+$enterf\ n\ \lbl_C (\cd,v_1{:}\cdots{:}v_n{:}S,Q,D,N) $ \\
+$\trspace\implies (\lblcd_C,[v_1,\ldots,v_n],Q,R(S,\cdptr){:}D,N)$ \\
+$(\mathrm{Return}\ n,v_1{:}\cdots{:}v_n{:}S',Q,R(S,\cdptr){:}D,N) $ \\
+$\trspace\implies (\cd,[v_1,\ldots,v_n]{:}S,Q,D,N)$ \\
+\end{tabular}
+\caption{Transitions for function calls.}\label{fig:trans:functioncalls}
+\end{figure}
+
+To illustrate how \qsmins{Call} is being processed, consider
+the following diagram:
+\begin{align*}
+(0)&&M_0 &\ilsep &M_1 &\ilsep &M_2 &\ilsep &M_3 &\ilsep \dots \\
+(1)&\ (\qsmins{Call}\ f):\quad&0 &\ilsep &f \cdot M_1 &\ilsep &f \cdot M_2 &\ilsep &f \cdot M_3 &\ilsep \dots \\
+(2)&\ (\qsmins{Call}\ f):\quad&0 &\ilsep &0 &\ilsep &f \cdot f \cdot M_2 &\ilsep &f \cdot f \cdot M_3 &\ilsep \dots \\
+(3)&\ (\qsmins{Call}\ f):\quad&0 &\ilsep &0 &\ilsep &0 &\ilsep &f \cdot f \cdot f \cdot M_3 &\ilsep \dots \\
+&&&&&\vdots
+\end{align*}
+
+At the start, in line (0), the machine has state $M_0\ilsep M_i$. After the
+first call to $f$, at line (1), 
+the head of the infinite list state has been zeroed out, 
+indicating divergence. However, at every position further down the
+infinite list, the subroutine $f$ is entered.
+
+Continuing to line (2) and calling $f$ again, the divergence has moved 
+one position to the right and we now have a state of
+ $0\ilsep 0\ilsep f \cdot f \cdot M_i$. Line (3) follows the same pattern.
+ Thus, the further 
+along in the infinite list one goes, the greater the \emph{call depth}.
+
+% For  details of how this is
+%handled in the Haskell implementation of the quantum stack machine, 
+%see \vref{subsubsec:QSM:recursivefunctiontransitions}.
+
+The \qsmins{Call} and \qsmins{Return} instructions use a dump element
+as part of subroutine linkage.
+The \qsminswithp{Call}{i\ lbl} instruction creates a dump element to store 
+the 
+current classical stack and the address of the instruction following
+the \qsmins{Call} instruction. 
+The \qsminswithp{Return}{n} instruction will use the top dump element
+to reset the code pointer  to the saved return location.
+\qsmins{Return} also takes the classical stack from the top dump element and the
+top \qsminsparm{n} values from the current classical stack are added
+to the top of it. \qsmins{Return} then removes the top dump element.
+

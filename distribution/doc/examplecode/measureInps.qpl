@@ -1,0 +1,10 @@
+#Import Prelude.qpl
+qdata Ftype = {Balanced | Constant}
+measureInputs::(inputs:List(Qubit) ; result:Ftype) =
+{  case inputs of
+     Nil            => {result = Constant} //All were zero
+     Cons(hd, tail) => 
+       {  measure hd of
+             |0> => { result = measureInputs(tail)}
+             |1> => { result = Balanced} }
+}

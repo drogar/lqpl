@@ -1,0 +1,19 @@
+#Import powerSupport.qpl
+
+powerM::(base:QuintMod, pow:QuintMod ; 
+                        res:QuintMod)=
+{  case pow of QuintMod(sizeA,modA,aDig) => 
+     { use sizeA,modA;
+       res = cintToQuintMod(1,modA|sizeA);
+       case aDig of Nil => {discard base} //  base^0 is 1
+       Cons(hdA,tlA)=>
+         { ctlCopyOne(hdA,base;hdA,base,basecopy);
+           discard hdA;
+           multiplyM basecopy  res;  discard basecopy;
+           square(base; basesqd);
+           pow' = QuintMod(sizeA, modA, tlA);
+           powerM(basesqd,pow'; res1);
+           multiplyM res1 res;  discard res1}}
+}
+
+

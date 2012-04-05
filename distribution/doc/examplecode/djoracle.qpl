@@ -1,0 +1,18 @@
+balanced :: (ctlqb:Qubit, inlist :List(Qubit) ; 
+	     ctlqb:Qubit, outlist:List(Qubit))=
+{ case inlist of
+    Nil         => {outlist = Nil}
+    Cons(hd,tl) => 
+      { case tl of
+           Nil => { Not hd   <= ctlqb;
+                    outlist  = Cons(hd,Nil)}
+           Cons(h,t) => 
+             { balanced(ctlqb, t ; ctlqb,outt);
+	       outlist = Cons(hd,Cons(h,outt)) } }
+}
+djoracle::(inl:List(Qubit); outl:List(Qubit))=
+{  case inl of
+    Nil        => { outl = Nil}
+    Cons(hd,tl)=> { balanced hd tl;
+                    outl = Cons(hd,tl)}
+}

@@ -1,0 +1,90 @@
+\section{Order finding}\label{sec:orderfinding}
+Shor's algorithm for factoring depends on the quantum algorithm for 
+order finding. Shor's algorithm may be summarized
+by the following three steps:
+\begin{itemize}
+\item{}Setup;
+\item{}Call order finding (a quantum algorithm);
+\item{}Check to see if an answer has been found, repeat if not.
+\end{itemize}
+
+In this section, we concentrate on the quantum portion, order finding. 
+Theoretical details may be found in \cite{neilsen2000:QuantumComputationAndInfo}.
+
+The code for the main order finding function, \inlqpl{OrderFind} 
+is shown in \ref{fig:orderfind}
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/OrderFind.qpl}
+\caption{\lqpl{} function for order finding.}\label{fig:orderfind}
+\end{figure}
+
+Beginning at lines 1 and 2, the program imports files which
+provide various other functions. At line \ref{of:signature}, the 
+function is declared to take two classical integers as input and return
+one probabalistic integer. The first two lines of code, \ref{of:sizeofn} and
+\ref{of:sizeoft} compute the number of \qubits{} required for the algorithm
+to work with a maximum error of $\frac{1}{4}$. Increasing 
+\inlqpl{sizeT} will reduce the error.
+
+Lines \ref{of:makelist} through \ref{of:makeqmod} complete the initial setup
+for the algorithm. These include: Creating \inlqpl{tList}, 
+a list of \inlqpl{sizeT} \qubits{} initialized to zero; applying the Hadamard 
+transform to each \qubit; creating \inlqpl{xQm}, a \inlqpl{QuintMod} with 
+the value of the input parameter \inlqpl{x}. See \vref{subsec:examplemodarith}
+for the details of modular arithmetic.
+
+Line \ref{of:dotransform} performs the modular exponentiation and is shown in
+\ref{fig:modularpowerof}. This is similar to the exponentiation function in 
+\vref{fig:quantummodularexp} and has just been modified to work with an 
+exponent in list form and to retain the exponent.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/powerFind.qpl}
+\caption{\lqpl{} code for modular power by a list}\label{fig:modularpowerof}
+\end{figure}
+
+On completion of the exponentiation, the actual result is discarded as
+it has no further effect on the algorithm.  Then, the inverse quantum Fourier
+transform (shown in \ref{fig:inverseqft}
+and \ref{fig:inverserotate}) is applied to \inlqpl{tList} and it is measured to produce
+a probabalistic integer in line \ref{of:measure}.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/inverseQft.qpl}
+\caption{Function to apply the inverse quantum Fourier transform}
+\label{fig:inverseqft}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/inverseRotate.qpl}
+\caption{Function to apply inverse rotations as part of the inverse QFT}
+\label{fig:inverserotate}
+\end{figure}
+
+The final part of the algorithm is normally described as using a continued fraction
+algorithm to compute the potential order. This is the same as dividing 
+$2^\text{\inlqpl{sizeT}}$ by the greatest common division of itself and the result.
+
+At this point, since this is a probabilistic algorithm, the calling function would need to 
+check whether the result is correct. If so, it may then be used in the completion of the 
+factoring algorithm.
+
+Various other support functions for this algorithm are shown in \ref{fig:ofutils}
+and  \ref{fig:oflistutils}.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/Utils.qpl}
+\caption{GCD and import of other ulitlties}
+\label{fig:ofutils}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/orderfind/ListUtils.qpl}
+\caption{Various list ulitlties}
+\label{fig:oflistutils}
+\end{figure}
+
+

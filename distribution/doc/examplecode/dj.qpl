@@ -1,0 +1,14 @@
+#Import initList.qpl
+#Import prependnzeros.qpl
+#Import hadList.qpl
+#Import measureInps.qpl
+#Import djoracle.qpl
+
+dj::(size:Int |; resultType:Ftype)= 
+{  inlist = prependNZeroqbs(size | |1>);
+   hadList inlist;
+   djoracle inlist;
+   inputs = initialList(inlist);
+   hadList inputs;
+   resultType = measureInputs(inputs);
+}

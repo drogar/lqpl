@@ -1,0 +1,21 @@
+Hi All
+
+I'm sure those of using GTK / Gtk2HS for years will be say - of course! to this, for newbies though, I hope it is of some help.
+
+My situation is that I am working on a project that requires me to draw what is essentially a multi-branched tree in a DrawingArea. The nodes, leaves and the branches are each labelled in a variety of ways, requiring me to position the text myself, allow for font changes and allow hiding of certain labels.
+
+Being new, and happy to experiment, I first started off by just creating a PangoContext as I needed it, create/set the font and then create the layout, then get the size and draw. (actually, I would usually get the size on one pass to compute the size of the whole tree, then again when doing the actual drawing.)
+
+Sadly - not so good. Many crashes in Windows and Linux, many missing pieces of text in Windows :). 
+
+Next stage was - well, why not create and save the contexts with the correct font descriptions and pass them through the drawing functions. Then create a new layout each time from the context
+
+This seemed to work quite well, other than occasionally the getPixelExtents functions would return some very strange values. (e.g. Rectancle 0 2999908 20 2999935). 
+
+However Windows barfed quite quickly on this - and was still missing some text.
+
+Finally, I create the layouts once at the beginning of the program and pass them around.  Now - all is wonderful, everything displays and nothing crashes :). I believe I also need to save the FontDescriptions and pass them as well, as everything is still drawn as per the last font context I set.
+
+I'll most likely put this up on the Haskell Wiki this weekend - any further comments or thoughts will be gratefully added in there.
+
+Hope this helps others doing DrawingArea stuff.

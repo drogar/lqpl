@@ -1,0 +1,374 @@
+Compiler: Version=0.8.4
+checkBothAreBN_fcdlbl4   Start
+EnScope
+EnScope
+    QPullup @in1
+    Split @in1 lbl7  (#FullNode,lbl6) (#OneNode,lbl5) (#BottomNode,lbl0)
+lbl0     QUnbind @in1 @d
+    QDiscard @in1
+    QCons @^1 #BottomNode
+    QBind @d
+    Rename @^1 @out1
+EnScope
+    QPullup @in2
+    Split @in2 lbl4  (#FullNode,lbl3) (#OneNode,lbl2) (#BottomNode,lbl1)
+lbl1     QUnbind @in2 @e
+    QDiscard @in2
+    QCons @^1 #BottomNode
+    QBind @e
+    Rename @^1 @out2
+    QCons @^1 #TRUE
+    Rename @^1 @bool
+SwapD
+lbl2     QUnbind @in2 @e
+    QUnbind @in2 @child
+    QDiscard @in2
+    QCons @^1 #OneNode
+    QBind @child
+    QBind @e
+    Rename @^1 @out2
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl3     QUnbind @in2 @e
+    QUnbind @in2 @l
+    QUnbind @in2 @r
+    QDiscard @in2
+    QCons @^1 #FullNode
+    QBind @r
+    QBind @l
+    QBind @e
+    Rename @^1 @out2
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl4 DeScope
+SwapD
+lbl5     QUnbind @in1 @d
+    QUnbind @in1 @child
+    QDiscard @in1
+    QCons @^1 #OneNode
+    QBind @child
+    QBind @d
+    Rename @^1 @out1
+    Rename @in2 @out2
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl6     QUnbind @in1 @d
+    QUnbind @in1 @l
+    QUnbind @in1 @r
+    QDiscard @in1
+    QCons @^1 #FullNode
+    QBind @r
+    QBind @l
+    QBind @d
+    Rename @^1 @out1
+    Rename @in2 @out2
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl7 DeScope
+DeScope
+    Return 0
+   EndProc
+checkOneisBN_fcdlbl3   Start
+EnScope
+EnScope
+    QPullup @intr
+    Split @intr lbl11  (#FullNode,lbl10) (#OneNode,lbl9) (#BottomNode,lbl8)
+lbl8     QUnbind @intr @d
+    QDiscard @intr
+    QCons @^1 #BottomNode
+    QBind @d
+    Rename @^1 @out
+    QCons @^1 #TRUE
+    Rename @^1 @bool
+SwapD
+lbl9     QUnbind @intr @d
+    QUnbind @intr @child
+    QDiscard @intr
+    QCons @^1 #OneNode
+    QBind @child
+    QBind @d
+    Rename @^1 @out
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl10     QUnbind @intr @d
+    QUnbind @intr @l
+    QUnbind @intr @r
+    QDiscard @intr
+    QCons @^1 #FullNode
+    QBind @r
+    QBind @l
+    QBind @d
+    Rename @^1 @out
+    QCons @^1 #FALSE
+    Rename @^1 @bool
+SwapD
+lbl11 DeScope
+DeScope
+    Return 0
+   EndProc
+doubleVote_fcdlbl6   Start
+EnScope
+EnScope
+    Call 0 toss_fcdlbl0
+    Split @c lbl20  (#Heads,lbl13) (#Tails,lbl12)
+lbl12     QDiscard @c
+    QCons @^1 #Tails
+    Rename @^1 @myToss
+    QDelete @rtoss
+    QDelete @ltoss
+    QCons @^1 #FullNode
+    QBind @right
+    QBind @left
+    QBind @val
+    Rename @^1 @outtre
+SwapD
+lbl13     QDiscard @c
+    QCons @^1 #Heads
+    Rename @^1 @myToss
+EnScope
+    QPullup @ltoss
+    Split @ltoss lbl19  (#Tails,lbl15) (#Heads,lbl14)
+lbl14     QDiscard @ltoss
+    QDelete @rtoss
+    QCons @^1 #FullNode
+    QBind @right
+    QBind @left
+    QBind @val
+    Rename @^1 @outtre
+SwapD
+lbl15     QDiscard @ltoss
+EnScope
+    QPullup @rtoss
+    Split @rtoss lbl18  (#Tails,lbl17) (#Heads,lbl16)
+lbl16     QDiscard @rtoss
+    QCons @^1 #FullNode
+    QBind @right
+    QBind @left
+    QBind @val
+    Rename @^1 @outtre
+SwapD
+lbl17     QDiscard @rtoss
+    QCons @^1 #BottomNode
+    QBind @val
+    Rename @^1 @outtre
+    QDelete @left
+    QDelete @right
+SwapD
+lbl18 DeScope
+SwapD
+lbl19 DeScope
+SwapD
+lbl20 DeScope
+DeScope
+    Return 0
+   EndProc
+elect_fcdlbl1   Start
+EnScope
+    Rename @tre @intre
+    Call 0 vote_fcdlbl2
+    Rename @outtre @tre
+    Rename @aToss @atoss
+    QDelete @atoss
+EnScope
+    QPullup @tre
+    Split @tre lbl24  (#BottomNode,lbl23) (#OneNode,lbl22) (#FullNode,lbl21)
+lbl21     QUnbind @tre @d
+    QUnbind @tre @left
+    QUnbind @tre @right
+    QDiscard @tre
+    QCons @^1 #FullNode
+    QBind @right
+    QBind @left
+    QBind @d
+    Rename @^1 @tre
+    Call 0 elect_fcdlbl1
+SwapD
+lbl22     QUnbind @tre @d
+    QUnbind @tre @child
+    QDiscard @tre
+    QCons @^2 #OneNode
+    QBind @child
+    QBind @d
+    Rename @^2 @tre
+    Call 0 elect_fcdlbl1
+SwapD
+lbl23     QUnbind @tre @d
+    QDiscard @tre
+    Rename @d @leader
+SwapD
+lbl24 DeScope
+DeScope
+    Return 0
+   EndProc
+main   Start
+EnScope
+    CLoad 7
+    QMove @^3
+    CLoad 3
+    QMove @^4
+    QCons @^5 #BottomNode
+    QBind @^4
+    QCons @^4 #OneNode
+    QBind @^5
+    QBind @^3
+    Rename @^4 @tre
+    Call 0 elect_fcdlbl1
+    Rename @leader @ldr
+DeScope
+   EndProc
+singleVote_fcdlbl5   Start
+EnScope
+EnScope
+    Call 0 toss_fcdlbl0
+    Split @c lbl33  (#Tails,lbl29) (#Heads,lbl25)
+lbl25     QDiscard @c
+    QCons @^3 #Heads
+    Rename @^3 @myToss
+EnScope
+    QPullup @ctoss
+    Split @ctoss lbl28  (#Tails,lbl27) (#Heads,lbl26)
+lbl26     QDiscard @ctoss
+    QCons @^3 #OneNode
+    QBind @child
+    QBind @val
+    Rename @^3 @outt
+SwapD
+lbl27     QDiscard @ctoss
+    QCons @^3 #BottomNode
+    QBind @val
+    Rename @^3 @outt
+    QDelete @child
+SwapD
+lbl28 DeScope
+SwapD
+lbl29     QDiscard @c
+    QCons @^3 #Tails
+    Rename @^3 @myToss
+EnScope
+    QPullup @ctoss
+    Split @ctoss lbl32  (#Heads,lbl31) (#Tails,lbl30)
+lbl30     QDiscard @ctoss
+    QCons @^3 #OneNode
+    QBind @child
+    QBind @val
+    Rename @^3 @outt
+SwapD
+lbl31     QDiscard @ctoss
+    Rename @child @outt
+    QDelete @val
+SwapD
+lbl32 DeScope
+SwapD
+lbl33 DeScope
+DeScope
+    Return 0
+   EndProc
+toss_fcdlbl0   Start
+EnScope
+    QLoad @q |0>
+    QApply 0 !Had @q
+    QPullup @q
+EnScope
+    Measure @q lbl36 lbl34 lbl35
+lbl34     QDiscard @q
+    QCons @^3 #Heads
+    Rename @^3 @c
+    SwapD   
+lbl35     QDiscard @q
+    QCons @^3 #Tails
+    Rename @^3 @c
+    SwapD   
+lbl36 DeScope
+DeScope
+    Return 0
+   EndProc
+vote_fcdlbl2   Start
+EnScope
+EnScope
+    QPullup @intre
+    Split @intre lbl46  (#FullNode,lbl42) (#OneNode,lbl38) (#BottomNode,lbl37)
+lbl37     QUnbind @intre @d
+    QDiscard @intre
+    QCons @^3 #BottomNode
+    QBind @d
+    Rename @^3 @outtre
+    Call 0 toss_fcdlbl0
+    Rename @c @aToss
+SwapD
+lbl38     QUnbind @intre @d
+    QUnbind @intre @child
+    QDiscard @intre
+    Rename @child @intre
+    Call 0 vote_fcdlbl2
+    Rename @outtre @child
+    Rename @aToss @ctoss
+    Rename @child @intr
+    Call 0 checkOneisBN_fcdlbl3
+    Rename @out @child
+EnScope
+    QPullup @bool
+    Split @bool lbl41  (#FALSE,lbl40) (#TRUE,lbl39)
+lbl39     QDiscard @bool
+    Rename @d @val
+    Call 0 singleVote_fcdlbl5
+    Rename @outt @outtre
+    Rename @myToss @aToss
+SwapD
+lbl40     QDiscard @bool
+    QDelete @ctoss
+    QCons @^3 #OneNode
+    QBind @child
+    QBind @d
+    Rename @^3 @outtre
+    Call 0 toss_fcdlbl0
+    Rename @c @aToss
+SwapD
+lbl41 DeScope
+SwapD
+lbl42     QUnbind @intre @d
+    QUnbind @intre @left
+    QUnbind @intre @right
+    QDiscard @intre
+    Rename @left @intre
+    Call 0 vote_fcdlbl2
+    Rename @outtre @left
+    Rename @aToss @ltoss
+    Rename @right @intre
+    Call 0 vote_fcdlbl2
+    Rename @outtre @right
+    Rename @aToss @rtoss
+    Rename @left @in1
+    Rename @right @in2
+    Call 0 checkBothAreBN_fcdlbl4
+    Rename @out1 @left
+    Rename @out2 @right
+EnScope
+    QPullup @bool
+    Split @bool lbl45  (#TRUE,lbl44) (#FALSE,lbl43)
+lbl43     QDiscard @bool
+    QCons @^3 #FullNode
+    QBind @right
+    QBind @left
+    QBind @d
+    Rename @^3 @outtre
+    QDelete @ltoss
+    QDelete @rtoss
+    Call 0 toss_fcdlbl0
+    Rename @c @aToss
+SwapD
+lbl44     QDiscard @bool
+    Rename @d @val
+    Call 0 doubleVote_fcdlbl6
+    Rename @myToss @aToss
+SwapD
+lbl45 DeScope
+SwapD
+lbl46 DeScope
+DeScope
+    Return 0
+   EndProc

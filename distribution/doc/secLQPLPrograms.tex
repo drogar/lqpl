@@ -1,0 +1,196 @@
+\section{\lqpl{} programs}\label{sec:lqplprograms}
+\lqpl{} programs  
+consist of combinations of functions and data definitions, with 
+one special function named \inlqpl{main}. 
+The functions and data definitions are
+\emph{simultaneously declared} and  so may be 
+given in any order. The program will start executing at the \inlqpl{main}
+ function. 
+
+A physical program will typically consist of one or more source files
+with the suffix \terminalio{.qpl}. Each source file may contain
+functions and data definitions. It  may also
+ \emph{import} the contents of other 
+source files. The name of a source file is not significant in \lqpl. 
+Common practice is to have one significant function per source file
+and then to import all these files into the source file containing
+the \inlqpl{main} function.
+
+The above structure was chosen thinking of Haskell 
+ \cite{peyton2003:haskell98} and C \cite{kernighan:c}. Global definitions 
+of functions and types is borrowed from Haskell, while the \inlqpl{main} 
+start point and import feature is a combination of Haskell and C.
+
+\subsection{Data definitions}\label{subsec:datadefinitions}
+\lqpl{} provides the facilities to define  datatypes with 
+a syntax reminiscent of Haskell \cite{peyton2003:haskell98}. 
+
+Natively, the language provides \inlqpl{Int}, 
+\inlqpl{Qubit} and \inlqpl{Bool} 
+types. \inlqpl{Bool} is the standard Boolean  type with values
+\inlqpl{true} and \inlqpl{false}. \inlqpl{Int} is a standard 32-bit
+integer. \inlqpl{Qubit} is a single \qubit{}.
+
+In \lqpl{} both native types and other constructed datatypes may
+be used in the definition of
+constructed datatypes. These constructed datatypes may involve
+ sums, products,
+singleton types and parametrization of the constructed type.
+For example, a type that is the sum of the integers and the Booleans
+can be declared as  follows:
+\begin{lstlisting}[style=linqplnonum]
+        qdata Eitherib = {Left(Int) | Right(Bool)}
+\end{lstlisting}
+The above example illustrates the basic syntax of the 
+data declaration. 
+\paragraph{Syntax of datatype declarations.}
+Each datatype declaration must begin with the keyword \inlqpl{qdata}. This is
+followed by \emph{the type name}, which must be an identifier 
+starting with an uppercase letter. The type name may also be followed by
+ any number of \emph{type variables}. Type variables must be and identifier starting
+with a lower case letter. Typically, a single letter is used.
+This is then followed by an equals sign
+and   completed by a list of \emph{constructors}. The list of constructors
+must be surrounded by 
+braces and each constructor must be separated from the others 
+by a vertical bar. Each constructor is followed by an optional parenthesized
+list of \emph{simple types}. 
+Each simple type is either a built-in type, (one of 
+\inlqpl{Int, Bool, Qubit}), a type variable that was used in the
+type declaration, or another declared type, surrounded by 
+parenthesis. \lqpl{} allows recursive
+references to the type currently being declared. All constructors must
+begin with an upper case letter. Constructors and types are in different
+namespaces, so it is legal to have the same name for both. For example:
+\begin{lstlisting}[style=linqplnonum]
+       qdata Record a b = {Record(Int, a, b)}
+\end{lstlisting}
+In the above type definition,
+ the first ``\inlqpl{Record}'' is the type, while the second is the 
+constructor. The triplet ``\inlqpl{(Int,a,b)}'' is the product of the
+type \inlqpl{Int} and the type variables \inlqpl{a} and \inlqpl{b}.
+Since constructors may reference their own type and other 
+declared types, recursive 
+data types such as lists and various types of
+ trees may be created:
+
+\begin{lstlisting}[style=linqplnonum]
+        qdata List a   = {Nil     | Cons(a, List(a))}
+        qdata Tree a   = {Leaf(a) | Br(Tree(a), Tree(a))}
+        qdata STree a  = {Tip     | Fork(STree(a), a, STree(a))}
+        qdata Colour   = {Red     | Black}
+        qdata RBSet a  = {Empty   |
+	                  RBTip(Colour, RBSet(a), a, RBSet(a))}
+        qdata RTree a  = {Rnode(a, List(a))}
+        qdata Rose a   = {Rose(List(a, Rose(a)))} 
+\end{lstlisting}
+\subsection{Function definitions}\label{subsec:functiondefinitions}
+Function definitions may appear in any order within a
+\lqpl{} source file. 
+\paragraph{Syntax of function definitions.} 
+The first element of a function definition is
+\emph{the name}, an identifier starting with a 
+lower case letter. This is always followed by a double semi-colon and 
+\emph{a signature}, which details the type and characteristics 
+of input and output arguments. The final component of the 
+function definition is
+\emph{a body}, which is a block of \lqpl{} statements. 
+Details of statements are given in \vref{sec:lqplstatements}.
+
+The structure of function definitions is unique to \lqpl, although
+broadly based on one of the acceptable syntaxes for C function definitions
+as in \cite{kernighan:c}. The major difference occurs in the signature
+which, as will be seen below, allows for both classical and quantum input
+arguments and specifies the quantum outputs of a function. Another difference
+is that \lqpl{} defines all functions globally, hence there is no
+requirement for declarations separate from the definitions.
+
+Let us examine two examples of functions. The first, in \vref{fig:defsec:gcd}
+ is a fairly 
+standard function to determine the greatest common divisor of two 
+integers.
+
+\begin{figure}[htbp]
+\begin{singlespace}
+\lstinputlisting[style=linqpl]{examplecode/gcd.qpl}
+\end{singlespace}
+\caption{\lqpl{} function to compute the GCD}\label{fig:defsec:gcd}
+\end{figure}
+
+The first line has  the name of the function, \inlqpl{gcd}, a separating double colon, and
+ the signature. 
+The signature of the function is  \inlqpl{(a:Int, b:Int | ; ans:Int)}.
+This signature tells the compiler that \inlqpl{gcd} expects
+two input arguments, each of type \inlqpl{Int} and that they are
+ \emph{classical}. The compiler deduces this
+from the fact that they both appear before the '\inlqpl{|}'.
+In this case there are no  quantum input arguments
+as there are no parameters between the '\inlqpl{|}' and the
+'\inlqpl{;}'. The last parameter tells us that this function returns
+one quantum item of type \inlqpl{Int}. Returned items are always  
+quantum data.
+
+The signature specifies variable names for the parameters
+ used in the body. All input parameters are available as variable
+names in expression and statements. Output parameters are available to be
+assigned and, indeed, must be assigned by the end of the function.
+
+
+The next example, in \vref{fig:defsec:inttoqubit}
+ highlights the linearity of variables in \lqpl. This function is 
+ used to create a list of \qubit{}s corresponding to the
+\bit{} representation of an input integer.
+
+At line 1,  the program uses the import command.
+\inlqpl{#Import} must have a file name directly after it. This 
+command directs the compiler to stop reading from the current file
+and to read  code in the imported file until the end of that
+file, after which it  continues with the current 
+file.  The compiler will not reread the same file in a single
+ compilation, and it will import from any file.
+
+
+\begin{figure}[htbp]
+\begin{singlespace}
+\lstinputlisting[style=linqpl]{examplecode/intToQubitList.qpl}
+\end{singlespace}
+\caption{\lqpl{} function to create a \qubit{} register}
+\label{fig:defsec:inttoqubit}
+\end{figure}
+
+For example, consider a case with three source files, A, B and C.
+Suppose file A has import commands for both B and  C, with B being
+imported first. Further suppose that  file B 
+ imports C. The compiler will start reading A, suspend at the first 
+import and start reading B. When it reaches B's \inlqpl{#Import} of C, it
+will suspend the processing of B and read C. 
+After completing the read of C, the compiler
+reverts to processing B.
+After completing the read of B, the compiler does a 
+final reversion and finishes  processing  A. 
+However, when A's \inlqpl{#Import} of C
+is reached, the compiler will ignore this import
+ as it keeps track of the fact C has
+already been read.
+
+In the signature on lines 
+\ref{line:itqlfunctionstart}-\ref{line:itqlfunctionend},  
+the function accepts
+one quantum parameter of type \inlqpl{Int}. It returns
+a  \inlqpl{Qubit} list and an \inlqpl{Int}. The integer returned, in
+this program, is computed to have 
+the same value as the one passed in. If this had not been
+specified in this way, 
+\emph{the integer would have been destroyed by the function}.  Generally, any usage
+of a quantum variable destroys that variable. 
+
+In the body of the function, note the \inlqpl{use n} in the
+ block of statements. This allows  repeated 
+use of the variable \inlqpl{n} at lines \ref{line:itqln0}, \ref{line:itqln1},
+\ref{line:itqln2}, \ref{line:itqln3} and \ref{line:itqln4}. In these uses,
+\inlqpl{n} is a classical variable, no longer on the quantum stack. The last
+usage on line \ref{line:itqln4} where \inlqpl{n} is assigned to itself, 
+returns \inlqpl{n} to the quantum world.
+
+
+

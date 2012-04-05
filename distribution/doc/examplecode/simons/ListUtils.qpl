@@ -1,0 +1,17 @@
+#Import Prelude.qpl
+
+ndestLength::(inLis:List(a); 
+              len:Int, outLis:List(a))=
+{  case inLis of
+     Nil => { len = 0; outLis = Nil}
+     Cons(hd,tl) => 
+            { ndestLength(tl; tlen, tail);
+              use tlen in { len = 1 + tlen};
+              outLis = Cons(hd, tail)}
+}
+
+makeZeroQubitList::(len:Int | ; outLis:List(Qubit))=
+{  if (len =< 0) => { outLis = Nil}
+   else          => { outListTail = makeZeroQubitList( len-1 |);
+                      outLis = Cons(|0>,outListTail)}
+}

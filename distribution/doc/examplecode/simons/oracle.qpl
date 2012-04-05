@@ -1,0 +1,25 @@
+#Import blackboxes.qpl
+
+oracle::(dataqbs:List(Qubit);
+         dataqbs:List(Qubit))=
+{  ndestLength(dataqbs; len, dataqbs);
+   use len;
+   makeZeroQubitList(len | ; ancillas);
+   bboxfRecurse(1,len) dataqbs ancillas;
+   discard ancillas;
+}
+
+bboxfRecurse::(start:Int, len:Int | dqs:List(Qubit), anc:List(Qubit);
+                                    dqs : List(Qubit), anc :List(Qubit))=
+{  if (len < start) => { }
+   else => { bbox(start) dqs anc;
+             bboxfRecurse((start +1), len) dqs anc }
+}
+  
+//Assumption of three qubits - customize for each function
+bbox::(index:Int | dqs:List(Qubit), anc:List(Qubit);
+                   dqs:List(Qubit), anc:List(Qubit))=
+{  if (index == 1) => { bbox1 dqs anc}
+      (index == 2) => { bbox2 dqs anc}
+   else            => { bbox3 dqs anc}
+}

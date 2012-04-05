@@ -1,0 +1,19 @@
+#Import Prelude.qpl
+rotate::(n:Int | h:Qubit, qbsIn :List(Qubit);
+                 h:Qubit, qbsOut:List(Qubit))= 
+{ case qbsIn of
+     Nil          => {qbsOut = Nil }
+     Cons(hd, tl) => 
+       { Rot(n) h    <= hd;
+         rotate(n+1) h tl; 
+         qbsOut = Cons(hd,tl) }
+}
+qft::(qsIn:List(Qubit); qsOut:List(Qubit)) =
+{ case qsIn of
+    Nil         => {l = Nil}
+    Cons(hd,tl) => 
+      {  Had hd;
+	 rotate(2) hd tl;
+         qft tl;
+         qsOut = Cons(hd,tl) }
+}

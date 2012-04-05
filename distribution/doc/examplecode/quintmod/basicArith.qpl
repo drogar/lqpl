@@ -1,0 +1,24 @@
+#Import smartConstructor.qpl
+
+addM::(asin:QuintMod, bsin:QuintMod ;
+      asout:QuintMod, aplusbout:QuintMod) =
+{ case asin of QuintMod(sizeA,mA, aDigits) => {
+  case bsin of QuintMod(sizeB,mB, bDigits) => 
+    { use sizeB;
+      normalize( sizeB| bDigits;bDigits);
+      c0 = |0>; 
+      addLists c0 aDigits  bDigits;
+      discard c0;
+      asout     = QuintMod(sizeA,mA,aDigits);
+      aplusbout = makeQuint(sizeB,mB,bDigits)}}
+}
+
+addListToQuint::(inc:List(Qubit), dest:QuintMod; 
+                 dest:QuintMod)=
+{ case dest of QuintMod(sizeD,mdD,dDigits) => 
+    { use sizeD,mdD;
+      a    = QuintMod(sizeD,mdD,inc);
+      dest = QuintMod(sizeD,mdD,dDigits);
+      addM a dest;
+      discard a}
+}

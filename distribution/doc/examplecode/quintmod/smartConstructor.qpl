@@ -1,0 +1,33 @@
+#Import Prelude.qpl
+#Import carrysave.qpl
+#Import QuintMods.qpl
+
+// Needs to subtract the modulus 0,1 or 2 times to
+// get the correct range for the numbers.
+makeQuint::(size:Int, radix:Int, digits:List(Qubit) ; 
+                                       res:QuintMod)=
+{  getLength(digits; digits,length);
+   use size,length in 
+     { if length > size => 
+         { // Two controlled subs
+           use radix;
+           csubModulus(radix | digits ; digits);
+           takeOnly(size+1 | digits ; digits); //Last is |0>
+           csubModulus(radix | digits ; digits);
+           takeOnly(size | digits ; digits); //Last is |0>
+           res = QuintMod(size,radix,digits) }
+       else => 
+         { res = QuintMod(size,radix,digits)}
+     }
+}
+
+csubModulus::(modulus:Int | digits:List(Qubit) ; 
+                              digs:List(Qubit))=
+{  splitLast(digits, |0> ; digits, last);
+   ctldintToQubitList(modulus | last ; last, subRad);
+   digs = append(digits,Cons(last,Nil));
+   c0   = |0>;
+   subLists c0 subRad digs;
+   discard c0, subRad;
+}
+

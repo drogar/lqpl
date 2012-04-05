@@ -1,0 +1,7 @@
+#Import Prelude.qpl
+prependNZeroqbs::(size:Int | last:Qubit; 
+                             resultList:List(Qubit))= 
+{    if (size == 0) => { resultList = Cons(last,Nil)}
+     else           => { last'      = addNZeroqbs(size - 1 | last);
+                         resultList = Cons(|0>,last') }
+}

@@ -1,0 +1,24 @@
+#Import oracle.qpl
+#Import hadList.qpl
+
+main::()=
+{  dqs=Cons(|0>,Cons(|0>,Cons(|0>,Nil)));
+   hadList dqs;
+   oracle dqs;
+   hadList dqs;
+   qubToBitList(dqs ; bits)
+}
+
+qdata ZorO = { Z | O }
+
+qubToBitList::(inqubits:List(Qubit);
+                    out:List(ZorO))=
+{ case inqubits of
+    Nil => { out = Nil}
+    Cons(hd,tl) =>
+           { outtl = qubToBitList(tl);
+             measure hd of
+               |0> => {out = Cons(Z,outtl)}
+               |1> => {out = Cons(O,outtl)}}
+}
+   

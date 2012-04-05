@@ -1,0 +1,22 @@
+#Import Prelude.qpl
+
+oracle::(dataqbs:List(Qubit);
+         dataqbs:List(Qubit))=
+{  a = |1>;  Had a;
+   case dataqbs of
+     Nil => 
+         { dataqbs = Nil; 
+           Had a; Not a; discard a}
+     Cons(hd,tl) => 
+         { case tl of 
+             Nil => 
+                 { dataqbs = Nil; 
+                   Had a; Not a; discard a; discard hd;}
+             Cons(hd',tl') => 
+                 { Not a <= ~hd, ~hd', tl';  // Search for 0 0 1 1 (12)
+	           dataqbs = Cons(hd,(Cons(hd',tl')));
+                   Had a; Not a; discard a } 
+         }
+}
+  
+   

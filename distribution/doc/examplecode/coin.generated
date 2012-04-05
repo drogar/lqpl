@@ -1,0 +1,19 @@
+CFlip_fcdlbl0 Start
+   QLoad q |0>
+   QApply 0 !Had
+   Measure l0 l1
+   Jump l3
+l0 QDiscard
+   QCons b #False
+   EndQC
+l1 QDiscard
+   QCons b #True
+   EndQC
+l3 QPullup b
+   Return 0
+   EndProc
+
+main Start
+   Call 0 CFlip_fcdlbl0
+   NoOp
+   EndProc

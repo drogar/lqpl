@@ -1,0 +1,68 @@
+Name:                lqpl
+Version:             0.8.4
+Stability:           Experimental
+Synopsis:            Compiler and Emulator for Linear-QPL
+Description:         A command-line compiler and Gtk2Hs based emulator for Linear-QPL. LQPL is a
+                     quantum programming language that allows people to experiment with and
+                     visualize the effects of quantum algorithms.
+tested-with:         GHC
+License:             BSD3
+License-file:        LICENSE
+Author:              Brett Giles, Robin Cockett
+Maintainer:          brett.giles@ucalgary.ca
+bug-reports:         mailto:brett.giles@ucalgary.ca
+Stability:           Experimental
+homepage:            http://pll.cpsc.ucalgary.ca/lqpl
+Build-Type:          Simple
+Cabal-Version:       >=1.9.2
+--data-dir:            src
+--data-files:          glade/qstack.glade
+--Tried, just can't get this working.
+Test-Suite test-all
+   type:             exitcode-stdio-1.0
+   main-is:          Tests/RunTests.lhs
+   build-depends:    base,parsec,network,HUnit,filepath
+   hs-source-dirs:   src
+Test-Suite compiler-server-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix
+   hs-source-dirs:   src
+   extensions:       FlexibleInstances
+Test-Suite lqpl-parser-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/QPLParserSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process
+   hs-source-dirs:   src
+   extensions:
+Test-Suite utility-fileprovider-spec
+    type:             exitcode-stdio-1.0
+    main-is:          Spec/Utility/FileProviderSpec.lhs
+    build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,unix,process,directory
+    hs-source-dirs:   src
+    extensions:       FlexibleInstances
+Executable lqpl
+  Main-is:           Compiler/Main.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,transformers,parsec
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    src
+--  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl
+Executable lqpl-compiler-server
+  Main-is:           Compiler/CompilerServer.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    src
+--  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl
+--Executable emlqpl
+--  Main-is:           Emulator/QstackGTK.lhs
+--  Build-Depends:     time,old-locale,random,containers,mtl,cairo==0.12.*,filepath,glib==0.12.*,gtk==0.12.*,base,array,directory
+--  hs-source-dirs:    src
+--  extensions:        FlexibleInstances,MultiParamTypeClasses,TypeSynonymInstances,ExistentialQuantification,Rank2Types,ScopedTypeVariables,FlexibleContexts,KindSignatures
+--  Other-Modules:     Compiler.Qparser,Compiler.Qlexer,Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
+
+Executable lqpl-serv
+  Main-is:           QServer/QServer.lhs
+  Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec
+  hs-source-dirs:    src
+  extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses
+  Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl

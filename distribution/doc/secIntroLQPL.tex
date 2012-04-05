@@ -1,0 +1,70 @@
+\lstset{style=inlinqpl}
+\section{Introduction to \lqpl}\label{sec:introlqpl}
+This chapter  presents an overview of the linear quantum
+programming language. Explanations of \lqpl{} programs, statements, 
+and expressions are given.
+
+
+\lqpl{} is  a language for experimenting with  quantum
+algorithms. The language provides an expressive syntax for creating functions 
+and defining and working
+ with different datatypes. \lqpl{} has \qubit{}s as first class
+citizens of the language, together with quantum control. 
+Classical operations and classical control are also available to 
+work with classical data.
+
+The language design started from QPL in \cite{selinger04:qpl}
+and rapidly evolved to a point where a direct comparison is 
+somewhat difficult.
+Major differences are the type system, the syntax and structure of functions
+and the choices of individual statements.
+
+\subsection{Functional versus imperative}\label{subsec:lqplfunctionvsimperative}
+\lqpl{} is a functional language that uses single assignment. It resembles
+QPL in this aspect rather than QML of \cite{alti05:functionalQMLlics}. 
+Single assignment means that a variable always has a unique value until its
+use. (See \ref{subsec:lqpllinearity} below.)
+
+Like most functional languages, side effects are not allowed in functions, 
+\emph{other than those that occur due to quantum entanglement}. Side effects in imperative languages
+are those where a global variable is updated or values are read or written. 
+An example of this in an imperative
+ quantum language is a procedure in QCL from 
+\cite{omer:2000}. \lqpl{} does not have the concept of a global variable. 
+Currently, I/O is undefined.  Side effects from quantum entanglement can 
+occur when a \qubit{} is passed as a parameter to a function and it is
+operated on in the function.
+
+\subsection{Linearity of \lqpl}\label{subsec:lqpllinearity}
+The language \lqpl{} treats all quantum variables as \emph{linear}. This 
+means that any variable \emph{may only be used once}. 
+The primary reason for implementing this is the underlying aspect of 
+linearity of quantum systems, as exemplified by 
+ the \emph{no-duplication} rule which must be respected at all times. 
+This allows us to provide
+compile-time checking that enforces this rule.
+
+The compiler and language do
+ provide ways to ``ease the burden'' of linear thinking. 
+For example, function calls (see \vref{subsec:functioncalls}) 
+provide a specialized syntax for variables
+which are both input and output to a function. The ability to use
+a classical value (integer or boolean) multiple times is handled by  
+\inlqpl{use} statements (see \vref{subsec:usestatements}), which place values on to the
+classical stack where the values may be used multiple times.
+
+\begin{figure}[htbp]
+\lstinputlisting[style=linqpl]{examplecode/LengthList.qpl}
+\caption{\lqpl{} code to return the length of the list}\label{fig:lenSQPL}
+\end{figure}
+
+An example illustrating linearity is given in \vref{fig:lenSQPL}. In
+line \ref{line:lengthlist:len}, the function \inlqpl{len} is defined
+as taking one argument of type \inlqpl{List(a)} and returning
+a variable of type \inlqpl{Int}. The input only argument, \inlqpl{listIn},
+\emph{must be destroyed in the function}. When the
+case statement refers to \inlqpl{listIn}, the argument is 
+destroyed, fulfilling the requirement of the function to do so.
+
+
+

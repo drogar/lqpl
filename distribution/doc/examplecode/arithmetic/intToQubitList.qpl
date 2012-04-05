@@ -1,0 +1,16 @@
+#Import Prelude.qpl
+
+intToQubitList :: (n :Int ; n :Int, nq : List (Qubit))= 
+{ use n in 
+  { if n == 0         => { nq = Nil } 
+       (n rem 2) == 0 =>  //Even
+         { n' = n >> 1;
+           (n', nq') = intToQubitList(n');
+	   nq = Cons(|0>, nq') }
+    else              =>  //Odd
+         { n' = n >> 1;
+           intToQubitList(n'; n',nq');
+           nq = Cons(|1>, nq')  };
+    n = n;
+  }
+}

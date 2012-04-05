@@ -1,0 +1,7 @@
+Br(t1,_,t2) => 
+  {  j = treeMaxDepth(t1);
+     k = treeMaxDepth(t2);
+     use j,k; `\label{line:tmdfrag:use}`
+     if j > k => { depth = 1 + j}
+     else     => { depth = 1 + k}
+  }   `\label{line:tmdfrag:scopend}`     

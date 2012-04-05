@@ -1,0 +1,53 @@
+#Import Prelude.qpl
+
+take::(len:Int, items:List(a);len:Int, items:List(a))=
+{ use len;
+  takeOnly(len| items ; items);
+  len = len;
+}
+
+getLength::(items:List(a); items:List(a),len:Int)=
+{  case items of
+     Nil => { items = Nil; len = 0}
+     Cons(hd,tl) =>{
+        getLength(tl; tl, leng);
+        items=Cons(hd,tl);
+        use leng;
+        len = 1+leng}
+}
+
+
+takeOnly::(len:Int| items:List(a); items:List(a))=
+{
+  if len == 0 => {  discard items; items = Nil;}
+  else => {
+     case items of
+       Cons(hd,tl) => {
+           lentail = len - 1;
+           take lentail tl;
+	   discard lentail;
+           items = Cons(hd,tl)   }
+       Nil => { items = Nil}}
+} 
+
+splitLast::(items:List(a), def:a ; items:List(a), item :a)=
+{
+   case items of
+     Nil => {items = Nil; item = def}
+     Cons(hd,tl) => { 
+       case tl of
+         Nil => { discard def;item = hd; items = Nil} //Note def override below
+         Cons(tlh, tlt) =>{
+            tl=Cons(tlh,tlt);
+            splitLast(tl,def; newtl, item);
+            items=Cons(hd,newtl)}}
+}  
+
+append :: (l1:List (a), l2:List (a) ; app: List (a))
+= { 
+ case l1 of
+     Nil => {app = l2}
+     Cons (a, subl1) => {
+        app = Cons (a, append(subl1, l2));
+     }
+}

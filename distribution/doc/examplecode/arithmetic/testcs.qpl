@@ -1,0 +1,14 @@
+#Import carrysave.qpl
+
+main::()=
+{
+   a = |0>;
+   Had a;
+   b = |1>;
+   c0' = |0>;
+   c1' = |0>;
+   carry c0' a b c1';
+   discard a;
+   discard c0';
+}
+

@@ -1,0 +1,16 @@
+#Import multiply.qpl
+
+ctlCopyOne::(ctl:Qubit, src:QuintMod ;
+             ctl:Qubit, src:QuintMod, dest:QuintMod)=
+{ ctlCopy(ctl,src; ctl,src,dest); //dest == 0 if ctl == 0
+  ctlone = |0>;
+  Not ctlone <= ~ctl;
+  addListToQuint(Cons(ctlone,Nil), dest; dest);
+}
+
+square::( src:QuintMod; dest:QuintMod)=
+{ ctl = |1>;
+  ctlCopy(ctl, src; ctl,dest,cpy);  discard ctl;
+  multiplyM cpy dest;  discard cpy
+}
+

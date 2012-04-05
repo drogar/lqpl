@@ -1,0 +1,27 @@
+#Import ModFunctions.qpl
+#Import ListFunctions.qpl
+#Import quints.qpl
+qdata QuintMod = {QuintMod(Int,Int,List(Qubit))}
+
+//Convert a probabalistic int to a QuintMod
+intToQuintMod::(radix:Int, n:Int ;  nq:QuintMod)= 
+{  use n, radix;
+   determineIntSize(radix;  size);
+   cintToQuintMod(n, radix | size ; nq)
+}
+
+//Convert a classical int to a QuintMod
+cintToQuintMod::(n:Int, radix:Int | size:Int ; nq:QuintMod)= 
+{ if n == 0 => { nq = QuintMod(size,radix,Nil) } 
+  else      => { nmr  := n mod radix;
+                 qlist = intToQubitList(nmr | );
+                 nq    = QuintMod(size,radix,qlist) }
+}
+
+//Convert a QuintMod to a probabalistic integer
+quintModToInt::(nq:QuintMod ; n:Int)=
+{  case nq of
+     QuintMod(_,radix,digits) => 
+       { n' := qubitListToInt(digits);
+         use radix in {n   = n' mod radix}}
+}

@@ -1,0 +1,21 @@
+#Import multSupport.qpl
+
+multiplyM::(cor:QuintMod, cand:QuintMod ; 
+            cor:QuintMod,  res:QuintMod)=
+{  case cand of QuintMod(sizeA,modA,aDig) => 
+     { use sizeA,modA;
+       res = cintToQuintMod(0,modA | sizeA);
+       case aDig of Nil => {}
+         Cons(hdA,tlA)=>
+           { ctlCopy(hdA,cor;hdA,cor,corcopy);
+             discard hdA;
+             addM corcopy res;
+             discard corcopy;
+             ctl = |1>;
+             ctlDouble(ctl,cor; ctl, cor, cordouble);
+             discard ctl;
+             res1  = QuintMod(sizeA, modA, tlA);
+             multiplyM  cordouble res1; discard cordouble;
+             addM res1 res; discard res1}
+     }
+}

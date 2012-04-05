@@ -1,0 +1,682 @@
+\section{Translation of \lqpl{} to stack machine code}\label{sec:translationtoqsmcode}
+This section will discuss the code produced by the 
+various statements and expressions in an \lqpl{} program.
+An \lqpl{} program consists of
+a collection of data definitions and procedures. Data definitions do not
+generate any direct code but do affect the code generation of statements
+and expressions.
+
+Each procedure will generate code. A procedure consists of a collection of
+statements each of which will generate code. Some statements may have other
+statements of expressions as dependent pieces, which again will generate 
+code.
+
+The code generation in the compiler, and the description here, follows a
+standard recursive descent method.
+\subsection{Code generation of procedures}\label{subsec:cgprocedures}
+
+The code generated for each procedure follows a standard pattern of: 
+procedure entry; procedure statements; procedure exit. The procedure statements 
+portion is the code generated for the list of statements of the procedure, each of
+which is detailed in \vref{subsec:cgstatements}.
+
+\subsubsection{Procedure entry}
+Each procedure is identified in QSM by an entry point, using an assembler directive.
+This directive is a mangled name of the procedure, followed by the keyword 
+\qsmins{Start}. The only exception to this is the special procedure 
+\qsmins{main} which is generated without mangling. \qsmins{main} is always
+the starting entry point for a QSM program.
+
+\subsubsection{Procedure exit}
+The end of all procedures is denoted by another assembler directive, 
+\qsmins{EndProc}. For all procedures except \qsmins{main}, the code generation
+determines how many classical variables are being returned by the procedure
+and emits a \qsmins{Return} $n$ instruction, where $n$ is that count\footnote{This
+functionality is currently not available in \lqpl{}, but may be re-introduced at
+a later date.}.
+
+\subsubsection{Procedure body}
+The code for each statement in the list of statements is generated and used as the 
+body of the procedure.
+\begin{figure}[htbp]
+\centering
+\subfloat[Coin flip code]{
+\begin{singlespace}
+\lstinputlisting[style=linqpl]{examplecode/coinnolbls.qpl}
+\end{singlespace}}\qquad
+\subfloat[Generated  code]{
+\begin{singlespace}
+\lstinputlisting[style=linqpl]{examplecode/coin.generated}
+%VerbatimInput[numbers=left,numbersep=3pt]{examplecode/coin.generated}
+\end{singlespace}
+}
+\caption{\lqpl{} and QSM coin flip programs}\label{fig:cg:coin}
+\end{figure}
+As an example, see the coin flip code and the corresponding generated QSM code
+in \vref{fig:cg:coin}.
+
+\subsection{Code generation of statements}\label{subsec:cgstatements}
+Each statement in \lqpl{} generates code. The details of the
+code generation for each statement are given in the following pages, together
+with examples of actual generated code.
+\subsubsection{Assignment statements}
+The sub-section describes code generation for quantum assignment statements and
+assignments to variables on the classical stack. The classical assignment ($:=$)
+statement is described with the \inlqpl{use} statement below, as it is
+syntactic sugar for that statement.
+
+An assignment of the form $i = \langle expr \rangle$ is actually 
+broken down into 5 special cases. The first is when the left hand side is
+an in-scope variable that is on the classical stack. The other four all 
+deal with the case of a quantum variable, which is either introduced or
+overwritten. The four cases depend on the type of expression on the 
+right hand side. Each paragraph  below will identify which case is
+being considered and then describe the code generation for that case.
+
+\paragraph{Left hand side is a classical variable.} In this case, generate
+the code for the expression on the right hand side (which will be classical
+in nature). This leaves the expression value at the top of the classical
+stack. Now, emit a \qsmins{CPut} instruction which will copy that value
+into the location of the classical variable.
+
+\begin{center}
+\begin{tabular}{p{1in}p{.5in}p{1.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+i = 5;
+\end{lstlisting}
+\end{singlespace}}
+ & { \quad \quad \raisebox{.8em}{$\implies$}} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+     CLoad 5
+     CPut -2
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\paragraph{Right hand side is a classical expression.} First, generate the
+expression code, which leaves the value on the top of the classical stack.
+Then emit a \qsmins{QMove} instruction with the name of the left hand side.
+This will create a new classical node, which will be set to the value of the
+top of the classical stack.
+
+
+\begin{center}
+\begin{tabular}{p{1in}p{.5in}p{1.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+i = 5;
+\end{lstlisting}
+\end{singlespace}}
+ & { \quad \quad \raisebox{.8em}{$\implies$}} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+     CLoad 5
+     QMove i
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\paragraph{Right hand side is a constant \qubit.} Emit the 
+\qsmins{QLoad} instruction  with the \qubit{} value and the left hand side
+variable name.
+
+\begin{center}
+\begin{tabular}{p{1in}p{.4in}p{1.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+q = |1>;
+\end{lstlisting}
+\end{singlespace}}
+ & { \raisebox{-1.3em}{$\implies$}} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+     QLoad q |1>
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\paragraph{Right hand side is an expression call.}
+First, emit the code for the expression call. This will leave the
+result quantum value on the top of the quantum stack. If the
+formal name given by the procedure definition is the same as the
+left hand side name, do nothing else, as the variable is already
+created with the proper name. If not, emit a \qsmins{QName} instruction
+to rename the last formal parameter name to the left hand side name.
+
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{1.75in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+random :: (maxval :Int; 
+       rand :Int) = {...}
+...
+x = random(15);
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+CLoad 15
+QMove c18
+QName c18 maxval //In
+Call 0 random_fcdlbl0
+QName rand x //Out
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\paragraph{Right hand side is some other expression.}
+Generate the code for the expression. Check the name on the top of
+the stack. If it is the same as the left hand side name, do nothing else,
+otherwise emit a \qsmins{QName} instruction.
+
+
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{1.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+outqs = Cons(q, inqs');
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+    QCons c4 #Cons
+    QBind inqs'
+    QBind q
+    QName c4 outqs
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Measurement code generation}
+%FIXME
+% We *should* be able to get away with, yes, m0, m1 and mf, but no spurious
+% EndQC(now swap) statement.
+Measurement will always have two subordinate sets of statements,
+respectively for the \ket{0} and \ket{1} cases. 
+The generation for the actual statement will handle the requisite branching.
+
+The code generation first acquires three new labels, $m_0,m_1$ and $m_f$. It
+will then emit a \qsmins{Measure}~$m_0\ m_1$ statement, followed by 
+a \qsmins{Jump}~$m_f$. Recall from the transitions 
+in \vref{subsec:transitiondiagrams} that when the machine executes
+the \qsmins{Measure} instruction, \emph{it then generates and executes a}
+\qsmins{SwapD} instruction. The \qsmins{Jump} will be executed when 
+all branches of the \qubit{} have been executed.
+
+Then, for each of the two sub blocks ($i\in\{0,1\}$), 
+I emit a \qsmins{Discard} labelled with $m_i$. This is followed by the 
+code generated from the corresponding block of statements. Finally a 
+\qsmins{SwapD} is emitted.
+
+The last instruction generated is a \qsmins{NoOp} which is labelled
+with $m_f$.
+
+
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{1.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+measure q of 
+ |0> => {n1 = 0}
+ |1> => {n1 = 1};
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+   QPullup q
+   Measure l7 l8
+   Jump l9
+l7 QDiscard
+   CLoad 0
+   QMove n1
+   SwapD
+l8 QDiscard
+   CLoad 1
+   QMove n1
+   SwapD 
+l9 NoOp
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Case statement code generation}
+
+Case statement generation is conceptually similar to that of
+measurement. The  differences are primarily due to the variable 
+number of case clauses and the need to instantiate the variables of the 
+patterns on the case clauses.
+
+As before, the expression will have its code generated first.
+Then, the compiler will use a function to return a list of triples of
+a constructor, its generated label and the corresponding code for
+ each of the case clauses. 
+The code generation done by that function is detailed below.
+
+At this point, the code generation resembles measurement generation.
+The compiler generates a label $c_f$ and emits
+a \qsmins{Split} with a list of constructor / code label pairs which
+have been returned by 
+the case clause generation. This is followed by emitting
+a \qsmins{Jump}~$c_f$. 
+After the \qsmins{Jump} has been emitted, 
+the code generated by the case clause generation is emitted.
+
+The final instruction generated is a \qsmins{NoOp} which is labelled
+with $c_f$.
+
+\paragraph{Case clause code generation.} 
+The code generation for a case clause has a rather complex prologue which
+ensures the assignment of any bound variables to the patterns in the 
+clause.
+
+First, the code generator gets
+ a new label $c_l$ and then calculates the unbinding code as follows:
+For each \emph{don't care} pattern in the clause, code is 
+generated to delete the corresponding bound node. 
+This is done by first getting a new stack name $nm$, then
+adding the instructions \qsmins{QUnbind}~$nm$, \qsmins{Pullup}~$nm$ and
+\qsmins{QDelete}~$nm$. This accomplishes the unbinding of that node and
+removes it from the quantum stack. Note that \qsmins{QDelete} is used here
+to ensure that all subordinate nodes are removed and that no spurious data
+is added to the classical stack in the case of the don't care node being a
+classical value.
+
+For each  named pattern $p$, only the
+instruction \qsmins{QUnbind}~$p$ is added.
+
+The program now has a list of instructions that will accomplish unbinding
+of the variables. Note this list may be empty, e.g., the \inlqpl{Nil}
+constructor for \inlqpl{List}.
+
+The clause generation now creates its own return list. When the 
+unbinding list is not empty, these instructions are added first, with
+the first one of them being labelled with $c_l$.This is followed by
+a \qsmins{Discard} which discards the decomposed data node. 
+When the unbind list  is
+empty, the first instruction is the \qsmins{Discard} labelled by $c_l$.
+
+Then, the code generated by the statements in the case clause block are
+added to the list. Finally, a \qsmins{SwapD} is added at the end.
+
+The lists from all the case clauses are combined and this is returned to the
+case code generation.
+
+The example at the end of the use clause will illustrate both the case clause 
+and the use statement code generation.
+
+\subsubsection{Use and classical assign code generation}
+As described earlier in \vref{subsec:usestatements}, the classical assignment, 
+\inlqpl{v := exp} is syntactic sugar for a variable assignment followed by
+a \inlqpl{use} statement. The code generation for each is 
+handled the same way.
+
+There are two different cases to consider when generating this code.
+ The \inlqpl{use} statement
+may or may not have subordinate statements. In the case where it does not have
+any subordinate statements, (a classical assign or a
+ use with no block), the scope
+of the classical variables in the use 
+extends to the end of the enclosing block.
+
+The case  of a use with a subordinate block  is presented first.
+
+\paragraph{Use with subordinate block code generation.}
+While similar to the generation for the measure and case statements,
+there are differences. The two main differences are that there is only one
+subordinate body of statements and that  multiple variables may be
+used.
+
+In the case where there is a single use variable $nu$, the generator gets
+the body label $u_b$ and end label $u_e$. It then emits a 
+\qsmins{Pullup}~$nu$, a \qsmins{Use}~$u_b$ and a \qsmins{Jump}~$u_e$.
+This is followed by emitting
+ a \qsmins{Discard} labelled by $u_b$ and the code generated
+by the subordinate body of statements and a \qsmins{SwapD} instruction.
+This is terminated by a \qsmins{NoOp} labelled by $u_e$.
+
+When there are multiple names $n_1,n_2,\ldots,n_j$, the generator first
+recursively generates code assuming the same body of 
+statements but with a use statement that only has the variables 
+$n_2,\ldots,n_j$. This is then used as the body of code for
+a use statement with only one variable $n_1$, which is generated
+in the same manner as in the above paragraph.
+
+\paragraph{Use with no subordinate block.}
+To properly generate the code for this, including the \qsmins{SwapD} and
+end label, the generator uses
+ the concept of delayed code. The prologue (\qsmins{Use},
+\qsmins{Jump} and \qsmins{Discard}) and epilogue (\qsmins{SwapD}, \qsmins{NoOp})
+are created in the same manner as the use with the subordinate block.
+The prologue is emitted at the time of its generation. The epilogue, however,
+is added to a push-down stack of delayed code which is emitted at the
+end of a block.  See the description of the block code generation for more
+details on this. These items are illustrated in \vref{fig:gencasecode}.
+
+\begin{figure}[htbp]
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{2.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+case l of
+  Nil => {i = 0}
+  Cons (_, l1) => {
+    n= len(l1);
+    use n;
+    i = 1 + n;
+}
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+ Split (#Nil,l0) (#Cons,l1) 
+   Jump l4
+l0 QDiscard
+   CLoad 0
+   QMove i
+   SwapD
+l1 QUnbind c0
+   QUnbind l1
+   QDiscard
+   QPullup c0
+   QDiscard 
+   QPullup l1
+   QName l1 l
+   Call 0 len_fcdl0
+   QName i n
+   QPullup n
+   Use l2
+   Jump l3
+l2 QDiscard 
+   CLoad 1
+   CGet 0
+   CApply +
+   QMove i
+   SwapD //For Use
+l3 NoOp
+    SwapD //For Split
+l4 NoOp
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+\caption{QSM code generated for a case and use statement.}\label{fig:gencasecode}
+\end{figure}
+
+
+
+\subsubsection{Conditional statements}
+The \inlqpl{if ... else} statement allows the programmer to specify an
+unlimited number of classical expressions to control blocks of code. Typically,
+this is done within a \inlqpl{use} statement based upon the variables used.
+
+The statement code generation is done by first requesting a new label, $g_e$.
+This label is used in the next step,  generating the 
+code for all of the guard clauses. The generation is completed by emitting a 
+\qsmins{NoOp} instruction labelled by $g_e$.
+
+\paragraph{Guard clauses.}\label{para:guardclauses} 
+Each guard clause consists of an expression and
+list of statements. The code generator first emits
+ the code to evaluate the expression. 
+Then, a new label $g_l$ is requested and the instruction \qsmins{CondJump}~$g_l$
+is emitted. The subordinate statements are generated and emitted, 
+considering them as a 
+single block. The concluding instruction is a \qsmins{Jump}~$g_e$.
+
+At this point, if there are no more guard clauses, a \qsmins{NoOp} instruction,
+labelled by $g_l$ is emitted, otherwise the code generated by the remaining
+guard clauses is labelled by $g_l$ and emitted.
+%FIXME - check that this is right and what really happens - appears that
+% multiple branches would not be right...
+
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{2.5in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+if b == 0 => { 
+   theGcd = a;
+} else =>  { 
+   (theGcd) = 
+     gcd(b, a mod b);
+}
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+    CGet -2
+    CLoad 0
+    CApply ==
+    CondJump lbl2
+    CGet -1
+    QMove theGcd
+    Jump lbl1
+lbl2 CLoad True //else
+    CondJump lbl3
+    CGet -1
+    CGet -2
+    CApply %
+    QMove c0
+    CGet -2
+    QMove c1
+    QName c1 a
+    QName c0 b
+    Call 0 gcd_fcdlbl0
+    Jump lbl1
+lbl3 NoOp
+lbl1 NoOp
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+\subsubsection{Function calling and unitary transforms}\label{subsubsec:cgfunctioncalls}
+The code generation of these two statements is practically the same, with
+the only difference being that built in transformations have a special
+instruction in QSM, while executing a defined function requires
+the \qsmins{Call} instruction.
+
+In each case, the statement allows for input classical and quantum expressions
+and output quantum identifiers.
+
+The first step is the generation of the code for the input 
+classical expressions. These are generated in reverse order so that the 
+first parameter is on the top of the classical stack, the second is next
+and so forth. Then, the input quantum expressions are generated,
+with names of these expressions being saved. Note that it is possible to use
+expressions which are innately classical (e.g., constants and variables on
+the classical stack) as a quantum expression. The compiler will generate 
+the code needed to lift it to a quantum expression. See 
+\vref{subsec:cglifting} for the details.
+
+At this stage, the two
+types differ slightly. For the unitary transformation case, the
+code ``\qsmins{QApply}~$n$~!$t$'' is emitted, where $n$ is the number of 
+classical arguments and $t$ is the name of the built in transform. The
+exclamation mark is part of the QSM assembler syntax for transform names.
+In a defined function, renames of the input quantum expressions to
+the names of the input formal ids are generated, 
+by emitting a series of \qsmins{QName} 
+instructions. This is followed by emitting a \qsmins{Call}~$n$~$f$, 
+where $n$ is again the number of classical arguments and $f$ is the 
+internally generated name of the function.
+
+In both cases, the code checks the formal return parameter names against
+the list of return value names. For each one that is different, a 
+\qsmins{QName}~$frml$~$retnm$ is emitted.
+
+See the previous code list between the  \qsmins{CondJump lbl3} and
+\qsmins{lbl3 NoOp} for an example of this.
+
+
+
+\subsection{Code generation of expressions}\label{subsec:cgexpression}
+In the previous sub-section, a number of examples of code generation
+were given. These also illustrated most of the different aspects of 
+expression code generation. A few additional examples are given below.
+
+\subsubsection{Generation of constants}
+There are three possible types of constants, a Boolean, an integer or 
+a \qubit. Note that constructors are considered a different class of 
+expression.
+
+For both Boolean and integers, the compiler emits a \qsmins{CLoad}~$val$ 
+instruction. For a \qubit, it creates a new name $q$ and emits
+a \qsmins{QLoad}~$q$~$qbv$ instruction.
+
+Examples of these may be seen in the sub-sub-section on assignments.
+
+\subsubsection{Generation of classical arithmetic and Boolean expressions}
+In all cases, these types of expressions are calculated solely on 
+the classical stack. Whenever the generator encounters 
+ an expression of the form
+\[ e_1\ op\ e_2\]
+it first emits the code to generate $e_2$, followed by the code to generate
+$e_1$. This will leave the result of $e_1$ on top of the stack with $e_2$'s
+value right below it. 
+It then emits the instruction \qsmins{CApply}~$op$, which will
+apply the operation to the two top elements, replacing them with the
+result.
+
+The Boolean \emph{not} operation is the only operation of arity 1. 
+Code generation is done in the same manner. The generator emits code for the 
+expression first, followed by \qsmins{CApply}~$\neg$.
+
+ See  under Guard clauses, \vref{para:guardclauses} for
+examples.
+
+\subsubsection{Generation of variables}
+The semantic analysis of the program will split this into two cases; 
+classical variables and quantum variables. Each are handled differently.
+
+\paragraph{Classical variables.} These variables are on the classical
+stack at a specific offset. The use of them in an expression means 
+that they are to be \emph{copied} to the top of the classical stack.
+The code emitted is \qsmins{CGet}~$offset$, where $offset$ is the 
+offset of the variable in the classical stack.
+
+\paragraph{Quantum variables.} In this case, the variables are at a
+specific address of the quantum stack. These variables are not allowed
+to be copied, so the effect of this code is to rotate the quantum stack 
+until the desired variable is at the top. The other consideration
+is that these variables have a linearity implicitly defined in their
+usage. In the compiler, this is handled by the semantic analysis phase,
+but the code generation needs to also consider this. The compiler will
+add this variable to a \emph{delayed deletion} list. After completion
+of the statement with this variable expression, the variable will be 
+deleted unless:
+\begin{itemize}
+\item{} The statement has deleted it. (Measure of a \qubit, for example, will 
+directly generate the deletion code.)
+\item{} It is recreated as the result of an assignment, function call or
+transformation.
+\end{itemize}
+
+\subsubsection{Code generation for expression calls}
+Each expression call is generated in substantially the same way 
+as the code for
+a call statement as in \ref{subsubsec:cgfunctioncalls}. The only 
+difference is that the name of the final return variable will not be known
+and is therefore set to the same name as the name of the last output formal
+parameter. As an example, consider:
+
+\begin{center}
+\begin{tabular}{p{4in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+gcd::(a:Int, b:Int; theGcd:Int)= 
+{ use a,b in 
+  { if b == 0 => { theGcd   = a} 
+    else      => { (theGcd) = gcd(b, a mod b)}
+  }   
+}
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+Suppose this is defined in a program, and at some point, it is called
+as an expression in the program :
+\inlqpl{gcd(5,n)}. The code generated for this expression will
+then leave the integer node named \emph{theGcd} on the top
+of the quantum stack.
+
+\subsubsection{Generation of constructor expressions}
+These expressions are used to create new data type nodes, such as lists, trees
+etc. Constructors are similar to functions in that they expect 
+an expression list as input and will return a new quantum variable of a
+specific type. In \lqpl{} they are somewhat simpler as the input expressions
+are all expected to be quantum and there is a single input only. Just as in
+function calls, any classical expressions input to the constructor
+will be lifted to a quantum expression.
+
+The first step is for the compiler to emit code that will evaluate and lift
+any of the input expressions. The names of each of these expressions is 
+saved. Then, it creates a new name $d_c$ and emits the
+code \qsmins{QCons}~$d_c$~$\#cid$.
+
+The final stage is to emit a \qsmins{QBind}~$nm_{e_i}$ for each of the
+input expression, \emph{in reverse order} to what was input. The next  example 
+illustrates this.
+
+\begin{center}
+\begin{tabular}{p{2in}p{.3in}p{2.7in}}
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+lt = Cons(|0>, 
+       Cons(|0>,
+       iTZQList(2*n)));
+\end{lstlisting}
+\end{singlespace}}
+ & { \qquad \qquad \quad \quad \qquad \qquad $\implies$} &
+{\begin{singlespace}
+\begin{lstlisting}[style=linqpl]
+    QLoad c22 |0> 
+    QLoad c23 |0>
+    CLoad 2  //for the call
+    CGet -1
+    CApply *
+    QMove c24
+    QName c24 n
+    Call 0 iTZQList_fcdlbl5
+    QCons c25 #Cons
+    QBind nq 
+    QBind c23 //c23:nq
+    QCons c26 #Cons
+    QBind c25
+    QBind c22 //c22:c23:nq
+    QName c26 lt
+\end{lstlisting}
+\end{singlespace}}
+\end{tabular}
+\end{center}
+
+
+
+\subsection{Lifting of classical expressions to quantum expressions.}\label{subsec:cglifting}
+When the compiler requires a quantum expression, but has been given a
+classical one, it first generates the classical expression. This leaves
+the expression value on top of the classical stack. The compiler will now
+generate a new unique name $l_c$ and emit the instruction 
+\qsmins{QMove}~$l_c$. This now moves the value from the classical stack
+to the quantum stack.

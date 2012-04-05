@@ -1,0 +1,108 @@
+\section{Instructions}\label{subsec:repauxinstructions}
+Creation of reasonable set of instructions, balancing brevity and usefulness
+has been an interesting task. The list of instructions and brief
+descriptions of them are presented in \vref{tab:instructionlist}. The 
+transitions of these are presented formally 
+in \vref{sec:stackmachineoperation}.
+
+{\begin{singlespace}
+\tablecaption{QSM instruction list}\label{tab:instructionlist}
+\tablehead{\hline \textbf{Instruction}&\textbf{Arguments}&\textbf{Description}\\ \hline}
+\tabletail{\hline \multicolumn{3}{r}{\emph{Continued on next page}}\\}
+\tablelasttail{\hline}
+\begin{supertabular}{|p{.85in}|p{1.2in}|p{3.69in}|}
+\qsmins{QLoad}&\emph{nm:Name}, \emph{k::\qubit}&Creates \qubit{} named \emph{nm}
+ and sets the value to \ket{k}.\\ & & \\
+\qsmins{QMove}&\emph{nm:Name} &Creates an integer or Boolean named \emph{nm}
+ and sets its value to the top of the classical stack.\\ & & \\
+\qsmins{QCons}&\emph{nm:Name}, \emph{c::constructor} &Creates a data type element
+with the value \emph{c}. Note that if the constructor requires sub-elements,
+this will need to be followed by \qsmins{QBind} instructions.\\ & & \\
+\qsmins{QBind}&\emph{nm:Name}&Binds the node $[nm]$ to 
+the data element currently on 
+the top of the stack.\\
+\hline
+\qsmins{QDelete}&$\emptyset$&Deletes the top node and any
+ bound nodes in the quantum stack.\\ & & \\
+\qsmins{QDiscard}&$\emptyset$&Discards the node on top of
+ the quantum stack.\\ & & \\
+\qsmins{QUnbind}&\emph{nm:Name}&Unbinds the first bound node 
+from the data element at
+the top of the stack and assigns it as \emph{nm}.\\ 
+\hline
+\qsmins{QPullup}&\emph{nm::name}&Pulls the node named 
+\emph{nm} to the top of the 
+quantum stack.\\ & & \\
+\qsmins{QName}&\emph{nm1::name}, \emph{nm2::name}&Renames 
+the node named \emph{nm1} to 
+\emph{nm2}.\\
+\hline
+\qsmins{AddCtrl}&$\emptyset$&Marks  the start
+of a control point in the control stack. Any following \qsmins{QCtrl} 
+instructions will add the top node to this control point.\\ & & \\
+\qsmins{QCtrl}&$\emptyset$&Moves the top element of the quantum stack
+to the control stack. Recursively moves any bound nodes to the control
+stack when the element is 
+a constructed data type.\\ & & \\
+\qsmins{UnCtrl}&$\emptyset$&Moves all items in the  control stack at the
+current control point back to the quantum stack.\\ & & \\
+\qsmins{QApply}&\emph{i::Int},\emph{t:Transform}&Parametrizes the transform \emph{T} with
+the top \emph{i} elements of the classical stack and applies it to the
+ quantum stack.\\
+\hline
+\qsmins{Measure}&\emph{l0::Label}, \emph{l1::Label}&Measures 
+the \qubit{} on top of the
+quantum stack and sets up the dump for execution of
+ the code at \emph{l0} for the $00$ sub-branch and 
+the code at \emph{l1} for the $11$ sub-branch.\\ & & \\
+\qsmins{Split}&\emph{cls::[(constructor, Label)]}&Splits the data node at 
+the top of the
+quantum stack and sets up the dump  for execution of the code at 
+the $i$-th label for the $i$-th  sub-branch.\\ & & \\
+\qsmins{Use}&\emph{lbl::Label}&Uses the classical 
+(integer or Boolean) node on top of the
+quantum stack and sets up the dump to for execution of the code at 
+\emph{lbl} for each of the sub-branches.\\ & & \\
+\qsmins{SwapD}&$\emptyset$&Merges the current quantum stack
+ with the results stack of the
+dump, activates the next partial stack to be processed
+ and jumps to the code at the corresponding 
+label. When there are no more partial stacks, the instruction 
+merges the current
+stack with the the results stack and sets that as the new quantum stack.\\
+\hline
+\qsmins{Call}&\emph{i::Int}, \emph{ep::EntryPoint}&For the first element of the 
+infinite list of states, sets the values at the leaves of the 
+quantum stack to $0$. 
+For the remainder of the list, the instruction jumps to the 
+subroutine at \emph{ep}, saving
+the return location and classical stack on the dump. It copies the
+top \emph{i} elements of the classical stack for the subroutine.\\ & & \\
+\qsmins{Return}&\emph{i::Int}&Restores the location and classical stack from the
+dump, copies the top \emph{i} items of the current classical stack to the
+top of the restored classical stack.\\
+\hline
+\qsmins{Jump}&\emph{lbl::Label}&Jumps \emph{forward} to the label \emph{lbl}.\\ & & \\
+\qsmins{CondJump}&\emph{lbl::Label}&If the top of the classical stack is the
+value \terminalio{false}, jumps \emph{forward} to the label \emph{lbl}.\\ & & \\
+\qsmins{NoOp}&$\emptyset$&Does nothing.\\
+\hline
+\qsmins{CGet}&\emph{i::Int}&Copies the \emph{i}-th element of the 
+classical stack to the
+top of the classical stack. A negative value for \emph{i} indicates the
+instruction should copy the $|i|^{\text{th}}$ value from the
+bottom of the classical stack.\\ & & \\
+\qsmins{CPut}&\emph{i::Int}&Copies the top of the classical stack to the 
+\emph{i}-th element of the classical stack.  A negative value for 
+\emph{i} indicates the
+instruction should place the value into the $|i|^{\text{th}}$ location
+ from the
+bottom of the classical stack.\\ & & \\
+\qsmins{CPop}&$\emptyset$&Pops off (and discards) the top element of 
+the classical stack.\\ & & \\
+\qsmins{CLoad}&\emph{v::Either Int Bool}&Pushes \emph{v} onto the classical stack.\\ & & \\
+\qsmins{CApply}&\emph{op::Classical Op}&Applies \emph{op} to the top elements of
+the classical stack, replacing them with the result of the operation.\\
+\end{supertabular}
+\end{singlespace}
+}

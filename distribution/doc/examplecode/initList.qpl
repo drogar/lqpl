@@ -1,0 +1,15 @@
+#Import Prelude.qpl
+initialList::(inlist:List(a) ; outlist:List(a)) =
+{   case inlist of
+      Nil           => 
+             {outlist = Nil}
+      Cons(hd,tail) => 
+             {outlist = initial(hd, tail)}
+}
+initial::(head:a, inlist:List(a) ; 
+                 outlist:List(a))=
+{  init    = initialList(inlist);
+   outlist = Cons(head,init)
+}   
+
+  

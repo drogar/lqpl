@@ -1,0 +1,12 @@
+Name:                qc
+Version:             0.7
+Description:         Compiler for QPL
+License:             BSD
+License-file:        LICENSE
+Author:              Brett Giles
+Maintainer:          brett.giles@ucalgary.ca
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+Executable haq
+  Main-is:           Main.lhs
+  Build-Depends:     base,qpl-common,gtk2hs

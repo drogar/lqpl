@@ -1,0 +1,85 @@
+qdata Coin      = {Heads | Tails}
+qdata Progress = {Done | NotYet}
+qdata List a  = {Cons (a, List(a))  | Nil}
+
+toss ::( ; c:Coin) =
+{  q = |0>;
+   Had q;
+   measure q of 
+     |0> => {c = Heads}
+     |1> => {c = Tails}
+}
+
+elect::(lis:List(Int); leader :Int) = {
+  vote lis;
+  case lis of
+    Cons(hd, tl) => {
+       case tl of 
+          Cons(h,t) => {
+            leader = elect (Cons (hd, Cons(h,t)))
+          }
+          Nil => { leader = hd }
+       }
+    Nil => {leader = -1}
+}
+
+vote::(inlis:List(Int); outlis:List(Int)) = {
+  case toss() of
+    Heads => { // first remains in.
+      case inlis of 
+        Cons(hd,tl) => {
+          subvote( Heads, tl; restl, tltoss);
+          discard tltoss;
+          outlis = Cons(hd,restl); 
+         }
+        Nil => {outlis = Nil}
+    }
+    Tails => { // first depends on last throw
+      case inlis of 
+        Cons(hd,tl) => {
+          subvote(Tails, tl; restl, tltoss);
+          case tltoss of
+            Heads =>  {outlis = restl;
+                       discard hd}
+            Tails =>  {outlis = Cons(hd,restl)}
+         }
+        Nil => {outlis = Nil}
+    }
+}
+
+subvote::(leftToss : Coin, inslis:List(Int);
+          outslis :List(Int), bottomToss :Coin) ={
+case inslis of
+Nil  => { 
+   outslis = Nil;
+   bottomToss = leftToss;
+}
+Cons(hd,tl) => {
+  case toss() of 
+    Heads => {
+      subvote(Heads, tl ; outtl, bottomToss);
+      outslis = Cons(hd, outtl);
+      discard leftToss
+    }
+    Tails => {
+      subvote(Tails, tl ; outtl, bottomToss);
+      case leftToss of 
+            Heads =>  {outslis = outtl;
+                       discard hd}
+            Tails =>  {outslis = Cons(hd,outtl)}
+    }
+}
+}
+
+makeListOfLength::(i:Int | ; mlis : List(Int)) = {
+  if i == 0 => { mlis = Nil }
+  else => {
+     ident = i;
+     tl = makeListOfLength(i-1|);
+     mlis = Cons( ident, tl)
+  }
+}
+main::() =
+{  lis = makeListOfLength(2|);
+   ldr = elect(lis)
+}

@@ -1,0 +1,124 @@
+#Import Prelude.qpl
+
+//Convert a qubit list to the corresponding probabalistic int.
+qubitListToInt :: (nq :List(Qubit) ; n :Int)=
+{ case nq of
+    Nil => { n = 0}
+    Cons(q, nq') =>
+       { n' = qubitListToInt(nq');
+         measure q of
+            |0> => {n1 = 0}
+            |1> => {n1 = 1};
+         use n1, n';
+         n = n1 + (n' << 1)}
+}
+
+
+
+
+//Make a bitrep of an integer as qubits.
+intToQubitList::(n :Int | ; nq : List (Qubit))=
+{  if n == 0      => { nq = Nil }
+   (n rem 2) == 0 =>  //Even
+         { intToQubitList(n >> 1| ; nq');
+           nq = Cons(|0>, nq') }
+    else          =>  //Odd
+         { intToQubitList(n >>1 | ; nq');
+           nq = Cons(|1>, nq')  };
+}
+
+// Create a qubit list with bitrep of a number, but controled by ctl
+ctldintToQubitList::(n :Int |ctl:Qubit ;ctl:Qubit, nq : List (Qubit))=
+{  if n == 0      => { nq = Nil }
+   (n rem 2) == 0 =>  //Even
+         { ctldintToQubitList(n >> 1|ctl ; ctl,nq');
+           nq = Cons(|0>, nq') }
+    else          =>  //Odd
+         { ctldintToQubitList(n >>1 |ctl ;ctl, nq');
+           dig = |0>;
+           Not dig <= ctl;
+           nq = Cons(dig, nq')  };
+}
+
+
+normalize::(len :Int | bs:List(Qubit);
+            bs:List(Qubit))=
+{  if len == 0 => { discard bs; bs = Nil}
+   else => {
+      case bs of
+      Nil => {bs = Nil;
+              normalize((len - 1)| bs; bs');
+              bs=Cons(|0>,bs')}
+      Cons(b,btail) => {
+              normalize((len - 1)| btail; bs');
+              bs=Cons(b,bs')}}
+}
+
+addLists::(c0:Qubit, aDig :List(Qubit), bDig :List(Qubit);
+           c0:Qubit, aDig :List(Qubit), bDig :List(Qubit))=
+{
+    case aDig of
+      Nil => { aDig = Cons(|0>,Nil); //end of a's, use |0>'s
+               addLists c0 aDig bDig}
+      Cons(a, taila) =>
+         { case bDig of
+             Nil => { //Error
+                      aDig = Cons(a,taila);
+                      bDig = Nil}
+             Cons(b, tailb) =>
+              { c1 = |0>;
+                carry c0 a b c1;
+                case tailb of
+                  Nil =>
+                   {Not b <= a;
+                    sum c0 a b;
+                    tailb = Cons(c1,Nil)}
+                  Cons( t, tlb') =>
+                   { tailb = Cons(t,tlb');
+                     addLists c1 taila tailb;
+                     carryRev c0 a b c1;
+                     sum c0 a b;
+                     discard c1};
+                aDig = Cons(a,taila);
+                bDig = Cons(b,tailb);
+              }
+        }
+}
+
+
+
+subLists::(c0:Qubit, aDig:List(Qubit), bDig:List(Qubit);
+           c0:Qubit, aDig:List(Qubit), bDig:List(Qubit)) =
+// aDig = aDig, bDig = aDig - bDig
+//reverse add circuit - but also drive by bs, not as and we have to
+// add one extra "|0>" to the tail of the bs as it has to one more
+{
+  case aDig of
+      Nil => {  aDig = Cons(|0>,Nil); //end of a's, use |0>'s
+               subLists c0 aDig bDig}
+      Cons(a, taila) =>
+        { case bDig of
+             Nil => { //normalized - does not happen
+                      aDig = Cons(a,taila); bDig = Nil}
+             Cons(b, tailb) =>
+              { sumRev c0 a b;
+
+                case tailb of
+                  Nil =>
+                   {Not b <= a;
+                    c1 = |0>;
+                    carryRev c0 a b c1;
+                    tailb = Cons(c1,Nil)}
+                  Cons( t, tlb') =>
+                   { c1 = |0>;
+                     carry c0 a b c1;
+                     tailb = Cons(t,tlb');
+                     subLists c1 taila tailb;
+                     carryRev c0 a b c1;
+                     discard c1};
+                aDig = Cons(a,taila);
+                bDig = Cons(b,tailb);
+              }
+        }
+}
+

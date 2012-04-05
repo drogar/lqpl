@@ -1,0 +1,34 @@
+\section{Running the \lqpl{} compiler}\label{appsec:runningthecompiler}
+The compiler is run from the command line as:
+\begin{Verbatim}
+  lqpl <options> <infiles>
+\end{Verbatim}
+
+This will run the compiler on each of the input files \emph{infiles} which 
+are expected to have a suffix '\terminalio{.qpl}'. The compiled files will be 
+written with the suffix '\terminalio{.qpo}'.
+
+The options allowed for the compiler are:
+\begin{description}
+\item{\terminalio{-e, {-}{-}echo\_code}} Echo the input files to 
+ \terminalio{stderr}.
+\item{\terminalio{-s, {-}{-}syntactic}} This option will cause the 
+compiler to print a syntax parse tree on \terminalio{stderr}.
+\item{\terminalio{-r, {-}{-}ir\_print}} This compiler option
+will force the printing of the intermediate representation generated
+during the semantic analysis phase.
+\item{\terminalio{-h, {-}{-}help}} This prints a 
+help message describing these
+options on \terminalio{stderr}.
+\item{\terminalio{-V, -?, {-}{-}version}} This option prints the version information of the 
+compiler on \terminalio{stderr}.
+\item{\terminalio{-o[FILE], {-}{-}output[=FILE]}} This will
+cause the compiler to write the compiled QSM code to 
+\terminalio{FILE}.
+\item{\terminalio{-i[DIRLIST], {-}{-}includes=DIRLIST}} For this option,
+\terminalio{DIRLIST} is expected to be a list of semi-colon separated
+directories. The compiler will use the directory list when searching for
+any  import files.
+\end{description}
+
+

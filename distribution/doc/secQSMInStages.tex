@@ -1,0 +1,185 @@
+\section{Quantum stack machine in stages}\label{sec:qsmstate}
+The quantum stack machine is described in terms of four 
+progressively more elaborate stages. The first stage is
+the   \emph{basic QS-machine}, labelled \bms. This stage provides
+ facilities for the majority of operations
+of our machine, including classical operations, adding and discarding data
+ and classical control. The second stage, the \emph{labelled QS-machine},
+called \lbms{} adds the capability of applying 
+unitary transforms with the modifiers 
+\semins{Left, Right} and \semins{IdOnly} as introduced in 
+\cite{giles:msc2}. 
+The third stage, the  \emph{controlled QS-machine}, is labelled \cms{} and 
+provides the
+ability to do quantum control. The final stage,  the
+\emph{QS-machine}, is labelled \ms{} and 
+ adds the ability to call subroutines and do 
+recursion.
+
+These stages are ordered in terms of complexity and the
+operations definable on them. The ordering is:
+\[ \bms < \lbms < \cms < \ms\]
+When a function is defined on one of the lower stages, it is possible
+to lift it to a function on any of the higher stages. 
+
+%The details of the Haskell implementation of 
+%these stages and the lifting functions are given in 
+%\vref{subsec:QSM:machinedescription}.
+
+\subsection{Basic quantum stack machine}\label{subsec:basicmachinestate}
+
+The quantum stack machine transitions for the quantum instructions 
+ are defined  at this stage.
+The state of the basic quantum stack machine  has a code stream, $\cd$, a
+classical stack, $S$, a  quantum stack, $Q$, a dump, $D$ and a
+name supply, $N$.
+\begin{equation}
+(\cd,S,Q,D,N)\label{eq:minimalmachinestate} \\
+\end{equation}
+
+The code, $\cd$,  is a list of machine instructions. Transitions 
+effected by these instructions are detailed in 
+ \vref{subsec:transitiondiagrams}. English descriptions of the
+instructions and what they do are given in 
+ \vref{subsec:repauxinstructions}.
+
+
+The classical stack, $S$, is a standard stack whose items may
+be pushed or pulled onto the top of the stack and specific locations 
+may be accessed for both reading and updating.
+Classical arithmetic and Boolean operations are done with the top
+elements of the classical stack. Thus, an add will pop the
+top two elements of the classical stack and then push the result 
+ on to the top of the stack.
+
+
+The dump, $D$, is a holding area for intermediate results and returns. This
+is used when measuring quantum bits,  using probabilistic data, 
+splitting constructed data types and for calling subroutines. Further
+details are given in \vref{sec:representationofdump}.
+
+
+The name supply, $N$, is an integer that is incremented each
+time it is used. The name supply is used when binding nodes to 
+constructed data nodes. As they are bound, they are renamed to a unique name
+generated from the name supply. For further details on this, see 
+the transitions for \qsmins{QBind} at \vref{subsec:quantumstacknodecreation}.
+
+\subsection{Labelled quantum stack machine}\label{subsec:labelledmachinestate}
+
+The labelled QS-machine, designated as \lbms, extends  \bms{} by
+labelling the quantum stack, $L(Q)$. The quantum stack is labelled to 
+control the application of
+ unitary transformations, which allows quantum control to
+be implemented.
+
+The labelled QS-machines state is a tuple of five elements:
+\begin{equation}
+(\cd,S,L(Q),D,N)\label{eq:minimalmachinestateplus}
+\end{equation}
+
+The quantum stack is labelled by one of four labels: 
+\texttt{Full, Right, Left} or 
+\texttt{IdOnly}. These labels 
+describe how unitary transformations will be applied to  the quantum stack.
+
+When this labelling was introduced in \cite{giles:msc2}, it 
+was used as an instruction modifier rather than a labelling of the
+quantum stack. While the implementation of these modifiers  is
+changed, the effect on the quantum stack is the same. The quantum stack
+machine transitions for unitary transformations are detailed 
+in  \vref{subsec:trans:unitarytransformations}.
+
+
+\subsection{Controlled quantum stack machine}\label{subsec:controlledmachinestate}
+
+The controlled quantum stack machine, \cms, adds the capability to 
+ add or remove quantum control.
+This stage  adds a control stack, $C$, and changes the 
+ tuple of classical stack, labelled quantum stack, dump
+and name supply into a  list of tuples of these elements. In the 
+machine states, a list will be denoted by enclosing the list items
+or types in square brackets.
+
+The \cms{} state is a tuple of three elements, where the third element
+is a list of four-tuples:
+\begin{equation}
+(\cd, C , [(S,L(Q),D,N)]) \label{eq:controlmachinestate}
+\end{equation}
+
+
+
+The control stack is implemented using 
+a list of functions, each of which is defined on the third element of
+\cms. The functions in the control stack
+transform the list of  tuples $(S,L(Q),D,N)$.  Control points are
+added to the control stack 
+by placing an identity function at the top of
+the stack. Control points are removed by taking the top of the control stack
+and applying it to the current third element of \cms, resulting in
+a new list of tuples.
+Adding a \qubit{} to control will modify the function on top of the control
+stack
+and change the list of tuples of $(S,L(Q),D,N)$.
+
+\subsection{The complete quantum stack machine}\label{subsec:machinestate}
+
+The complete machine, \ms,  allows the  implementation of  subroutine calling.
+Its state consists of 
+an infinite list of \cms{} elements.
+
+\begin{equation}
+\Inflist{(\cd, C , [(S,L(Q),D,N)])} \label{eq:machinestate}
+\end{equation}
+
+
+Subroutine calling is done in an iterative manner. At the head of the
+infinite list, no subroutines are called, but result in divergence.
+Divergence is represented in the quantum stack machine by a quantum 
+stack with a trace of $0$.
+
+In the next position of the infinite list, a subroutine will be entered once.
+If the subroutine
+ is recursive or calls other subroutines, those calls will diverge. 
+The next position of the infinite list will call one more
+level. At the $n^{\mathrm{th}}$ position of the infinite list 
+subroutines are executed to a call depth of $n$.
+
+\subsection{The classical stack}\label{subsec:repauxclassicalstack}
+The machine uses and creates values
+on the classical stack when performing arithmetic operations. 
+This object is a standard 
+push-down stack with random access.
+Currently it accommodates both integer and Boolean values.
+
+\subsection{Representation of the dump}\label{sec:representationofdump}
+When processing various operations in the machine, such as  those
+labelled as quantum control (measure et. al.), the machine will 
+need to save intermediate stack states and results. To illustrate, when 
+processing a case deconstruction of a datatype,
+the machine saves all partial trees of the node on the dump together
+with an empty stack to accumulate
+ the results of processing these partial trees.
+After processing  each case the current quantum stack is
+merged with the result stack and the next partial stack is processed. 
+The classical stack is also saved in the
+dump element at
+the beginning of the process and reset to this saved value 
+when each case is evaluated.
+
+
+The dump is  a list of \emph{dump elements}. There are two distinct types
+of dump elements, one for quantum control instructions and one used for
+  call statements. The details of these elements may
+be found in the description of the quantum control transitions in
+ \vref{subsec:measurementandchoice} and 
+function calling in \vref{subsec:functioncalling}.
+
+\subsection{Name supply}
+The name supply is a read-only register of the machine. It 
+provides a unique name
+when binding nodes to a data node. The implementation 
+uses an integer value which
+is incremented for each of the variables in a selection pattern in
+a case statement. It is reset to zero at
+the start of each program.

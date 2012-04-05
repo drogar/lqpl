@@ -1,0 +1,10 @@
+#Import append.qpl
+#Import treeMaxDepth.qpl
+
+flattenInOrd :: (treeIn: TTree (a); listOut :List (a)) = 
+{ case treeIn of // `\label{line:flattenTree:caseflatten}`
+     Tip => { listOut = Nil}
+     Node(v) => {listOut=Cons(v, Nil)}
+     Br(tLeft, v, tRight) => 
+       { listOut = append(flattenInOrd(tLeft), Cons(v,flattenInOrd(tRight))); }
+}

@@ -1,0 +1,18 @@
+#Import inverseRotate.qpl
+#Import Utils.qpl
+
+inverseQft :: (inqs:List (Qubit); outqs:List (Qubit)) =
+{  reverse inqs;
+   inverseQft' inqs;
+   outqs = reverse(inqs);
+}
+
+inverseQft' :: (inqs:List (Qubit); outqs:List (Qubit)) =
+{ case inqs of
+    Nil => {outqs = Nil}
+    Cons(h,inqs') => 
+      {  inverseQft' inqs';
+         inverseRotate (2) h inqs';
+         Had h;
+         outqs = Cons(h,inqs') }
+}

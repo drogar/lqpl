@@ -1,0 +1,255 @@
+%\floatstyle{boxed}
+%\newfloat{QuantumCircuit}{htp}{qci}[chapter]
+%\floatname{QuantumCircuit}{Circuit}
+
+%\setlength{\textheight}{8.5in}
+%\setlength{\textwidth}{6.5in}
+%\setlength{\oddsidemargin}{-.3in}
+%\setlength{\evensidemargin}{-.3in}
+% macros for processing of the literate files
+
+% reference formats - 
+\labelformat{chapter}{chapter~#1}
+\labelformat{section}{section~#1}
+\labelformat{subsection}{sub-section~#1}
+\labelformat{subsubsection}{sub-sub-section~#1}
+\labelformat{equation}{equation~(#1)}
+\labelformat{table}{table~#1}
+\labelformat{figure}{figure~#1}
+
+
+\DefineVerbatimEnvironment%
+ {happycodefirst}{Verbatim}{gobble=2,numbers=left,firstnumber=1,fontsize=\footnotesize}
+\DefineVerbatimEnvironment%
+ {qplcodethesis}{Verbatim}{commandchars=\\\{\},numbers=left,firstnumber=1,fontsize=\footnotesize}
+\DefineVerbatimEnvironment%
+ {bnf}{Verbatim}{commandchars=\\\{\},fontfamily=courier,fontsize=\footnotesize}
+\DefineVerbatimEnvironment%
+ {happycodecont}{Verbatim}{gobble=2,numbers=left,firstnumber=last,fontsize=\footnotesize}
+% import and redefinition of general macros
+\input{/home/grads/gilesb/latexFiles/macros}
+\newcommand{\inflist}[1]{\ensuremath{\mathbb{IL}({#1})}}
+\renewcommand{\incsec}[1]{\subsection{#1}}
+% end of redefinitions.
+\newcommand{\incsubsec}[1]{\subsubsection{#1}}
+\newcommand{\incsubsubsec}[1]{\paragraph{#1}}
+\newcommand{\qplcode}[1]{\textbf{#1}}
+\DefineVerbatimEnvironment%
+{code}{Verbatim}{numbers=left,fontsize=\footnotesize,firstnumber=1}
+\newcommand{\CodeResetNumbers}{\RecustomVerbatimEnvironment%
+{code}{Verbatim}{numbers=left,fontsize=\footnotesize,firstnumber=1}}
+\newcommand{\CodeContinueNumbers}{\RecustomVerbatimEnvironment%
+{code}{Verbatim}{numbers=left,fontsize=\footnotesize,firstnumber=last}}
+\renewcommand{\C}{\ensuremath{\mathbb{C}}}
+
+\input{Qcircuit} % for quantum circuits
+
+\newcommand{\marginnote}[1]{\marginpar{\tiny #1}}
+
+
+
+\lstdefinestyle{hskl}{language=Haskell,
+%  basicstyle=\small, % swap this and the following line for prop. font
+  basicstyle=\small,
+%  keywordstyle=\underbar, % these look ugly
+  identifierstyle=\itshape,
+  commentstyle=\ttfamily,
+%  commentstyle=\underbar
+  flexiblecolumns=false,
+  basewidth={0.5em,0.45em},
+  morekeywords={Map},
+  % The following replace compound charcters like ->
+  % Something is missing - someone kindly sent me an email which 
+  % I've lost - but it's obvious how to add more.
+  literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1 
+	   {*}{{$\times$}}1 {=}{{$=$}}1
+	   {\%}{{$\%$}}1 {=}{{$=$}}1
+           {>}{{$>$}}1 {<}{{$<$}}1 
+           {>>}{{$\gg$}}2 {<<}{{$\ll$}}2
+           {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
+           {<=}{{$\leq$}}2
+           {<==}{{$\Longleftarrow$}}3 
+           {=/=}{{$\neq$}}3 
+} 
+\lstdefinestyle{origlinqpl}{language=lqpl,basicstyle=\footnotesize\ttfamily,%
+	numbers=left,%
+        numberstyle=\tiny,%
+        numbersep=6pt }
+\lstdefinestyle{linqpl}{language=lqpl,basicstyle=\footnotesize,%
+	numbers=left,%
+        numberstyle=\tiny,%
+        numbersep=6pt,%
+	escapechar=`,%
+  literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1%
+	   {*}{{$\times$}}1 {=}{{$=$}}1%
+	   {\%}{{$\%$}}1 {=}{{$=$}}1%
+           {>}{{$>$}}1 {<}{{$<$}}1%
+           {>>}{{$\gg$}}2 {<<}{{$\ll$}}2%
+           {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2%
+           {=<}{{$\leq$}}2%
+           {<=}{{$\Leftarrow$}}3%
+           {=/=}{{$\neq$}}3 }
+\lstdefinestyle{linqplnonum}{language=lqpl,basicstyle=\footnotesize,%
+	escapechar=`,%
+  literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1%
+	   {*}{{$\times$}}1 {=}{{$=$}}1%
+	   {\%}{{$\%$}}1 {=}{{$=$}}1%
+           {>}{{$>$}}1 {<}{{$<$}}1%
+           {>>}{{$\gg$}}2 {<<}{{$\ll$}}2%
+           {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2%
+           {=<}{{$\leq$}}2%
+           {<=}{{$\Leftarrow$}}3%
+           {=/=}{{$\neq$}}3 }
+\lstdefinestyle{inlinqpl}{language=lqpl,basicstyle=\footnotesize\ttfamily,%
+	escapechar=`}
+
+\newcommand{\lbl}{{\cdptr}}
+\newcommand{\cd}{\ensuremath{\mathcal{C}}}
+\newcommand{\lblcd}{{\cd}}
+%\newcommand{\lblcd}{\ensuremath{@\lbl}}
+\newcommand{\cdptr}{\ensuremath{\triangleright\cd}}
+\newcommand{\TODO}[1]{\begin{quote}TODO: \textbf{#1}\end{quote}}
+\newcommand{\lqpl}{L-QPL}
+\newcommand{\linearqpl}{Linear QPL}
+
+\newcommand{\inlqpl}[1]{\protect{\lstinline[style=linqpl]!#1!}}
+\newcommand{\inlhskl}[1]{\lstinline[style=hskl]!#1!}
+
+
+\newcommand{\Had}{\text{Hadamard}}
+\newcommand{\nottr}{\text{Not}}
+\newcommand{\Cnot}{controlled{-}\nottr}
+
+
+%\newcommand{\Z}{\ensuremath{Z}}
+
+\newcommand{\stacknode}[1]{\ensuremath{\mathrm{\texttt{#1}}}}
+\newcommand{\Int}{\stacknode{Int}}
+\newcommand{\Datatype}{\stacknode{datatype}}
+\newcommand{\Bool}{\stacknode{Bool}}
+
+\newcommand{\vc}[1]{\ensuremath{\mathbold{#1}}}
+\newcommand{\syntacticset}[1]{\ensuremath{\mathbold{#1}}}
+
+\newcommand{\n}{\syntacticset{N}}
+\newcommand{\T}{\syntacticset{T}}
+\newcommand{\Q}{\syntacticset{Q}}
+\newcommand{\R}{\syntacticset{R}}
+\newcommand{\Data}{\syntacticset{Data}}
+\newcommand{\Qloc}{\syntacticset{Qloc}}
+\newcommand{\Cloc}{\syntacticset{Cloc}}
+\newcommand{\Loc}{\syntacticset{Loc}}
+\newcommand{\Aexp}{\syntacticset{Aexp}}
+\newcommand{\Bexp}{\syntacticset{Bexp}}
+\newcommand{\Cexp}{\syntacticset{Cexp}}
+\newcommand{\Stm}{\syntacticset{Stm}}
+\newcommand{\eval}[3]{\ensuremath{\langle{#1},{#2}\rangle\to{#3}}}
+\newcommand{\true}{\ensuremath{\mathbold{true}}}
+\newcommand{\false}{\ensuremath{\mathbold{false}}}
+
+
+\newcommand{\qcons}[1]{\texttt{#1}}
+\newcommand{\qtype}[1]{\texttt{\bf{#1}}}
+\newcommand{\bms}{\specialcat{Bqsm}}
+\newcommand{\lbms}{\specialcat{lBqsm}}
+\newcommand{\cms}{\specialcat{Cqsm}}
+\newcommand{\ms}{\specialcat{QSM}}
+
+\newcommand{\qsp}{\ensuremath{\to}}
+
+\newcommand{\qsnodeij}[4]{\ensuremath{#1\{{#2}\qsp {#3}\}^{#4}}}
+
+\newcommand{\qsbit}[4]{\ensuremath{#1\{0\qsp {#2};1\qsp {#3}\}^{#4}}}
+
+
+
+\newcommand{\qsqubit}[6]{\ensuremath{#1\{00\qsp {#2};01\qsp {#3};10\qsp {#4};11\qsp {#5}\}^{#6}}}
+
+\newcommand{\qsbitUp}[4]{\ensuremath{#1\left\{\begin{array}{l}%
+                	0\qsp {#2}\\%
+                        1\qsp {#3}%
+                        \end{array}%
+	             \right\}^{#4}}}
+
+
+\newcommand{\qsqubitUp}[6]{\ensuremath{#1\left\{\begin{array}{ll}%
+                	00\qsp {#2};&01\qsp {#3}\\%
+                        10\qsp {#4};&11\qsp {#5}%
+                        \end{array}%
+	             \right\}^{#6}}}
+\newcommand{\qsqubitAllUp}[6]{\ensuremath{#1\left\{\begin{array}{l}%
+                	00\qsp {#2}\\%
+                        01\qsp {#3}\\%
+                        10\qsp {#4}\\%
+                        11\qsp {#5}%
+                        \end{array}%
+	             \right\}^{#6}}}
+
+\newcommand{\eentail}{\ensuremath{\Vdash\!\!\dashv}}
+\newcommand{\ientail}{\ensuremath{\Vdash}}
+\newcommand{\qentail}{\ensuremath{\vdash}}
+\newcommand{\qcontext}{\ensuremath{\, |\, }}
+\newcommand{\qcontrolled}[2]{\ensuremath{{#1}\Leftarrow{#2}}}
+\newcommand{\qvec}[1]{\ensuremath{\widetilde{#1}}}
+\newcommand{\qop}[2]{\ensuremath{{#1}\cdot{#2}}}
+\newcommand{\qopseq}[2]{\ensuremath{{#1};{#2}}}
+
+\newcommand{\qresultsind}[3]{\ensuremath{{#2}\overset{#1}{\leadsto}{#3}}}
+\newcommand{\qresultsin}[2]{\qresultsind{}{#1}{#2}}
+\newcommand{\qresultsindUp}[3]{\ensuremath{\begin{array}{l}%
+             {#2}\overset{#1}{\leadsto}\\%
+	\qquad{#3}}%
+          \end{array}}
+\newcommand{\qresultsinUp}[2]{\qresultsindUp{}{#1}{#2}}
+\newcommand{\stackthree}[3]{\ensuremath{\begin{array}{l}{#1}\\{#2}\\{#3}\end{array}}}
+\newcommand{\stackthreec}[3]{\ensuremath{\begin{array}{c}{#1}\\{#2}\\{#3}\end{array}}}
+\newcommand{\stacktwo}[2]{\ensuremath{\begin{array}{l}{#1}\\{#2}\end{array}}}
+\newcommand{\stacktwoc}[2]{\ensuremath{\begin{array}{c}{#1}\\{#2}\end{array}}}
+\newcommand{\qmeasnob}[3]{{\begin{singlespace}\stackthree{\text{meas }{#1}:}{\quad \ket{0}=>#2}{\quad \ket{1}=>#3}\end{singlespace}}}
+\newcommand{\qmeas}[3]{{\begin{singlespace}\left\{\stackthree{\text{meas }{#1}:}{\ \ket{0}=>#2}{\ \ket{1}=>#3}\right\}\end{singlespace}}}
+\newcommand{\qcompose}[2]{\ensuremath{{#1};{#2}}}
+\newcommand{\qtensor}[2]{\ensuremath{{#1};;{#2}}}
+\newcommand{\qins}{\ensuremath{\mathscr{I}}}
+\newcommand{\qmod}{\ensuremath{\mathscr{M}}}
+\newcommand{\qcase}[4]{{\begin{singlespace}\left\{\stacktwo{\text{case }{#1}:}{\{{\ {#2}=>{#3}}\}_{#4}}\right\}\end{singlespace}}}
+\newcommand{\quse}[2]{{\left\{\text{use }{#1}:\ \{{#2}\}\right\}}}
+\newcommand{\tcls}{\ensuremath{\tau_C}}
+\newcommand{\semins}[1]{\texttt{#1}}
+\newcommand{\qifelse}[6]{{\begin{singlespace}\left\{\stackthree{\text{if }{#1}=>{#2}}{{\{\ {#3}=>{#4}}\}_{#5}}{\text{else }=>{#6}}\right\}\end{singlespace}}}
+
+
+\newcommand{\qsmins}[1]{\texttt{#1}}
+
+\newcommand{\qsminsparm}[1]{\ensuremath{#1}}
+\newcommand{\qsminswithp}[2]{\texttt{#1}\qsminsparm{\ #2}}
+\newcommand{\dmpelemqc}{\text{\texttt{Qc}}}
+\newcommand{\qsmbool}[1]{\text{\texttt{#1}}}
+\newcommand{\qsmfalse}{\qsmbool{False}}
+\newcommand{\qsmtrue}{\qsmbool{True}}
+\newcommand{\qstackMod}[1]{\texttt{#1}}
+
+\newcommand{\terminalio}[1]{\texttt{#1}}
+
+\newcommand{\nowiregate}[1]{*{\xy *+<.6em>{#1};p\save+LU;+RU **\dir{-}\restore\save+RU;+RD **\dir{-}\restore\save+RD;+LD **\dir{-}\restore\POS+LD;+LU **\dir{-}\endxy}}
+
+\newcommand{\interpsem}[1]{\ensuremath{\left\llbracket {#1} \right\rrbracket}}
+
+\newcommand{\Inflist}{\text{Inflist}}
+
+\newcommand{\trspace}{\ensuremath{\qquad\qquad\qquad\qquad\qquad}}
+\newcommand{\trbigspace}{\ensuremath{\qquad\qquad\qquad\qquad\qquad\qquad\qquad}}
+
+\newcommand{\trspacefour}{\ensuremath{\qquad\qquad\qquad\qquad}}
+\newcommand{\trspacethree}{\ensuremath{\qquad\qquad\qquad}}
+\newcommand{\trspacetwo}{\ensuremath{\qquad\qquad}}
+
+\newcommand{\ilsep}{\ensuremath{\blacktriangleright}}
+
+\newcommand{\lqplmodifier}[1]{\text{\texttt{#1}}}
+\newcommand{\IdOnly}{\lqplmodifier{IdOnly}}
+\newcommand{\Left}{\lqplmodifier{Left}}
+\newcommand{\Right}{\lqplmodifier{Right}}
+
+\newcommand{\visctrl}[1]{\texttt{#1}}
+
+\newenvironment{singlespace}{}{}

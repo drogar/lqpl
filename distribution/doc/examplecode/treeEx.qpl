@@ -1,0 +1,6 @@
+qdata TTree a = {Tip | Br (TTree (a), a, TTree (a)) | Node (a)}
+
+main ::() =
+{
+  qbtree=Br(Tip, |1>, Br(Node(|0>),|1>,Node(|1>)))
+}

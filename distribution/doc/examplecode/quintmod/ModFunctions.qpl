@@ -1,0 +1,13 @@
+
+determineIntSize::(num:Int ;  numberOfBits:Int)=
+{
+ use num;
+ shiftAndFind(num, 0 | ; numberOfBits);
+}
+
+shiftAndFind::(num:Int, accum:Int | ; nBits:Int)=
+{
+   if num == 0 => { nBits = accum}
+   else =>{
+       shiftAndFind(num >>1, accum+1 |; nBits)}
+}
