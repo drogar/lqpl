@@ -78,6 +78,8 @@ The Parser Specification
       context "Parser" [
         context "terms" $
           map (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") term ) ) testTerms,
+        context "terms  as expressions " $
+         map (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") expr ) ) testTerms,
         context "Compound Expressions" $
           map (uncurry (checkParseToResult (\s -> "parses the expression '"++s++"'") expr ) ) testExpressions,
         context "Statements" $
@@ -98,6 +100,12 @@ The Parser Specification
               Right p  -> if p == parseResultOf "f"
                             then Test.Hspec.Core.Success
                             else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
+        it "should ignore leading and trailing blanks and produce the correct parse from an import" $
+            (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n \n") of
+              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Right p  -> if p == parseResultOf "f"
+                            then Test.Hspec.Core.Success
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
         it "should handle a complex program" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import g") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
@@ -110,6 +118,18 @@ The Parser Specification
               Right p  -> if p == ((parseResultOf "f") ++ [ProcDef $ Procedure "ap" [] [] [ParameterDefinition "d" BOOL ] [] [Skip]])
                             then Test.Hspec.Core.Success
                             else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
+        it "should parse multiple imports" $
+            (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n#Import g") of
+              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Right p  -> if p == ((parseResultOf "f") ++ (parseResultOf "g"))
+                            then Test.Hspec.Core.Success
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ show (parseResultOf "g") ++ ", but got "++ show p),
+        it "should handle nested multiple imports" $
+            (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import top") of
+              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Right p  -> if p == ((parseResultOf "top"))
+                            then Test.Hspec.Core.Success
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "top") ++ ", but got "++ show p),
         it "should only import a file once." $
           testParseResult (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f") (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f\n#Import f")
         ]
@@ -181,6 +201,8 @@ Parser test data
 
 
     testStatements = [("a = 3", Assignment "a" (Enum 3)),
+                      ("a=3", Assignment "a" (Enum 3)),
+                      ("a=|1>", Assignment "a" (EQubit One)),
                       ("case a of C => {} ",CaseSt (Evar "a") [(CaseClause "C" [],[])]),
                       ("case a of C(f) => {} ",CaseSt (Evar "a") [(CaseClause "C" ["f"],[])]),
                       ("case a of C => {skip} ",CaseSt (Evar "a") [(CaseClause "C" [],[Skip])]),
@@ -190,6 +212,8 @@ Parser test data
                       ("measure a of |0> => {zero} |1> => {skip}", Measure (Evar "a") [ZeroStack] [Skip]),
                       ("measure a of |1> => {zero} |0> => {skip}", Measure (Evar "a") [Skip] [ZeroStack]),
                       ("a := 3", UseAssign "a" (Enum 3)),
+                      ("Had q", Call "Had"  [] [Evar "q"] ["q"] []),
+                      ("Swap a b", Call "Swap"  [] [Evar "a", Evar "b"] ["a","b"] []),
                       ("use a,b in {skip}", Use ["a","b"] [Skip]),
                       ("use a", UseFromHere ["a"]),
                       ("(a,b) = sub()", Call "sub" [] [] ["a","b"] []),
@@ -201,7 +225,7 @@ Parser test data
                       ("sub",Call "sub" [] [] [] []),
                       ("sub a b c",Call "sub" [] [Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
                       ("sub() a b c",Call "sub" [] [Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
-                      ("sub(e,f) a b c",Call "sub" [] [Evar "e", Evar "f", Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
+                      ("sub(e,f) a b c",Call "sub" [Evar "e", Evar "f"] [Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
                       ("sub(|) a b c",Call "sub" [] [Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
                       ("sub(e,f|) a b c",Call "sub" [Evar "e", Evar "f"] [Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
                       ("sub(|g,h) a b c",Call "sub" [] [Evar "g", Evar "h", Evar "a", Evar "b", Evar "c"] ["a","b","c"] []),
@@ -265,7 +289,11 @@ Parser test data
                     ]
 
     testImportFiles = [("f", "qdata C = {H|T} \napp::(| ; )= {skip}", [DataDef (TypeDefinition "C" []) [Constructor "H" [], Constructor "T" []], ProcDef (Procedure "app" [] [] [] [] [Skip]) ]),
-      ("g", "qdata L a = {N|C(a,L(a))} \n \n app::(l:L(a),m:L(a) ;o:L(a) )= \n {case l of //`whatever `\n  N => {skip} \n  C(h,t) => \n {skip} /*more whatev*/\n}", [DataDef (TypeDefinition "L" ["a"]) [Constructor "N" [], Constructor "C" [TypeVariable "a", DeclaredType "L" [TypeVariable "a"]]], ProcDef (Procedure "app" [] [ParameterDefinition "l" (DeclaredType "L" [TypeVariable "a"]),ParameterDefinition "m" (DeclaredType "L" [TypeVariable "a"])] [ParameterDefinition "o" (DeclaredType "L" [TypeVariable "a"])] [] [CaseSt (Evar "l") [(CaseClause "N" [],[Skip]),(CaseClause "C" ["h","t"],[Skip])]]) ])]
+      ("g", "qdata L a = {N|C(a,L(a))} \n \n app::(l:L(a),m:L(a) ;o:L(a) )= \n {case l of //`whatever `\n  N => {skip} \n  C(h,t) => \n {skip} /*more whatev*/\n}", [DataDef (TypeDefinition "L" ["a"]) [Constructor "N" [], Constructor "C" [TypeVariable "a", DeclaredType "L" [TypeVariable "a"]]], ProcDef (Procedure "app" [] [ParameterDefinition "l" (DeclaredType "L" [TypeVariable "a"]),ParameterDefinition "m" (DeclaredType "L" [TypeVariable "a"])] [ParameterDefinition "o" (DeclaredType "L" [TypeVariable "a"])] [] [CaseSt (Evar "l") [(CaseClause "N" [],[Skip]),(CaseClause "C" ["h","t"],[Skip])]]) ]),
+      ("top", "#Import bot \n#Import next",[DataDef (TypeDefinition "C" []) [Constructor "H" [], Constructor "T" []], ProcDef (Procedure "app" [] [] [] [] [Skip]) ]),
+      ("bot", "qdata C={H|T}",[DataDef (TypeDefinition "C" []) [Constructor "H" [], Constructor "T" []]]),
+      ("next", "#Import bot\n \n app::(| ; )= {skip}",[ProcDef (Procedure "app" [] [] [] [] [Skip])])
+      ]
 
 
 \end{code}

@@ -33,14 +33,14 @@
     prog:: FileProvider -> Parser Program
     prog fp = do
       whiteSpace
-      p <- liftM concat (many1 $ (try dataDef >>= \a -> return [a]) <|> (procDef >>= \a -> return $ [ProcDef a]) <|> imp fp)
-      eof
-      return p
+      p <- (dataDef >>= \a -> return [a]) <|> (procDef >>= \a -> return $ [ProcDef a]) <|> imp fp
+      rest <- (try (whiteSpace >> eof >> return [])) <|> prog fp
+      return $ p ++ rest
 
     imp :: FileProvider -> Parser Program
     imp fp = try $ do
       whiteSpace
-      string "#Import"
+      string "#Import "
       whiteSpace
       impname <- validFileName
       currState <- getParserState
@@ -63,14 +63,8 @@
               newfilss <- liftM stateUser getParserState
               setParserState currState{stateUser = newfilss}
               --showInput "After state reset - remaining inp: "
-              remain <- getInput
-              case remain of
-                [] -> return rval
-                _  -> do
-                    --liftIO $ hPutStrLn stderr "parsing remaining input "
-                    rval2 <- prog fp
-                    --liftIO $ hPutStrLn stderr $ "remaining parse gave: "++(show rval2)
-                    return $ rval ++ rval2
+              return rval
+
 
     -- showInput :: String -> Parser ()
     -- showInput s = do
@@ -246,10 +240,13 @@
       return $ Call call cs (qs ++ map Evar ids) (idens ++ ids) os
 
     stmtBareCall = try $ do
-      subrout <- identifier
-      (cexps, qexps,ids)  <- option ([], [], []) callParameters
+      subrout <- try identifier <|> quantumGate
+      (cexps, qexps,ids)  <- option ([], [], []) $ (try callClassicalparms) <|> callParameters
       return $ Call subrout cexps qexps ids []
 
+    callClassicalparms = parens $ do
+      cs <- commaSep expr
+      return (cs,[],[])
 
     callParameters = parens $ do
       cexps <- option [] $  try $ do
@@ -320,6 +317,7 @@
         "|1>" -> return $ EQubit One
 
 
+
 \end{code}
 \subsection{Tokenizer}
 \begin{code}
@@ -348,8 +346,8 @@
                    , P.nestedComments = True
                    , P.identStart     = lower
                    , P.identLetter    = alphaNum <|> oneOf "_'"
-                   , P.opStart        = oneOf "|&=><:*-/+~^"
-                   , P.opLetter       = oneOf "|&=><:*-/+~^"
+                   , P.opStart        = oneOf ""
+                   , P.opLetter       = oneOf ""
                    , P.reservedOpNames= ops
                    , P.reservedNames  = reserveds
                    , P.caseSensitive  = True

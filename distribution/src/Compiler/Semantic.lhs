@@ -559,7 +559,7 @@ argCountOK   qs rs
                    lrs = length rs
               in  unless (lqs == lrs) $
                     fail $ (if lqs > lrs then "Too many " else "Too few ") ++
-                             "arguments supplied in function call"
+                             "arguments supplied in function call. Expected "++ show rs ++ " but got " ++ show qs
 
 
 argTypesOK :: (Qtype -> Bool) ->Map Identifier Qtype->[Qtype] ->

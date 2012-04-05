@@ -1,6 +1,6 @@
 #Import oracle.qpl
-#Import hadList.qpl
 #Import phase.qpl
+#Import hadList.qpl
 
 gtrans::(dataqbs:List(Qubit);
          dataqbs:List(Qubit))=
@@ -12,12 +12,12 @@ gtrans::(dataqbs:List(Qubit);
 
 
 doNGrovers::(n:Int | dataqbs:List(Qubit);
-                     dataqbs:List(Qubit))=	
+                     dataqbs:List(Qubit))=
 {  if (n==0) => {} //Done
    else      =>
       { gtrans dataqbs;
         doNGrovers(n-1) dataqbs}
 }
 
-  
-   
+
+
