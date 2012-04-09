@@ -48,8 +48,8 @@ Executable lqpl
   hs-source-dirs:    src
 --  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl
 Executable lqpl-compiler-server
-  Main-is:           Compiler/CompilerServer.lhs
-  Build-Depends:     containers,mtl,array,directory,filepath,base
+  Main-is:           Compiler/ServerMain.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,network,parsec
   extensions:        ExistentialQuantification
   hs-source-dirs:    src
 --  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl

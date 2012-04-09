@@ -1,27 +1,23 @@
 \subsection{Controlling the Quantum Machine}\label{section:quantummachineserver.machinecontrol}
 \begin{code}
  module QServer.Types (
-     HandlerFunc(..),
-     Logger(..),
+     module Utility.ServerTypes,
      QSData(..),
      QCommand(..)
      )
  where
- 
- import Data.IORef  
- 
+
+ import Data.IORef
+ import Utility.ServerTypes
+
  import Network.Socket
  import Network.BSD
- 
- import System.IO
- 
- type HandlerFunc a = IORef a -> Handle -> SockAddr -> String -> IO ()
 
- type Logger = SockAddr -> String -> IO ()
- 
- data QSData = QDQuantumStack | QDClassicalStack | QDDump 
+ import System.IO
+
+ data QSData = QDQuantumStack | QDClassicalStack | QDDump
   deriving (Eq,Show,Read)
- 
+
  data QCommand = QCLoad FilePath |
     QCStep Int |
     QCRun Int |

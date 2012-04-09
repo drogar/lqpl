@@ -1,4 +1,6 @@
 \begin{code}
+
+  {-#LANGUAGE FlexibleInstances#-}
   module Spec.SpecHelper (
     getTempFile,
     getTempFileWithContent,
@@ -14,6 +16,7 @@
   import System.FilePath
   import System.IO
   import Test.Hspec
+  import Test.Hspec.Core
 
   getTempFileName :: String -> IO(String)
   getTempFileName name = do
@@ -36,7 +39,11 @@
     removeFile fname
     return fname
 
-
+  instance Example (IO Bool) where
+    evaluateExample f =
+      do
+        r <- f
+        return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
 
   context = describe
 

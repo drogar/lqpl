@@ -9,21 +9,33 @@
 
     import Network.Socket
     import System.IO
+    import System.Cmd
 
     import Spec.SpecHelper
 
-    instance Example (IO Bool) where
-      evaluateExample f =
-        do
-          r <- f
-          return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
+    import Compiler.CompilerServer
+
+
 
     main = do
       hspecX compilerSpecs
 
     compilerSpecs = describe "compiler" [
+      context "startup" [
+        it ("runs on port "++default_port++" by default") $
+          do
+            putStrLn "Checking open port"
+            running <- checkOpenPort default_port
+            if running
+              then return True
+              else do
+                putStrLn "Not found - trying to start"
+                rc <- system "lqpl-compiler-server &"
+                putStrLn $ "Started - rc = "++ show rc
+                checkOpenPort default_port
+        ],
       context "compiler server" [
-        it "opens a port by default at port 7863"   $ checkOpenPort "7863",
+        it ("opens a port by default at port" ++ default_port)  $ checkOpenPort default_port,
         it "accepts the XML tag 'qplprogram' containing text"    $
           pending "This is input",
         it "sends back <sendmore>f</sendmore> when sent <qplprogram>#Import f</qplprogram>" $
@@ -41,11 +53,15 @@
     checkOpenPort :: String -> IO Bool
     checkOpenPort port =
       do
-        addrinfo <- getAddrInfo Nothing (Just "localhost") (Just port)
+        addrinfo <- getAddrInfo
+                    (Just (defaultHints {addrFlags = [AI_NUMERICSERV]})) (Just "localhost") (Just port)
         let serveraddr = head addrinfo
+        putStrLn $ "addressinfo="++show serveraddr
         sock <- socket (addrFamily serveraddr) Stream defaultProtocol
         bnd <- sIsBound sock
+        putStrLn $ "Socket bound? " ++ show bnd
         writable <- sIsWritable sock
+        putStrLn $ "Socket writable? " ++ show writable
         return $ bnd && writable
 
 \end{code}

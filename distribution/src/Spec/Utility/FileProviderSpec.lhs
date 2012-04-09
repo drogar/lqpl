@@ -14,11 +14,6 @@
     import Utility.FileProvider
     import Utility.FileProvider.FileSystem
 
-    instance Example (IO Bool) where
-      evaluateExample f =
-        do
-          r <- f
-          return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
 
     main = hspecX fileProviderSpecs
 
