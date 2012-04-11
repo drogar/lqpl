@@ -138,14 +138,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>47</integer>
+				<integer>31</integer>
 				<key>line</key>
-				<integer>93</integer>
+				<integer>103</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>10</integer>
+			<integer>42</integer>
 		</dict>
 		<key>src/Compiler/ParseLexMonad.lhs</key>
 		<dict>
@@ -224,9 +224,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>9</integer>
-				<key>line</key>
 				<integer>10</integer>
+				<key>line</key>
+				<integer>8</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -501,7 +501,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>9</integer>
+			<integer>90</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -545,33 +545,63 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>src/Spec/Compiler/CompilerServerConnectSpec.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>22</integer>
+				<key>line</key>
+				<integer>85</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>50</integer>
+		</dict>
 		<key>src/Spec/Compiler/CompilerServerSpec.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>40</integer>
+				<integer>53</integer>
 				<key>line</key>
-				<integer>58</integer>
+				<integer>40</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>-1</integer>
 		</dict>
 		<key>src/Spec/Compiler/QPLParserSpec.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>96</integer>
+				<integer>44</integer>
 				<key>line</key>
-				<integer>54</integer>
+				<integer>94</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>64</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>24</integer>
+				<key>line</key>
+				<integer>94</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>44</integer>
+				<key>line</key>
+				<integer>94</integer>
+			</dict>
 		</dict>
 		<key>src/Spec/SpecHelper.lhs</key>
 		<dict>
@@ -580,7 +610,7 @@
 				<key>column</key>
 				<integer>30</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>47</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -629,7 +659,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>22</integer>
+			<integer>0</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -767,14 +797,14 @@
 		<string>lqpl.cabal</string>
 		<string>src/Compiler/Qtypes.lhs</string>
 		<string>src/Compiler/CompilerServer.lhs</string>
-		<string>src/Compiler/ServerMain.lhs</string>
-		<string>src/Tests/RunTests.lhs</string>
 		<string>src/Tests/QServer/TestParseServerCommand.lhs</string>
 		<string>src/Tests/QServer/TestStackToXML.lhs</string>
+		<string>src/Compiler/ServerMain.lhs</string>
+		<string>src/Tests/RunTests.lhs</string>
 		<string>src/QServer/Types.lhs</string>
 		<string>src/Utility/ServerTypes.lhs</string>
-		<string>src/Tests/Utility/TestExtras.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerSpec.lhs</string>
+		<string>src/Spec/Compiler/CompilerServerConnectSpec.lhs</string>
 		<string>src/QServer/QServer.lhs</string>
 		<string>src/Spec/SpecHelper.lhs</string>
 		<string>src/Spec/Utility/FileProviderSpec.lhs</string>

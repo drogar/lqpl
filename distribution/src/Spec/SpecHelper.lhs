@@ -45,6 +45,11 @@
         r <- f
         return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
 
+  instance Example (IO Test.Hspec.Core.Result) where
+    evaluateExample f =
+      do
+        r <- f
+        return r
   context = describe
 
 \end{code}

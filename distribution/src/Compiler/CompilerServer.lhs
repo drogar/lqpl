@@ -31,9 +31,10 @@
       do -- Look up the port.  Either raises an exception or returns
          -- a nonempty list.
          addrinfos <- getAddrInfo
-                      (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                      Nothing (Just port)
+                      (Just (defaultHints {addrFlags = []}))
+                      (Just "localhost") (Just port)
          let serveraddr = head addrinfos
+         putStrLn $ show serveraddr
 
          -- Create a socket
          sock <- socket (addrFamily serveraddr) Network.Socket.Stream defaultProtocol
@@ -93,6 +94,17 @@
   commandHandler machineStateRef shandle addr msg = do
     putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
 
+  compilerService :: IORef (String) -> String -> IO CompilerServiceStatus
+  compilerService ior "<qplprogram>" = do
+    writeIORef ior ""
+    return CS_READY
+  compilerService ior "</qplprogram>" = do
+    return CS_GOT_PROGRAM
+  compilerService ior a = do
+    modifyIORef ior (++(a++"\n"))
+    return CS_READY
+  data CompilerServiceStatus = CS_READY | CS_GOT_PROGRAM
+    deriving (Show,Eq)
 --    do
 --      case (getCommand msg) o
 --        Right (QCSimulate depth) ->
@@ -102,10 +114,3 @@
 
 
 \end{code}
-do args <- getArgs
-    (o, spltfps) <- compilerOpts args
-          putStrLn (showVersion version)
-    let tellsM = map (doCompile False o) spltfps
-    tells <- mapM  execWriterT tellsM
-          mapM_ putStrLn (concat tells)
-
