@@ -26,7 +26,13 @@ Test-Suite test-all
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/Compiler/CompilerServerSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers
+   hs-source-dirs:   src
+   extensions:       FlexibleInstances
+Test-Suite compiler-server-connection-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerConnectSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers
    hs-source-dirs:   src
    extensions:       FlexibleInstances
 Test-Suite lqpl-parser-spec
@@ -49,7 +55,7 @@ Executable lqpl
 --  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl
 Executable lqpl-compiler-server
   Main-is:           Compiler/ServerMain.lhs
-  Build-Depends:     containers,mtl,array,directory,filepath,base,network,parsec
+  Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec
   extensions:        ExistentialQuantification
   hs-source-dirs:    src
 --  Other-Modules:     Compiler.Qparser,Compiler.Qlexer, Paths_lqpl

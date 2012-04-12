@@ -20,7 +20,7 @@
     parseQPL fp dir file s ss = do
       errOrProgram <- runParserT (prog fp) (dir:ss) file s
       case  errOrProgram of
-        Left e     -> error $ show e
+        Left e     -> ioError $ userError $ show e
         Right p    -> return p
 
 

@@ -110,9 +110,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>40</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>50</integer>
+				<integer>37</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -138,14 +138,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>31</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>103</integer>
+				<integer>127</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>42</integer>
+			<integer>110</integer>
 		</dict>
 		<key>src/Compiler/ParseLexMonad.lhs</key>
 		<dict>
@@ -189,7 +189,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>160</integer>
+			<integer>73</integer>
 		</dict>
 		<key>src/Compiler/SemTypes.lhs</key>
 		<dict>
@@ -217,7 +217,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>704</integer>
+			<integer>40</integer>
 		</dict>
 		<key>src/Compiler/ServerMain.lhs</key>
 		<dict>
@@ -550,58 +550,88 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>14</integer>
 				<key>line</key>
-				<integer>85</integer>
+				<integer>67</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>50</integer>
+			<integer>14</integer>
 		</dict>
 		<key>src/Spec/Compiler/CompilerServerSpec.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>53</integer>
+				<integer>79</integer>
 				<key>line</key>
-				<integer>40</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>-1</integer>
-		</dict>
-		<key>src/Spec/Compiler/QPLParserSpec.lhs</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>44</integer>
-				<key>line</key>
-				<integer>94</integer>
+				<integer>42</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>64</integer>
+			<integer>8</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>24</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>94</integer>
+				<integer>42</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>44</integer>
+				<integer>79</integer>
 				<key>line</key>
-				<integer>94</integer>
+				<integer>42</integer>
 			</dict>
+		</dict>
+		<key>src/Spec/Compiler/CompilerSpecHelper.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>7</integer>
+				<key>line</key>
+				<integer>34</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>16</integer>
+				<key>line</key>
+				<integer>21</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>7</integer>
+				<key>line</key>
+				<integer>34</integer>
+			</dict>
+		</dict>
+		<key>src/Spec/Compiler/QPLParserSpec.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>299</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>src/Spec/SpecHelper.lhs</key>
 		<dict>
@@ -795,20 +825,16 @@
 	<key>openDocuments</key>
 	<array>
 		<string>lqpl.cabal</string>
+		<string>src/Compiler/Semantic.lhs</string>
 		<string>src/Compiler/Qtypes.lhs</string>
 		<string>src/Compiler/CompilerServer.lhs</string>
-		<string>src/Tests/QServer/TestParseServerCommand.lhs</string>
-		<string>src/Tests/QServer/TestStackToXML.lhs</string>
-		<string>src/Compiler/ServerMain.lhs</string>
-		<string>src/Tests/RunTests.lhs</string>
-		<string>src/QServer/Types.lhs</string>
-		<string>src/Utility/ServerTypes.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerSpec.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerConnectSpec.lhs</string>
 		<string>src/QServer/QServer.lhs</string>
 		<string>src/Spec/SpecHelper.lhs</string>
 		<string>src/Spec/Utility/FileProviderSpec.lhs</string>
 		<string>src/Spec/Compiler/QPLParserSpec.lhs</string>
+		<string>src/Spec/Compiler/CompilerSpecHelper.lhs</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>

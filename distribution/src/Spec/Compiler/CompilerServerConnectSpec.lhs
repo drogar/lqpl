@@ -48,15 +48,30 @@
               hPutStrLn hndl "</qplprogram>"
               hFlush hndl
               res <- hGetLine hndl
-              return $ res == "OK"),
-        it "sends back <sendmore>f</sendmore> when sent <qplprogram>#Import f</qplprogram>" $
-          pending "requests data for imports",
-        it "accepts the XML tag 'sendresult' with no content"   $
-          pending "Command to send qpo code back",
-        it "writes the qpo code to the socket after getting the 'sendresult' tag"    $
-          pending "May test writing separate from socket",
-        it "compiles a qpl program enclosed in the xml tag <qplprogram>"   $
-          pending "Compile done and saved in memory"
+              case res of
+                "CS_READY"  -> return Test.Hspec.Core.Success
+                _     -> return $ Test.Hspec.Core.Fail $ "invalid back status: " ++ res),
+        it "sends back a valid assembler code when sent a qpl program" $
+          (do
+              hndl <- connectToServer default_port
+              hPutStrLn hndl "<qplprogram>"
+              hFlush hndl
+              hGetLine hndl
+              hPutStrLn hndl "qdata C = {H|T}"
+              hFlush hndl
+              hGetLine hndl
+              hPutStrLn hndl "app::(| ; )= {skip}"
+              hFlush hndl
+              hGetLine hndl
+              hPutStrLn hndl "</qplprogram>"
+              hFlush hndl
+              hGetLine hndl
+              hPutStrLn hndl "<sendresult />"
+              hFlush hndl
+              res <- hGetLine hndl
+              case res of
+                "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
+                _                       -> return $ Test.Hspec.Core.Fail $ "invalid program: " ++ res)
         ]
       ]
 
@@ -106,7 +121,7 @@
       --bnd <- sIsBound sock
       --putStrLn $ "Socket bound? " ++ show bnd
       writable <- sIsWritable sock
-      putStrLn $ "Socket writable? " ++ show writable
+      --putStrLn $ "Socket writable? " ++ show writable
       if (writable)
         then return (Just sock)
         else checkAddresses rest

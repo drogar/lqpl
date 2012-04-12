@@ -5,19 +5,28 @@
   module Compiler.CompilerServer where
 
 
-
+  import Compiler.QPLParser
+  import Compiler.Qtypes
+  import Compiler.Semantic
+  import Compiler.GenCode
 
   import Control.Concurrent
   import Control.Concurrent.MVar
 
+  import Control.Monad.Writer as W
+
   import Data.IORef
+  import Data.List
 
   import Network.Socket
+  import Network.Socket as NS
   import Network.BSD
 
   import System.IO
+  import System.IO.Error
 
   import Utility.ServerTypes
+  import Utility.FileProvider
 
   import Utility.Extras(filterNonPrintable)
 
@@ -44,7 +53,7 @@
 
          -- Start listening for connection requests.  Maximum queue size
          -- of 2 connection requests waiting to be accepted.
-         listen sock 2
+         NS.listen sock 2
 
          -- Create a lock to use for synchronizing access to the handler
          lock <- newMVar ()
@@ -91,26 +100,80 @@
 
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (String)
-  commandHandler machineStateRef shandle addr msg = do
+  commandHandler prog shandle addr msg = do
     putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
+    css <- compilerService (fp shandle) prog msg
+    case css of
+      CS_COMPILED_SUCCESS l   -> hPutStrLn shandle l
+      CS_COMPILED_FAIL l      -> hPutStrLn shandle l
+      _                       -> hPutStrLn shandle $ show css
 
-  compilerService :: IORef (String) -> String -> IO CompilerServiceStatus
-  compilerService ior "<qplprogram>" = do
+  fp :: Handle -> FileProvider
+  fp h = FileProvider {
+    fpDoesFileExist = \ f -> do
+        hPutStrLn h $ "<exists>"++f++"</exists>"
+        hFlush h
+        res <- hGetLine h
+        case res of
+          "<True>"  -> return True
+          _  -> return False,
+      fpReadFile = \f -> do
+        hPutStrLn h $ "<read>"++f++"</read>"
+        hFlush h
+        hGetLine h,
+      emptyProvider = "",
+      currentFPDir = "",
+      fpcombine = (++),
+      getFirstFileInSearchPath = \p f -> do
+        hPutStrLn h $ "<getFirst>"++f++"</getFirst>"
+        hFlush h
+        fname <- hGetLine h
+        fdata <- hGetLinesDelimitedBy h "<file>" "</file>"
+        return $ Just (fname,fdata)
+      }
+
+  hGetLinesDelimitedBy :: Handle -> String -> String -> IO String
+  hGetLinesDelimitedBy h start end = do
+    l <- hGetLine h
+    if l == start
+      then do
+        ls <- hAccumLinesEndedBy h end []
+        return $ concat $ intersperse "\n" ls
+      else hGetLinesDelimitedBy h start end
+
+  hAccumLinesEndedBy :: Handle -> String -> [String] -> IO [String]
+  hAccumLinesEndedBy h end accum = do
+    l <- hGetLine h
+    if l == end
+      then return $ reverse accum
+      else hAccumLinesEndedBy h end (l:accum)
+
+
+  compilerService :: FileProvider -> IORef (String) -> String -> IO CompilerServiceStatus
+  compilerService _ ior "<qplprogram>" = do
     writeIORef ior ""
     return CS_READY
-  compilerService ior "</qplprogram>" = do
+  compilerService _ ior "</qplprogram>" = do
     return CS_GOT_PROGRAM
-  compilerService ior a = do
+  compilerService fp ior "<sendresult />" = do
+    p <- readIORef ior
+    errOrTxt <- try $ doCompile fp p
+    case errOrTxt of
+      Left e    -> return $ CS_COMPILED_FAIL $ ioeGetErrorString e
+      Right txt -> return $ CS_COMPILED_SUCCESS $ concat $ intersperse "\n" txt
+  compilerService _ ior a = do
     modifyIORef ior (++(a++"\n"))
     return CS_READY
-  data CompilerServiceStatus = CS_READY | CS_GOT_PROGRAM
-    deriving (Show,Eq)
---    do
---      case (getCommand msg) o
---        Right (QCSimulate depth) ->
---          simulate depth machineStateRef shandle
---        Left x -> putStrLn $ "From " ++ show addr ++ ": unrecognized: " ++ msg ++ " -- " ++ x
 
+  doCompile :: FileProvider -> String -> IO [String]
+  doCompile fp p = do
+    asyn <- parseQPL fp "" "" p []
+    (ir,_) <- W.runWriterT $ W.mapWriterT (removeState 0) (makeIr asyn)
+    ioGenCode ir 0
+
+  data CompilerServiceStatus =  CS_READY | CS_GOT_PROGRAM | CS_COMPILED_SUCCESS String|
+                                CS_COMPILED_FAIL String | CS_MESSAGE String
+    deriving (Show,Eq)
 
 
 \end{code}
