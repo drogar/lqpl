@@ -1,0 +1,6 @@
+Compiler: Version=0.8.4
+app_fcdlbl0   Start
+EnScope
+DeScope
+    Return 0
+   EndProc

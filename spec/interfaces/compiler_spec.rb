@@ -40,14 +40,36 @@ describe Compiler do
         it "connects to the lqpl-compiler process when created" do
           @cmp.should be_connected
         end
-        it "generates an error if there is no compiler process"
       end
     end
-    context "interfaces with the Compiler process" do
-      it "reads data from a QPL file when given a filename"
-      it "sends QPL code to the compiler process"
-      it "receives QPO code from the compiler process"
-      it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code"
+    context "interfaces with the lqpl-compiler-server" do
+      before :each do
+          @cmp = Compiler.new
+          @cmp.connect
+        end
+      it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do
+        fname = "#{Dir.pwd}/spec/data/min.qpl"
+        qpocode = @cmp.compile fname
+        qpocode.should =~ /app_fcdlbl.*/
+      end
+      it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code" do
+        fname = "#{Dir.pwd}/spec/data/min.qpl"
+        begin
+          File.delete("#{Dir.pwd}/spec/data/min.qpo")
+        rescue
+        end
+        @cmp.compile fname
+        @cmp.write_qpo_file
+        File.exist?("#{Dir.pwd}/spec/data/min.qpo").should be_true
+        File.open("#{Dir.pwd}/spec/data/min.reference.qpo") do |ref_compile|
+          ref_data = ref_compile.read
+          File.open("#{Dir.pwd}/spec/data/min.reference.qpo") do |new_compile|
+            new_data = new_compile.read
+            new_data.should == ref_data
+          end
+        end
+      end
+
     end
   end
 end

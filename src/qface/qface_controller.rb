@@ -21,7 +21,7 @@ class QfaceController < ApplicationController
       of.puts "Something"
       of.close
     else
-      puts "Did not not not do approve."
+      puts "Did not do approve."
     end
     update_view
   end
