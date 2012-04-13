@@ -104,8 +104,14 @@
     putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService (fp shandle) prog msg
     case css of
-      CS_COMPILED_SUCCESS l   -> hPutStrLn shandle l
-      CS_COMPILED_FAIL l      -> hPutStrLn shandle l
+      CS_COMPILED_SUCCESS l   -> do
+        hPutStrLn shandle "<qpo>"
+        hPutStrLn shandle l
+        hPutStrLn shandle "</qpo>"
+      CS_COMPILED_FAIL l      -> do
+        hPutStrLn shandle "<compilefail>"
+        hPutStrLn shandle l
+        hPutStrLn shandle "</compilefail>"
       _                       -> hPutStrLn shandle $ show css
 
   fp :: Handle -> FileProvider

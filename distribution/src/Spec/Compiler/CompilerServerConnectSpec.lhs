@@ -68,6 +68,7 @@
               hGetLine hndl
               hPutStrLn hndl "<sendresult />"
               hFlush hndl
+              hGetLine hndl
               res <- hGetLine hndl
               case res of
                 "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
