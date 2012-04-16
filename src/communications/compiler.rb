@@ -39,7 +39,6 @@ class Compiler
       @connection.readline
       @connection.puts "<sendresult />"
       @qpo_code = get_qpo_program
-      p @qpo_code
     end
     @qpo_code
   end
@@ -60,10 +59,18 @@ class Compiler
   end
 
   def write_qpo_file
+    connect if !connected?
+    @connection.puts "<sendversion />"
+    version = @connection.readline
+    version_line = "Compiler: Version="+makeVersionNumber(version)
     File.open(File.dirname(@fname)+File::SEPARATOR+File.basename(@fname,".qpl")+".qpo","w+") do |f|
-      puts f.path
+      f.puts version_line
       f.puts @qpo_code
     end
   end
 
+  def makeVersionNumber(vstring)
+    nums = vstring[/(\d+,)+\d+/].gsub(/,/,'.')
+    return nums
+  end
 end

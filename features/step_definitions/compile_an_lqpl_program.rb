@@ -31,7 +31,7 @@ And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, di
   java_import org.netbeans.jemmy.operators.JButtonOperator
   java_import javax.swing.JButton
   fc = JFileChooserOperator.new
-  fc.get_dialog_title.should == "Open LQPL File for Assembling"
+  fc.get_dialog_title.should == "Open LQPL File for Compiling"
 
   fc.get_current_directory.get_absolute_path.should ==  Dir.getwd
   fc.is_file_selection_enabled.should == true
@@ -52,33 +52,23 @@ And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, di
 
 
   sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-
+  p sel_file
   fc.set_selected_file sel_file
 
   fc.approve_selection
 
 
-
-
-
-  #exact_string_comp = Operator::DefaultStringComparator.new(true,true)
-  #puts fc
-  #puts fc.get_file_list.get_model.get_size
-  #shown = fc.get_files
-
-  #shown.each {|f| puts f.get_name}
-  #dirs.each { |d|
-  #fc.enter_sub_dir(dirs[0], exact_string_comp)
-  #}
-  #fc.click_on_file(file, exact_string_comp)
-  #fc.approve
-
 end
 
 
-
-
-Then /^"([^"]*)" should be created in "([^"]*)"$/ do |outfile, outdir|
+Then /^"([^"]*)" should be created in "([^"]*)" and be equal to "([^"]*)"$/ do |outfile, outdir,reference|
   realdir = Dir.getwd + "/" +outdir
-  File.exist?(realdir + outfile).should be_true
+  File.exist?(realdir + "/" + outfile).should be_true
+  File.open(realdir + "/" + outfile) do |newone|
+    result = newone.read
+    File.open(realdir + "/" + reference) do |ref|
+      refvalue = ref.read
+      result.should == refvalue
+    end
+  end
 end

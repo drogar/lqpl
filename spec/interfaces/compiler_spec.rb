@@ -1,6 +1,17 @@
 require 'spec/spec_helper'
 
 describe Compiler do
+
+  context "helper functions" do
+    context "makeVersionNumber" do
+      it "takes the input CS_VERSION [0,8,4] [] and returns 0.8.4" do
+        cmp = Compiler.new
+        res = cmp.makeVersionNumber("CS_VERSION [0,8,4] []")
+        res.should == "0.8.4"
+      end
+    end
+  end
+
   # context "when the compiler process is not running" do
   #   it "generates an error when created with defaults" do
   #     expect {
@@ -48,22 +59,22 @@ describe Compiler do
           @cmp.connect
         end
       it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do
-        fname = "#{Dir.pwd}/spec/data/min.qpl"
+        fname = "#{Dir.pwd}/testdata/qplprograms/min.qpl"
         qpocode = @cmp.compile fname
         qpocode.should =~ /app_fcdlbl.*/
       end
       it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code" do
-        fname = "#{Dir.pwd}/spec/data/min.qpl"
+        fname = "#{Dir.pwd}/testdata/qplprograms/min.qpl"
         begin
-          File.delete("#{Dir.pwd}/spec/data/min.qpo")
+          File.delete("#{Dir.pwd}/testdata/qplprograms/min.qpo")
         rescue
         end
         @cmp.compile fname
         @cmp.write_qpo_file
-        File.exist?("#{Dir.pwd}/spec/data/min.qpo").should be_true
-        File.open("#{Dir.pwd}/spec/data/min.reference.qpo") do |ref_compile|
+        File.exist?("#{Dir.pwd}/testdata/qplprograms/min.qpo").should be_true
+        File.open("#{Dir.pwd}/testdata/qplprograms/min.reference.qpo") do |ref_compile|
           ref_data = ref_compile.read
-          File.open("#{Dir.pwd}/spec/data/min.reference.qpo") do |new_compile|
+          File.open("#{Dir.pwd}/testdata/qplprograms/min.qpo") do |new_compile|
             new_data = new_compile.read
             new_data.should == ref_data
           end

@@ -4,4 +4,4 @@
 *.lock
 tmp
 out
-testdata/*.qpo
+testdata/**/*.qpo
