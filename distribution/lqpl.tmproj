@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/Spec/Compiler/CompilerServerConnectSpec.lhs</string>
+	<string>src/Compiler/CompilerServer.lhs</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -117,9 +117,37 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>8</integer>
+			<integer>5</integer>
 		</dict>
 		<key>src/Assembler/AssemParser.ly</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/Compiler/BaseTypes.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/Compiler/Compiler.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
@@ -138,14 +166,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>17</integer>
+				<integer>23</integer>
 				<key>line</key>
-				<integer>108</integer>
+				<integer>173</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>83</integer>
+			<integer>128</integer>
+		</dict>
+		<key>src/Compiler/Main.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>35</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>src/Compiler/ParseLexMonad.lhs</key>
 		<dict>
@@ -289,6 +331,20 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>src/Emulator/Dialogs/VersionMismatch.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>src/Emulator/Drawing/QsWindow.lhs</key>
 		<dict>
 			<key>caret</key>
@@ -331,7 +387,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>5</integer>
+			<integer>131</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
@@ -557,37 +613,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>14</integer>
+			<integer>16</integer>
 		</dict>
 		<key>src/Spec/Compiler/CompilerServerSpec.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>79</integer>
+				<integer>26</integer>
 				<key>line</key>
-				<integer>42</integer>
+				<integer>87</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>8</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>38</integer>
-				<key>line</key>
-				<integer>42</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>79</integer>
-				<key>line</key>
-				<integer>42</integer>
-			</dict>
+			<integer>-1</integer>
 		</dict>
 		<key>src/Spec/Compiler/CompilerSpecHelper.lhs</key>
 		<dict>
@@ -786,26 +826,10 @@
 				<key>line</key>
 				<integer>28</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>28</integer>
-			</dict>
 		</dict>
 		<key>src/Utility/ServerTypes.lhs</key>
 		<dict>
@@ -828,6 +852,13 @@
 		<string>src/Compiler/Semantic.lhs</string>
 		<string>src/Compiler/Qtypes.lhs</string>
 		<string>src/Compiler/CompilerServer.lhs</string>
+		<string>src/Emulator/Dialogs/VersionMismatch.lhs</string>
+		<string>src/Emulator/QstackGTK.lhs</string>
+		<string>src/Compiler/Main.lhs</string>
+		<string>src/Utility/Extras.lhs</string>
+		<string>Setup.hs</string>
+		<string>src/Compiler/BaseTypes.lhs</string>
+		<string>src/Compiler/Compiler.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerSpec.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerConnectSpec.lhs</string>
 		<string>src/QServer/QServer.lhs</string>
@@ -839,6 +870,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{-1478, 21}, {927, 1163}}</string>
+	<string>{{409, 15}, {927, 1163}}</string>
 </dict>
 </plist>

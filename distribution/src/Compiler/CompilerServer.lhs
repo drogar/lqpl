@@ -30,6 +30,9 @@
 
   import Utility.Extras(filterNonPrintable)
 
+  import Data.Version
+  import Paths_lqpl
+
   default_port = "7683"
 
   serveLog :: String              -- ^ Port number or name;
@@ -167,6 +170,8 @@
     case errOrTxt of
       Left e    -> return $ CS_COMPILED_FAIL $ ioeGetErrorString e
       Right txt -> return $ CS_COMPILED_SUCCESS $ concat $ intersperse "\n" txt
+  compilerService _ _ "<sendversion />" = do
+    return $ CS_VERSION (versionBranch version) (versionTags version)
   compilerService _ ior a = do
     modifyIORef ior (++(a++"\n"))
     return CS_READY
@@ -178,7 +183,8 @@
     ioGenCode ir 0
 
   data CompilerServiceStatus =  CS_READY | CS_GOT_PROGRAM | CS_COMPILED_SUCCESS String|
-                                CS_COMPILED_FAIL String | CS_MESSAGE String
+                                CS_COMPILED_FAIL String | CS_MESSAGE String |
+                                CS_VERSION [Int] [String]
     deriving (Show,Eq)
 
 

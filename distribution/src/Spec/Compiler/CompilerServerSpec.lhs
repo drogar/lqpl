@@ -19,6 +19,9 @@
     import Control.Concurrent
     import Spec.Compiler.CompilerSpecHelper
 
+    import Data.Version
+    import Paths_lqpl
+
     cstester = compilerService fpForTest
 
     main = do
@@ -78,6 +81,21 @@
               case tdata of
                 "something\nelse\n"  -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "Ioref not filled with 'something\\nelse\\n': '"++a++"'"),
+        it "accepts the XML tag 'sendversion' with no content"   $
+           (do
+              rc <- cstester ior "<sendversion />"
+              case rc of
+                CS_VERSION _ _-> return True
+                _         -> return False),
+        it "sends back '[d,d,d] []' when sent <sendversion />" $
+          (do
+              rc <- cstester ior "<sendversion />"
+              case rc of
+                CS_VERSION  vs tgs -> do
+                  if vs == (versionBranch version) && tgs == (versionTags version)
+                    then return Test.Hspec.Core.Success
+                    else return $ Test.Hspec.Core.Fail $ "incorrect version, should be"++ showVersion version ++ "but was" ++ (showList vs $ showList tgs "")
+                a         -> return $ Test.Hspec.Core.Fail $ "Got "++ show a),
         it "accepts the XML tag 'sendresult' with no content"   $
            (do
               rc <- cstester ior "<sendresult />"

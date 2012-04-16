@@ -22,10 +22,10 @@ import Data.Version
 import Paths_lqpl
 
 main = do args <- getArgs
-	  (o, spltfps) <- compilerOpts args
+          (o, spltfps) <- compilerOpts args
           putStrLn (showVersion version)
-	  let tellsM = map (doCompile False o) spltfps
-	  tells <- mapM  execWriterT tellsM
+          let tellsM = map (doCompile False o) spltfps
+          tells <- mapM  execWriterT tellsM
           mapM_ putStrLn (concat tells)
 
 
