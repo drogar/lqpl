@@ -49,8 +49,20 @@ class Compiler
     line = @connection.readline
     while line and line != "</qpo>\n" do
       #puts "lineno=#{lineno}; line='#{line}'"
-      if !(line=="CS_READY\n" or line == "CS_GOT_PROGRAM\n" or line =~ /<qpo/)
+      if !(line=="CS_READY\n" or line == "CS_GOT_PROGRAM\n" or line =~ /<qpo/ or line =~ /<getFirst/)
         accum += line
+      end
+      if line =~ /<getFirst>/
+        f = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
+        if File.exists?(line[/(<getFirst>)(.*)(<\/getFirst>)/,2])
+          File.open(f) do |incfile|
+            fdata = incfile.read
+            @connection.puts f
+            @connection.puts "<file>"
+            @connection.puts fdata
+            @connection.puts "</file>"
+          end
+        end
       end
       line = @connection.readline
       lineno += 1

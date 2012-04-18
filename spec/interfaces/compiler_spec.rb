@@ -80,7 +80,23 @@ describe Compiler do
           end
         end
       end
-
+      it "writes a .qpo file with the same name as the original .qpl file when imports are involved" do
+        fname = "#{Dir.pwd}/testdata/qplprograms/importer.qpl"
+        begin
+          File.delete("#{Dir.pwd}/testdata/qplprograms/importer.qpo")
+        rescue
+        end
+        @cmp.compile fname
+        @cmp.write_qpo_file
+        File.exist?("#{Dir.pwd}/testdata/qplprograms/importer.qpo").should be_true
+        File.open("#{Dir.pwd}/testdata/qplprograms/importer.reference.qpo") do |ref_compile|
+          ref_data = ref_compile.read
+          File.open("#{Dir.pwd}/testdata/qplprograms/importer.qpo") do |new_compile|
+            new_data = new_compile.read
+            new_data.should == ref_data
+          end
+        end
+      end
     end
   end
 end
