@@ -129,7 +129,7 @@
       fpReadFile = \f -> do
         hPutStrLn h $ "<read>"++f++"</read>"
         hFlush h
-        hGetLine h,
+        hGetLinesDelimitedBy h "<file>" "</file>",
       emptyProvider = "",
       currentFPDir = "",
       fpcombine = (++),
@@ -153,6 +153,7 @@
   hAccumLinesEndedBy :: Handle -> String -> [String] -> IO [String]
   hAccumLinesEndedBy h end accum = do
     l <- hGetLine h
+    hPutStr stderr l
     if l == end
       then return $ reverse accum
       else hAccumLinesEndedBy h end (l:accum)
