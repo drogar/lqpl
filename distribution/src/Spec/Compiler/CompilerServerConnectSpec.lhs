@@ -40,12 +40,10 @@
         ],
       context "compiler server" [
         it ("opens a port by default at port" ++ default_port)  $ checkOpenPort default_port,
-        it "accepts the XML tag 'qplprogram' containing valid LQPL programs"    $
+        it "accepts the XML tag 'qplprogram'"    $
            (do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
-              hPutStrLn hndl "qdata C = {H|T}"
-              hPutStrLn hndl "</qplprogram>"
               hFlush hndl
               res <- hGetLine hndl
               case res of
@@ -65,10 +63,7 @@
               hGetLine hndl
               hPutStrLn hndl "</qplprogram>"
               hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "<sendresult />"
-              hFlush hndl
-              hGetLine hndl
+              fres <- hGetLine hndl
               res <- hGetLine hndl
               case res of
                 "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
@@ -83,9 +78,6 @@
               hFlush hndl
               hGetLine hndl
               hPutStrLn hndl "</qplprogram>"
-              hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "<sendresult />"
               hFlush hndl
               res <- hGetLine hndl
               case res of
@@ -102,26 +94,25 @@
               hGetLine hndl
               hPutStrLn hndl "</qplprogram>"
               hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "<sendresult />"
-              hFlush hndl
               res <- hGetLine hndl
               case res of
                 "<getFirst>f</getFirst>"    -> do
-                    hPutStrLn hndl "f"
+                    hPutStrLn hndl "<file name='f'>"
                     hFlush hndl
-                    hPutStrLn hndl "<file>"
-                    hFlush hndl
+                    hGetLine hndl
                     hPutStrLn hndl "qdata C = {H|T}"
                     hFlush hndl
+                    hGetLine hndl
                     hPutStrLn hndl "app::(| ; )= {skip}"
                     hFlush hndl
+                    hGetLine hndl
                     hPutStrLn hndl "</file>"
+                    hFlush hndl
                     fres <- hGetLine hndl
                     fres2 <-hGetLine hndl
                     case fres2 of
                       "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
-                      _                       -> return $ Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres ++ fres2
+                      _                       -> return $ Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres2
                 _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res)
         ]
       ]
