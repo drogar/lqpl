@@ -26,6 +26,7 @@ class Compiler
 
   def compile(fname)
     @fname = fname
+    @dir = File.dirname(@fname)
     File.open(fname, "r") do |f|
       qpl_file_data = f.read()
       connect if !connected?
@@ -36,8 +37,6 @@ class Compiler
         @connection.readline
       end
       @connection.puts "</qplprogram>"
-      @connection.readline
-      @connection.puts "<sendresult />"
       @qpo_code = get_qpo_program
     end
     @qpo_code
@@ -47,22 +46,33 @@ class Compiler
     accum=""
     lineno = 0
     line = @connection.readline
-    while line and line != "</qpo>\n" do
+    while line and line != "</qpo>\n"  and line != "</compilefail>\n"  do
       #puts "lineno=#{lineno}; line='#{line}'"
-      if !(line=="CS_READY\n" or line == "CS_GOT_PROGRAM\n" or line =~ /<qpo/ or line =~ /<getFirst/)
+      if line =~  /<compilefail/
+        @failed = true
+      end
+      if !(line =~ /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/)
         accum += line
       end
       if line =~ /<getFirst>/
-        f = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
-        if File.exists?(line[/(<getFirst>)(.*)(<\/getFirst>)/,2])
+        basef = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
+        if File.exists?(basef)
+          f = basef
+        else
+          f = @dir + "/" + basef
+        end
+        fdata=""
+        if File.exists?(f)
           File.open(f) do |incfile|
             fdata = incfile.read
-            @connection.puts f
-            @connection.puts "<file>"
-            @connection.puts fdata
-            @connection.puts "</file>"
           end
+        else
+          puts "Unable to find or open file #{f}"
+          puts "Looking in #{Dir.pwd}"
         end
+        @connection.puts "<file name='#{basef}'>"
+        @connection.puts fdata
+        @connection.puts "</file>"
       end
       line = @connection.readline
       lineno += 1

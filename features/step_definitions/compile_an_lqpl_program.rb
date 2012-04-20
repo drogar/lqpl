@@ -18,8 +18,15 @@ end
 
 Given /^I select "([a-zA-Z]*)" from the file menu$/ do |mitem|
   java_import org.netbeans.jemmy.operators.JMenuBarOperator
+  java_import org.netbeans.jemmy.operators.JMenuOperator
 
   mbar = JMenuBarOperator.new @mw.get_jmenu_bar
+  jm = mbar.get_menu(0)
+  fmenu = JMenuOperator.new jm
+  item_count = jm.get_item_count
+  ((0...item_count).any? do |i|
+    mitem == jm.get_item(i.to_int).get_text
+  end).should be_true
   mbar.push_menu_no_block("File|#{mitem}")
 end
 
@@ -41,8 +48,6 @@ And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, di
   puts "is nil fl" if !fl
   exact_string_comp = Operator::DefaultStringComparator.new(true,true)
 
-  #fc.click_on_file (1,2)
-  #fc.java_send :enterSubDir, [java.lang.String],"bin"
 
   dirs = dir.split("/")
   dirs.each do |d|

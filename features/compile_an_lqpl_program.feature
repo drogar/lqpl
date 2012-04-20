@@ -9,6 +9,6 @@ Background:
 
 
   Scenario: I load and assemble a simple qpl program
-    Given I select "Assemble" from the file menu
+    Given I select "Compile" from the file menu
     And I load "coin.qpl" from the directory "testdata/qplprograms"
     Then "coin.qpo" should be created in "testdata/qplprograms" and be equal to "coin.reference.qpo"

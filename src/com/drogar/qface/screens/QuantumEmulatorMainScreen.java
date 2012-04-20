@@ -25,10 +25,10 @@ public class QuantumEmulatorMainScreen extends  JFrame{
 
         file_close = new JMenuItem("Close");
 
-        file_assemble = new JMenuItem("Assemble");
+        file_compile = new JMenuItem("Compile");
         fmenu.add(file_open)   ;
         fmenu.add(file_close);
-        fmenu.add(file_assemble);
+        fmenu.add(file_compile);
         mbar.add(fmenu)   ;
         setJMenuBar(mbar);
         mbar.setVisible(true);
@@ -42,14 +42,14 @@ public class QuantumEmulatorMainScreen extends  JFrame{
 
     }
 
-   
+
     private JPanel panel1;
     private JSpinner treeDepthSpinner;
     public JLabel message;
     private JMenuItem file_open;
     private JMenuItem file_close;
 
-    private JMenuItem file_assemble;
+    private JMenuItem file_compile;
 
 
 }

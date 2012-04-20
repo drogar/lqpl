@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/communications/compiler.rb</string>
+	<string>testdata/qplprograms/importer.qpl</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,9 +26,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>63</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>13</integer>
+				<integer>11</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -40,14 +40,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>12</integer>
+				<integer>3</integer>
 				<key>line</key>
-				<integer>54</integer>
+				<integer>65</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>21</integer>
+			<integer>34</integer>
+		</dict>
+		<key>features/support/env.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>12</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>runQface.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>5</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>spec/interfaces/compiler_spec.rb</key>
 		<dict>
@@ -103,21 +131,35 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>23</integer>
+			<integer>0</integer>
+		</dict>
+		<key>src/com/drogar/qface/screens/QuantumEmulatorMainScreen.java</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>34</integer>
+				<key>line</key>
+				<integer>51</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>11</integer>
 		</dict>
 		<key>src/communications/compiler.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>37</integer>
+				<integer>7</integer>
 				<key>line</key>
-				<integer>62</integer>
+				<integer>49</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>21</integer>
+			<integer>27</integer>
 		</dict>
 		<key>src/main.rb</key>
 		<dict>
@@ -138,9 +180,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>41</integer>
+				<integer>18</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>7</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -184,6 +226,9 @@
 		<string>testdata/qplprograms/importer.qpl</string>
 		<string>src/com/drogar/qface/Main.java</string>
 		<string>features/step_definitions/compile_an_lqpl_program.rb</string>
+		<string>src/com/drogar/qface/screens/QuantumEmulatorMainScreen.java</string>
+		<string>runQface.rb</string>
+		<string>features/support/env.rb</string>
 		<string>src/qface/qface_controller.rb</string>
 		<string>features/compile_an_lqpl_program.feature</string>
 		<string>src/main.rb</string>

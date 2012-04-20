@@ -5,7 +5,7 @@ class QfaceController < ApplicationController
 
   java_import javax.swing.JFileChooser
   java_import javax.swing.filechooser.FileNameExtensionFilter
-  def file_assemble_action_performed
+  def file_compile_action_performed
     chooser = JFileChooser.new()
     chooser.set_dialog_title "Open LQPL File for Compiling"
     qplfiles = FileNameExtensionFilter.new("LQPL source file", ["qpl"].to_java(:string))
