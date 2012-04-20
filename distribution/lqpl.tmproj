@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/Compiler/CompilerServer.lhs</string>
+	<string>src/Tests/RunTests.lhs</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -110,14 +110,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>72</integer>
 				<key>line</key>
-				<integer>37</integer>
+				<integer>27</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>5</integer>
+			<integer>3</integer>
 		</dict>
 		<key>src/Assembler/AssemParser.ly</key>
 		<dict>
@@ -166,14 +166,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>155</integer>
+				<integer>199</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>128</integer>
+			<integer>98</integer>
 		</dict>
 		<key>src/Compiler/Main.lhs</key>
 		<dict>
@@ -515,6 +515,20 @@
 			<key>firstVisibleLine</key>
 			<integer>119</integer>
 		</dict>
+		<key>src/QSM/QuantumStack/QSDefinition.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>54</integer>
+		</dict>
 		<key>src/QSM/QuantumStack/QSXML.lhs</key>
 		<dict>
 			<key>caret</key>
@@ -622,26 +636,58 @@
 				<key>column</key>
 				<integer>26</integer>
 				<key>line</key>
-				<integer>87</integer>
+				<integer>14</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>-1</integer>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>26</integer>
+				<key>line</key>
+				<integer>14</integer>
+			</dict>
 		</dict>
 		<key>src/Spec/Compiler/CompilerSpecHelper.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>26</integer>
 				<key>line</key>
-				<integer>38</integer>
+				<integer>7</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>26</integer>
+				<key>line</key>
+				<integer>7</integer>
+			</dict>
 		</dict>
 		<key>src/Spec/Compiler/QPLParserSpec.lhs</key>
 		<dict>
@@ -656,6 +702,50 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>src/Spec/QServer/ParseServerCommandSpec.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>113</integer>
+				<key>line</key>
+				<integer>27</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/Spec/QServer/StackToXMLSpec.lhs</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
 		</dict>
 		<key>src/Spec/SpecHelper.lhs</key>
 		<dict>
@@ -699,72 +789,12 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>src/Tests/QServer/TestParseServerCommand.lhs</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>49</integer>
-				<key>line</key>
-				<integer>20</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>4</integer>
-				<key>line</key>
-				<integer>7</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>49</integer>
-				<key>line</key>
-				<integer>20</integer>
-			</dict>
-		</dict>
-		<key>src/Tests/QServer/TestStackToXML.lhs</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>10</integer>
-				<key>line</key>
-				<integer>20</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>10</integer>
-				<key>line</key>
-				<integer>20</integer>
-			</dict>
-		</dict>
 		<key>src/Tests/RunTests.lhs</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>45</integer>
+				<integer>19</integer>
 				<key>line</key>
 				<integer>10</integer>
 			</dict>
@@ -836,6 +866,11 @@
 		<string>src/Compiler/Semantic.lhs</string>
 		<string>src/Compiler/Qtypes.lhs</string>
 		<string>src/Compiler/CompilerServer.lhs</string>
+		<string>src/Spec/QServer/StackToXMLSpec.lhs</string>
+		<string>src/Spec/QServer/ParseServerCommandSpec.lhs</string>
+		<string>src/QSM/QuantumStack/QSDefinition.lhs</string>
+		<string>src/Tests/RunTests.lhs</string>
+		<string>src/Spec/Compiler/CompilerServerSpec.lhs</string>
 		<string>src/Compiler/Compiler.lhs</string>
 		<string>src/Spec/Compiler/CompilerServerConnectSpec.lhs</string>
 		<string>src/QServer/QServer.lhs</string>
@@ -847,6 +882,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{-984, 24}, {927, 1163}}</string>
+	<string>{{400, 10}, {927, 1163}}</string>
 </dict>
 </plist>

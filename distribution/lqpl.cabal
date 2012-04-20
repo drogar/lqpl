@@ -17,11 +17,21 @@ Build-Type:          Simple
 Cabal-Version:       >=1.9.2
 --data-dir:            src
 --data-files:          glade/qstack.glade
---Tried, just can't get this working.
 Test-Suite test-all
    type:             exitcode-stdio-1.0
    main-is:          Tests/RunTests.lhs
    build-depends:    base,parsec,network,HUnit,filepath
+   hs-source-dirs:   src
+Test-Suite parse-server-command-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/QServer/ParseServerCommandSpec.lhs
+   build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck
+   hs-source-dirs:   src
+Test-Suite stack-to-xml-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/QServer/StackToXMLSpec.lhs
+   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
+   extensions:       TypeSynonymInstances
    hs-source-dirs:   src
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0

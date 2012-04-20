@@ -1,24 +1,35 @@
 \begin{code}
-  module Tests.QServer.TestParseServerCommand where
+  module Main where
+    import Test.Hspec
+    import Test.Hspec.Core
+    import Test.Hspec.QuickCheck
+    import Test.Hspec.HUnit
+    import Test.QuickCheck hiding (property)
     import Test.HUnit
-    
+
     import QServer.Types
     import QServer.ParseServerCommand
-    
+
     expectLeftString :: Either String a -> Bool
     expectLeftString (Left _)  = True
     expectLeftString _ = False
-    
+
     makeBoolParseError :: String -> Assertion
     makeBoolParseError s = assertBool ("'"++s++"' returns error") (expectLeftString (getCommand s))
-    
+
+    main = hspecX $ describe "Parse Server Commands" specs
+
+    specs = map (makeSpec) tests
+
+    makeSpec a = it ("hunit test: "++ show a) $ a
+
     tests =  ["parseL1 " ~: "load xxx returns QCLoad" ~: Right (QCLoad "abc.qpo") @=? (getCommand "load abc.qpo"),
       "parseL2 " ~: "load /x/xxx.qpo returns QCLoad" ~: Right (QCLoad "/a/bc.qpo") @=? (getCommand "load /a/bc.qpo"),
       "parseL2a " ~: "load     /x/xxx.qpo returns QCLoad" ~: Right (QCLoad "/a/bc.qpo") @=? (getCommand "load /a/bc.qpo"),
       "parseL2aSpace " ~: "'load     /x/xxx addint.qpo' returns QCLoad" ~: Right (QCLoad "/a/bc with space.qpo") @=? (getCommand "load /a/bc with space.qpo"),
-      "parseL3 " ~: makeBoolParseError "load", 
-      "parseL4 " ~: makeBoolParseError "load ", 
-      "parseL5 " ~: makeBoolParseError "load  ", 
+      "parseL3 " ~: makeBoolParseError "load",
+      "parseL4 " ~: makeBoolParseError "load ",
+      "parseL5 " ~: makeBoolParseError "load  ",
       "parseL6 " ~: makeBoolParseError "load abc ",
       "parseL7 " ~: makeBoolParseError "load abc.oth ",
       "parseL8 " ~: makeBoolParseError "load abc.q ",
@@ -27,7 +38,7 @@
       "parseStep1 " ~: "step 1 returns QCStep" ~: Right (QCStep 1) @=? (getCommand "step 1"),
       "parseStep2 " ~: "step 743 returns QCStep" ~: Right (QCStep 743) @=? (getCommand "step 743"),
       "parseStep2a " ~: "step       743 returns QCStep" ~: Right (QCStep 743) @=? (getCommand "step    743"),
-      "parseStep3 " ~: makeBoolParseError "step", 
+      "parseStep3 " ~: makeBoolParseError "step",
       "parseStep4 " ~: makeBoolParseError "step ",
       "parseStep5 " ~: makeBoolParseError "step   ",
       "parseRun " ~: "run 1 returns QCRun" ~: Right (QCRun 1) @=? (getCommand "run 1"),
@@ -46,7 +57,7 @@
       "parse_get_qs8 " ~: makeBoolParseError "get qstack  4.2",
       "parse_get_qs9 " ~: makeBoolParseError "get qstack  3 b",
       "parse_get_qsa " ~: makeBoolParseError "get qstack  3 4.2",
-      
+
       "parse_get_cs1 " ~: "get classicalstack 5 3 returns QCGet" ~: Right (QCGet QDClassicalStack 5 3) @=? (getCommand "get classicalstack 5 3"),
       "parse_get_cs2 " ~: "get    classicalstack   15   893 returns QCGet" ~: Right (QCGet QDClassicalStack 15 893) @=? (getCommand "get classicalstack   15   893"),
       "parse_get_cs3 " ~: makeBoolParseError "get classicalstack  ",
@@ -57,7 +68,7 @@
       "parse_get_cs8 " ~: makeBoolParseError "get classicalstack  4.2",
       "parse_get_cs9 " ~: makeBoolParseError "get classicalstack  3 b",
       "parse_get_csa " ~: makeBoolParseError "get classicalstack  3 4.2",
-     
+
       "parse_get_d1 " ~: "get dump 5 3 returns QCGet" ~: Right (QCGet QDDump 5 3) @=? (getCommand "get dump 5 3"),
       "parse_get_d2 " ~: "get    dump   15   893 returns QCGet" ~: Right (QCGet QDDump 15 893) @=? (getCommand "get    dump   15   893"),
       "parse_get_d3 " ~: makeBoolParseError "get dump  ",
@@ -68,12 +79,11 @@
       "parse_get_d8 " ~: makeBoolParseError "get dump  4.2",
       "parse_get_d9 " ~: makeBoolParseError "get dump  3 b",
       "parse_get_da " ~: makeBoolParseError "get dump  3 4.2",
-      
+
       "parseSim " ~: "simulate returns QCSimulate" ~: Right (QCSimulate 5) @=? (getCommand "simulate 5"),
       "parseSim1 " ~: "'simulate   ' returns QCSimulate" ~: Right (QCSimulate 3) @=? (getCommand "simulate   3 "),
       "parseSimm_e1 " ~: makeBoolParseError "simulate ",
       "parseSimm_e2 " ~: makeBoolParseError "simulate xyz"
      ]
-      
-    
+
 \end{code}

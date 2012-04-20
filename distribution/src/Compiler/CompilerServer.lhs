@@ -183,13 +183,14 @@
     | otherwise = do
         (instatus,_,_) <- readIORef ior
         case instatus of
-          CS_READY    -> do
+          CS_READY                    -> do
             modifyIORef ior (\(cs, s,ims) -> (CS_READY, s++(a++"\n"), ims))
             return CS_READY
-          CS_READING_FILE Nothing  -> setAndReturn ior $ CS_READING_FILE Nothing
-          CS_READING_FILE (Just f)  -> do
+          CS_READING_FILE Nothing     -> setAndReturn ior $ CS_READING_FILE Nothing
+          CS_READING_FILE (Just f)    -> do
             modifyIORef ior (\(cs, s,ims) -> (CS_READING_FILE (Just f), s, adjust (appendJustWith (a++"\n")) f ims))
             return $ CS_READING_FILE (Just f)
+          _                           -> setAndReturn ior CS_READY
 
   setAndReturn :: IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
                   CompilerServiceStatus ->
