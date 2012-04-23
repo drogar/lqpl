@@ -30,14 +30,13 @@ case Monkeybars::Resolver.run_location
   when Monkeybars::Resolver::IN_FILE_SYSTEM
 
     here = File.expand_path File.dirname(__FILE__)
-    puts here
     npath = here + '/../lib/java/*.jar'
-    puts npath
+#    puts npath
     mbj =   monkeybars_jar( here + '/../lib/java/*.jar' )
-    puts "resulting mbj=#{mbj}"
+#    puts "resulting mbj=#{mbj}"
     if !mbj || mbj == ''
       mbj =  monkeybars_jar( here + '/../../../lib/java/*.jar' )
-      puts "or is #{mbj}"
+#      puts "or is #{mbj}"
     end
     add_to_classpath mbj
 end
@@ -52,7 +51,7 @@ require 'application_view'
 #
 # Add your own application-wide libraries below.  To include jars, append to
 # $CLASSPATH, or use add_to_classpath, for example:
-# 
+#
 # $CLASSPATH << File.expand_path(File.dirname(__FILE__) + "/../lib/java/swing-layout-1.0.3.jar")
 #
 # is equivalent to
@@ -74,6 +73,6 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 require "exceptions/compiler_process_not_found"
-require "communications/assembler"
+require "communications/server_connection"
 require "communications/compiler"
 require "qface/qface_controller"

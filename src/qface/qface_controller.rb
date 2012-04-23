@@ -13,13 +13,29 @@ class QfaceController < ApplicationController
     puts "Setting curr dir to #{Dir.getwd}"
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
     rval = chooser.show_open_dialog(nil)
-    #puts "rval is #{rval}"
     if rval == JFileChooser::APPROVE_OPTION
-      #puts "Doing approve"
       fname = chooser.get_selected_file.get_absolute_path
       cmp = Compiler.new
       cmp.compile fname
       cmp.write_qpo_file
+    else
+      puts "Did not do approve."
+    end
+    update_view
+  end
+
+  def file_load_action_performed
+    chooser = JFileChooser.new()
+    chooser.set_dialog_title "Load LQPO (Assembly) File"
+    qpofiles = FileNameExtensionFilter.new("LQPL assembled file", ["qpo"].to_java(:string))
+    chooser.set_file_filter(qpofiles)
+    puts "Setting curr dir to #{Dir.getwd}"
+    chooser.set_current_directory(java.io.File.new(Dir.getwd))
+    rval = chooser.show_open_dialog(nil)
+    if rval == JFileChooser::APPROVE_OPTION
+      fname = chooser.get_selected_file.get_absolute_path
+      server = ServerConnection.instance
+      server.send_load_from_file fname
     else
       puts "Did not do approve."
     end

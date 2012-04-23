@@ -4,8 +4,8 @@ Given /^the program "([^"]*)" has started$/ do  |program|
   #args = [""].to_java(:string)
   begin
     QUFACE.main([])
-  rescue
-    puts "Had a problem"
+  rescue Exception => e
+    puts "Exception from main: #{e}"
   end
 end
 
@@ -16,7 +16,7 @@ Given /^the frame "([^"]*)" is visible$/ do |frame_name|
   @mw = JFrameOperator.new frame_name
 end
 
-Given /^I select "([a-zA-Z]*)" from the file menu$/ do |mitem|
+Given /^I select "([a-zA-Z]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
   java_import org.netbeans.jemmy.operators.JMenuBarOperator
   java_import org.netbeans.jemmy.operators.JMenuOperator
 
@@ -27,7 +27,7 @@ Given /^I select "([a-zA-Z]*)" from the file menu$/ do |mitem|
   ((0...item_count).any? do |i|
     mitem == jm.get_item(i.to_int).get_text
   end).should be_true
-  mbar.push_menu_no_block("File|#{mitem}")
+  mbar.push_menu_no_block("#{menu}|#{mitem}")
 end
 
 
@@ -45,7 +45,6 @@ And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, di
   fc.is_directory_selection_enabled.should == false
 
   fl = fc.get_file_list
-  puts "is nil fl" if !fl
   exact_string_comp = Operator::DefaultStringComparator.new(true,true)
 
 
