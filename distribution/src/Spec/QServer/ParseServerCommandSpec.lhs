@@ -23,18 +23,10 @@
 
     makeSpec a = it ("hunit test: "++ show a) $ a
 
-    tests =  ["parseL1 " ~: "load xxx returns QCLoad" ~: Right (QCLoad "abc.qpo") @=? (getCommand "load abc.qpo"),
-      "parseL2 " ~: "load /x/xxx.qpo returns QCLoad" ~: Right (QCLoad "/a/bc.qpo") @=? (getCommand "load /a/bc.qpo"),
-      "parseL2a " ~: "load     /x/xxx.qpo returns QCLoad" ~: Right (QCLoad "/a/bc.qpo") @=? (getCommand "load /a/bc.qpo"),
+    tests =  ["parseL1 " ~: "load xxx returns QCLoad" ~: Right (QCLoad "abc") @=? (getCommand "load abc"),
+      "parseL2 " ~: "load a<\\n>b returns QCLoad" ~: Right (QCLoad "a\nb") @=? (getCommand "load a<\\n>b"),
+      "parseL2a " ~: "load a<\\n>b<\\n>line c returns QCLoad" ~: Right (QCLoad "a\nb\nline c") @=? (getCommand "load a<\\n>b<\\n>line c"),
       "parseL2aSpace " ~: "'load     /x/xxx addint.qpo' returns QCLoad" ~: Right (QCLoad "/a/bc with space.qpo") @=? (getCommand "load /a/bc with space.qpo"),
-      "parseL3 " ~: makeBoolParseError "load",
-      "parseL4 " ~: makeBoolParseError "load ",
-      "parseL5 " ~: makeBoolParseError "load  ",
-      "parseL6 " ~: makeBoolParseError "load abc ",
-      "parseL7 " ~: makeBoolParseError "load abc.oth ",
-      "parseL8 " ~: makeBoolParseError "load abc.q ",
-      "parseL9 " ~: makeBoolParseError "load abc.qp    ",
-      "parseL10 " ~: makeBoolParseError "load abc.qpo extra    ",
       "parseStep1 " ~: "step 1 returns QCStep" ~: Right (QCStep 1) @=? (getCommand "step 1"),
       "parseStep2 " ~: "step 743 returns QCStep" ~: Right (QCStep 743) @=? (getCommand "step 743"),
       "parseStep2a " ~: "step       743 returns QCStep" ~: Right (QCStep 743) @=? (getCommand "step    743"),

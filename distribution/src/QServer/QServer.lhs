@@ -4,7 +4,7 @@ module Main where
 
 
 import Assembler.AssemParser
-  
+
 import Control.Monad (when)
 import Control.Monad.Trans
 
@@ -57,8 +57,8 @@ serveLog :: String              -- ^ Port number or name; 9500 is default
          -> IO ()
 serveLog port handlerfunc logger = withSocketsDo $
     do -- Look up the port.  Either raises an exception or returns
-       -- a nonempty list.  
-       addrinfos <- getAddrInfo 
+       -- a nonempty list.
+       addrinfos <- getAddrInfo
                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
                     Nothing (Just port)
        let serveraddr = head addrinfos
@@ -82,7 +82,7 @@ serveLog port handlerfunc logger = withSocketsDo $
     where
           -- | Process incoming connection requests
           procRequests :: MVar () -> Socket -> IO ()
-          procRequests lock mastersock = 
+          procRequests lock mastersock =
               do (connsock, clientaddr) <- accept mastersock
                  logit lock clientaddr
                     "lqpl-serv: client connnected"
@@ -94,13 +94,13 @@ serveLog port handlerfunc logger = withSocketsDo $
           procMessages lock connsock clientaddr =
               do connhdl <- socketToHandle connsock ReadWriteMode
                  hSetBuffering connhdl LineBuffering
-                 ms <- newIORef (startMachine defaultCallDepth initialMachine  noCode) 
+                 ms <- newIORef (startMachine defaultCallDepth initialMachine  noCode)
                  messages <- hGetContents connhdl
                  mapM_ (handle lock  ms connhdl clientaddr) (lines messages)
                  hClose connhdl
-                 logit lock clientaddr 
+                 logit lock clientaddr
                     "lqpl-serv: client disconnected"
-                
+
           -- Lock the handler before passing data to it.
           handle :: MVar () -> HandlerFunc (MachineState BaseType)
           handle lock machineState shandle clientaddr msg =
@@ -109,24 +109,24 @@ serveLog port handlerfunc logger = withSocketsDo $
           logit :: MVar () -> Logger
           logit lock clientaddr msg =
                   withMVar lock (\a -> logger clientaddr msg >> return a)
-  
+
 -- A simple logger that prints incoming packets
 defaultLogger :: Logger
-defaultLogger addr msg = 
-     putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg   
-         
-         
+defaultLogger addr msg =
+     putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg
+
+
 
 
 
 
 -- A simple handler that prints incoming packets
 commandHandler :: HandlerFunc (MachineState BaseType)
-commandHandler machineStateRef shandle addr msg = 
-  do 
+commandHandler machineStateRef shandle addr msg =
+  do
     case (getCommand msg) of
-      Right (QCLoad filename)  ->
-        assemble filename machineStateRef shandle
+      Right (QCLoad assemblyCode)  ->
+        assemble assemblyCode machineStateRef shandle
       Right (QCStep step) ->
         stepMachine step machineStateRef shandle
       Right (QCRun depth) ->
@@ -141,48 +141,46 @@ commandHandler machineStateRef shandle addr msg =
         simulate depth machineStateRef shandle
       Left x -> putStrLn $ "From " ++ show addr ++ ": unrecognized: " ++ msg ++ " -- " ++ x
 
-      
+
 sendQstack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
-sendQstack depth treedepth machineStateRef shndle =   
+sendQstack depth treedepth machineStateRef shndle =
   do
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         qs = quantumStack bms
     hPutStrLn shndle $  boundedToXML treedepth qs
-    
-sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()   
-sendClassicalStack depth treedepth machineStateRef shndle =   
+
+sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
+sendClassicalStack depth treedepth machineStateRef shndle =
     hPutStrLn shndle $  " ClassicalStack to be returned"
 
 sendDump :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
-sendDump dept treedepth machineStateRef shndle = 
+sendDump dept treedepth machineStateRef shndle =
   hPutStrLn shndle $  " Dump to be returned"
-            
-            
+
+
 
 
 assemble :: String -> IORef (MachineState BaseType) -> Handle -> IO()
-assemble filename machineStateRef shandle =
+assemble assemblyCode machineStateRef shandle =
     do
-      absolutePathFilename <- canonicalizePath filename
-      assemblyCode <- readFile absolutePathFilename
       parsedAssembly <- parseQPA "" "" assemblyCode
       case  parsedAssembly of
-          Left error -> 
+          Left error -> do
                 putStrLn $ "Error in parse: " ++ error
-          Right ((cnotes,trs),loadedCode) -> 
-                do  
-                  writeIORef machineStateRef $ (startMachine defaultCallDepth initialMachine loadedCode)
-                  dumpMachine 1 machineStateRef
-                  hPutStrLn shandle "Assembled"
-	          
-	          
+                hPutStrLn shandle $ "ERROR: " ++ error
+          Right ((cnotes,trs),loadedCode) -> do
+                writeIORef machineStateRef $ (startMachine defaultCallDepth initialMachine loadedCode)
+                dumpMachine 1 machineStateRef
+                hPutStrLn shandle "Assembled"
+
+
 dumpMachine ::  Int -> IORef (MachineState BaseType) -> IO()
-dumpMachine depth machineStateRef = 
+dumpMachine depth machineStateRef =
   do
     ms <- readIORef machineStateRef
     let bms =  pickIthMS  depth ms
         qs  = quantumStack bms
     putStrLn $ "QuantumStack: "++ show qs
-             
+
 \end{code}

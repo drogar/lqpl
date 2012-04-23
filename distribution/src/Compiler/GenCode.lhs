@@ -5,7 +5,7 @@ import Data.Map as Map
 import Data.Char(toLower)
 import Data.List as List
 
-import Compiler.CompSupport(mkflabel, enumerateName) 
+import Compiler.CompSupport(mkflabel, enumerateName)
 import Compiler.GenerationErrors
 import Compiler.Instructions
 import Compiler.IrTypes
@@ -21,17 +21,17 @@ class GenCode a where
  genCodeList::[a]->CodeMonad ProgramCode
  genCodeList [] = return Map.empty
  genCodeList (a:as) = do x<- genCode a
-		         xs<- genCodeList as
-			 return $ combineProgs x xs
+                         xs<- genCodeList as
+                         return $ combineProgs x xs
 
 instance GenCode Iprog where
- genCode (Iprog mp) 
+ genCode (Iprog mp)
     = foldM (\i  -> liftM (Map.union i) . genCode ) Map.empty $ Prelude.map snd $ Map.toList mp
 
 
 
 instance GenCode Iproc where
- genCode (Iproc nm lbl _ _ _ crets stmts) 
+ genCode (Iproc nm lbl _ _ _ crets stmts)
   = do pushProcName $ mkflabel nm lbl
        hcd <- genProcHeader
        unsetCurrentActive
@@ -42,13 +42,13 @@ instance GenCode Iproc where
        descp <- descope
        tcode <- genProcTrailer
        popProcName
-       return $ combineProgs hcd $ 
+       return $ combineProgs hcd $
               combineProgs escop $
               combineProgs cd $
               if nm == "main" then combineProgs descp tcode
                  else combineProgs creturn $
                       combineProgs descp $
-                      combineProgs ret tcode 
+                      combineProgs ret tcode
 
 
 
@@ -57,10 +57,10 @@ instance GenCode Istmt where
  genCodeList [] = return Map.empty
  genCodeList (a:as) = do x<- genCode a
                          doPendingDiscards
-		         xs<- genCodeList as
-			 return $ combineProgs x xs
+                         xs<- genCodeList as
+                         return $ combineProgs x xs
 
- genCode (IClassicalAssign nm off  expr) 
+ genCode (IClassicalAssign nm off  expr)
      = do ecode <- genCode expr
           tocstk <- classicalPut off
           return $ combineProgs ecode  tocstk
@@ -90,7 +90,7 @@ instance GenCode Istmt where
  genCode (Iassign nm (Right expr))
      = do ecode <- genCode expr
           oldnm <- getCurrentActive
-          case oldnm of 
+          case oldnm of
              Just oldname ->
                  do rn <- rename oldname nm
                     setCurrentActive nm
@@ -104,7 +104,7 @@ instance GenCode Istmt where
           unsetCurrentActive
           (startuse,enduse) <- delayedUse nm
           addDelayedCode enduse
-          return $ combineProgs icode  startuse 
+          return $ combineProgs icode  startuse
 
  genCode (IuseAssign nm (Left exp)) -- todo - see IUse
      = do --snm <- getStackName
@@ -112,7 +112,7 @@ instance GenCode Istmt where
           --unsetCurrentActive
           (startuse,enduse) <- delayedUse nm
           addDelayedCode enduse
-          return $ combineProgs ecode  startuse 
+          return $ combineProgs ecode  startuse
 \end{code}
 The new Iuse has expression to eval. The general structure
 of the generated code will now be:
@@ -137,7 +137,7 @@ of the generated code will now be:
      = do usebdy <- genCode $ Iblock stmts
           lbl <- getLabel
           endlbl <- getLabel
-          qendc <-  qend 
+          qendc <-  qend
           escop <- enscope
           pu <- pullup nm
           useStrt <- useStartCode lbl endlbl nm
@@ -149,7 +149,7 @@ of the generated code will now be:
                  combineProgs useStrt $
                  combineProgs bodystart $
                  combineProgs usebdy $
-                 combineProgs qendc endit          
+                 combineProgs qendc endit
 
 
  genCode (Iuse (nm:nms) stmts)
@@ -160,7 +160,7 @@ of the generated code will now be:
           escop <- enscope
           pu <- pullup nm
           useStrt <- useStartCode lbl lbl2 nm
-          qendc <-  qend 
+          qendc <-  qend
           bodystart <- labelizeM lbl $ discard nm
           endit <- labelizeM lbl2 descope
           reuseStackName nm
@@ -169,15 +169,15 @@ of the generated code will now be:
                  combineProgs useStrt $
                  combineProgs bodystart $
                  combineProgs innerUse $
-                 combineProgs qendc endit          
+                 combineProgs qendc endit
 
  genCode (Iguard condstmts)
      = do endlbl <- getLabel
-          usebdy <- guardBodyCode endlbl condstmts 
+          usebdy <- guardBodyCode endlbl condstmts
                     (genCode :: IrExpression -> CodeMonad ProgramCode)
                     (genCode :: Istmt -> CodeMonad ProgramCode)
           endit <- labelizeM endlbl nooperation
-          return $ combineProgs usebdy endit          
+          return $ combineProgs usebdy endit
 
  genCode (Imeas (IrVar nm t) s1 s2)
      =  do pu <- pullup nm
@@ -202,17 +202,17 @@ of the generated code will now be:
  genCode (Icase e clauses)
      = do ec <- genCode e
           nm <- getCurrentActive --No pull up needed.
-          case nm of 
+          case nm of
             Nothing  ->  error $ unsetTop e (Icase e clauses)
             Just nm  ->  makeSplitCode ec nm clauses (genCode :: Istmt -> CodeMonad ProgramCode)
 
 
 \end{code}
 For |Icall| we need to first calculate any classical expressions
-first, in the order presented. This is follwed by the 
-quantum expression in \emph{reverse} order so that the first 
+first, in the order presented. This is follwed by the
+quantum expression in \emph{reverse} order so that the first
 expression is on top. The names of each of these expressions must
-then be saved as the outputs must be renamed to the output ids. 
+then be saved as the outputs must be renamed to the output ids.
 This is follwed by the actual application of
 the transform. Finally, the outputs are renamed.
 
@@ -226,7 +226,7 @@ the transform. Finally, the outputs are renamed.
                  aptran <- applyTransform (length inCexps) ut [oldnm]
                  renames <- rename oldnm newnm
                  removeFromPendingDiscards newnm
-                 return $ combineProgs (combineAllProgs eCcode) $ 
+                 return $ combineProgs (combineAllProgs eCcode) $
                          combineProgs aptran renames
 
  genCode (Icall (Just ut) _ _ inCexps inQexps outQids _) --ut no out classical ids
@@ -238,8 +238,8 @@ the transform. Finally, the outputs are renamed.
                  aptran <- applyTransform (length inCexps) ut names
                  renames <- doRenames (reverse names) $ List.map fst outQids
                  mapM_ removeFromPendingDiscards $ List.map fst outQids
-                 return $ combineProgs (combineAllProgs eCcode) $ 
-                         combineProgs (combineAllProgs eQcode) $ 
+                 return $ combineProgs (combineAllProgs eCcode) $
+                         combineProgs (combineAllProgs eQcode) $
                          combineProgs aptran renames
 
 
@@ -290,15 +290,15 @@ the transform. Finally, the outputs are renamed.
  genCode Iskip
      = return Map.empty
 
- 
+
 quantAndName' :: IrExpression -> CodeMonad (NodeName, ProgramCode)
 quantAndName' e
     = do exp <- genCode e
          nm <- getStackName
          tostk <- makeInt nm
-         return (nm, 
-                 combineProgs exp tostk) 
- 
+         return (nm,
+                 combineProgs exp tostk)
+
 quantifyAndName :: IrExpression -> CodeMonad (NodeName, ProgramCode)
 quantifyAndName  e@(Apply _ _ _)
     = quantAndName' e
@@ -314,7 +314,7 @@ quantifyAndName  e@(IrCvar _ _ _ _)
     = quantAndName' e
 quantifyAndName  e
     = codeAndName e
- 
+
 codeAndName :: IrExpression -> CodeMonad (NodeName, ProgramCode)
 codeAndName e@(IrVar nm _)
     = do exp <- genCode e
@@ -336,9 +336,9 @@ instance GenCode IrExpression where
      = do ex2 <- genCode e2 -- So second op is second on stack.
           ex1 <- genCode e1
           b <- genCode binop
-          return $ combineProgs ex2 $ 
+          return $ combineProgs ex2 $
                  combineProgs ex1 b
- 
+
  genCode (IrBool b)
      = cload $ Right b
 
@@ -358,7 +358,7 @@ instance GenCode IrExpression where
 --error $ "Vars must be genned as part of other code" ++ nm
 --do  addToPendingDiscards nm
  --          return plnm
-                 
+
 
  genCode (IrCvar nn off l t)
      = classicalPull off
@@ -402,11 +402,11 @@ Can an expcall have classical parms?
 instance GenCode BinOp where
     genCode  = classicalOp
 
-       
+
 ioGenCode :: Iprog -> Int->IO Instructions
 ioGenCode qprog loglevel
-    = do (pc,s) <- runStateT (genCode qprog) 
-		   (CodeState [] 0  [] "" 
+    = do (pc,s) <- runStateT (genCode qprog)
+                   (CodeState [] 0  [] ""
                     emptyStack Map.empty emptyStack
                     Nothing loglevel )
          return $ progToIns pc
