@@ -1,8 +1,7 @@
-When /^I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([^"]*)"$/ do |file, dir|
+When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |file, dir|
 
   java_import org.netbeans.jemmy.operators.JFileChooserOperator
   java_import org.netbeans.jemmy.operators.Operator
-  java_import org.netbeans.jemmy.operators.JButtonOperator
   java_import javax.swing.JButton
   fc = JFileChooserOperator.new
   fc.get_dialog_title.should == "Load LQPO (Assembly) File"
@@ -23,7 +22,7 @@ When /^I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([^"]*)"$/ do |file,
 
 
   sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-  p sel_file
+#  p sel_file
   fc.set_selected_file sel_file
 
   fc.approve_selection
@@ -31,18 +30,29 @@ When /^I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([^"]*)"$/ do |file,
 
 end
 
-Then /^the frame "([^"]*)" should appear$/ do |arg1|
+Then /^the button "([\w\s]*)" should appear$/ do |button_text|
+  java_import org.netbeans.jemmy.operators.JButtonOperator
+  java_import org.netbeans.jemmy.Timeouts
+  btn_timeout = Timeouts.new
+  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
+  stepButton = JButtonOperator.new(@mw, button_text)
+
+  stepButton.should_not == nil
+  stepButton.text.should == button_text
+end
+
+Then /^the field "([\w\s]*)" should appear$/ do |arg1|
   pending # express the regexp above with the code you wish you had
 end
 
-Given /^I have just loaded "([^"]*)" from the directory "([^"]*)"$/ do |arg1, arg2|
+Given /^I have just loaded "(.*?)" from the directory "([\w\s\/]*)"$/ do |arg1, arg2|
   pending # express the regexp above with the code you wish you had
 end
 
-When /^I click the button "([^"]*)"$/ do |arg1|
+When /^I click the button "([\w\s]*)"$/ do |arg1|
   pending # express the regexp above with the code you wish you had
 end
 
-Then /^the "([^"]*)" field should show "([^"]*)"$/ do |arg1, arg2|
+Then /^the "([\w\s]*)" field should show "(.*?)"$/ do |arg1, arg2|
   pending # express the regexp above with the code you wish you had
 end

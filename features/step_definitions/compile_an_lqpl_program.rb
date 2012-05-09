@@ -1,5 +1,5 @@
 
-Given /^the program "([^"]*)" has started$/ do  |program|
+Given /^the program "(.*?)" has started$/ do  |program|
   QUFACE = java_import com.drogar.qface.Main
   #args = [""].to_java(:string)
   begin
@@ -10,7 +10,7 @@ Given /^the program "([^"]*)" has started$/ do  |program|
 end
 
 
-Given /^the frame "([^"]*)" is visible$/ do |frame_name|
+Given /^the frame "([\w\s]*)" is visible$/ do |frame_name|
 
   java_import org.netbeans.jemmy.operators.JFrameOperator
   @mw = JFrameOperator.new frame_name
@@ -31,7 +31,7 @@ Given /^I select "([a-zA-Z]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 end
 
 
-And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, dir|
+And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 
   java_import org.netbeans.jemmy.operators.JFileChooserOperator
   java_import org.netbeans.jemmy.operators.Operator
@@ -65,7 +65,7 @@ And /^I load "([a-zA-Z0-9_]*?\.qpl)" from the directory "([^"]*)"$/ do |file, di
 end
 
 
-Then /^"([^"]*)" should be created in "([^"]*)" and be equal to "([^"]*)"$/ do |outfile, outdir,reference|
+Then /^"([\w\s]*)" should be created in "([\w\s\/]*)" and be equal to "([\w\s]*)"$/ do |outfile, outdir,reference|
   realdir = Dir.getwd + "/" +outdir
   File.exist?(realdir + "/" + outfile).should be_true
   File.open(realdir + "/" + outfile) do |newone|

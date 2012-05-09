@@ -10,7 +10,11 @@ Background:
   Scenario:
     When I select "Load" from the "File" menu
     And I load "coin.reference.qpo" from the directory "testdata/qplprograms"
-    Then the frame "Emulator Control" should appear
+    Then the button "Step" should appear
+    Then the button "Go" should appear
+    Then the field "stepvalue" should appear
+    Then the field "depthvalue" should appear
+    Then the field "treevalue" should appear
 
   Scenario:
     Given I have just loaded "coin.reference.qpo" from the directory "testdata/qplprograms"
