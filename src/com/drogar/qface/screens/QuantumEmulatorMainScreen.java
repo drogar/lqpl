@@ -32,7 +32,8 @@ public class QuantumEmulatorMainScreen extends  JFrame{
         mbar.add(fmenu)   ;
         setJMenuBar(mbar);
         mbar.setVisible(true);
-        setContentPane(panel1);
+        setContentPane(controlPanel);
+        controlPanel.setVisible(false);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -43,8 +44,16 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     }
 
 
-    private JPanel panel1;
+
+    private JButton trimButton;
+    private JButton stepButton;
+    private JButton goButton;
+    private JSpinner stepSpinner;
+    private JSpinner recursionSpinner;
     private JSpinner treeDepthSpinner;
+    private JPanel spinnerPanel;
+    private JPanel buttonPanel;
+    private JPanel controlPanel;
     public JLabel message;
     private JMenuItem file_load;
     private JMenuItem file_close;

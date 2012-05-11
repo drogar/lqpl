@@ -1,8 +1,8 @@
 class QfaceModel
-  #attr_accessor :message
+  attr_accessor :control_panel_visible
 
-  #def initialize
-  #  @message = "Swing is ok..."
-  #end
+  def initialize
+    @control_panel_visible = false
+  end
 
 end

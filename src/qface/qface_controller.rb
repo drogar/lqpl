@@ -5,6 +5,7 @@ class QfaceController < ApplicationController
 
   java_import javax.swing.JFileChooser
   java_import javax.swing.filechooser.FileNameExtensionFilter
+
   def file_compile_action_performed
     chooser = JFileChooser.new()
     chooser.set_dialog_title "Open LQPL File for Compiling"
@@ -36,6 +37,7 @@ class QfaceController < ApplicationController
       fname = chooser.get_selected_file.get_absolute_path
       server = ServerConnection.instance
       server.send_load_from_file fname
+      model.control_panel_visible = true
     else
       puts "Did not do approve."
     end
