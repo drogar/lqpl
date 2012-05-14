@@ -74,5 +74,8 @@ when Monkeybars::Resolver::IN_JAR_FILE
 end
 require "exceptions/compiler_process_not_found"
 require "communications/server_connection"
+require "utility/translate_line_ends"
 require "communications/compiler"
+require "communications/server_connection"
+
 require "qface/qface_controller"

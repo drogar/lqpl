@@ -1,14 +1,43 @@
+require 'singleton'
+require 'socket'
+
 class ServerConnection
-  private_class_method :new
+  include Singleton
 
-  def ServerConnection.instance
-    @@instance = new unless @@instance
-    @@instance
+
+  def initialize
+    @port = 9502
+    @connection = nil
+    connect
   end
 
-  def new
+  def connect
+    begin
+      puts "connecting at port #{@port}"
+      @connection = TCPSocket.new "127.0.0.1", @port
+    rescue Errno::ECONNREFUSED => e1
+      begin
+        @connection = TCPSocket.new "localhost", @port
+      rescue Errno::ECONNREFUSED => e
+        raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start 'lpql-server'."
+      end
+    end
   end
 
-  def send_load_from_file_name(filename)
+  def connected?
+    @connection != nil
   end
+
+  def send_load_from_file(fname)
+
+    @fname = fname
+    @dir = File.dirname(@fname)
+    File.open(fname, "r") do |f|
+      qpl_file_data = f.read()
+      connect if !connected?
+      @connection.puts "load #{TranslateLineEnds.new qpl_file_data}"
+    end
+  end
+
+
 end
