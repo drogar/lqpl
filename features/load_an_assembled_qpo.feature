@@ -14,7 +14,7 @@ Background:
     Then the button "Go" should appear
     Then the button "Trim" should appear
     Then the number spinner "Step Size" with value "1" should appear
-    Then the number spinner "Recursion Depth" with value "100" should appear
+    Then the number spinner "Recursion Depth" with value "10" should appear
     Then the number spinner "Tree Depth" with value "4" should appear
     Then the frame "Quantum Stack" should be visible
 

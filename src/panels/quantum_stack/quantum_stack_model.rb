@@ -1,0 +1,3 @@
+class QuantumStackModel
+
+end

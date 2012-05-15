@@ -55,12 +55,13 @@ Then /^the number spinner "([\w\s]*)" with value "([\d]*)" should appear$/ do |s
 
   parent = ContainerOperator.new theLabel.parent
   theSpinner = JSpinnerOperator.new(parent,spin_value)
-  theSpiner.should_not == nil
-  theSpinner.value.to_string.should == spin_value
+  theSpinner.should_not == nil
+  "#{theSpinner.value}".should == spin_value
 end
 
-Then /^the frame "([\w\s]*)" should be visible$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
+Then /^the frame "([\w\s]*)" should be visible$/ do |frame_name|
+   java_import org.netbeans.jemmy.operators.JFrameOperator
+  @mw = JFrameOperator.new frame_name
 end
 
 Given /^I have just loaded "(.*?)" from the directory "([\w\s\/]*)"$/ do |arg1, arg2|

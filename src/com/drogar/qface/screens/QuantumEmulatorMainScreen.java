@@ -15,7 +15,7 @@ import java.awt.event.*;
 public class QuantumEmulatorMainScreen extends  JFrame{
     public QuantumEmulatorMainScreen() {
         super("Quantum Emulator");
-        setSize(400,500);
+        setSize(400,300);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JMenuBar mbar = new JMenuBar();
@@ -33,6 +33,10 @@ public class QuantumEmulatorMainScreen extends  JFrame{
         setJMenuBar(mbar);
         mbar.setVisible(true);
         setContentPane(controlPanel);
+        setUpSpinner(stepSpinner, 1,1,100000,1);
+        setUpSpinner(recursionSpinner, 10,0,100000,1);
+        setUpSpinner(treeDepthSpinner, 4,1,100,1);
+
         controlPanel.setVisible(false);
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -43,6 +47,10 @@ public class QuantumEmulatorMainScreen extends  JFrame{
 
     }
 
+    public void setUpSpinner(JSpinner spinner, int val, int min, int max, int step){
+        final SpinnerNumberModel model = new SpinnerNumberModel(val, min, max, step);
+        spinner.setModel(model);
+    }
 
 
     private JButton trimButton;

@@ -38,6 +38,7 @@ class QfaceController < ApplicationController
       server = ServerConnection.instance
       server.send_load_from_file fname
       model.control_panel_visible = true
+      QuantumStackController.instance.open
     else
       puts "Did not do approve."
     end
