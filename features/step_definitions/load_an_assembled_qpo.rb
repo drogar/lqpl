@@ -35,13 +35,31 @@ Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   java_import org.netbeans.jemmy.Timeouts
   btn_timeout = Timeouts.new
   btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
-  stepButton = JButtonOperator.new(@mw, button_text)
+  theButton = JButtonOperator.new(@mw, button_text)
 
-  stepButton.should_not == nil
-  stepButton.text.should == button_text
+  theButton.should_not == nil
+  theButton.text.should == button_text
+  theButton.should be_visible
 end
 
-Then /^the field "([\w\s]*)" should appear$/ do |arg1|
+Then /^the number spinner "([\w\s]*)" with value "([\d]*)" should appear$/ do |spinner_label, spin_value|
+
+  java_import org.netbeans.jemmy.operators.JLabelOperator
+  java_import org.netbeans.jemmy.operators.ContainerOperator
+  java_import org.netbeans.jemmy.operators.JSpinnerOperator
+  theLabel = JLabelOperator.new(@mw, spinner_label)
+
+  theLabel.should_not == nil
+  theLabel.text.should == spinner_label
+  theLabel.should be_visible
+
+  parent = ContainerOperator.new theLabel.parent
+  theSpinner = JSpinnerOperator.new(parent,spin_value)
+  theSpiner.should_not == nil
+  theSpinner.value.to_string.should == spin_value
+end
+
+Then /^the frame "([\w\s]*)" should be visible$/ do |arg1|
   pending # express the regexp above with the code you wish you had
 end
 

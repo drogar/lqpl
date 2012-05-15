@@ -13,9 +13,10 @@ Background:
     Then the button "Step" should appear
     Then the button "Go" should appear
     Then the button "Trim" should appear
-    Then the field "stepvalue" should appear
-    Then the field "depthvalue" should appear
-    Then the field "treevalue" should appear
+    Then the number spinner "Step Size" with value "1" should appear
+    Then the number spinner "Recursion Depth" with value "100" should appear
+    Then the number spinner "Tree Depth" with value "4" should appear
+    Then the frame "Quantum Stack" should be visible
 
   Scenario:
     Given I have just loaded "coin.reference.qpo" from the directory "testdata/qplprograms"

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>features/load_an_assembled_qpo.feature</string>
+	<string>features/step_definitions/load_an_assembled_qpo.rb</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -40,58 +40,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>25</integer>
+				<integer>54</integer>
 				<key>line</key>
-				<integer>14</integer>
+				<integer>17</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-		</dict>
-		<key>features/step_definitions/compile_an_lqpl_program.rb</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>33</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>30</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>13</integer>
-				<key>line</key>
-				<integer>33</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>36</integer>
-				<key>line</key>
-				<integer>33</integer>
-			</dict>
 		</dict>
 		<key>features/step_definitions/load_an_assembled_qpo.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>84</integer>
+				<integer>11</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>55</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>12</integer>
 		</dict>
 		<key>features/support/env.rb</key>
 		<dict>
@@ -347,36 +317,6 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>testdata/qplprograms/min.qpo</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>6</integer>
-			</dict>
-			<key>columnSelection</key>
-			<false/>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>6</integer>
-			</dict>
-		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
@@ -387,9 +327,7 @@
 		<string>src/qface/qface_controller.rb</string>
 		<string>src/qface/qface_view.rb</string>
 		<string>src/communications/server_connection.rb</string>
-		<string>testdata/qplprograms/min.qpo</string>
 		<string>features/load_an_assembled_qpo.feature</string>
-		<string>features/step_definitions/compile_an_lqpl_program.rb</string>
 		<string>features/step_definitions/load_an_assembled_qpo.rb</string>
 		<string>src/com/drogar/qface/screens/QuantumEmulatorMainScreen.form</string>
 		<string>src/main.rb</string>
@@ -401,6 +339,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{399, 16}, {1519, 898}}</string>
+	<string>{{628, 142}, {1519, 898}}</string>
 </dict>
 </plist>
