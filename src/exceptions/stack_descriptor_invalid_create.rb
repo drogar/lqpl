@@ -1,0 +1,2 @@
+class StackDescriptorInvalidCreate < RuntimeError
+end

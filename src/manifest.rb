@@ -80,3 +80,5 @@ require "communications/server_connection"
 
 require "qface/qface_controller"
 require "panels/quantum_stack/quantum_stack_controller"
+
+require "model/quantum_stack"
