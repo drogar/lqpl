@@ -1,7 +1,5 @@
 class StackValue < StackDescriptor
 
-  attr_accessor :value
-
   PATTERN=Regexp.new /^<Value>((0?\.\d*)|(1\.0*))<\/Value>$/
 
   def initialize(in_string)

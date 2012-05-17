@@ -73,6 +73,7 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 require "exceptions/compiler_process_not_found"
+require "exceptions/invalid_input"
 require "communications/server_connection"
 require "utility/translate_line_ends"
 require "communications/compiler"

@@ -1,17 +1,15 @@
 
 class StackDescriptor
 
+  attr_accessor :value
+
   def self.make_instance(in_string)
-    if in_string =~ /^<Zero/
-      StackZero.new in_string
-    elsif in_string =~ /^<Value/
-      StackValue.new in_string
-    elsif in_string =~ /^<Class/
-      StackClassical.new in_string
-    elsif in_string =~ /^<Qubi/
-      StackQubit.new in_string
-    elsif in_string =~ /^<Alge/
-      StackData.new in_string
+    case in_string
+    when /^<Zero/ then StackZero.new in_string
+    when /^<Valu/ then StackValue.new in_string
+    when /^<Clas/ then StackClassical.new in_string
+    when /^<Qubi/ then StackQubit.new in_string
+    when /^<Alge/ then StackData.new in_string
     else raise StackDescriptorInvalidCreate, in_string
     end
   end
