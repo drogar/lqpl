@@ -36,8 +36,14 @@ class ServerConnection
       qpl_file_data = f.read()
       connect if !connected?
       @connection.puts "load #{TranslateLineEnds.new qpl_file_data}"
+      @connection.readline
     end
   end
 
+  def get_qstack(tree_depth=5, recursion_depth=1)
+    connect if !connected?
+    @connection.puts "get qstack #{tree_depth} #{recursion_depth}"
+    retData = @connection.readline
+  end
 
 end
