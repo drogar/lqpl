@@ -46,7 +46,7 @@
     toXML = (surroundWith "char") . show
 
   instance XML String where
-    toXML = (surroundWith "string") . show
+    toXML = (surroundWith "string")
 
   instance XML LazyNum where
     toXML = (surroundWith "number") . show

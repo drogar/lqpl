@@ -15,7 +15,7 @@
 
  import System.IO
 
- data QSData = QDQuantumStack | QDClassicalStack | QDDump
+ data QSData = QDQuantumStack | QDClassicalStack | QDDump | QDMemoryMap
   deriving (Eq,Show,Read)
 
  data QCommand = QCLoad FilePath |

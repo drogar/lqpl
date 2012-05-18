@@ -74,7 +74,7 @@
       return $ QCSimulate  (read depth)
 
   parseGetType :: Parser QSData
-  parseGetType = (try parseQStack) <|> (try parseCStack) <|> parseDump
+  parseGetType = (try parseQStack) <|> (try parseCStack) <|> (try parseDump) <|> parseMemoryMap
 
   parseQStack :: Parser QSData
   parseQStack =
@@ -93,6 +93,12 @@
     do
       string "dump"
       return QDDump
+
+  parseMemoryMap :: Parser QSData
+  parseMemoryMap =
+    do
+      string "memorymap"
+      return QDMemoryMap
 
 
 \end{code}

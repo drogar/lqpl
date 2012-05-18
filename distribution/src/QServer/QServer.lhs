@@ -137,6 +137,8 @@ commandHandler machineStateRef shandle addr msg =
         sendClassicalStack depth treedepth machineStateRef shandle
       Right (QCGet QDDump depth treedepth) ->
         sendDump depth treedepth machineStateRef shandle
+      Right (QCGet QDMemoryMap depth treedepth) ->
+        sendMemoryMap depth treedepth machineStateRef shandle
       Right (QCSimulate depth) ->
         simulate depth machineStateRef shandle
       Left x -> putStrLn $ "From " ++ show addr ++ ": unrecognized: " ++ msg ++ " -- " ++ x
@@ -149,6 +151,14 @@ sendQstack depth treedepth machineStateRef shndle =
     let bms =  pickIthMS  depth mstate
         qs = quantumStack bms
     hPutStrLn shndle $  boundedToXML treedepth qs
+
+sendMemoryMap :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
+sendMemoryMap depth treedepth machineStateRef shndle =
+  do
+    mstate <- readIORef machineStateRef
+    let bms =  pickIthMS  depth mstate
+        mm = stackTranslation bms
+    hPutStrLn shndle $  boundedListToXML treedepth "MMap" mm
 
 sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendClassicalStack depth treedepth machineStateRef shndle =

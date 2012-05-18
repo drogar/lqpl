@@ -33,6 +33,12 @@ Test-Suite stack-to-xml-spec
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
    extensions:       TypeSynonymInstances
    hs-source-dirs:   src
+Test-Suite mmap-to-xml-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/QServer/MMapToXMLSpec.lhs
+   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
+   extensions:       TypeSynonymInstances
+   hs-source-dirs:   src
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/Compiler/CompilerServerSpec.lhs
