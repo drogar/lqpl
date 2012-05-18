@@ -1,5 +1,7 @@
 package com.drogar.qface.components;
 
+import com.drogar.qface.qstack.PaintMe;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,6 +18,8 @@ public class QuantumStackPanel extends JPanel{
 
     Rectangle area;
     boolean  odd = true;
+    PaintMe quantumStack;
+
     public QuantumStackPanel() {
         super();
         setBackground(Color.white);
@@ -33,18 +37,22 @@ public class QuantumStackPanel extends JPanel{
     }
 
     protected void paintComponent(Graphics g) {
-        Dimension size = getSize();
-        int x = 0;
-        int y = 0;
-        int i = 0;
-        while(x < size.width && y < size.height) {
-            g.setColor(i%2==0? Color.red : Color.white);
-            g.fillOval(x,y,size.width-(2*x),size.height-(2*y));
-            x+=10; y+=10; i++;
+        if (null != quantumStack) {
+            quantumStack.paintme(g,this);
+        } else {
+
         }
     }
 
-//    public void paint(Graphics g){
+    public PaintMe getQuantumStack() {
+        return quantumStack;
+    }
+
+    public void setQuantumStack(PaintMe quantumStack) {
+        this.quantumStack = quantumStack;
+    }
+
+    //    public void paint(Graphics g){
 //        update(g);
 //    }
 //

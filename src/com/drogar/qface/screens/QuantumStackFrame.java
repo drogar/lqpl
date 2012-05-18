@@ -13,7 +13,7 @@ import java.awt.*;
  * To change this template use File | Settings | File Templates.
  */
 public class QuantumStackFrame extends JFrame{
-    private QuantumStackPanel quantumStackPanel;
+     private QuantumStackPanel quantumStackPanel;
 
      public QuantumStackFrame() throws HeadlessException {
         super("Quantum Stack");

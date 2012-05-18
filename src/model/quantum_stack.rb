@@ -7,8 +7,16 @@ require "model/stack_classical"
 require "model/stack_qubit"
 require "model/stack_data"
 
+java_import com.drogar.qface.qstack.PaintMe
+java_import java.awt.Dimension
+java_import java.awt.BasicStroke
+java_import java.awt.Color
+java_import java.awt.Rectangle
+java_import java.awt.Point
+
 class QuantumStack
 
+  include PaintMe
   attr_accessor :substacks
 
   def initialize(in_qstack)
@@ -37,6 +45,24 @@ class QuantumStack
     @bottom
   end
 
+# PaintMe interface
+
+  def paintme(g, p)
+    @descriptor.paintme_at_point(g,p,Point.new(100.0,100.0))
+
+  end
+
+  def paintmeAtPoint(g,p,center)
+    @descriptor.paintme_at_point(g,p,center)
+
+  end
+
+  alias :paintme_at_point :paintmeAtPoint
+
+  # End PaintMe interface
+
+
+
   def self.make_multiple_stacks(many_stacks)
     return [] if many_stacks == ""
     bottom_pattern=Regexp.union(PATTERN, /<bottom\/>/)
@@ -54,7 +80,7 @@ class QuantumStack
   end
 
   PATTERN = Regexp.new /^<Qstack>
-      <StackAddress><int>(\d)*<\/int><\/StackAddress>  #Stackaddress ([1])
+      <int>-?(\d)*<\/int>  #Stackaddress ([1])
       <bool>((True)|(False))<\/bool> #on diagonal ([2])
       <substacks>(.*)<\/substacks> # the substacks ([5])
       ((<Zero\/>)|(<Value>.*<\/Value>)|(<Qubits>.*<\/Qubits>)|(<ClassicalStack>.*<\/ClassicalStack>)|(<AlgebraicData>.*<\/AlgebraicData>))  # stack descriptor [6]

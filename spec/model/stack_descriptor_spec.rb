@@ -86,6 +86,10 @@ describe StackValue do
     sd = StackDescriptor.make_instance "<Value>0.32</Value>"
     sd.value.should == 0.32
   end
+  it "should allow a number tag to surround the data" do
+    sd = StackDescriptor.make_instance "<Value><number>0.32</number></Value>"
+    sd.value.should == 0.32
+  end
 end
 
 describe StackClassical do

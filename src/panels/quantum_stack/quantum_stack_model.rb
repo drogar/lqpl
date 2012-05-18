@@ -3,7 +3,8 @@ class QuantumStackModel
 
   def initialize
     sc = ServerConnection.instance
-    qstack = sc.get_qstack
+    @qstack = sc.get_qstack
+    puts "set up qstack model #{@qstack}"
   end
 
 end

@@ -44,6 +44,7 @@ class ServerConnection
     connect if !connected?
     @connection.puts "get qstack #{tree_depth} #{recursion_depth}"
     retData = @connection.readline
+    QuantumStack.new(retData)
   end
 
 end
