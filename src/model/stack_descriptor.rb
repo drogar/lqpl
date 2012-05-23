@@ -31,13 +31,13 @@ class StackDescriptor
 
   def paintme(g, p)
     #Not to be used
-    raise RuntimeException, "do not call paintme on descriptors, use paintmeAtPoint"
+    raise RuntimeError, "do not call paintme on descriptors, use paintmeAtPoint"
 
   end
 
   def paintmeAtPoint(g,p,center)
     #Not to be used
-    raise RuntimeException, "do not call paintme on abstract StackDescriptor, use on subclass"
+    raise RuntimeError, "do not call paintme on abstract StackDescriptor, use on subclass: I am a #{self.class}"
 
 
   end

@@ -7,7 +7,7 @@ class StackValue < StackDescriptor
   def initialize(in_string)
     matc = PATTERN.match in_string
     if matc
-      @value = matc[2].to_f
+      @value = matc[2]
     else
       raise StackDescriptorInvalidCreate, in_string
     end
@@ -23,8 +23,9 @@ class StackValue < StackDescriptor
     g.set_color(Color.black);
     g.draw_oval(center.x-5.0, center.y-5.0, 10.0, 10.0);
     g.draw_string("#{@value}", center.x-20.0, center.y+20.0)
+ end
 
+ alias :paintme_at_point :paintmeAtPoint
 
-  end
   # End PaintMe interface
 end
