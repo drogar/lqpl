@@ -45,4 +45,9 @@ class QfaceController < ApplicationController
     update_view
   end
 
+  def step_button_action_performed
+    sc = ServerConnection.instance
+    sc.do_step
+    QuantumStackController.instance.update_qstack
+  end
 end

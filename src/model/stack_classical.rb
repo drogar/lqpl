@@ -29,4 +29,10 @@ class StackClassical< StackDescriptor
     @value.length
   end
 
+   # PaintMe interface overrides
+  def my_colour
+    Color.green
+  end
+
+  # End PaintMe interface
 end

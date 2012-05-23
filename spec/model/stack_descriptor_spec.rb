@@ -1,5 +1,7 @@
 require 'spec/spec_helper'
 
+java_import java.awt.image.BufferedImage
+
 describe StackDescriptor do
   it "should only be created by the factory" do
     expect {
@@ -58,7 +60,16 @@ describe StackZero do
       sd = StackZero.new "wrong"
     }.to raise_error(StackDescriptorInvalidCreate, "wrong")
   end
-
+  it "should have no name" do
+    sd = StackDescriptor.make_instance "<Zero/>"
+    sd.name.should be_nil
+  end
+  it "should have a preferred size of W=10, H > 15" do
+    g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
+    sd = StackDescriptor.make_instance "<Zero/>"
+    sd.get_preferred_size(g).width.should == 10
+    sd.get_preferred_size(g).height.should > 15
+  end
 end
 
 describe StackValue do
@@ -89,6 +100,16 @@ describe StackValue do
   it "should allow a number tag to surround the data" do
     sd = StackDescriptor.make_instance "<Value><number>0.32</number></Value>"
     sd.value.should == "0.32"
+  end
+  it "should have no name" do
+    sd = StackDescriptor.make_instance "<Value>0.5</Value>"
+    sd.name.should be_nil
+  end
+  it "should have a preferred size of W=10, H > 15" do
+    g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
+    sd = StackDescriptor.make_instance "<Value>0.5</Value>"
+    sd.get_preferred_size(g).width.should == 10
+    sd.get_preferred_size(g).height.should > 15
   end
 end
 

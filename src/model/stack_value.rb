@@ -8,24 +8,21 @@ class StackValue < StackDescriptor
     matc = PATTERN.match in_string
     if matc
       @value = matc[2]
+      @name = nil
     else
       raise StackDescriptorInvalidCreate, in_string
     end
   end
 
+  def length
+    0
+  end
+
   # PaintMe interface overrides
+  def my_colour
+    Color.blue
+  end
 
-
-  def paintmeAtPoint(g,p,center)
-    g.set_color(Color.blue)
-    #e = Ellipse2Dd.new(center.x-5.0, center.y-5.0, 10.0, 10.0);
-    g.fill_oval(center.x-5.0, center.y-5.0, 10.0, 10.0);
-    g.set_color(Color.black);
-    g.draw_oval(center.x-5.0, center.y-5.0, 10.0, 10.0);
-    g.draw_string("#{@value}", center.x-20.0, center.y+20.0)
- end
-
- alias :paintme_at_point :paintmeAtPoint
 
   # End PaintMe interface
 end

@@ -21,6 +21,13 @@ class StackData < StackDescriptor
     @value.length
   end
 
+     # PaintMe interface overrides
+  def my_colour
+    Color.magenta
+  end
+
+  # End PaintMe interface
+
   def self.parse_map(constructors_string)
     raise InvalidInput, "Must have at least one constructor" if !constructors_string or constructors_string.length == 0
     md = CONS_PATTERN.match constructors_string

@@ -1,6 +1,24 @@
 require 'spec/spec_helper'
 
 describe QuantumStack do
+  describe "class method decode_mmap" do
+    it "should create the map 1 -> p when input a kv xml with p as key and 1 as val" do
+      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair></map></MMap>")
+      mm.should == {1 => "p"}
+    end
+    it "should create the map 1 -> p, 2 -> rex when input a kv xml with p as key and 1 as val and rex ->2 in same list" do
+      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair><kvpair><key><string>rex</string></key><value><int>2</int></value></kvpair></map></MMap>")
+      mm.should == {1 => "p", 2 => "rex"}
+    end
+    it "should create a map with last element of list if duplicated" do
+      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p</string></key><value><int>27</int></value></kvpair></map><map><kvpair><key><string>rex</string></key><value><int>27</int></value></kvpair></map></MMap>")
+      mm.should == {27 => "rex"}
+    end
+    it "should create a mamp with all entries in the maps in the list" do
+      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p5</string></key><value><int>27</int></value></kvpair></map><map><kvpair><key><string>p13</string></key><value><int>13</int></value></kvpair><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair></map></MMap>")
+      mm.should == {1 => "p", 27 => "p5", 13 => "p13"}
+    end
+  end
   it "should give an invalid create error when created with incorrect data" do
     expect {
       qs = QuantumStack.new "err"
@@ -47,6 +65,10 @@ describe QuantumStack do
     qs.substacks.length.should == 1
     qs = QuantumStack.new "<Qstack><int>1</int><bool>True</bool><substacks><bottom/><bottom/><bottom/></substacks><ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack></Qstack>"
     qs.substacks.length.should == 3
-
+  end
+  it "should assign a name for a quantum descriptor" do
+    qs = QuantumStack.new("<Qstack><int>2</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>",
+    "<MMap><map><kvpair><key><string>p</string></key><value><int>2</int></value></kvpair></map></MMap>")
+    qs.descriptor.name.should == "p"
   end
 end

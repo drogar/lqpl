@@ -37,6 +37,11 @@ public class QuantumStackPanel extends JPanel{
     }
 
     protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        Rectangle bck = new Rectangle(getWidth(), getHeight());
+        Color bgcolour = g2.getBackground();
+        g2.setColor(bgcolour);
+        g2.fill(bck);
         if (null != quantumStack) {
             quantumStack.paintme(g,this);
         } else {
@@ -50,6 +55,7 @@ public class QuantumStackPanel extends JPanel{
 
     public void setQuantumStack(PaintMe quantumStack) {
         this.quantumStack = quantumStack;
+        repaint();
     }
 
     //    public void paint(Graphics g){
