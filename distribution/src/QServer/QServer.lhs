@@ -158,7 +158,7 @@ sendMemoryMap depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         mm = stackTranslation bms
-    hPutStrLn shndle $  boundedListToXML treedepth "MMap" mm
+    hPutStrLn shndle $  listToXML "MMap" mm
 
 sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendClassicalStack depth treedepth machineStateRef shndle =

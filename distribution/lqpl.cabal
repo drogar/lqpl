@@ -31,7 +31,7 @@ Test-Suite stack-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/StackToXMLSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
-   extensions:       TypeSynonymInstances
+   extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,Rank2Types,ScopedTypeVariables,FlexibleContexts,KindSignatures
    hs-source-dirs:   src
 Test-Suite mmap-to-xml-spec
    type:             exitcode-stdio-1.0

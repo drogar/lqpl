@@ -116,7 +116,7 @@
     boundedToXML 0 _ = "<bottom/>"
     boundedToXML n qs = surroundWith "Qstack" $ toXML (address qs) ++
                   toXML (onDiagonal qs) ++
-                  (listToXML "substacks" $ take (n-1) (subStacks qs)) ++
+                  (boundedListToXML (n-1) "substacks" (subStacks qs)) ++
                   toXML (descriptor qs)
 
   instance (XML b)=> XML (DumpElement b) where
