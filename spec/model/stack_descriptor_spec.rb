@@ -1,6 +1,5 @@
 require 'spec/spec_helper'
 
-java_import java.awt.image.BufferedImage
 
 describe StackDescriptor do
   it "should only be created by the factory" do

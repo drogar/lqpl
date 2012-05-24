@@ -13,6 +13,9 @@ java_import java.awt.BasicStroke
 java_import java.awt.Color
 java_import java.awt.Rectangle
 java_import java.awt.Point
+java_import java.awt.image.BufferedImage
+java_import java.awt.geom.Line2D
+java_import java.awt.AlphaComposite
 
 class QuantumStack
 
@@ -24,12 +27,12 @@ class QuantumStack
   def initialize(in_qstack, in_name_stack="")
     @bottom = in_qstack == "<bottom/>"
     if !bottom?
-      md = PATTERN.match in_qstack
+      md = SINGLE_QS_PATTERN.match in_qstack
       raise QuantumStackInvalidCreate, in_qstack if !md
       @stackaddress = md[1].to_i
-      @on_diagonal = md[2] == "True"
-      @substacks = QuantumStack::make_multiple_stacks md[5]
-      @descriptor = StackDescriptor.make_instance md[6]
+      @on_diagonal = md[3] == "True"
+      @substacks = QuantumStack::make_multiple_stacks md[6]
+      @descriptor = StackDescriptor.make_instance md[7]
       case @descriptor
       when StackZero then  raise QuantumStackInvalidCreate, "Zero stack should not have substacks" if @substacks.size > 0
       when StackValue then raise QuantumStackInvalidCreate, "Value element should not have substacks" if @substacks.size > 0
@@ -52,19 +55,72 @@ class QuantumStack
 # PaintMe interface
 
   def paintme(g, p)
-    @descriptor.paintme_at_point(g,p,Point.new(100.0,100.0))
+    d = get_preferred_size(g);
+    if bottom?
+      g.draw_string("...", d.width+10.0, d.height+40.0)
+    else
+      top_point = Point.new(d.width+10.0,d.height+40.0)
+      paint_substacks(top_point,g)
+      @descriptor.paintme_at_point(g,p,top_point)
 
+    end
   end
 
   def paintmeAtPoint(g,p,center)
-    @descriptor.paintme_at_point(g,p,center)
+    if bottom?
+      text_rec = g.get_font.get_string_bounds("...",g.get_font_render_context)
+      g.draw_string("...", center.x-(text_rec.width*0.5), center.y+(text_rec.height * 0.5))
+    else
+      paint_substacks(center,g)
+      @descriptor.paintme_at_point(g,p,center)
 
+    end
   end
 
   alias :paintme_at_point :paintmeAtPoint
 
   # End PaintMe interface
 
+  def paint_substacks(top_point,g)
+    modifier = (@substacks.length - 1) * 0.5
+    @substacks.each_with_index do |sstack,i|
+      paint_point = Point.new(top_point.x + (i - modifier)*node_separation(:horizontal), top_point.y+node_separation(:vertical))
+      ln = Line2D::Double.new(top_point, paint_point)
+      g.set_color(Color.black)
+      #g.set_composite(AlphaComposite::Src)
+      g.draw(ln)
+      sstack.paintme_at_point(g,p,paint_point)
+
+    end
+  end
+
+  def node_separation(direction)
+    case direction
+    when :vertical then 30.0
+    when :horizontal then 40.0
+    else 20.0
+    end
+  end
+
+
+  def get_preferred_size(g)
+    return g.get_font.get_string_bounds("...",g.get_font_render_context) if bottom?
+    width = 0.0
+    height = 0.0
+    maxheight = 0.0
+    @substacks.each do |sstack|
+      dimsstack = sstack.get_preferred_size(g)
+      width += dimsstack.width + node_separation(:horizontal)
+      maxheight = [maxheight, dimsstack.height + node_separation(:vertical)].max
+    end
+    width -= node_separation(:horizontal) if @substacks.length > 0
+    height = maxheight
+    dimnode = Dimension.new(0,0)
+    dimnode.set_size(@descriptor.get_preferred_size(g)) if @descriptor
+    d = Dimension.new(0,0)
+    d.set_size(width + dimnode.width, height+dimnode.height)
+    d
+  end
 
   def self.decode_mmap(in_mmap)
     return {} if in_mmap == ""
@@ -95,29 +151,45 @@ class QuantumStack
 
   def self.make_multiple_stacks(many_stacks)
     return [] if many_stacks == ""
-    bottom_pattern=Regexp.union(PATTERN, /<bottom\/>/)
-    md = bottom_pattern.match many_stacks
-    raise InvalidInput, many_stacks if !md
-    rval=[QuantumStack.new(md[0])]
-    num_found = 1
-    while md
-      md = bottom_pattern.match(many_stacks[md[0].length*num_found,many_stacks.length])
-      return rval if !md
-      rval << QuantumStack.new(md[0])
-      num_found += 1
+    next_stack = QuantumStack::get_next_qstack(many_stacks)
+    raise InvalidInput, many_stacks if !next_stack
+    rval=[QuantumStack.new(next_stack[0])]
+    while next_stack
+      next_stack = QuantumStack::get_next_qstack(next_stack[1])
+      return rval if !next_stack
+      rval << QuantumStack.new(next_stack[0])
     end
     rval
+  end
+
+  def self.get_next_qstack(multi_stacks)
+    return nil if !multi_stacks or multi_stacks == ""
+    if multi_stacks =~ /^<bottom\/>/
+      return ["<bottom/>",multi_stacks[9,multi_stacks.length]]
+    end
+    if multi_stacks =~ /<Qstack/
+      len = 8 # length of "<Qstack>"
+      in_count = 1
+      while in_count > 0
+        len += 1
+        in_count += 1 if multi_stacks[len,8] == "<Qstack>"
+        in_count -= 1 if multi_stacks[len,9] == "</Qstack>"
+      end
+      len += 9
+      return [multi_stacks[0,len], multi_stacks[len, multi_stacks.length - len + 1]]
+    end
   end
 
   MMAP_PATTERN = Regexp.new /^<MMap>(.*)<\/MMap>$/
   LIST_ELEMENT_PATTERN = Regexp.new /^<map>(.*?)<\/map>/
   KVPATTERN = Regexp.new /^<kvpair><key><string>(.*?)<\/string><\/key><value><int>(\d*)<\/int><\/value><\/kvpair>/
 
-  PATTERN = Regexp.new /^<Qstack>
-      <int>-?(\d)*<\/int>  #Stackaddress ([1])
-      <bool>((True)|(False))<\/bool> #on diagonal ([2])
-      <substacks>(.*)<\/substacks> # the substacks ([5])
-      ((<Zero\/>)|(<Value>.*<\/Value>)|(<Qubits>.*<\/Qubits>)|(<ClassicalStack>.*<\/ClassicalStack>)|(<AlgebraicData>.*<\/AlgebraicData>))  # stack descriptor [6]
+
+  SINGLE_QS_PATTERN = Regexp.new /^<Qstack>
+      <int>(-?(\d)*)<\/int>  #Stackaddress ([1])
+      <bool>((True)|(False))<\/bool> #on diagonal ([3])
+      <substacks>(.*)<\/substacks> # the substacks ([6])
+      ((<Zero\/>)|(<Value>.*<\/Value>)|(<Qubits>.*<\/Qubits>)|(<ClassicalStack>.*<\/ClassicalStack>)|(<AlgebraicData>.*<\/AlgebraicData>))  # stack descriptor [7]
       <\/Qstack>/x
 
 

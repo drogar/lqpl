@@ -9,3 +9,7 @@ $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../lib/java/monkeybars-
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../out/production/qface"
 
 require 'manifest'
+
+def make_multi_sstacks(front,back,sstack,count)
+  front+"<substacks>"+(sstack*count)+"</substacks>" + back
+end

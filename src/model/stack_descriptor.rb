@@ -35,13 +35,7 @@ class StackDescriptor
     10.0
   end
 
-  def node_separation(direction)
-    case direction
-    when :vertical then 30.0
-    when :horizontal then 40.0
-    else 20.0
-    end
-  end
+
 
   def paintme(g, p)
     #Not to be used

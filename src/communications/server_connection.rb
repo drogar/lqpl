@@ -42,9 +42,9 @@ class ServerConnection
 
   def get_qstack(tree_depth=5, recursion_depth=1)
     connect if !connected?
-    @connection.puts "get qstack #{tree_depth} #{recursion_depth}\n"
+    @connection.puts "get qstack  #{recursion_depth} #{tree_depth}\n"
     retData = @connection.readline
-    @connection.puts "get memorymap #{tree_depth} #{recursion_depth}\n"
+    @connection.puts "get memorymap #{recursion_depth}  #{tree_depth}\n"
     retMM = @connection.readline
     QuantumStack.new(retData,retMM)
   end

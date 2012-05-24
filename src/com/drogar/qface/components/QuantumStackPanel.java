@@ -33,7 +33,7 @@ public class QuantumStackPanel extends JPanel{
         // in order to enforce a 'round' bullseye
         Dimension layoutSize = super.getPreferredSize();
         int max = Math.max(layoutSize.width,layoutSize.height);
-        return new Dimension(max+400,max+300);
+        return new Dimension(max+800,max+600);
     }
 
     protected void paintComponent(Graphics g) {
