@@ -57,9 +57,9 @@ class QuantumStack
   def paintme(g, p)
     d = get_preferred_size(g);
     if bottom?
-      g.draw_string("...", d.width+10.0, d.height+40.0)
+      g.draw_string("...", d.width/2+10.0, d.height+40.0)
     else
-      top_point = Point.new(d.width+10.0,d.height+40.0)
+      top_point = Point.new(d.width/2+10.0,d.height+40.0)
       paint_substacks(top_point,g)
       @descriptor.paintme_at_point(g,p,top_point)
 
@@ -82,9 +82,10 @@ class QuantumStack
   # End PaintMe interface
 
   def paint_substacks(top_point,g)
-    modifier = (@substacks.length - 1) * 0.5
+    sign_control = (@substacks.length - 1) * 0.5
+    sizes = QuantumStack::make_x_offsets @substacks.collect { |sstack| [sstack.get_preferred_size(g).width, node_separation(:horizontal)].max}
     @substacks.each_with_index do |sstack,i|
-      paint_point = Point.new(top_point.x + (i - modifier)*node_separation(:horizontal), top_point.y+node_separation(:vertical))
+      paint_point = Point.new(top_point.x + (i <=> sign_control)*sizes[i], top_point.y+node_separation(:vertical))
       ln = Line2D::Double.new(top_point, paint_point)
       g.set_color(Color.black)
       #g.set_composite(AlphaComposite::Src)
@@ -92,6 +93,23 @@ class QuantumStack
       sstack.paintme_at_point(g,p,paint_point)
 
     end
+  end
+
+  def self.make_x_offsets(subs)
+    len = subs.length
+    return [0] if len == 1
+    if len.even?
+      bldr = subs.take(len/2)
+      bldr << 0
+      bldr += subs.drop(len/2)
+    else
+      bldr = subs.take(1 + len/2)
+      bldr += subs.drop(len/2)
+    end
+    ret = []
+    bldr.each_cons(2) {|pr| ret << (pr[0]+pr[1]) *0.5}
+    ret[len/2] = 0 if len.odd?
+    ret
   end
 
   def node_separation(direction)
@@ -132,20 +150,25 @@ class QuantumStack
     return {} if !list_elem
     list_elems_len = list_elem[0].length
     while list_elem
-      kvpairs = list_elem[1]
-      kvp = KVPATTERN.match kvpairs
-      return ret if !kvp
-      ret[kvp[2].to_i] = kvp[1]
-      kvps_len = kvp[0].length
-      while kvp
-        kvp = KVPATTERN.match(kvpairs[kvps_len,kvpairs.length])
-        break if !kvp
-        ret[kvp[2].to_i] = kvp[1]
-        kvps_len += kvp[0].length
-      end
+      ret.merge!(QuantumStack::kv_pairs_to_map(list_elem[1]))
       list_elem = LIST_ELEMENT_PATTERN.match(lom[list_elems_len, lom.length])
       return ret if !list_elem
       list_elems_len += list_elem[0].length
+    end
+  end
+
+  def self.kv_pairs_to_map(kvps)
+    return {} if !kvps or kvps == ""
+    ret = {}
+    kvp = KVPATTERN.match kvps
+    return ret if !kvp
+    ret[kvp[2].to_i] = kvp[1]
+    matched_len = kvp[0].length
+    while kvp
+      kvp = KVPATTERN.match(kvps[matched_len,kvps.length])
+      return ret if !kvp
+      ret[kvp[2].to_i] = kvp[1]
+      matched_len += kvp[0].length
     end
   end
 

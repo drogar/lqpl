@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/model/stack_qubit.rb</string>
+	<string>src/model/quantum_stack.rb</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -170,9 +170,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>224</integer>
+				<integer>47</integer>
 				<key>line</key>
-				<integer>43</integer>
+				<integer>40</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -368,14 +368,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>5</integer>
+				<integer>37</integer>
 				<key>line</key>
-				<integer>41</integer>
+				<integer>61</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>7</integer>
+			<integer>99</integer>
 		</dict>
 		<key>src/model/stack_classical.rb</key>
 		<dict>
@@ -447,7 +447,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>6</integer>
+			<integer>0</integer>
 		</dict>
 		<key>src/model/stack_value.rb</key>
 		<dict>
@@ -612,9 +612,67 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>4</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>9</integer>
+				<integer>10</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+		</dict>
+		<key>testdata/qplprograms/coin.reference.qpo</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>testdata/qplprograms/fourHads.qpl</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>8</integer>
+				<key>line</key>
+				<integer>8</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>testdata/qplprograms/fourHads.qpo</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -643,12 +701,16 @@
 		<string>src/model/stack_value.rb</string>
 		<string>src/model/stack_data.rb</string>
 		<string>src/model/stack_qubit.rb</string>
+		<string>testdata/qplprograms/coin.reference.qpo</string>
+		<string>testdata/qplprograms/fourHads.qpl</string>
+		<string>testdata/qplprograms/fourHads.qpo</string>
+		<string>testdata/qplprograms/coin.qpl</string>
 		<string>src/model/stack_classical.rb</string>
 		<string>src/model/stack_descriptor.rb</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{446, 209}, {1070, 969}}</string>
+	<string>{{1396, 400}, {1070, 969}}</string>
 </dict>
 </plist>

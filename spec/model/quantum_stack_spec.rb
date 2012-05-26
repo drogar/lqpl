@@ -9,26 +9,82 @@ QSQBHAD = make_multi_sstacks("<Qstack><int>1</int><bool>True</bool>",
   "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits></Qstack>",
   QSVAL5,4)
 
-P1 = "<MMap><map><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair></map></MMap>"
+KVP1 = "<kvpair><key><string>p</string></key><value><int>1</int></value></kvpair>"
+KVP1REX2 = KVP1 +
+    "<kvpair><key><string>rex</string></key><value><int>2</int></value></kvpair>"
+
+KVP27 = "<kvpair><key><string>p</string></key><value><int>27</int></value></kvpair>"
+KVREX27 ="<kvpair><key><string>rex</string></key><value><int>27</int></value></kvpair>"
+KVTH13 = "<kvpair><key><string>th</string></key><value><int>13</int></value></kvpair>"
+
+P1 = "<MMap><map>"+KVP1+"</map></MMap>"
+P1ANDEMPTY = "<MMap><map></map><map>"+KVP1+"</map></MMap>"
+
+
 
 
 describe QuantumStack do
+  describe "class method make_x_offsets" do
+    it "should have a single 0 offest for one element lists" do
+      QuantumStack::make_x_offsets([30]).should == [0]
+    end
+    it "should be 1/2 of each number for two element lists" do
+      QuantumStack::make_x_offsets([30, 14]).should == [15,7]
+    end
+    it "should be 1/2 of sum of the first 2, 0, 1/2 of the sum of the last 2 for 3 element lists" do
+      QuantumStack::make_x_offsets([30, 14, 50]).should == [22,0,32]
+    end
+    it "should be 1/2 of sum of the first 2, 1/2 of second, 1/2 of third, 1/2 of the sum of the last 2 for 4 element lists" do
+      QuantumStack::make_x_offsets([30, 14, 50, 80]).should == [22,7,25,65]
+    end
+    it "should have the same number of elements as the input" do
+      QuantumStack::make_x_offsets((1..40).to_a).length.should == 40
+    end
+    it "should be the 1/2 the sums of adjacent elements for even lists, with the middle two elements being 1/2 of the existing middle" do
+      QuantumStack::make_x_offsets([2,4,6,8,10,12]).should == [3,5,3,4,9,11]
+    end
+    it "should be the 1/2 the sums of adjacent elements for odd lists, with the middle elements being 0" do
+      QuantumStack::make_x_offsets([2,4,6,8,10]).should == [3,5,0,7,9]
+    end
+  end
+  describe "class method kv_pairs_to_map" do
+    it "should return the empty map if given nil" do
+      QuantumStack::kv_pairs_to_map(nil).should be_empty
+    end
+    it "should return the empty map if there are no pairs" do
+      QuantumStack::kv_pairs_to_map("").should be_empty
+    end
+    it "should return a value -> key map of a single entry" do
+      QuantumStack::kv_pairs_to_map(KVP1).should == {1 => "p"}
+    end
+    it "should return a value -> key map with the last entry winning" do
+      QuantumStack::kv_pairs_to_map(KVP27+KVREX27).should == {27 => "rex"}
+    end
+
+    it "should return a value -> key map with the all entries if no dup values" do
+      QuantumStack::kv_pairs_to_map(KVP1+KVREX27+KVTH13).should == {1 => "p", 27 => "rex", 13 => "th"}
+    end
+  end
   describe "class method decode_mmap" do
     it "should create the map 1 -> p when input a kv xml with p as key and 1 as val" do
       mm = QuantumStack::decode_mmap(P1)
       mm.should == {1 => "p"}
     end
+     it "should create the map 1 -> p when input a kv xml with p as key and 1 as val when there is an empty map in front" do
+        mm = QuantumStack::decode_mmap(P1ANDEMPTY)
+        mm.should == {1 => "p"}
+      end
     it "should create the map 1 -> p, 2 -> rex when input a kv xml with p as key and 1 as val and rex ->2 in same list" do
-      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair><kvpair><key><string>rex</string></key><value><int>2</int></value></kvpair></map></MMap>")
+      mm = QuantumStack::decode_mmap("<MMap><map>"+KVP1REX2+"</map></MMap>")
       mm.should == {1 => "p", 2 => "rex"}
     end
     it "should create a map with last element of list if duplicated" do
-      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p</string></key><value><int>27</int></value></kvpair></map><map><kvpair><key><string>rex</string></key><value><int>27</int></value></kvpair></map></MMap>")
+      mm = QuantumStack::decode_mmap("<MMap><map>"+KVP27+"</map><map>"+KVREX27+"</map></MMap>")
       mm.should == {27 => "rex"}
     end
-    it "should create a mamp with all entries in the maps in the list" do
-      mm = QuantumStack::decode_mmap("<MMap><map><kvpair><key><string>p5</string></key><value><int>27</int></value></kvpair></map><map><kvpair><key><string>p13</string></key><value><int>13</int></value></kvpair><kvpair><key><string>p</string></key><value><int>1</int></value></kvpair></map></MMap>")
-      mm.should == {1 => "p", 27 => "p5", 13 => "p13"}
+    it "should create a map with all entries in the maps in the list" do
+      mm = QuantumStack::decode_mmap("<MMap><map>"+KVP1+"</map><map>"+KVREX27+KVTH13+"</map></MMap>")
+      mm.should == {1 => "p", 27 => "rex", 13 => "th"}
     end
   end
   describe "class method get_next_qstack" do
