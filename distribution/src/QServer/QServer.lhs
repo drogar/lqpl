@@ -150,7 +150,7 @@ sendQstack depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         qs = quantumStack bms
-    hPutStrLn shndle $  boundedToXML treedepth qs
+    hPutStrLn shndle $  boundedToXML treedepth $ fixDiags qs
 
 sendMemoryMap :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendMemoryMap depth treedepth machineStateRef shndle =

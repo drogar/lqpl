@@ -6,6 +6,7 @@
   import QSM.BasicData
   import Data.ClassicalData
   import QSM.QuantumStack.QSDefinition
+  import QSM.QuantumStack.QSManipulation
   import Data.Stack as Stack
   import Data.Map as Map
   import Data.Tuples
@@ -15,6 +16,26 @@
   import QSM.Components.Dump
   import QSM.Components.Instructions
   import QSM.Components.MemoryMap
+
+
+  instance Quantum LazyNum
+
+  fixDiags:: Quantum b => QuantumStack b -> QuantumStack b
+  fixDiags stk =
+       case descriptor stk of
+          StackQubit _  ->
+            if onDiagonal stk
+              then let (ss,qs) = discardZeros [zz stk, zo stk, oz stk, oo stk] [(Z,Z),(Z,O),(O,Z),(O,O)]
+              in stk{subStacks = Prelude.map fixDiags ss,
+                  descriptor = StackQubit qs }
+              else stk
+          _            -> stk
+
+  discardZeros :: Quantum b => [QuantumStack b] -> [(Basis,Basis)] -> ([QuantumStack b], [(Basis,Basis)])
+  discardZeros [] [] = ([], [])
+  discardZeros (q:qs) (b:bs) =
+    let (qs',bs') = discardZeros qs bs
+    in if isStackZero q then (qs',bs') else ((q:qs'),(b:bs'))
 
   surroundWith :: String->String -> String
   surroundWith tag item = '<':tag++">"++item++"</"++tag++">"
@@ -108,16 +129,18 @@
     toXML = surroundWith "qinstruction" . show
 
   instance (XML b)=> XML (QuantumStack b) where
-    toXML qs = surroundWith "Qstack" $ toXML (address qs) ++
-                  toXML (onDiagonal qs) ++
-                  (listToXML "substacks" (subStacks qs)) ++
-                  toXML (descriptor qs)
+    toXML fqs =
+      surroundWith "Qstack" $ toXML (address fqs) ++
+                  toXML (onDiagonal fqs) ++
+                  (listToXML "substacks" (subStacks fqs)) ++
+                  toXML (descriptor fqs)
 
     boundedToXML 0 _ = "<bottom/>"
-    boundedToXML n qs = surroundWith "Qstack" $ toXML (address qs) ++
-                  toXML (onDiagonal qs) ++
-                  (boundedListToXML (n-1) "substacks" (subStacks qs)) ++
-                  toXML (descriptor qs)
+    boundedToXML n fqs =
+      surroundWith "Qstack" $ toXML (address fqs) ++
+                  toXML (onDiagonal fqs) ++
+                  (boundedListToXML (n-1) "substacks" (subStacks fqs)) ++
+                  toXML (descriptor fqs)
 
   instance (XML b)=> XML (DumpElement b) where
     toXML (DumpStackSplit ret branches resultQ saveC saveNS resultNS saveMM resultMM) =
