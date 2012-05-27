@@ -76,25 +76,10 @@ describe StackValue do
     sd = StackDescriptor.make_instance "<Value>0.5</Value>"
     sd.length.should == 0
   end
-  it "should raise an error if constructed with something other than <Value>fnumber</Value>" do
-    expect {
-      sd = StackDescriptor.make_instance "<Value>err</Value>"
-    }.to raise_error(StackDescriptorInvalidCreate, "<Value>err</Value>")
-  end
-  it "should raise an error if constructed with a value <0" do
-    expect {
-      sd = StackDescriptor.make_instance "<Value>-0.01</Value>"
-    }.to raise_error(StackDescriptorInvalidCreate, "<Value>-0.01</Value>")
-  end
-  it "should raise an error if constructed with a value >1" do
-    expect {
-      sd = StackDescriptor.make_instance "<Value>1.01</Value>"
-    }.to raise_error(StackDescriptorInvalidCreate, "<Value>1.01</Value>")
-  end
 
   it "should have the value in the construction string" do
-    sd = StackDescriptor.make_instance "<Value>0.32</Value>"
-    sd.value.should == "0.32"
+    sd = StackDescriptor.make_instance "<Value>6.25e-2</Value>"
+    sd.value.should == "6.25e-2"
   end
   it "should allow a number tag to surround the data" do
     sd = StackDescriptor.make_instance "<Value><number>0.32</number></Value>"
@@ -104,10 +89,10 @@ describe StackValue do
     sd = StackDescriptor.make_instance "<Value>0.5</Value>"
     sd.name.should be_nil
   end
-  it "should have a preferred size of W=10, H > 15" do
+  it "should have a preferred size of W>10, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
     sd = StackDescriptor.make_instance "<Value>0.5</Value>"
-    sd.get_preferred_size(g).width.should == 10
+    sd.get_preferred_size(g).width.should > 10
     sd.get_preferred_size(g).height.should > 15
   end
 end

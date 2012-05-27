@@ -24,6 +24,23 @@ P1ANDEMPTY = "<MMap><map></map><map>"+KVP1+"</map></MMap>"
 
 
 describe QuantumStack do
+  describe "class method sum_x_offsets" do
+    it "should be id one, two and three element lists" do
+      QuantumStack::sum_x_offsets([30]).should == [30]
+      QuantumStack::sum_x_offsets([30, 14]).should == [30,14]
+      QuantumStack::sum_x_offsets([30, 14, 50]).should == [30,14,50]
+    end
+    it "should take the four elt list [a,b,c,d] tp [a+b, b, c, c+d]" do
+      QuantumStack::sum_x_offsets([30, 14, 50, 80]).should == [44,14,50,130]
+    end
+    it "should have the same number of elements as the input" do
+      QuantumStack::sum_x_offsets((1..40).to_a).length.should == 40
+    end
+    it "should replace elt 'i' with the sum of elts 'i' to the midpoint of the list" do
+      QuantumStack::sum_x_offsets([2,4,6,8,10,12]).should == [12,10,6,8,18,30]
+      QuantumStack::sum_x_offsets([2,4,0,8,10]).should == [6,4,0,8,18]
+    end
+  end
   describe "class method make_x_offsets" do
     it "should have a single 0 offest for one element lists" do
       QuantumStack::make_x_offsets([30]).should == [0]

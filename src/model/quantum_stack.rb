@@ -83,7 +83,7 @@ class QuantumStack
 
   def paint_substacks(top_point,g)
     sign_control = (@substacks.length - 1) * 0.5
-    sizes = QuantumStack::make_x_offsets @substacks.collect { |sstack| [sstack.get_preferred_size(g).width, node_separation(:horizontal)].max}
+    sizes = QuantumStack::sum_x_offsets(QuantumStack::make_x_offsets @substacks.collect { |sstack| [sstack.get_preferred_size(g).width, node_separation(:horizontal)].max})
     @substacks.each_with_index do |sstack,i|
       paint_point = Point.new(top_point.x + (i <=> sign_control)*sizes[i], top_point.y+node_separation(:vertical))
       ln = Line2D::Double.new(top_point, paint_point)
@@ -109,6 +109,23 @@ class QuantumStack
     ret = []
     bldr.each_cons(2) {|pr| ret << (pr[0]+pr[1]) *0.5}
     ret[len/2] = 0 if len.odd?
+    ret
+  end
+
+  def self.sum_x_offsets(offsets)
+    return offsets if offsets.length < 4
+    halflen = offsets.length / 2
+    ret = []
+    offsets.each_with_index do |item,i|
+      if i < halflen
+        r = offsets[i,halflen-i].inject(0) {|r,el| r+el}
+      elsif i >= halflen
+        r = offsets[halflen, i+1-halflen].inject(0) {|r,el| r+el}
+      else
+        r= item
+      end
+      ret << r
+    end
     ret
   end
 

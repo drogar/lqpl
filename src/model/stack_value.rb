@@ -2,7 +2,7 @@
 
 class StackValue < StackDescriptor
 
-  PATTERN=Regexp.new /^<Value>(<number>)?((0?\.\d*)|(1\.0*))(<\/number>)?<\/Value>$/
+  PATTERN=Regexp.new /^<Value>(<number>)?(.*?)(<\/number>)?<\/Value>$/
 
   def initialize(in_string)
     matc = PATTERN.match in_string

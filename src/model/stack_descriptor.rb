@@ -47,7 +47,9 @@ class StackDescriptor
     width = node_size
     width += g.get_font.get_string_bounds("#{@name}",g.get_font_render_context).width + node_size if @name
     height = node_size
-    height += g.get_font.get_string_bounds("#{@value}",g.get_font_render_context).height + (node_size * 0.5) if length == 0
+    valsize=g.get_font.get_string_bounds(" #{@value} ",g.get_font_render_context)
+    height += valsize.height + (node_size * 0.5) if length == 0
+    width = [width,valsize.width].max
     d = Dimension.new(0,0)
     d.set_size(width, height)
     d
