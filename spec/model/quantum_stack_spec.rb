@@ -178,9 +178,9 @@ describe QuantumStack do
       ps.width.should > 160.0
       ps.height.should > 60.0
     end
-    it "should have a preferred size of width  of 10 and height of 31 for the value only" do
+    it "should have a preferred size of width  of 28 and height of 31 for the value of 0.5 only" do
       ps = @qsval.get_preferred_size(@g)
-      ps.width.should == 10.0
+      ps.width.should == 28
       ps.height.should == 31.0
     end
     it "should have a preferred size > 10, 15 for bottom" do

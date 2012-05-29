@@ -1,11 +1,24 @@
 require 'socket'
+require 'singleton'
 
 class Compiler
-  attr :port
+  include Singleton
+  attr_accessor :port
 
   def initialize(port=7683)
     @port = port
+    @connection = nil
 
+  end
+
+  def self.get_instance(port=7683)
+    c = self.instance
+    c.port = port
+    c
+  end
+
+  def close_down
+    @connection.close if connected?
   end
 
   def connect
@@ -15,6 +28,7 @@ class Compiler
       begin
         @connection = TCPSocket.new "localhost", @port
       rescue Errno::ECONNREFUSED => e
+
         raise CompilerProcessNotFound, "There was no process found on port #{@port}. Please start 'lpql-compiler-server'."
       end
     end
@@ -84,14 +98,14 @@ class Compiler
     connect if !connected?
     @connection.puts "<sendversion />"
     version = @connection.readline
-    version_line = "Compiler: Version="+makeVersionNumber(version)
+    version_line = "Compiler: Version="+Compiler::makeVersionNumber(version)
     File.open(File.dirname(@fname)+File::SEPARATOR+File.basename(@fname,".qpl")+".qpo","w+") do |f|
       f.puts version_line
       f.puts @qpo_code
     end
   end
 
-  def makeVersionNumber(vstring)
+  def self.makeVersionNumber(vstring)
     nums = vstring[/(\d+,)+\d+/].gsub(/,/,'.')
     return nums
   end

@@ -63,10 +63,10 @@ describe StackZero do
     sd = StackDescriptor.make_instance "<Zero/>"
     sd.name.should be_nil
   end
-  it "should have a preferred size of W=10, H > 15" do
+  it "should have a preferred size of W=16, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
     sd = StackDescriptor.make_instance "<Zero/>"
-    sd.get_preferred_size(g).width.should == 10
+    sd.get_preferred_size(g).width.should == 16
     sd.get_preferred_size(g).height.should > 15
   end
 end
