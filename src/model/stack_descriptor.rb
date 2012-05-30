@@ -1,13 +1,19 @@
+require 'utility/drawing'
+
 java_import com.drogar.qface.qstack.PaintMe
 java_import java.awt.geom.Dimension2D
 java_import java.awt.BasicStroke
 java_import java.awt.Color
 java_import java.awt.Rectangle
 java_import java.awt.geom.Ellipse2D  #.Double {"Ellipse2Dd"}
+java_import java.awt.geom.Rectangle2D  #.Double {"Ellipse2Dd"}
 java_import java.awt.RenderingHints
+
+
 
 class StackDescriptor
   include PaintMe
+  include Drawing
   attr_accessor :value
   attr_accessor :name
 
@@ -30,9 +36,16 @@ class StackDescriptor
     return @value.length
   end
 
+  def substack_labels
+    nil
+  end
+
   # PaintMe interface
   def node_size
     10.0
+  end
+  def half_node_size
+    node_size * 0.5
   end
 
 
@@ -43,39 +56,34 @@ class StackDescriptor
 
   end
 
+  def my_shape(point)
+    Ellipse2D::Double.new(point.x-half_node_size, point.y-half_node_size, node_size, node_size)
+  end
+
   def get_preferred_size(g)
-    width = node_size
-    width += g.get_font.get_string_bounds("#{@name}",g.get_font_render_context).width + node_size if @name
-    height = node_size
-    valsize=g.get_font.get_string_bounds(" #{@value} ",g.get_font_render_context)
-    height += valsize.height + (node_size * 0.5) if length == 0
-    width = [width,valsize.width].max
+    width   =  node_size
+    width   += get_string_size(g,"#{@name}").width + node_size if @name
+    height  =  node_size
+    valsize =  get_string_size(g," #{@value} ")
+    height  += valsize.height + (node_size * 0.5) if length == 0
+    width   =  [width,valsize.width].max
     d = Dimension.new(0,0)
     d.set_size(width, height)
     d
   end
 
   def paintmeAtPoint(g,p,center)
-    half_node_size = node_size * 0.5
     g.set_rendering_hint(RenderingHints::KEY_ANTIALIASING, RenderingHints::VALUE_ANTIALIAS_ON)
     g.set_color(my_colour)
-    e = Ellipse2D::Double.new(center.x-half_node_size, center.y-half_node_size, node_size, node_size);
+    e = my_shape(center);
     g.fill(e)
     g.set_color(Color.black);
     g.draw(e);
-    draw_name(g,center) if @name
-    draw_value(g,center) if length == 0
+    draw_text_to_left_of_point(g,"#{@name}",Point.new(center.x-node_size, center.y-node_size)) if @name
+    draw_text_centered_at_point(g,"#{@value}",Point.new(center.x, center.y+node_size)) if length == 0
   end
 
-  def draw_name(g,center)
-    text_rec = g.get_font.get_string_bounds("#{@name}",g.get_font_render_context)
-    g.draw_string("#{@name}", center.x-text_rec.width - (node_size * 1.5), center.y+(text_rec.height - node_size))
-  end
 
-  def draw_value(g, center)
-    text_rec = g.get_font.get_string_bounds("#{@value}",g.get_font_render_context)
-    g.draw_string("#{@value}", center.x-(text_rec.width * 0.5), center.y+(text_rec.height + node_size))
-  end
 
   def my_colour
     #Not to be used

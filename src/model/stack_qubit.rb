@@ -19,6 +19,9 @@ class StackQubit < StackDescriptor
     @value.length
   end
 
+  def substack_labels
+    @value.collect {|v| "#{v[0]}#{v[1]}"}
+  end
 
    # PaintMe interface overrides
   def my_colour

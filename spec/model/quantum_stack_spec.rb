@@ -20,8 +20,17 @@ KVTH13 = "<kvpair><key><string>th</string></key><value><int>13</int></value></kv
 P1 = "<MMap><map>"+KVP1+"</map></MMap>"
 P1ANDEMPTY = "<MMap><map></map><map>"+KVP1+"</map></MMap>"
 
+Q1R2 = "<MMap><map><kvpair><key><string>@q</string></key><value><int>1</int></value></kvpair>"+
+  "<kvpair><key><string>@r</string></key><value><int>2</int></value></kvpair></map></MMap>"
 
-
+QSQ1R2="<Qstack><int>2</int><bool>True</bool>"+ #r
+  "<substacks><Qstack><int>1</int><bool>True</bool>"+ #q
+  "<substacks><Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
+  "<Qstack><int>-1</int><bool>False</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
+  "<Qstack><int>-1</int><bool>False</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
+  "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack></substacks>"+
+  "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits></Qstack></substacks>"+
+  "<Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
 
 describe QuantumStack do
   describe "class method sum_x_offsets" do
@@ -81,6 +90,7 @@ describe QuantumStack do
     it "should return a value -> key map with the all entries if no dup values" do
       QuantumStack::kv_pairs_to_map(KVP1+KVREX27+KVTH13).should == {1 => "p", 27 => "rex", 13 => "th"}
     end
+
   end
   describe "class method decode_mmap" do
     it "should create the map 1 -> p when input a kv xml with p as key and 1 as val" do
@@ -102,6 +112,9 @@ describe QuantumStack do
     it "should create a map with all entries in the maps in the list" do
       mm = QuantumStack::decode_mmap("<MMap><map>"+KVP1+"</map><map>"+KVREX27+KVTH13+"</map></MMap>")
       mm.should == {1 => "p", 27 => "rex", 13 => "th"}
+    end
+    it "Should handle a simple 2 element map" do
+      QuantumStack::decode_mmap(Q1R2).should == {1 =>"@q", 2 => "@r"}
     end
   end
   describe "class method get_next_qstack" do
@@ -166,12 +179,12 @@ describe QuantumStack do
       @g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
 
     end
-    it "should have a default horizontal node sep of 40.0" do
-      @qshad.node_separation(:horizontal).should == 40.0
+    it "should have a default horizontal node sep of 55.0" do
+      @qshad.node_separation(:horizontal).should == 55.0
     end
 
-    it "should have a default vertical node sep of 30.0" do
-      @qshad.node_separation(:vertical).should == 30.0
+    it "should have a default vertical node sep of 40.0" do
+      @qshad.node_separation(:vertical).should == 40.0
     end
     it "should have a preferred size of width > 160 and height > 60 for the hadamard qbit" do
       ps = @qshad.get_preferred_size(@g)
@@ -241,5 +254,10 @@ describe QuantumStack do
     qs = QuantumStack.new("<Qstack><int>2</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>",
     "<MMap><map><kvpair><key><string>p</string></key><value><int>2</int></value></kvpair></map></MMap>")
     qs.descriptor.name.should == "p"
+  end
+  it "should assign names to multi-level qstacks" do
+    qs = QuantumStack.new(QSQ1R2,Q1R2)
+    qs.descriptor.name.should == "@r"
+    qs.substacks[0].descriptor.name.should == "@q"
   end
 end

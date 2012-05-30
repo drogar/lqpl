@@ -6,6 +6,7 @@ require "model/stack_value"
 require "model/stack_classical"
 require "model/stack_qubit"
 require "model/stack_data"
+require "utility/drawing"
 
 java_import com.drogar.qface.qstack.PaintMe
 java_import java.awt.Dimension
@@ -20,6 +21,7 @@ java_import java.awt.AlphaComposite
 class QuantumStack
 
   include PaintMe
+  include Drawing
   attr_accessor :substacks
   attr_accessor :descriptor
   attr_accessor :name_memory_map
@@ -31,7 +33,7 @@ class QuantumStack
       raise QuantumStackInvalidCreate, in_qstack if !md
       @stackaddress = md[1].to_i
       @on_diagonal = md[3] == "True"
-      @substacks = QuantumStack::make_multiple_stacks md[6]
+      @substacks = QuantumStack::make_multiple_stacks(md[6], in_name_stack)
       @descriptor = StackDescriptor.make_instance md[7]
       case @descriptor
       when StackZero then  raise QuantumStackInvalidCreate, "Zero stack should not have substacks" if @substacks.size > 0
@@ -57,19 +59,17 @@ class QuantumStack
   def paintme(g, p)
     d = get_preferred_size(g);
     if bottom?
-      g.draw_string("...", d.width/2+10.0, d.height+40.0)
+      draw_centered_text(g,"...", d.width/2+10.0, d.height+40.0)
     else
       top_point = Point.new(d.width/2+10.0,d.height+40.0)
       paint_substacks(top_point,g)
       @descriptor.paintme_at_point(g,p,top_point)
-
     end
   end
 
   def paintmeAtPoint(g,p,center)
     if bottom?
-      text_rec = g.get_font.get_string_bounds("...",g.get_font_render_context)
-      g.draw_string("...", center.x-(text_rec.width*0.5), center.y+(text_rec.height * 0.5))
+      draw_text_centered_at_point(g,"...", center)
     else
       paint_substacks(center,g)
       @descriptor.paintme_at_point(g,p,center)
@@ -88,8 +88,15 @@ class QuantumStack
       paint_point = Point.new(top_point.x + (i <=> sign_control)*sizes[i], top_point.y+node_separation(:vertical))
       ln = Line2D::Double.new(top_point, paint_point)
       g.set_color(Color.black)
-      #g.set_composite(AlphaComposite::Src)
+
       g.draw(ln)
+      if i < sign_control
+        where_to_draw = :left
+      else
+        where_to_draw = :right
+      end
+      draw_sized_text(g,8.0,"#{@descriptor.substack_labels[i]}",top_point, paint_point,where_to_draw)
+
       sstack.paintme_at_point(g,p,paint_point)
 
     end
@@ -131,8 +138,8 @@ class QuantumStack
 
   def node_separation(direction)
     case direction
-    when :vertical then 30.0
-    when :horizontal then 40.0
+    when :vertical then 40.0
+    when :horizontal then 55.0
     else 20.0
     end
   end
@@ -189,15 +196,15 @@ class QuantumStack
     end
   end
 
-  def self.make_multiple_stacks(many_stacks)
+  def self.make_multiple_stacks(many_stacks,in_name_stack="")
     return [] if many_stacks == ""
     next_stack = QuantumStack::get_next_qstack(many_stacks)
     raise InvalidInput, many_stacks if !next_stack
-    rval=[QuantumStack.new(next_stack[0])]
+    rval=[QuantumStack.new(next_stack[0],in_name_stack)]
     while next_stack
       next_stack = QuantumStack::get_next_qstack(next_stack[1])
       return rval if !next_stack
-      rval << QuantumStack.new(next_stack[0])
+      rval << QuantumStack.new(next_stack[0],in_name_stack)
     end
     rval
   end

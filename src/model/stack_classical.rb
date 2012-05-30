@@ -29,6 +29,10 @@ class StackClassical< StackDescriptor
     @value.length
   end
 
+  def substack_labels
+    @value.collect {|v| "#{v}"}
+  end
+
    # PaintMe interface overrides
   def my_colour
     Color.green

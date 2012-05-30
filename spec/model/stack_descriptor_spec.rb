@@ -44,6 +44,13 @@ describe StackDescriptor do
       sd = StackDescriptor.make_instance "somethng"
     }.to  raise_error(StackDescriptorInvalidCreate, /somethng/)
   end
+
+
+  it "should return 'nil' when asked for substack labels" do
+    sd = StackDescriptor.make_instance "<Zero/>"
+    sd.substack_labels.should be_nil
+  end
+
 end
 
 describe StackZero do
@@ -63,12 +70,20 @@ describe StackZero do
     sd = StackDescriptor.make_instance "<Zero/>"
     sd.name.should be_nil
   end
+
+  it "should return 'nil' when asked for substack labels" do
+    sd = StackDescriptor.make_instance "<Zero/>"
+    sd.substack_labels.should be_nil
+  end
+
   it "should have a preferred size of W=16, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
     sd = StackDescriptor.make_instance "<Zero/>"
     sd.get_preferred_size(g).width.should == 16
     sd.get_preferred_size(g).height.should > 15
   end
+
+
 end
 
 describe StackValue do
@@ -95,6 +110,12 @@ describe StackValue do
     sd.get_preferred_size(g).width.should > 10
     sd.get_preferred_size(g).height.should > 15
   end
+
+
+  it "should return 'nil' when asked for substack labels" do
+    sd = StackDescriptor.make_instance "<Value><number>0.32</number></Value>"
+    sd.substack_labels.should be_nil
+  end
 end
 
 describe StackClassical do
@@ -113,6 +134,17 @@ describe StackClassical do
     sd = StackDescriptor.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
     sd.value.should == [1,true,14]
   end
+  it "should return a list of length 'length' when asked for substack labels" do
+     sd = StackDescriptor.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
+    sd.substack_labels.length.should == 1
+    sd = StackDescriptor.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd.substack_labels.length.should == 3
+  end
+  it "should have the substack_labels being the list of classicalvalues in the construction string" do
+    sd = StackDescriptor.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd.substack_labels.should == ["1","true","14"]
+  end
+
   context "list matching" do
     before (:each) do
       @sd = StackDescriptor.make_instance "<ClassicalStack></ClassicalStack>"
@@ -154,6 +186,16 @@ describe StackQubit do
   it "should have the value being the list of qubit indicators in the string" do
     sd = StackDescriptor.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
     sd.value.should == [[0,0],[0,1],[1,0],[1,1]]
+  end
+  it "should return a list of length 'length' when asked for substack labels" do
+    sd = StackDescriptor.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
+    sd.substack_labels.length.should == 1
+    sd = StackDescriptor.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
+    sd.substack_labels.length.should == 2
+  end
+  it "should have the substack_labels being the list of 01 pairs in the construction string" do
+    sd = StackDescriptor.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
+    sd.substack_labels.should == ["00","01","10","11"]
   end
   context "list matching" do
     it "should raise an error when the list is invalid" do
@@ -208,29 +250,47 @@ describe StackData do
   end
   it "should have the value being the map of constructor/address pairs in the string" do
     sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
-    sd.value.should == {"Nil"=>[], "C" => [3,4]}
+    sd.value.should == [["Nil",[]], ["C",[3,4]]]
+  end
+  it "should return a list of length 'length' when asked for substack labels" do
+    sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
+    sd.substack_labels.length.should == 1
+    sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
+    sd.substack_labels.length.should == 2
+  end
+
+  it "should have constructer names only when there are no stack addresses" do
+    sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
+    sd.substack_labels.should == ["Nil"]
+    sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
+    sd.substack_labels.should == ["Nil", "Nil2"]
+  end
+
+  it "should have the substack_labels being the list of constructors with addresses in brackets" do
+    sd = StackDescriptor.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
+    sd.substack_labels.should == ["Nil", "C[3, 4]"]
   end
   context "constructor matching" do
     it "should raise an error when the constructor map is invalid" do
       expect {
-        StackData::parse_map("invalid")
+        StackData::parse_pairs("invalid")
       }.to raise_error(InvalidInput, "invalid")
     end
     it "should raise an error when there is no constructor" do
       expect {
-        StackData::parse_map("")
+        StackData::parse_pairs("")
       }.to raise_error(InvalidInput, "Must have at least one constructor")
     end
-    it "should result in a one element map when that is the only input" do
-      StackData::parse_map("<string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should == {"C" => [3,4]}
+    it "should result in a one element array of pairs when that is the only input" do
+      StackData::parse_pairs("<string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should == [["C",[3,4]]]
     end
     it "should result in a mixed map when that is the input" do
-      StackData::parse_map("<string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should ==
-       {"Nil"=>[], "C" => [3,4]}
+      StackData::parse_pairs("<string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should ==
+       [["Nil",[]], ["C" , [3,4]]]
     end
     it "should raise an error when the map has duplicated constructors" do
       expect {
-        StackData::parse_map("<string>Nil</string><StackAddresses></StackAddresses><string>Nil</string><StackAddresses></StackAddresses>")
+        StackData::parse_pairs("<string>Nil</string><StackAddresses></StackAddresses><string>Nil</string><StackAddresses></StackAddresses>")
       }.to raise_error(InvalidInput, "Constructor 'Nil' duplicated in algebraic data")
     end
   end
