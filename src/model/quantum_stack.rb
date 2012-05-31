@@ -83,7 +83,9 @@ class QuantumStack
 
   def paint_substacks(top_point,g)
     sign_control = (@substacks.length - 1) * 0.5
-    sizes = QuantumStack::sum_x_offsets(QuantumStack::make_x_offsets @substacks.collect { |sstack| [sstack.get_preferred_size(g).width, node_separation(:horizontal)].max})
+    basic_sizes = @substacks.collect { |sstack| [sstack.get_preferred_size(g).width, node_separation(:horizontal)].max}
+    offset_sizes = QuantumStack::make_x_offsets basic_sizes
+    sizes = QuantumStack::sum_x_offsets offset_sizes
     @substacks.each_with_index do |sstack,i|
       paint_point = Point.new(top_point.x + (i <=> sign_control)*sizes[i], top_point.y+node_separation(:vertical))
       ln = Line2D::Double.new(top_point, paint_point)
@@ -152,15 +154,14 @@ class QuantumStack
     maxheight = 0.0
     @substacks.each do |sstack|
       dimsstack = sstack.get_preferred_size(g)
-      width += dimsstack.width + node_separation(:horizontal)
+      width += [dimsstack.width, node_separation(:horizontal)].max
       maxheight = [maxheight, dimsstack.height + node_separation(:vertical)].max
     end
-    width -= node_separation(:horizontal) if @substacks.length > 0
     height = maxheight
     dimnode = Dimension.new(0,0)
     dimnode.set_size(@descriptor.get_preferred_size(g)) if @descriptor
     d = Dimension.new(0,0)
-    d.set_size(width + dimnode.width, height+dimnode.height)
+    d.set_size([width,dimnode.width].max, [height,dimnode.height].max)
     d
   end
 
