@@ -17,6 +17,7 @@ java_import java.awt.Point
 java_import java.awt.image.BufferedImage
 java_import java.awt.geom.Line2D
 java_import java.awt.AlphaComposite
+java_import javax.swing.ImageIcon
 
 class QuantumStack
 
@@ -27,6 +28,7 @@ class QuantumStack
   attr_accessor :name_memory_map
 
   def initialize(in_qstack, in_name_stack="")
+    @preferred_size = nil
     @bottom = in_qstack == "<bottom/>"
     if !bottom?
       md = SINGLE_QS_PATTERN.match in_qstack
@@ -56,12 +58,24 @@ class QuantumStack
 
 # PaintMe interface
 
+  def imageOfMe
+    bistart = BufferedImage.new(10,10,BufferedImage::TYPE_4BYTE_ABGR)
+    gstart = bistart.create_graphics
+    image_size = get_preferred_size(gstart)
+    #puts "Using image_size of #{image_size.width} by #{image_size.height}"
+    bifull = BufferedImage.new(image_size.width+20,image_size.height+30,BufferedImage::TYPE_4BYTE_ABGR)
+    g = bifull.create_graphics
+    paintme(g,nil)
+    ImageIcon.new(bifull)
+  end
+
   def paintme(g, p)
     d = get_preferred_size(g);
+    #puts "Preferred size : #{d.width} by #{d.height}"
     if bottom?
-      draw_centered_text(g,"...", d.width/2+10.0, d.height+40.0)
+      draw_centered_text(g,"...", d.width/2+10.0, 20.0)
     else
-      top_point = Point.new(d.width/2+10.0,d.height+40.0)
+      top_point = Point.new(d.width/2+10.0,20.0)
       paint_substacks(top_point,g)
       @descriptor.paintme_at_point(g,p,top_point)
     end
@@ -148,6 +162,7 @@ class QuantumStack
 
 
   def get_preferred_size(g)
+    return @preferred_size if @preferred_size
     return g.get_font.get_string_bounds("...",g.get_font_render_context) if bottom?
     width = 0.0
     height = 0.0
@@ -160,10 +175,12 @@ class QuantumStack
     height = maxheight
     dimnode = Dimension.new(0,0)
     dimnode.set_size(@descriptor.get_preferred_size(g)) if @descriptor
-    d = Dimension.new(0,0)
-    d.set_size([width,dimnode.width].max, [height,dimnode.height].max)
-    d
+    @preferred_size = Dimension.new(0,0)
+    @preferred_size.set_size([width,dimnode.width].max, [height,dimnode.height].max)
+    @preferred_size
   end
+
+  alias :getPreferredSize :get_preferred_size
 
   def self.decode_mmap(in_mmap)
     return {} if in_mmap == ""

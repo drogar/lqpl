@@ -41,6 +41,11 @@ class StackDescriptor
   end
 
   # PaintMe interface
+
+  def imageOfMe()
+    return nil
+  end
+
   def node_size
     10.0
   end
@@ -93,5 +98,6 @@ class StackDescriptor
   end
 
   alias :paintme_at_point :paintmeAtPoint
+  alias :getPreferredSize :get_preferred_size
   # End PaintMe interface
 end

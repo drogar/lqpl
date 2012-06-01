@@ -1,5 +1,6 @@
 package com.drogar.qface.qstack;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -12,4 +13,6 @@ import java.awt.*;
 public interface PaintMe {
     public void paintme(Graphics g, Component p);
     public void paintmeAtPoint(Graphics g, Component p, Point center);
+    public Icon imageOfMe();
+    public Dimension getPreferredSize(Graphics2D g);
 }
