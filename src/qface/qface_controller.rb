@@ -16,7 +16,7 @@ class QfaceController < ApplicationController
     rval = chooser.show_open_dialog(nil)
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.get_selected_file.get_absolute_path
-      cmp = Compiler.new
+      cmp = Compiler.get_instance
       cmp.compile fname
       cmp.write_qpo_file
     else
@@ -39,6 +39,8 @@ class QfaceController < ApplicationController
       server.send_load_from_file fname
       model.control_panel_visible = true
       QuantumStackController.instance.open
+      ExecutableCodeController.instance.open
+
     else
       puts "Did not do approve."
     end
