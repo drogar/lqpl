@@ -9,6 +9,7 @@
   import QSM.QuantumStack.QSManipulation
   import Data.Stack as Stack
   import Data.Map as Map
+  import Data.List as List
   import Data.Tuples
   import Data.Tuple
   import Data.LazyNum
@@ -126,7 +127,10 @@
 
 
   instance (Show a)=> XML (Instruction a) where
-    toXML = surroundWith "qinstruction" . show
+    toXML = surroundWith "i" . show
+
+  instance (Show a) => XML [Instruction a] where
+    toXML = surroundWith "instructions" . concat . (List.map toXML)
 
   instance (XML b)=> XML (QuantumStack b) where
     toXML fqs =
