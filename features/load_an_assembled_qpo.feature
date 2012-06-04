@@ -1,15 +1,13 @@
 Feature: We can load and run an assembled file at the server
 
   As a researcher
-  I want the program allow me to choose a "*.qpo" program and load it to the server so i can execute it.
-Background:
-  Given the program "com.drogar.qface.Main" has started
-  Given the frame "Quantum Emulator" is visible
+  I want the program allow me to choose a "*.qpo" program and load it to the server so I can execute it.
 
-
-  Scenario:
+  Background:
     When I select "Load" from the "File" menu
     And I load "coin.reference.qpo" from the directory "testdata/qplprograms"
+
+  Scenario:
     Then the button "Step" should appear
     Then the button "Go" should appear
     Then the button "Trim" should appear
@@ -19,6 +17,6 @@ Background:
     Then the frame "Quantum Stack" should be visible
 
   Scenario:
-    Given I have just loaded "coin.reference.qpo" from the directory "testdata/qplprograms"
-    When I click the button "Step"
-    Then the "Machine State" field should show "<qpl>"
+    Then the frame "Executing Code" should be visible
+    When I click the button "Step" in "Quantum Emulator"
+    Then the instruction "EnScope" should be selected

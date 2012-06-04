@@ -1,26 +1,17 @@
 
-Given /^the program "(.*?)" has started$/ do  |program|
-  QUFACE = java_import com.drogar.qface.Main
-  #args = [""].to_java(:string)
-  begin
-    QUFACE.main([])
-  rescue Exception => e
-    puts "Exception from main: #{e}"
-  end
-end
 
 
 Given /^the frame "([\w\s]*)" is visible$/ do |frame_name|
 
   java_import org.netbeans.jemmy.operators.JFrameOperator
-  @mw = JFrameOperator.new frame_name
+  eval "@#{frame_name.gsub(/ /,'_')} = JFrameOperator.new frame_name"
 end
 
 Given /^I select "([a-zA-Z]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
   java_import org.netbeans.jemmy.operators.JMenuBarOperator
   java_import org.netbeans.jemmy.operators.JMenuOperator
 
-  mbar = JMenuBarOperator.new @mw.get_jmenu_bar
+  mbar = JMenuBarOperator.new $qe_frame.get_jmenu_bar
   jm = mbar.get_menu(0)
   fmenu = JMenuOperator.new jm
   item_count = jm.get_item_count
@@ -53,10 +44,11 @@ And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
     cdir = fc.get_current_directory.get_absolute_path
     fc.set_current_directory (java.io.File.new(cdir, d))
   end
+  fc.get_current_directory.get_absolute_path.should ==  Dir.getwd+"/"+dir
 
 
   sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-  p sel_file
+
   fc.set_selected_file sel_file
 
   fc.approve_selection
@@ -65,8 +57,15 @@ And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 end
 
 
-Then /^"([\w\s]*)" should be created in "([\w\s\/]*)" and be equal to "([\w\s]*)"$/ do |outfile, outdir,reference|
+Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
   realdir = Dir.getwd + "/" +outdir
+  theFile = realdir + "/" + outfile
+  tries = 0
+  while tries < 10 do # wait up to 2.5 seconds for compile to finish
+    sleep 0.25
+    break if File.exist?(theFile)
+    tries += 1
+  end
   File.exist?(realdir + "/" + outfile).should be_true
   File.open(realdir + "/" + outfile) do |newone|
     result = newone.read

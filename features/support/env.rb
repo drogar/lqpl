@@ -1,4 +1,4 @@
-puts 'Running env'
+
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/Qface"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/ruby"
@@ -28,3 +28,14 @@ require "forms_rt.jar"
 ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
+
+require 'manifest'
+
+java_import org.netbeans.jemmy.JemmyProperties
+java_import org.netbeans.jemmy.TestOut
+
+#props = JemmyProperties.properties
+#JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
+
+# testout - (in, trace out, error out, notes out)
+JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, nil, nil))

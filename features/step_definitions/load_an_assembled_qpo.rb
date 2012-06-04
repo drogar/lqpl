@@ -33,9 +33,9 @@ end
 Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   java_import org.netbeans.jemmy.operators.JButtonOperator
   java_import org.netbeans.jemmy.Timeouts
-  btn_timeout = Timeouts.new
-  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
-  theButton = JButtonOperator.new(@mw, button_text)
+#  btn_timeout = Timeouts.new
+#  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
+  theButton = JButtonOperator.new($qe_frame, button_text)
 
   theButton.should_not == nil
   theButton.text.should == button_text
@@ -47,7 +47,7 @@ Then /^the number spinner "([\w\s]*)" with value "([\d]*)" should appear$/ do |s
   java_import org.netbeans.jemmy.operators.JLabelOperator
   java_import org.netbeans.jemmy.operators.ContainerOperator
   java_import org.netbeans.jemmy.operators.JSpinnerOperator
-  theLabel = JLabelOperator.new(@mw, spinner_label)
+  theLabel = JLabelOperator.new($qe_frame, spinner_label)
 
   theLabel.should_not == nil
   theLabel.text.should == spinner_label
@@ -61,7 +61,7 @@ end
 
 Then /^the frame "([\w\s]*)" should be visible$/ do |frame_name|
    java_import org.netbeans.jemmy.operators.JFrameOperator
-  @mw = JFrameOperator.new frame_name
+   $qe_frame = JFrameOperator.new frame_name
 end
 
 Given /^I have just loaded "(.*?)" from the directory "([\w\s\/]*)"$/ do |arg1, arg2|
