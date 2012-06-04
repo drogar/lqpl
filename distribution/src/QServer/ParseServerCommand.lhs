@@ -55,12 +55,7 @@
     do
       string "get"
       many1 space
-      t <- parseGetType
-      many1 space
-      depth <- many1 (digit)
-      many1 space
-      iter <- many1 (digit)
-      eof
+      (t,depth,iter) <- parseGetType
       return $ QCGet t (read depth) (read iter)
 
   parseSimulate :: Parser QCommand
@@ -73,32 +68,73 @@
       eof
       return $ QCSimulate  (read depth)
 
-  parseGetType :: Parser QSData
-  parseGetType = (try parseQStack) <|> (try parseCStack) <|> (try parseDump) <|> parseMemoryMap
+  parseGetType :: Parser (QSData, String, String)
+  parseGetType = (try parseQStack) <|> (try parseCStack) <|> (try parseDump) <|> (try parseMemoryMap) <|>
+    (try parseExecutableCode) <|> parseCodePointer
 
-  parseQStack :: Parser QSData
+  parseTwoInts :: Parser (String, String)
+  parseTwoInts = do
+    many1 space
+    depth <- many1 (digit)
+    many1 space
+    iter <- many1 (digit)
+    return (depth,iter)
+
+  parseOneInt :: Parser (String, String)
+  parseOneInt = do
+    many1 space
+    depth <- many1 (digit)
+    many space
+    return (depth,"0")
+
+  parseQStack :: Parser (QSData, String, String)
   parseQStack =
     do
       try (string "qstack") <|> string "quantumstack"
-      return QDQuantumStack
+      (d,i) <- parseTwoInts
+      eof
+      return (QDQuantumStack,d,i)
 
-  parseCStack :: Parser QSData
+  parseCStack :: Parser (QSData, String, String)
   parseCStack =
     do
       string "classicalstack"
-      return QDClassicalStack
+      (d,i) <- parseTwoInts
+      eof
+      return (QDClassicalStack, d,i)
 
-  parseDump :: Parser QSData
+  parseDump :: Parser (QSData, String, String)
   parseDump =
     do
       string "dump"
-      return QDDump
+      (d,i) <- parseTwoInts
+      eof
+      return (QDDump, d,i)
 
-  parseMemoryMap :: Parser QSData
+  parseMemoryMap :: Parser (QSData, String, String)
   parseMemoryMap =
     do
       string "memorymap"
-      return QDMemoryMap
+      (d,i) <- parseTwoInts
+      eof
+      return (QDMemoryMap, d,i)
+
+  parseExecutableCode :: Parser (QSData, String, String)
+  parseExecutableCode =
+    do
+      string "code"
+      (d,i) <- parseOneInt
+      eof
+      return (QDExecutableCode, d,i)
+
+  parseCodePointer :: Parser (QSData, String, String)
+  parseCodePointer =
+    do
+      string "codepointer"
+      (d,i) <- parseOneInt
+      eof
+      return (QDCodePointer, d,i)
+
 
 
 \end{code}

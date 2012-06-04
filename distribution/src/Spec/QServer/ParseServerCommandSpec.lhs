@@ -74,6 +74,9 @@
 
       "parse_get_mm " ~: "memorymap returns QCGet" ~: Right (QCGet QDMemoryMap 5 3) @=? (getCommand "get memorymap 5 3"),
 
+      "parse_get_exec " ~: "code returns QCGet" ~: Right (QCGet QDExecutableCode 5 0) @=? (getCommand "get code 5"),
+      "parse_get_cpointer " ~: "codepointer returns QCGet" ~: Right (QCGet QDCodePointer 5 0) @=? (getCommand "get codepointer 5"),
+
       "parseSim " ~: "simulate returns QCSimulate" ~: Right (QCSimulate 5) @=? (getCommand "simulate 5"),
       "parseSim1 " ~: "'simulate   ' returns QCSimulate" ~: Right (QCSimulate 3) @=? (getCommand "simulate   3 "),
       "parseSimm_e1 " ~: makeBoolParseError "simulate ",

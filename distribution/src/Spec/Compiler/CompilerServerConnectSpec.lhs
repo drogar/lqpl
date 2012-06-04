@@ -39,8 +39,7 @@
                 checkOpenPort default_port
         ],
       context "compiler server" [
-        it ("opens a port by default at port" ++ default_port)  $ checkOpenPort default_port,
-        it "accepts the XML tag 'qplprogram'"    $
+       it "accepts the XML tag 'qplprogram'"    $
            (do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
