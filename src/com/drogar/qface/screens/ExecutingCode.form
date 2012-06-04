@@ -11,23 +11,7 @@
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
-        <children>
-          <grid id="659c2" layout-manager="BorderLayout" hgap="0" vgap="0">
-            <constraints>
-              <tabbedpane title="Untitled"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="3537c" class="javax.swing.JTextArea" binding="codeTextArea">
-                <constraints border-constraint="Center"/>
-                <properties>
-                  <editable value="false"/>
-                </properties>
-              </component>
-            </children>
-          </grid>
-        </children>
+        <children/>
       </tabbedpane>
     </children>
   </grid>

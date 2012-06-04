@@ -11,7 +11,6 @@ class QfaceController < ApplicationController
     chooser.set_dialog_title "Open LQPL File for Compiling"
     qplfiles = FileNameExtensionFilter.new("LQPL source file", ["qpl"].to_java(:string))
     chooser.set_file_filter(qplfiles)
-    puts "Setting curr dir to #{Dir.getwd}"
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
     rval = chooser.show_open_dialog(nil)
     if rval == JFileChooser::APPROVE_OPTION
@@ -30,7 +29,6 @@ class QfaceController < ApplicationController
     chooser.set_dialog_title "Load LQPO (Assembly) File"
     qpofiles = FileNameExtensionFilter.new("LQPL assembled file", ["qpo"].to_java(:string))
     chooser.set_file_filter(qpofiles)
-    puts "Setting curr dir to #{Dir.getwd}"
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
     rval = chooser.show_open_dialog(nil)
     if rval == JFileChooser::APPROVE_OPTION
@@ -39,6 +37,7 @@ class QfaceController < ApplicationController
       server.send_load_from_file fname
       model.control_panel_visible = true
       QuantumStackController.instance.open
+      ExecutableCodeController.instance.set_code_and_code_pointer
       ExecutableCodeController.instance.open
 
     else
@@ -51,5 +50,6 @@ class QfaceController < ApplicationController
     sc = ServerConnection.instance
     sc.do_step
     QuantumStackController.instance.update_qstack
+    ExecutableCodeController.instance.set_code_pointer
   end
 end

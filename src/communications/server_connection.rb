@@ -65,4 +65,17 @@ class ServerConnection
     @connection.puts "step 1\n"
     @connection.readline
   end
+
+  def code_pointer
+    connect if !connected?
+    @connection.puts "get codepointer 2"
+    @connection.readline
+  end
+
+
+  def loaded_code
+    connect if !connected?
+    @connection.puts "get code 2"
+    @connection.readline
+  end
 end

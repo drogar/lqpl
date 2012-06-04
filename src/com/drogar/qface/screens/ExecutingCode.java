@@ -14,9 +14,12 @@ import java.awt.*;
 public class ExecutingCode extends JFrame{
     private JTabbedPane codeTabbedPane;
     private JPanel panel1;
-    private JTextArea codeTextArea;
 
     public ExecutingCode() throws HeadlessException {
         super("Executing Code");
+        setSize(400,600);
+        setLocation(30,350);
+        setContentPane(panel1);
     }
+
 }
