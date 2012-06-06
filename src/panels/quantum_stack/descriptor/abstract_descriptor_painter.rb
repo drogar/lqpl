@@ -59,12 +59,7 @@ class AbstractDescriptorPainter
   alias :paint_model :paintModel
 
   def paintModelAtPoint(g,p,center)
-    g.set_rendering_hint(RenderingHints::KEY_ANTIALIASING, RenderingHints::VALUE_ANTIALIAS_ON)
-    g.set_color(my_colour)
-    e = my_shape(center);
-    g.fill(e)
-    g.set_color(Color.black);
-    g.draw(e);
+    draw_colour_filled_shape(g,my_shape(center), my_colour)
     draw_text_to_left_of_point(g,"#{@model_element.name}",Point.new(center.x-node_size, center.y-node_size)) if @model_element.name
     draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+node_size)) if @model_element.length == 0
   end
@@ -76,11 +71,9 @@ class AbstractDescriptorPainter
     width   += get_string_size(g,"#{@model_element.name}").width + node_size if @model_element.name
     height  =  node_size
     valsize =  get_string_size(g," #{@model_element.value} ")
-    height  += valsize.height + (node_size * 0.5) if @model_element.length == 0
+    height  += valsize.height + half_node_size if @model_element.length == 0
     width   =  [width,valsize.width].max
-    d = Dimension.new(0,0)
-    d.set_size(width, height)
-    d
+    Dimension.new(width, height)
   end
 
   alias :get_preferred_size_of_model :getPreferredSizeOfModel

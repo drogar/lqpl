@@ -1,4 +1,5 @@
 require 'spec/spec_helper'
+require 'spec/quantum_stack_data'
 require 'src/panels/quantum_stack/quantum_stack_model'
 require 'src/panels/quantum_stack/quantum_stack_painter'
 
@@ -42,6 +43,19 @@ describe QuantumStackPainter do
     it "should be the 1/2 the sums of adjacent elements for odd lists, with the middle elements being 0" do
       QuantumStackPainter::make_x_offsets([2,4,6,8,10]).should == [3,5,0,7,9]
     end
+  end
+  describe "get_preferred_size_of_model" do
+    before(:each) do
+      @qshad = QuantumStackPainter.new(QuantumStackModel.new(QSQBHAD,P1 ))
+      @qsval = QuantumStackPainter.new(QuantumStackModel.new(QSVAL5,"" ))
+      @qsb = QuantumStackPainter.new(QuantumStackModel.new("<bottom/>"))
+      @g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
+    end
+    it "should cache the size after the first call"
+    it "should check if the model element is bottom and return "
+    it "should request the size of all substacks on the first call when not bottom"
+    it "should request the size of the descriptor on the first call when not bottom"
+
   end
   describe "sizing" do
     before(:each) do

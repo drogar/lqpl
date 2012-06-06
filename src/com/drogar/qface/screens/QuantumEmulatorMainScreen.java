@@ -16,7 +16,7 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     public QuantumEmulatorMainScreen() {
         super("Quantum Emulator");
         setSize(400,300);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JMenuBar mbar = new JMenuBar();
         JMenu fmenu = new JMenu("File");
@@ -39,11 +39,11 @@ public class QuantumEmulatorMainScreen extends  JFrame{
 
         controlPanel.setVisible(false);
         this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                System.exit(0);
-            }
-        });
+                    @Override
+                    public void windowClosing(WindowEvent windowEvent) {
+                        System.exit(0);
+                    }
+                });
 
     }
 

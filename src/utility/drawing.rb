@@ -42,6 +42,20 @@ module Drawing
     end
   end
 
+  def draw_black_line(g,from,to)
+    ln = Line2D::Double.new(from,to)
+    g.set_color(Color.black)
+    g.draw(ln)
+  end
+
+  def draw_colour_filled_shape(g,shape,fill_colour)
+    g.color = fill_colour
+    g.fill shape
+    g.color = Color.black
+    g.draw shape
+  end
+
+
   def node_separation(direction)
     case direction
     when :vertical then 40.0

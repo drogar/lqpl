@@ -39,3 +39,17 @@ java_import org.netbeans.jemmy.TestOut
 
 # testout - (in, trace out, error out, notes out)
 JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, nil, nil))
+
+begin
+  puts "Starting up!!!!"
+  com.drogar.qface.Main.main([])
+rescue Exception => e
+  puts "Exception from main: #{e}"
+end
+
+java_import org.netbeans.jemmy.operators.JFrameOperator
+$qe_frame = JFrameOperator.new "Quantum Emulator"
+
+at_exit {
+  $qe_frame.close
+  QfaceController.instance.close}

@@ -45,7 +45,7 @@ class ExecutableCodeView < ApplicationView
     return if !@qpo_method_and_line_to_selection_start_and_end_map["#{code_pointer_map.keys[0]}--#{code_pointer_map.values[0]}"]
     selection_bounds = @qpo_method_and_line_to_selection_start_and_end_map["#{code_pointer_map.keys[0]}--#{code_pointer_map.values[0]}"]
     jt = codeTabbedPane.selected_component
-    puts jt.request_focus(true) # deprecated method, but otherwise the highlight does not show when switching qpo_methods
+    jt.request_focus(true) # deprecated method, but otherwise the highlight does not show when switching qpo_methods
     jt.selection_end = selection_bounds[1]
     jt.selection_start = selection_bounds[0]
   end

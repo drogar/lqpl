@@ -1,3 +1,5 @@
+
+
 When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |file, dir|
 
   java_import org.netbeans.jemmy.operators.JFileChooserOperator
@@ -61,17 +63,25 @@ end
 
 Then /^the frame "([\w\s]*)" should be visible$/ do |frame_name|
    java_import org.netbeans.jemmy.operators.JFrameOperator
-   $qe_frame = JFrameOperator.new frame_name
+   set_frame_name_var(frame_name)
 end
 
-Given /^I have just loaded "(.*?)" from the directory "([\w\s\/]*)"$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
+
+When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frm|
+  java_import org.netbeans.jemmy.operators.JButtonOperator
+  java_import org.netbeans.jemmy.Timeouts
+
+  theButton = JButtonOperator.new(eval(frame_name_var_string(frm)), button_text)
+  count.to_i.times {|i| theButton.do_click}
+
 end
 
-When /^I click the button "([\w\s]*)"$/ do |arg1|
-  pending # express the regexp above with the code you wish you had
-end
+Then /^the selection on the frame "([\w\s]*)" should show ---(.*?)$/ do |frame_name, selec|
+  java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
+  java_import org.netbeans.jemmy.operators.JTextAreaOperator
 
-Then /^the "([\w\s]*)" field should show "(.*?)"$/ do |arg1, arg2|
-  pending # express the regexp above with the code you wish you had
+  theTabbedPane = JTabbedPaneOperator.new(eval(frame_name_var_string(frame_name)))
+  theTextArea = JTextAreaOperator.new(theTabbedPane.selected_component)
+  selec.should == theTextArea.selected_text.chomp
+
 end
