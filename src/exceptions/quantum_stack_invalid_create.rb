@@ -1,2 +1,0 @@
-class QuantumStackInvalidCreate < RuntimeError
-end

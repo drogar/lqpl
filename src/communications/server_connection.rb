@@ -44,38 +44,30 @@ class ServerConnection
     connect if !connected?
     @connection.puts "get qstack  #{recursion_depth} #{tree_depth}\n"
     ret_data = @connection.readline
-    #puts retData
     @connection.puts "get memorymap #{recursion_depth}  #{tree_depth}\n"
     ret_mm = @connection.readline
-    #puts retMM
-    QuantumStack.new(ret_data,ret_mm)
-  end
-
-  def get_executable_code(recursion_depth=1)
-    connect if !connected?
-   # @connection.puts "get code  #{recursion_depth}\n"
-  #  @connection.readline
+    [ret_data,ret_mm]
   end
 
   def get_code_pointer(recursion_depth=1)
   end
 
-  def do_step
+  def do_step(step_size=1)
     connect if !connected?
-    @connection.puts "step 1\n"
+    @connection.puts "step #{step_size}\n"
     @connection.readline
   end
 
-  def code_pointer
+  def code_pointer(recursion_depth=1)
     connect if !connected?
-    @connection.puts "get codepointer 2"
+    @connection.puts "get codepointer #{recursion_depth}"
     @connection.readline
   end
 
 
-  def loaded_code
+  def loaded_code(recursion_depth=1)
     connect if !connected?
-    @connection.puts "get code 2"
+    @connection.puts "get code #{recursion_depth}"
     @connection.readline
   end
 end

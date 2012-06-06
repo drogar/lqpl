@@ -1,5 +1,6 @@
 package com.drogar.qface.screens;
 
+
 import com.drogar.qface.components.QuantumStackPanel;
 
 import javax.swing.*;

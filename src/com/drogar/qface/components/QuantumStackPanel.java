@@ -1,6 +1,6 @@
 package com.drogar.qface.components;
 
-import com.drogar.qface.qstack.PaintMe;
+import com.drogar.qface.qstack.Painter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import java.awt.*;
  */
 public class QuantumStackPanel extends JScrollPane{
 
-   PaintMe quantumStack;
+    Painter quantumStackPainter;
     JLabel qsImageLabel;
 
     public QuantumStackPanel() {
@@ -46,15 +46,15 @@ public class QuantumStackPanel extends JScrollPane{
 //        }
 //    }
 
-    public PaintMe getQuantumStack() {
-        return quantumStack;
+    public Painter getQuantumStackPainter() {
+        return quantumStackPainter;
     }
 
-    public void setQuantumStack(PaintMe quantumStack) {
-        this.quantumStack = quantumStack;
-        Icon qsImage = quantumStack.imageOfMe();
+    public void setQuantumStackPainter(Painter quantumStackP) {
+        this.quantumStackPainter = quantumStackP;
+        Icon qsImage = quantumStackP.imageOfModel();
         qsImageLabel.setIcon(qsImage);
-        qsImageLabel.setMinimumSize(quantumStack.getPreferredSize(null));
+        qsImageLabel.setMinimumSize(quantumStackP.getPreferredSizeOfModel(null));
         repaint();
     }
 

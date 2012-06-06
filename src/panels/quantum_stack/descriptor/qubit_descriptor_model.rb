@@ -1,4 +1,4 @@
-class StackQubit < StackDescriptor
+class QubitDescriptorModel < AbstractDescriptorModel
 
   PATTERN=Regexp.new /^<Qubits>((<pair>((<qz\/>)|(<qo\/>))((<qz\/>)|(<qo\/>))<\/pair>){1,4})<\/Qubits>$/
 
@@ -6,13 +6,9 @@ class StackQubit < StackDescriptor
   # match 2 and 5
 
   def initialize(in_string)
-
     matc = PATTERN.match in_string
-    if matc
-      @value = StackQubit::parse_list matc[1]
-    else
-      raise StackDescriptorInvalidCreate, in_string
-    end
+    raise StackDescriptorModelInvalidCreate, in_string if !matc
+    @value = QubitDescriptorModel::parse_list matc[1]
   end
 
   def length
@@ -23,12 +19,6 @@ class StackQubit < StackDescriptor
     @value.collect {|v| "#{v[0]}#{v[1]}"}
   end
 
-   # PaintMe interface overrides
-  def my_colour
-    Color.red
-  end
-
-  # End PaintMe interface
 
   def self.parse_list(qubit_string)
     raise InvalidInput, "Must have qubit indicators" if !qubit_string or qubit_string.length == 0

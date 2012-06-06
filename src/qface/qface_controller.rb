@@ -36,6 +36,7 @@ class QfaceController < ApplicationController
       server = ServerConnection.instance
       server.send_load_from_file fname
       model.control_panel_visible = true
+      QuantumStackController.instance.set_quantum_stack
       QuantumStackController.instance.open
       ExecutableCodeController.instance.set_code_and_code_pointer
       ExecutableCodeController.instance.open
@@ -49,7 +50,7 @@ class QfaceController < ApplicationController
   def step_button_action_performed
     sc = ServerConnection.instance
     sc.do_step
-    QuantumStackController.instance.update_qstack
+    QuantumStackController.instance.set_quantum_stack
     ExecutableCodeController.instance.set_code_pointer
   end
 end

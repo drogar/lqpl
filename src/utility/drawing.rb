@@ -42,4 +42,15 @@ module Drawing
     end
   end
 
+  def node_separation(direction)
+    case direction
+    when :vertical then 40.0
+    when :horizontal then 55.0
+    else 20.0
+    end
+  end
+
+
+
+
 end

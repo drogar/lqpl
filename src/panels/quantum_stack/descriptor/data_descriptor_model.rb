@@ -1,4 +1,4 @@
-class StackData < StackDescriptor
+class DataDescriptorModel < AbstractDescriptorModel
 
   PATTERN=Regexp.new /^<AlgebraicData>((<string>([\w\d_]*)<\/string><StackAddresses>((<int>(\d*)<\/int>)*)<\/StackAddresses>)+)<\/AlgebraicData>$/
 
@@ -9,11 +9,8 @@ class StackData < StackDescriptor
 
   def initialize(in_string)
     matc = PATTERN.match in_string
-    if matc
-      @value = StackData::parse_pairs matc[1]
-    else
-      raise StackDescriptorInvalidCreate, in_string
-    end
+    raise StackDescriptorModelInvalidCreate, in_string if ! matc
+    @value = DataDescriptorModel::parse_pairs matc[1]
   end
 
 
@@ -25,16 +22,6 @@ class StackData < StackDescriptor
     @value.collect {|v| "#{v[0]}#{v[1] if [] != v[1]}"}
   end
 
-     # PaintMe interface overrides
-  def my_colour
-    Color.magenta
-  end
-
-
-  def my_shape(point)
-    Rectangle2D::Double.new(point.x-half_node_size, point.y-half_node_size, node_size, node_size)
-  end
-  # End PaintMe interface
 
   def self.parse_pairs(constructors_string)
     raise InvalidInput, "Must have at least one constructor" if !constructors_string or constructors_string.length == 0

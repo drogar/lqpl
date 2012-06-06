@@ -84,7 +84,7 @@ describe ExecutableCodeModel do
         @ecm = ExecutableCodeModel.new
       end
       it "should throw an exception with bad input" do
-        expect {@ecm.the_code="junk"}.to raise_error QuantumStackInvalidCreate, /code xml/
+        expect {@ecm.the_code="junk"}.to raise_error QuantumStackModelInvalidCreate, /code xml/
       end
       it "should return the created code map when given correct input" do
         @ecm.the_code=CMAP_2
@@ -99,7 +99,7 @@ describe ExecutableCodeModel do
         @ecm = ExecutableCodeModel.new
       end
       it "should throw an exception with bad input" do
-        expect {@ecm.the_code_pointer="junk"}.to raise_error QuantumStackInvalidCreate, /code pointer xml/
+        expect {@ecm.the_code_pointer="junk"}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
       end
       it "should return the created code map when given correct input when there is code" do
         @ecm.the_code=CMAP_2

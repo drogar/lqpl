@@ -2,9 +2,9 @@ class QuantumStackController < ApplicationController
   set_model 'QuantumStackModel'
   set_view 'QuantumStackView'
 
-  def update_qstack
+  def set_quantum_stack
     sc = ServerConnection.instance
-    model.qstack = sc.get_qstack
+    model.quantum_stack = sc.get_qstack
     update_view
   end
 end
