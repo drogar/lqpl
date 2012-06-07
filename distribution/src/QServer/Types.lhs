@@ -19,7 +19,7 @@
   deriving (Eq,Show,Read)
 
  data QCommand = QCLoad FilePath |
-    QCStep Int |
+    QCStep Int Int |
     QCRun Int |
     QCGet QSData Int Int |
     QCSimulate Int

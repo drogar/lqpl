@@ -127,8 +127,8 @@ commandHandler machineStateRef shandle addr msg =
     case (getCommand msg) of
       Right (QCLoad assemblyCode)  ->
         assemble assemblyCode machineStateRef shandle
-      Right (QCStep step) ->
-        stepMachine step machineStateRef shandle
+      Right (QCStep step depth) ->
+        stepMachine step depth machineStateRef shandle
       Right (QCRun depth) ->
         executeMachine depth machineStateRef shandle
       Right (QCGet QDQuantumStack depth treedepth) ->

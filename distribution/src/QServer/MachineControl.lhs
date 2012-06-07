@@ -7,47 +7,53 @@
        )
   where
 
-  import Data.IORef  
+  import Data.IORef
 
   import Data.Computation.BaseType
-   
+
   import System.IO
 
   import QSM.BasicData
   import QSM.QSM
   import QServer.Types
 
-  stepMachine ::  Int -> 
-                  IORef (MachineState BaseType) -> 
-                  Handle -> 
+  stepMachine ::  Int ->
+                  Int ->
+                  IORef (MachineState BaseType) ->
+                  Handle ->
                   IO()
-  stepMachine step machineStateRef shndle = 
+  stepMachine step depth machineStateRef shndle =
     do
       runIt step machineStateRef
-      hPutStrLn shndle "Stepped"
+      mstate <- readIORef machineStateRef
+      let bms =  pickIthMS  depth mstate
+      case runningCode bms of
+        []    ->       hPutStrLn shndle "executed"
+        _     ->       hPutStrLn shndle "Stepped"
 
-  runIt ::  Int -> 
+
+  runIt ::  Int ->
             IORef (MachineState BaseType) ->
             IO()
   runIt 0 ms = return ()
-  runIt n ms 
+  runIt n ms
        = do modifyIORef ms runMachine
             runIt (n-1) ms
-              
-  executeMachine ::  Int -> 
-                     IORef (MachineState BaseType) -> 
-                     Handle -> 
+
+  executeMachine ::  Int ->
+                     IORef (MachineState BaseType) ->
+                     Handle ->
                      IO()
   executeMachine depth machineStateRef shndle =
-    do 
+    do
       modifyIORef machineStateRef (go depth)
       hPutStrLn shndle "executed"
-        
-  simulate :: Int -> 
+
+  simulate :: Int ->
               IORef (MachineState BaseType) ->
               Handle ->
               IO()
-  simulate depth machineStateRef shndle = 
+  simulate depth machineStateRef shndle =
     do
       hPutStrLn shndle "emulating"
 

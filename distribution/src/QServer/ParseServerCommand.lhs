@@ -37,8 +37,10 @@
       string "step"
       many1 space
       count <- many1 (digit)
+      many1 space
+      depth <- many1 (digit)
       eof
-      return $ QCStep (read count)
+      return $ QCStep (read count) (read depth)
 
   parseRun::  Parser QCommand
   parseRun =
