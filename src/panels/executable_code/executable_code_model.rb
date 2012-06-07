@@ -1,3 +1,5 @@
+require 'panels/executable_code/code_pointer'
+
 class ExecutableCodeModel
   attr_accessor :the_code
   attr_accessor :the_code_pointer
@@ -9,21 +11,19 @@ class ExecutableCodeModel
   end
 
   def the_code_pointer=(xml_string)
-    @the_code_pointer = ExecutableCodeModel::code_pointer_xml_to_map(xml_string)
-    raise QuantumStackModelInvalidCreate, "code pointer xml was ill-formed" if !self.the_code_pointer
-    @the_code_pointer = nil if !the_code or !the_code.has_key?(@the_code_pointer.keys[0])
+    @the_code_pointer = CodePointer.new xml_string
+    if !the_code or !the_code.has_key?( @the_code_pointer.qpo_method)
+      @the_code_pointer = nil
+    else
+      @the_code_pointer.normalize(@the_code[@the_code_pointer.qpo_method].length)
+    end
   end
 
   def the_code_was_updated?
     @the_code_was_updated
   end
 
-  def self.code_pointer_xml_to_map(xml_string)
-    return {} if !xml_string or "" == xml_string
-    cp_match = CODE_POINTER_PATTERN.match xml_string
-    return nil if !cp_match
-    {cp_match[1].to_sym => cp_match[2].to_i}
-  end
+
 
   def self.code_xml_to_map(xml_string)
     return {} if ! xml_string or "" == xml_string
@@ -72,6 +72,6 @@ class ExecutableCodeModel
   CODE_MAP_PATTERN = Regexp.new /^<Code><map>(.*)<\/map><\/Code>$/
   KVPAIRS_PATTERN = Regexp.new   /^<kvpair><key><string>(.*?)<\/string><\/key><value><instructions>(.*?)<\/instructions><\/value><\/kvpair>/
 
-  CODE_POINTER_PATTERN = Regexp.new /^<pair><string>(.*?)<\/string><int>(\d*)<\/int><\/pair>$/
+
 
 end

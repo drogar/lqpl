@@ -22,11 +22,12 @@
             </constraints>
             <properties/>
           </component>
-          <component id="a65ab" class="javax.swing.JLabel">
+          <component id="a65ab" class="javax.swing.JLabel" binding="stepLabelForSpinner">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <labelFor value="eca03"/>
               <text value="Step Size"/>
             </properties>
           </component>
@@ -36,11 +37,12 @@
             </constraints>
             <properties/>
           </component>
-          <component id="3deb" class="javax.swing.JLabel">
+          <component id="3deb" class="javax.swing.JLabel" binding="recursionLabelForSpinner">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <labelFor value="c3167"/>
               <text value="Recursion Depth"/>
             </properties>
           </component>
@@ -50,11 +52,12 @@
             </constraints>
             <properties/>
           </component>
-          <component id="42e97" class="javax.swing.JLabel">
+          <component id="42e97" class="javax.swing.JLabel" binding="treeDepthLabelForSpinner">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
+              <labelFor value="cb50"/>
               <text value="Tree Depth"/>
             </properties>
           </component>

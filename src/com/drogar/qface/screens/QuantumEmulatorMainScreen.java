@@ -57,8 +57,12 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     private JButton stepButton;
     private JButton goButton;
     private JSpinner stepSpinner;
+    private JLabel stepLabelForSpinner;
     private JSpinner recursionSpinner;
+    private JLabel   recursionLabelForSpinner;
     private JSpinner treeDepthSpinner;
+    private JLabel   treeDepthLabelForSpinner;
+
     private JPanel spinnerPanel;
     private JPanel buttonPanel;
     private JPanel controlPanel;

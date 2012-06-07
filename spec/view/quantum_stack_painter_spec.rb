@@ -77,10 +77,10 @@ describe QuantumStackPainter do
       ps.width.should > 160.0
       ps.height.should > 60.0
     end
-    it "should have a preferred size of width  of 28 and height of 31 for the value of 0.5 only" do
+    it "should have a preferred size of width >= 25 and height >= 28 for the value of 0.5 only" do
       ps = @qsval.get_preferred_size_of_model(@g)
-      ps.width.should == 28
-      ps.height.should == 31.0
+      ps.width.should >= 25
+      ps.height.should >= 28
     end
     it "should have a preferred size > 10, 15 for bottom" do
       ps = @qsb.get_preferred_size_of_model(@g)

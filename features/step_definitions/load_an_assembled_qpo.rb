@@ -2,9 +2,6 @@
 
 When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |file, dir|
 
-  java_import org.netbeans.jemmy.operators.JFileChooserOperator
-  java_import org.netbeans.jemmy.operators.Operator
-  java_import javax.swing.JButton
   fc = JFileChooserOperator.new
   fc.get_dialog_title.should == "Load LQPO (Assembly) File"
 
@@ -33,10 +30,6 @@ When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |fil
 end
 
 Then /^the button "([\w\s]*)" should appear$/ do |button_text|
-  java_import org.netbeans.jemmy.operators.JButtonOperator
-  java_import org.netbeans.jemmy.Timeouts
-#  btn_timeout = Timeouts.new
-#  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
   theButton = JButtonOperator.new($qe_frame, button_text)
 
   theButton.should_not == nil
@@ -44,44 +37,46 @@ Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   theButton.should be_visible
 end
 
-Then /^the number spinner "([\w\s]*)" with value "([\d]*)" should appear$/ do |spinner_label, spin_value|
+Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ do |spinner_label, spin_value|
 
-  java_import org.netbeans.jemmy.operators.JLabelOperator
-  java_import org.netbeans.jemmy.operators.ContainerOperator
-  java_import org.netbeans.jemmy.operators.JSpinnerOperator
   theLabel = JLabelOperator.new($qe_frame, spinner_label)
 
   theLabel.should_not == nil
   theLabel.text.should == spinner_label
   theLabel.should be_visible
 
-  parent = ContainerOperator.new theLabel.parent
-  theSpinner = JSpinnerOperator.new(parent,spin_value)
+  theSpinner = JSpinnerOperator.new(theLabel.label_for)
   theSpinner.should_not == nil
   "#{theSpinner.value}".should == spin_value
 end
 
 Then /^the frame "([\w\s]*)" should be visible$/ do |frame_name|
-   java_import org.netbeans.jemmy.operators.JFrameOperator
    set_frame_name_var(frame_name)
 end
 
+Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frm|
+  theSpinner = JSpinnerOperator.new(JLabelOperator.new(eval(frame_name_var_string frm), spinner_label).label_for)
+  spin_button = theSpinner.increase_operator
+  spin_button = theSpinner.decrease_operator if direction == "down"
+  count.to_i.times {|i| spin_button.do_click}
+
+end
 
 When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frm|
-  java_import org.netbeans.jemmy.operators.JButtonOperator
-  java_import org.netbeans.jemmy.Timeouts
-
   theButton = JButtonOperator.new(eval(frame_name_var_string(frm)), button_text)
   count.to_i.times {|i| theButton.do_click}
 
 end
 
 Then /^the selection on the frame "([\w\s]*)" should show ---(.*?)$/ do |frame_name, selec|
-  java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
-  java_import org.netbeans.jemmy.operators.JTextAreaOperator
 
   theTabbedPane = JTabbedPaneOperator.new(eval(frame_name_var_string(frame_name)))
   theTextArea = JTextAreaOperator.new(theTabbedPane.selected_component)
-  selec.should == theTextArea.selected_text.chomp
+  theTextArea.selected_text.chomp.should == selec
 
+end
+
+Then /^the button "([\w\s]*)" on the frame "([\w\s]*)" should be (dis|en)abled$/ do |button_text, frm, dis_or_en|
+  the_button = JButtonOperator.new(eval(frame_name_var_string(frm)), button_text)
+  the_button.enabled.should == (dis_or_en == 'en')
 end

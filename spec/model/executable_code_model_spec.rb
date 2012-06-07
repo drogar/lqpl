@@ -1,5 +1,6 @@
 require 'spec/spec_helper'
 require 'src/panels/executable_code/executable_code_model'
+require 'src/exceptions/quantum_stack_model_invalid_create'
 
 KVPS6='<i>EnScope</i><i>QLoad "@q" 0</i><i>QApply 0 Hadamard "@q"</i>'+
   '<i>QPullup "@q"</i><i>EnScope</i><i>Measure "@q" 14 6 10</i>'
@@ -63,20 +64,7 @@ describe ExecutableCodeModel do
       ExecutableCodeModel::kv_pairs_to_map(KVPAIRS_2).should == RES_CMAP_2
     end
   end
-  describe "class method code_pointer_xml_to_map" do
-    it "should return an empty map with no or nil input" do
-      ExecutableCodeModel::code_pointer_xml_to_map(nil).should == {}
-      ExecutableCodeModel::code_pointer_xml_to_map('').should == {}
-    end
 
-    it "should return an one element map with a pair input" do
-      ExecutableCodeModel::code_pointer_xml_to_map("<pair><string>main</string><int>2</int></pair>").should == {:main => 2}
-    end
-
-    it "should return nil with invalid input" do
-      ExecutableCodeModel::code_pointer_xml_to_map("junk").should be_nil
-    end
-  end
   describe "public instance methods" do
 
     describe "the_code" do
@@ -103,8 +91,9 @@ describe ExecutableCodeModel do
       end
       it "should return the created code map when given correct input when there is code" do
         @ecm.the_code=CMAP_2
-        @ecm.the_code_pointer=("<pair><string>main</string><int>2</int></pair>")
-        @ecm.the_code_pointer.should == {:main => 2}
+        @ecm.the_code_pointer=("<pair><string>main</string><int>0</int></pair>")
+        @ecm.the_code_pointer.qpo_method.should == :main
+        @ecm.the_code_pointer.line_number.should == 0
       end
 
       it "should return the nil by default" do
@@ -120,6 +109,75 @@ describe ExecutableCodeModel do
         @ecm.the_code_pointer=("<pair><string>junk</string><int>2</int></pair>")
         @ecm.the_code_pointer.should be_nil
       end
+      it "should restrict the range of the pointer to the actual number of lines of code" do
+        @ecm.the_code=CMAP_2
+        @ecm.the_code_pointer=("<pair><string>main</string><int>17</int></pair>")
+        @ecm.the_code_pointer.line_number.should == 0
+
+        @ecm.the_code_pointer=("<pair><string>cflip_fcdelbl0</string><int>0</int></pair>")
+        @ecm.the_code_pointer.line_number.should == 0
+
+        @ecm.the_code_pointer=("<pair><string>cflip_fcdelbl0</string><int>1</int></pair>")
+        @ecm.the_code_pointer.line_number.should == 1
+
+        @ecm.the_code_pointer=("<pair><string>cflip_fcdelbl0</string><int>2</int></pair>")
+        @ecm.the_code_pointer.line_number.should == 1
+
+        @ecm.the_code_pointer=("<pair><string>cflip_fcdelbl0</string><int>3</int></pair>")
+        @ecm.the_code_pointer.line_number.should == 1
+      end
+    end
+  end
+end
+
+describe CodePointer do
+  describe "creation" do
+    it "should throw an exception with bad input" do
+      expect {CodePointer.new("junk")}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+    end
+    it "should throw an exception with nil input" do
+      expect {CodePointer.new(nil)}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+    end
+    it "should throw an exception with blank input" do
+      expect {CodePointer.new("")}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+    end
+    it "should create a CodePointer instance with correct input " do
+      @cp = CodePointer.new("<pair><string>main</string><int>0</int></pair>")
+      @cp.qpo_method.should == :main
+      @cp.line_number.should == 0
+    end
+  end
+
+  describe "instance method normalize" do
+    before(:each) do
+      @cp = CodePointer.new("<pair><string>main</string><int>17</int></pair>")
+    end
+    it "should change the line_number to zero when input 1" do
+      @cp.normalize(1)
+      @cp.line_number.should == 0
+    end
+    it "should change the line_number to 5 when input 6" do
+      @cp.normalize(6)
+      @cp.line_number.should == 5
+    end
+    it "should leave the line_number at 17 when input 18 or more" do
+      @cp.normalize(18)
+      @cp.line_number.should == 17
+      @cp.normalize(24)
+      @cp.line_number.should == 17
+    end
+
+    it "should change the line_number to 0 when input a negative number" do
+      @cp.normalize(-5)
+      @cp.line_number.should == 0
+    end
+    it "should change the line_number to 0 when input nil" do
+      @cp.normalize(nil)
+      @cp.line_number.should == 0
+    end
+    it "should change the line_number to 0 when input zero" do
+      @cp.normalize(0)
+      @cp.line_number.should == 0
     end
   end
 end

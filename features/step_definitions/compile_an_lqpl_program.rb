@@ -3,13 +3,10 @@
 
 Given /^the frame "([\w\s]*)" is visible$/ do |frame_name|
 
-  java_import org.netbeans.jemmy.operators.JFrameOperator
   eval "@#{frame_name.gsub(/ /,'_')} = JFrameOperator.new frame_name"
 end
 
 Given /^I select "([a-zA-Z]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
-  java_import org.netbeans.jemmy.operators.JMenuBarOperator
-  java_import org.netbeans.jemmy.operators.JMenuOperator
 
   mbar = JMenuBarOperator.new $qe_frame.get_jmenu_bar
   jm = mbar.get_menu(0)
@@ -24,10 +21,6 @@ end
 
 And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 
-  java_import org.netbeans.jemmy.operators.JFileChooserOperator
-  java_import org.netbeans.jemmy.operators.Operator
-  java_import org.netbeans.jemmy.operators.JButtonOperator
-  java_import javax.swing.JButton
   fc = JFileChooserOperator.new
   fc.get_dialog_title.should == "Open LQPL File for Compiling"
 

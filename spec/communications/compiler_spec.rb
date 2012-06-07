@@ -11,24 +11,6 @@ describe Compiler do
     end
   end
 
-  # context "when the compiler process is not running" do
-  #   it "generates an error when created with defaults" do
-  #     expect {
-  #       Compiler.new.connect
-  #     }.to raise_error(
-  #       CompilerProcessNotFound,
-  #       /no process found on port 7683/
-  #     )
-  #   end
-  #   it "generates an error when created with port > 1000" do
-  #     expect {
-  #       (Compiler.new 3456).connect
-  #       }.to raise_error(
-  #       CompilerProcessNotFound,
-  #       /no process found on port 3456/
-  #       )
-  #   end
-  # end
   context "creation" do
     context "enforce singleton" do
       before(:each) do

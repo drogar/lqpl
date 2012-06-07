@@ -35,10 +35,12 @@ class QfaceController < ApplicationController
       fname = chooser.get_selected_file.get_absolute_path
       server = ServerConnection.instance
       server.send_load_from_file fname
+      model.go_enabled = true
+      model.step_enabled = true
       model.control_panel_visible = true
-      QuantumStackController.instance.set_quantum_stack
+      QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
       QuantumStackController.instance.open
-      ExecutableCodeController.instance.set_code_and_code_pointer
+      ExecutableCodeController.instance.set_code_and_code_pointer  model.recursion_spinner
       ExecutableCodeController.instance.open
 
     else
@@ -47,10 +49,34 @@ class QfaceController < ApplicationController
     update_view
   end
 
+  def step_spinner_state_changed
+    model.step_spinner = view_model.step_spinner
+  end
+
+  def recursion_spinner_state_changed
+    model.recursion_spinner = view_model.recursion_spinner
+  end
+
   def step_button_action_performed
     sc = ServerConnection.instance
-    sc.do_step
-    QuantumStackController.instance.set_quantum_stack
-    ExecutableCodeController.instance.set_code_pointer
+    res = sc.do_step(model.step_spinner,model.recursion_spinner)
+    QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
+    ExecutableCodeController.instance.set_code_pointer model.recursion_spinner
+    if res =~ /executed/
+      model.go_enabled = false
+      model.step_enabled = false
+      update_view
+    end
+  end
+
+  def go_button_action_performed
+    sc = ServerConnection.instance
+    sc.do_run model.recursion_spinner
+
+    QuantumStackController.instance.set_quantum_stack model.recursion_spinner
+    ExecutableCodeController.instance.set_code_pointer model.recursion_spinner
+    model.go_enabled = false
+    model.step_enabled = false
+    update_view
   end
 end

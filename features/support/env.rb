@@ -34,6 +34,28 @@ require 'manifest'
 java_import org.netbeans.jemmy.JemmyProperties
 java_import org.netbeans.jemmy.TestOut
 
+java_import org.netbeans.jemmy.operators.JFileChooserOperator
+java_import org.netbeans.jemmy.operators.Operator
+
+java_import org.netbeans.jemmy.operators.JButtonOperator
+java_import org.netbeans.jemmy.operators.JLabelOperator
+java_import org.netbeans.jemmy.operators.ContainerOperator
+java_import org.netbeans.jemmy.operators.JSpinnerOperator
+java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
+java_import org.netbeans.jemmy.operators.JTextAreaOperator
+java_import org.netbeans.jemmy.operators.JFrameOperator
+java_import org.netbeans.jemmy.operators.JMenuBarOperator
+java_import org.netbeans.jemmy.operators.JMenuOperator
+
+
+
+#  java_import org.netbeans.jemmy.Timeouts
+#  btn_timeout = Timeouts.new
+#  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
+
+java_import javax.swing.JButton
+
+
 #props = JemmyProperties.properties
 #JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
 
