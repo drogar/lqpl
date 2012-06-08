@@ -1,5 +1,8 @@
 package com.drogar.qface.screens;
 
+import com.apple.eawt.Application;
+import com.drogar.qface.macosx.MacOSAboutHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -38,6 +41,9 @@ public class QuantumEmulatorMainScreen extends  JFrame{
         setUpSpinner(treeDepthSpinner, 4,1,100,1);
 
         controlPanel.setVisible(false);
+        Application.getApplication().setAboutHandler(new MacOSAboutHandler());
+        Application.getApplication().setQuitHandler(null);
+
         this.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosing(WindowEvent windowEvent) {
