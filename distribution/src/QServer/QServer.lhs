@@ -182,11 +182,19 @@ sendMemoryMap depth treedepth machineStateRef shndle =
 
 sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendClassicalStack depth treedepth machineStateRef shndle =
-    hPutStrLn shndle $  " ClassicalStack to be returned"
+  do
+    mstate <- readIORef machineStateRef
+    let bms =  pickIthMS  depth mstate
+        cs = classicalStack bms
+    hPutStrLn shndle $  toXML cs
 
 sendDump :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
-sendDump dept treedepth machineStateRef shndle =
-  hPutStrLn shndle $  " Dump to be returned"
+sendDump depth treedepth machineStateRef shndle =
+  do
+    mstate <- readIORef machineStateRef
+    let bms =  pickIthMS  depth mstate
+        d = dump bms
+    hPutStrLn shndle $  boundedToXML treedepth d
 
 
 

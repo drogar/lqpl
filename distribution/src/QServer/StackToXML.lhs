@@ -110,8 +110,8 @@
     toXML (Right b) = surroundWith "cbool" $ show b
 
   instance XML ClassicalStack where
-    toXML a = listToXML "cstack"  $ Stack.toList a
-    boundedToXML n  a = listToXML "cstack"  $ take n $ Stack.toList a
+    toXML a = listToXML "Cstack"  $ Stack.toList a
+    boundedToXML n  a = listToXML "Cstack"  $ take n $ Stack.toList a
 
   instance (XML b) => XML (StackDescriptor b) where
     toXML StackZero = "<Zero/>"
@@ -145,6 +145,10 @@
                   toXML (onDiagonal fqs) ++
                   (boundedListToXML (n-1) "substacks" (subStacks fqs)) ++
                   toXML (descriptor fqs)
+
+  instance (XML b) => XML (Dump b) where
+    toXML = listToXML "Dump"
+    boundedToXML n = boundedListToXML n "Dump"
 
   instance (XML b)=> XML (DumpElement b) where
     toXML (DumpStackSplit ret branches resultQ saveC saveNS resultNS saveMM resultMM) =
