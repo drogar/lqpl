@@ -46,6 +46,7 @@ java_import org.netbeans.jemmy.operators.JTextAreaOperator
 java_import org.netbeans.jemmy.operators.JFrameOperator
 java_import org.netbeans.jemmy.operators.JMenuBarOperator
 java_import org.netbeans.jemmy.operators.JMenuOperator
+java_import org.netbeans.jemmy.operators.JMenuItemOperator
 
 
 
@@ -60,7 +61,7 @@ java_import javax.swing.JButton
 #JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
 
 # testout - (in, trace out, error out, notes out)
-JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, nil, nil))
+JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
 
 begin
   puts "Starting up!!!!"

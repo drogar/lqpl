@@ -65,4 +65,32 @@ describe ServerConnection do
       @sc.do_run.should =~ /executed/
     end
   end
+  context "gets the data" do
+    before(:each) do
+      @sc = ServerConnection.instance
+      @sc.connect
+      fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
+      flag = @sc.send_load_from_file fname
+      @sc.do_step(10) # down one branch of the measure
+    end
+    it "returns the qstack" do
+      @sc.get_qstack[0].should =~ /<Qstack/
+    end
+    it "returns the classical_stack" do
+      @sc.get_classical_stack.should =~ /<Cstack/
+    end
+    it "returns the dump" do
+      @sc.get_dump.should =~ /<Dump/
+    end
+    it "returns the code pointer" do
+      @sc.code_pointer.should =~ /<pair/
+    end
+    it "returns the code" do
+      @sc.loaded_code.should =~ /<Code/
+    end
+    it "returns the stack translation" do
+      @sc.get_stack_translation.should =~ /<MMap/
+    end
+
+  end
 end

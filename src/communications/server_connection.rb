@@ -47,6 +47,18 @@ class ServerConnection
       send_and_recieve_command("get memorymap #{recursion_depth}  #{tree_depth}\n")]
   end
 
+  def get_stack_translation(tree_depth=5, recursion_depth=1)
+    send_and_recieve_command("get memorymap #{recursion_depth}  #{tree_depth}\n")
+  end
+
+  def get_classical_stack(tree_depth=5, recursion_depth=1)
+    send_and_recieve_command("get classicalstack #{recursion_depth}  #{tree_depth}\n")
+  end
+
+  def get_dump(tree_depth=5, recursion_depth=1)
+    send_and_recieve_command("get dump #{recursion_depth}  #{tree_depth}\n")
+  end
+
   def do_step(step_size=1, depth=1)
     send_and_recieve_command "step #{step_size} #{depth}\n"
   end

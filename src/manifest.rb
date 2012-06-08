@@ -81,5 +81,9 @@ require "communications/server_connection"
 
 require "qface/qface_controller"
 require "panels/quantum_stack/quantum_stack_controller"
+require "panels/classical_stack/classical_stack_controller"
+require "panels/dump/dump_controller"
 require "panels/executable_code/executable_code_controller"
+require "panels/stack_translation/stack_translation_controller"
+
 

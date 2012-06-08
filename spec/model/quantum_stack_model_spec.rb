@@ -1,6 +1,7 @@
 require 'spec/spec_helper'
 
-require 'spec/quantum_stack_data'
+require 'spec/specdata/stack_translation_data'
+require 'spec/specdata/quantum_stack_data'
 require 'src/panels/quantum_stack/quantum_stack_model'
 
 

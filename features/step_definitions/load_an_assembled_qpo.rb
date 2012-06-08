@@ -50,8 +50,21 @@ Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ d
   "#{theSpinner.value}".should == spin_value
 end
 
-Then /^the frame "([\w\s]*)" should be visible$/ do |frame_name|
+Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_name,visible|
    set_frame_name_var(frame_name)
+   frame_op = eval(frame_name_var_string frame_name)
+   if visible == 'not '
+     sleep_until(5) {!frame_op.visible?}
+     # tries=0
+     #      while tries < 5 do
+     #        sleep 0.25
+     #        break if !frame_op.visible?
+     #      end
+     frame_op.should_not be_visible
+   else
+     sleep_until(5) {frame_op.visible?}
+     frame_op.should be_visible
+   end
 end
 
 Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frm|

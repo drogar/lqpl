@@ -33,6 +33,11 @@ Feature: We can load and run an assembled file at the server
     Then the button "Go" on the frame "Quantum Emulator" should be disabled
     Then the button "Step" on the frame "Quantum Emulator" should be disabled
 
+  Scenario:
+    Then the frame "Classical Stack" should be visible
+    Then the frame "Dump" should be visible
+    Then the frame "Stack Translation" should be visible
+
 
 
 

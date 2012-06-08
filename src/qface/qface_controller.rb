@@ -38,15 +38,75 @@ class QfaceController < ApplicationController
       model.go_enabled = true
       model.step_enabled = true
       model.control_panel_visible = true
-      QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
-      QuantumStackController.instance.open
-      ExecutableCodeController.instance.set_code_and_code_pointer  model.recursion_spinner
-      ExecutableCodeController.instance.open
+      initialize_sub_controllers
 
     else
       puts "Did not do approve."
     end
     update_view
+  end
+
+  def viewClassicalStackMI_action_performed
+    ClassicalStackController.instance.toggle_visibility
+    model.view_menu_classical_stack_text = ClassicalStackController.instance.visible? ? "Hide Classical Stack" : "Show Classical Stack"
+    update_view
+  end
+
+  def viewDumpMI_action_performed
+    DumpController.instance.toggle_visibility
+    model.view_menu_dump_text = DumpController.instance.visible? ? "Hide Dump" : "Show Dump"
+    update_view
+  end
+
+  def viewExecutingCodeMI_action_performed
+    ExecutableCodeController.instance.toggle_visibility
+    model.view_menu_executing_code_text = ExecutableCodeController.instance.visible? ? "Hide Executing Code" : "Show Executing Code"
+    update_view
+  end
+
+  def viewStackTranslationMI_action_performed
+    StackTranslationController.instance.toggle_visibility
+    model.view_menu_stack_translation_text = StackTranslationController.instance.visible? ? "Hide Stack Translation" : "Show Stack Translation"
+    update_view
+  end
+
+  def initialize_sub_controllers
+    update_sub_controller_scs
+    ExecutableCodeController.instance.set_code_and_code_pointer  model.recursion_spinner
+
+    update_sub_model_data
+    open_sub_panels
+    enable_view_menu_items
+  end
+  def enable_view_menu_items
+    model.view_menu_stack_translation_enabled = true
+    model.view_menu_dump_enabled = true
+    model.view_menu_executing_code_enabled = true
+    model.view_menu_classical_stack_enabled = true
+  end
+
+  def update_sub_controller_scs
+    QuantumStackController.instance.server_connection = ServerConnection.instance
+    ExecutableCodeController.instance.server_connection = ServerConnection.instance
+    ClassicalStackController.instance.server_connection = ServerConnection.instance
+    DumpController.instance.server_connection = ServerConnection.instance
+    StackTranslationController.instance.server_connection = ServerConnection.instance
+  end
+
+  def open_sub_panels
+    QuantumStackController.instance.open
+    ExecutableCodeController.instance.open
+    ClassicalStackController.instance.open
+    DumpController.instance.open
+    StackTranslationController.instance.open
+  end
+
+  def update_sub_model_data
+    QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
+    ExecutableCodeController.instance.set_code_pointer  model.recursion_spinner
+    ClassicalStackController.instance.set_classical_stack(model.tree_depth_spinner, model.recursion_spinner)
+    DumpController.instance.set_dump(model.tree_depth_spinner, model.recursion_spinner)
+    StackTranslationController.instance.set_stack_translation(model.tree_depth_spinner, model.recursion_spinner)
   end
 
   def step_spinner_state_changed
@@ -55,13 +115,13 @@ class QfaceController < ApplicationController
 
   def recursion_spinner_state_changed
     model.recursion_spinner = view_model.recursion_spinner
+    update_sub_model_data
   end
 
   def step_button_action_performed
     sc = ServerConnection.instance
     res = sc.do_step(model.step_spinner,model.recursion_spinner)
-    QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
-    ExecutableCodeController.instance.set_code_pointer model.recursion_spinner
+    update_sub_model_data
     if res =~ /executed/
       model.go_enabled = false
       model.step_enabled = false

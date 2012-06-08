@@ -38,11 +38,11 @@ def show_error_dialog_and_exit(exception, thread=nil)
   end
 
   # Your error handling code goes here
-  
+
   # Show error dialog informing the user that there was an error
   title = "Application Error"
   message = "The application has encountered an error and must shut down."
-  
+
   javax.swing.JOptionPane.show_message_dialog(nil, message, title, javax.swing.JOptionPane::DEFAULT_OPTION)
   java.lang.System.exit(0)
 end
