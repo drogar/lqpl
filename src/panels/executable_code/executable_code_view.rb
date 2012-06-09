@@ -1,4 +1,5 @@
 java_import javax.swing.JTextArea
+java_import javax.swing.JScrollPane
 
 WIDTH_OF_TEXT_PANE = 60
 class ExecutableCodeView < ApplicationView
@@ -27,7 +28,8 @@ class ExecutableCodeView < ApplicationView
       instructions_text_area.editable = false
       instructions_text_area.selection_start = 0
       instructions_text_area.selection_end = 0
-      code_tab_pane.add_tab(qpo_method.to_s, instructions_text_area)
+      scroll_pane = JScrollPane.new(instructions_text_area)
+      code_tab_pane.add_tab(qpo_method.to_s, scroll_pane)
       @qpo_method_to_tab_map[qpo_method] = i
       text_len=0
       qpo_ins.each_with_index do |ins_line, ind|
@@ -45,8 +47,9 @@ class ExecutableCodeView < ApplicationView
     selection_key = ExecutableCodeView::mangle_code_pointer_to_selection_key(code_pointer)
     return if !@qpo_method_and_line_to_selection_start_and_end_map[selection_key]
     selection_bounds = @qpo_method_and_line_to_selection_start_and_end_map[selection_key]
-    jt = codeTabbedPane.selected_component
+    jt = codeTabbedPane.selected_component.viewport.view
     jt.request_focus(true) # deprecated method, but otherwise the highlight does not show when switching qpo_methods
+    jt.selection_start = 0  # reset to handle "use" case where we go back (loop) in the code
     jt.selection_end = selection_bounds[1]
     jt.selection_start = selection_bounds[0]
   end

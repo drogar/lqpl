@@ -15,7 +15,7 @@ class ClassicalStackController < ApplicationController
   end
 
   def set_classical_stack_data(cs_data)
-    model.classical_stack_text= cs_data
+    model.classical_stack= cs_data
     update_view
   end
 
