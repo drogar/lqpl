@@ -25,6 +25,7 @@ Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
   fmenu_item.should be_enabled
 
   mbar.push_menu_no_block("#{menu}|#{mitem}")
+  #fmenu_item.push_no_block
 end
 
 

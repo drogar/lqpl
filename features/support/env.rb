@@ -18,7 +18,7 @@ $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/monkeyba
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/Qface"
 
 
-require "jemmy-2.2.7.5.jar"
+require "jemmy-2.3.0.0.jar"
 
 #require "junit-4.10.jar"
 #require "uispec4j-2.4-jdk16.jar"
@@ -28,6 +28,7 @@ require "forms_rt.jar"
 ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
+java.lang.System.set_property("com.drogar.testing.jemmy","true")
 
 require 'manifest'
 
@@ -48,6 +49,7 @@ java_import org.netbeans.jemmy.operators.JDialogOperator
 java_import org.netbeans.jemmy.operators.JMenuBarOperator
 java_import org.netbeans.jemmy.operators.JMenuOperator
 java_import org.netbeans.jemmy.operators.JMenuItemOperator
+java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
 
 
 
@@ -58,11 +60,16 @@ java_import org.netbeans.jemmy.operators.JMenuItemOperator
 java_import javax.swing.JButton
 
 
-#props = JemmyProperties.properties
-#JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
+# props = JemmyProperties.properties
+# JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
 
 # testout - (in, trace out, error out, notes out)
 JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
+
+# amd = AppleMenuDriver.new
+#
+# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuOperator",amd)
+# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuBarOperator",amd)
 
 begin
   puts "Starting up!!!!"
