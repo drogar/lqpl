@@ -3,6 +3,7 @@ package com.drogar.qface.dialogs;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.*;
 
 public class SimulateResultsDialog extends JDialog {
     private JPanel contentPane;
@@ -21,6 +22,8 @@ public class SimulateResultsDialog extends JDialog {
                 onOK();
             }
         });
+
+        setBounds(new Rectangle(50,110,200,100));
      //   pack();
       //  setVisible(true);
     }

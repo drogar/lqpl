@@ -18,7 +18,7 @@ import java.awt.event.*;
 public class QuantumEmulatorMainScreen extends  JFrame{
     public QuantumEmulatorMainScreen() {
         super("Quantum Emulator");
-        setSize(400,300);
+        setBounds(new Rectangle(10,10,400,300));
         //setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         setContentPane(controlPanel);

@@ -16,8 +16,9 @@ public class StackTranslation extends JFrame{
 
     public StackTranslation() throws HeadlessException {
         super("Stack Translation");
-        setSize(100,200);
-        setLocation(600,650);
+        // setSize(100,200);
+        // setLocation(600,650);
+        setBounds(new Rectangle(10,740,400,150));
         setContentPane(panel1);
     }
 }

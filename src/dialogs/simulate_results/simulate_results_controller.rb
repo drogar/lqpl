@@ -3,13 +3,6 @@ class SimulateResultsController < ApplicationController
   set_view 'SimulateResultsView'
   set_close_action :dispose
 
-  attr_accessor :server_connection
-
-  def server_connection=(sc)
-    @server_connection = sc
-    @server_connection.connect if !@server_connection.connected?
-  end
-
   def set_simulate_data(xml_data,stack_translation)
     model.stack_translation = stack_translation
     model.simulate_results= xml_data

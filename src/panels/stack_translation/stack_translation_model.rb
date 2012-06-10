@@ -9,10 +9,17 @@ class StackTranslationModel
     @reverse_translation = @stack_translation.reverse.inject({}) do |rev_map,st_map|
       rev_map.merge! st_map.invert
     end
-    @text = "#{@stack_translation}"
   end
 
   def text=(whatever)
+  end
+
+  def text
+    inside = @stack_translation.inject("") do |inner, tr_map|
+      line = (tr_map.collect {|kv| "#{kv[0]}=>#{kv[1]}"}).join(", ")
+      inner += "<li>"+line+"</li>"
+    end
+    "<html><ol>"+inside+"</ol></html>"
   end
 
   def reverse_lookup(val)

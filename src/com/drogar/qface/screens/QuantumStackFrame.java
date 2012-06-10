@@ -20,7 +20,7 @@ public class QuantumStackFrame extends JFrame{
         super("Quantum Stack");
         quantumStackPanel = new QuantumStackPanel();
 
-        setBounds(new Rectangle(450,100,400,300));
+        setBounds(new Rectangle(430,10,400,300));
         setContentPane(quantumStackPanel);
         pack();
      }

@@ -16,8 +16,9 @@ public class Dump extends JFrame{
 
     public Dump() throws HeadlessException {
         super("Dump");
-        setSize(200,300);
-        setLocation(300,350);
+        // setSize(200,300);
+        //        setLocation(300,350);
+        setBounds(new Rectangle(430,660,600,200));
         setContentPane(panel1);
     }
 }

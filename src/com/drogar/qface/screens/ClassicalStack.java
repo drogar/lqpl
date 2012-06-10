@@ -16,8 +16,9 @@ public class ClassicalStack extends JFrame{
 
     public ClassicalStack() throws HeadlessException {
         super("Classical Stack");
-        setSize(100,300);
-        setLocation(100,550);
+        // setSize(100,300);
+        //         setLocation(100,550);
+        setBounds(new Rectangle(270,330,150,400));
         setContentPane(panel1);
     }
 }

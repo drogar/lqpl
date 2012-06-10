@@ -17,8 +17,10 @@ public class ExecutingCode extends JFrame{
 
     public ExecutingCode() throws HeadlessException {
         super("Executing Code");
-        setSize(400,600);
-        setLocation(30,350);
+        // setSize(400,600);
+        // setLocation(30,350);
+        setBounds(new Rectangle(10,330,250,400));
+
         setContentPane(panel1);
     }
 

@@ -44,15 +44,15 @@ describe StackTranslationModel do
   it "should create a text representation in its text attribute" do
     s = StackTranslationModel.new
     s.stack_translation= P1
-    s.text.should == "[{:p=>1}]"
+    s.text.should == "<html><ol><li>p=>1</li></ol></html>"
     s.stack_translation= L3STACK
-    s.text.should == "[{:p=>1}, {:p=>2}, {:rex=>27, :p=>3}]"
+    s.text.should == "<html><ol><li>p=>1</li><li>p=>2</li><li>rex=>27, p=>3</li></ol></html>"
   end
   it "should ignore direct assignment to the text attribute" do
     s = StackTranslationModel.new
     s.stack_translation= P1
     s.text = "junk"
-    s.text.should == "[{:p=>1}]"
+    s.text.should == "<html><ol><li>p=>1</li></ol></html>"
   end
   describe "it should provide reverse lookups" do
     before(:each) do
