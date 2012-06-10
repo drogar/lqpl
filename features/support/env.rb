@@ -44,6 +44,7 @@ java_import org.netbeans.jemmy.operators.JSpinnerOperator
 java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
 java_import org.netbeans.jemmy.operators.JTextAreaOperator
 java_import org.netbeans.jemmy.operators.JFrameOperator
+java_import org.netbeans.jemmy.operators.JDialogOperator
 java_import org.netbeans.jemmy.operators.JMenuBarOperator
 java_import org.netbeans.jemmy.operators.JMenuOperator
 java_import org.netbeans.jemmy.operators.JMenuItemOperator

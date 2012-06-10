@@ -46,8 +46,11 @@ public class QuantumEmulatorMainScreen extends  JFrame{
         file_load = new JMenuItem("Load");
 
         file_compile = new JMenuItem("Compile");
+
+        file_simulate = new JMenuItem("Simulate");
         fmenu.add(file_load)   ;
         fmenu.add(file_compile);
+        fmenu.add(file_simulate);
 
         JMenu viewMenu = new JMenu("View");
         viewClassicalStackMI = new JMenuItem("Hide Classical Stack");
@@ -96,9 +99,11 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     private JPanel buttonPanel;
     private JPanel controlPanel;
     public JLabel message;
+
     private JMenuItem file_load;
 
     private JMenuItem file_compile;
+    private JMenuItem file_simulate;
 
 
 }

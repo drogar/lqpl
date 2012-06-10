@@ -85,5 +85,6 @@ require "panels/classical_stack/classical_stack_controller"
 require "panels/dump/dump_controller"
 require "panels/executable_code/executable_code_controller"
 require "panels/stack_translation/stack_translation_controller"
+require "dialogs/simulate_results/simulate_results_controller"
 
 

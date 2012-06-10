@@ -91,6 +91,9 @@ describe ServerConnection do
     it "returns the stack translation" do
       @sc.get_stack_translation.should =~ /<MMap/
     end
+    it "returns a simulation" do
+      @sc.get_simulate_results.should =~ /<Simulated><double/
+    end
 
   end
 end

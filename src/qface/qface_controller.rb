@@ -46,6 +46,13 @@ class QfaceController < ApplicationController
     update_view
   end
 
+  def file_simulate_action_performed
+
+    SimulateResultsController.instance.server_connection = ServerConnection.instance
+    SimulateResultsController.instance().set_simulate_results model.recursion_spinner
+    SimulateResultsController.instance.open
+  end
+
   def viewClassicalStackMI_action_performed
     ClassicalStackController.instance.toggle_visibility
     model.view_menu_classical_stack_text = ClassicalStackController.instance.visible? ? "Hide Classical Stack" : "Show Classical Stack"

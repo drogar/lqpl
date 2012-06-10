@@ -76,6 +76,11 @@ class ServerConnection
   def loaded_code(recursion_depth=1)
     send_and_recieve_command "get code #{recursion_depth}"
   end
+
+  def get_simulate_results(recursion_depth=1)
+    send_and_recieve_command "simulate #{recursion_depth}"
+  end
+
   def send_and_recieve_command(command)
     connect if !connected?
     @connection.puts command
