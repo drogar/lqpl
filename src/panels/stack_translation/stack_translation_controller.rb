@@ -22,4 +22,8 @@ class StackTranslationController < ApplicationController
   def get_stack_translation_text
     model.text
   end
+
+  def get_stack_translation
+    model
+  end
 end

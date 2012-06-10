@@ -11,19 +11,14 @@ class QuantumStackModel
 
   attr_accessor :substacks
   attr_accessor :descriptor
-  attr_accessor :name_memory_map
-
-  def initialize(qstack=nil,mmap="")
-    self.quantum_stack=[qstack,mmap]
-  end
+  attr_accessor :stack_translation
+  attr_accessor :stackaddress
 
   def quantum_stack
-    self
   end
 
-  def quantum_stack=(pair_of_qstack_and_name_map)
-    in_qstack = pair_of_qstack_and_name_map[0]
-    in_name_stack=pair_of_qstack_and_name_map[1]
+  def quantum_stack=(in_qstack)
+    raise QuantumStackModelInvalidCreate, "Missing Stack Translation" if @stack_translation.nil?
     return if !in_qstack
     @preferred_size = nil
     @bottom = in_qstack == "<bottom/>"
@@ -32,7 +27,7 @@ class QuantumStackModel
       raise QuantumStackModelInvalidCreate, in_qstack if !md
       @stackaddress = md[1].to_i
       @on_diagonal = md[3] == "True"
-      @substacks = QuantumStackModel::make_multiple_stacks(md[6], in_name_stack)
+      @substacks = QuantumStackModel::make_multiple_stacks(md[6], @stack_translation)
       @descriptor = AbstractDescriptorModel.make_instance md[7]
       case @descriptor
       when ZeroDescriptorModel then  raise QuantumStackModelInvalidCreate, "Zero stack should not have substacks" if @substacks.size > 0
@@ -41,59 +36,46 @@ class QuantumStackModel
       when ClassicalDescriptorModel then raise QuantumStackModelInvalidCreate, "Classical element on stack should have substacks" if @substacks.size == 0
       when DataDescriptorModel then raise QuantumStackModelInvalidCreate, "Data element on stack should have substacks" if @substacks.size == 0
       end
-      @name_memory_map = QuantumStackModel::decode_mmap in_name_stack
-      @descriptor.name = @name_memory_map[@stackaddress]
+
+      @descriptor.name = make_name(:use_stack_address)
     else
       @substacks = []
     end
 
+  end
+  def make_name(formatting)
+    nm = (@stack_translation.reverse_lookup(@stackaddress)).to_s
+
+    case formatting
+    when :use_stack_address then
+      nm += "(#{@stackaddress})" if nm != "#{@stackaddress}"
+    end
+    nm = "" if nm == "-1"
+    nm
   end
 
   def bottom?
     @bottom
   end
 
-  def self.decode_mmap(in_mmap)
-    return {} if in_mmap == ""
-    ret = {}
-    match_list_of_maps = MMAP_PATTERN.match in_mmap
-    return {} if !match_list_of_maps
-    lom = match_list_of_maps[1]
-    list_elem = LIST_ELEMENT_PATTERN.match(lom)
-    return {} if !list_elem
-    list_elems_len = list_elem[0].length
-    while list_elem
-      ret.merge!(QuantumStackModel::kv_pairs_to_map(list_elem[1]))
-      list_elem = LIST_ELEMENT_PATTERN.match(lom[list_elems_len, lom.length])
-      return ret if !list_elem
-      list_elems_len += list_elem[0].length
-    end
-  end
 
-  def self.kv_pairs_to_map(kvps)
-    return {} if !kvps or kvps == ""
-    ret = {}
-    kvp = KVPATTERN.match kvps
-    return ret if !kvp
-    ret[kvp[2].to_i] = kvp[1]
-    matched_len = kvp[0].length
-    while kvp
-      kvp = KVPATTERN.match(kvps[matched_len,kvps.length])
-      return ret if !kvp
-      ret[kvp[2].to_i] = kvp[1]
-      matched_len += kvp[0].length
-    end
-  end
 
-  def self.make_multiple_stacks(many_stacks,in_name_stack="")
+  def self.make_multiple_stacks(many_stacks, st)
     return [] if many_stacks == ""
     next_stack = QuantumStackModel::get_next_qstack(many_stacks)
     raise InvalidInput, many_stacks if !next_stack
-    rval=[QuantumStackModel.new(next_stack[0],in_name_stack)]
+    rval = []
+    q = QuantumStackModel.new
+    q.stack_translation = st
+    q.quantum_stack = next_stack[0]
+    rval << q
     while next_stack
       next_stack = QuantumStackModel::get_next_qstack(next_stack[1])
       return rval if !next_stack
-      rval << QuantumStackModel.new(next_stack[0],in_name_stack)
+      q = QuantumStackModel.new
+      q.stack_translation = st
+      q.quantum_stack = next_stack[0]
+      rval << q
     end
     rval
   end

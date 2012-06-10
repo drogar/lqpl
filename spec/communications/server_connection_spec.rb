@@ -74,7 +74,7 @@ describe ServerConnection do
       @sc.do_step(10) # down one branch of the measure
     end
     it "returns the qstack" do
-      @sc.get_qstack[0].should =~ /<Qstack/
+      @sc.get_qstack.should =~ /<Qstack/
     end
     it "returns the classical_stack" do
       @sc.get_classical_stack.should =~ /<Cstack/

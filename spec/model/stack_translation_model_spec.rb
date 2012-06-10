@@ -16,7 +16,7 @@ describe StackTranslationModel do
       StackTranslationModel::kv_pairs_to_map(KVP1).should == {:p => 1}
     end
     it "should return  a key ->value map of all entries " do
-      StackTranslationModel::kv_pairs_to_map(KVP27+KVREX27).should == {:p => 27, :rex => 27}
+      StackTranslationModel::kv_pairs_to_map(KVP1+KVREX27).should == {:p => 1, :rex => 27}
     end
 
   end
@@ -53,6 +53,34 @@ describe StackTranslationModel do
     s.stack_translation= P1
     s.text = "junk"
     s.text.should == "[{:p=>1}]"
+  end
+  describe "it should provide reverse lookups" do
+    before(:each) do
+      @s = StackTranslationModel.new
+    end
+    it "should return the requested value if it is not found on reverse lookup" do
+      @s.reverse_lookup(15).should == "15"
+    end
+    it "should return the name when there is only one entry" do
+      @s.stack_translation = P1
+      @s.reverse_lookup(1).should == "p"
+    end
+    it "should return the name of the first entry when there are repeated keys in multiple lists" do
+      @s.stack_translation = P1ANDR1
+      @s.reverse_lookup(1).should == "p"
+      @s.stack_translation = P1ANDR1ANDS1
+      @s.reverse_lookup(1).should == "p"
+      @s.stack_translation = P1ANDEMPTYANDS1
+      @s.reverse_lookup(1).should == "p"
+    end
+    it "should return the keys for all the values in the list of maps" do
+      @s.stack_translation = L3STACK
+
+      @s.reverse_lookup(1).should == "p"
+      @s.reverse_lookup(2).should == "p"
+      @s.reverse_lookup(3).should == "p"
+      @s.reverse_lookup(27).should == "rex"
+    end
   end
 end
 

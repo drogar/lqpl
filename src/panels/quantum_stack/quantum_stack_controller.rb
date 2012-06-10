@@ -9,8 +9,9 @@ class QuantumStackController < ApplicationController
     @server_connection.connect if !@server_connection.connected?
   end
 
-  def set_quantum_stack(recursion_depth)
-    model.quantum_stack =  @server_connection.get_qstack recursion_depth
+  def set_quantum_stack(tree_depth,recursion_depth,stack_trans)
+    model.stack_translation = stack_trans
+    model.quantum_stack =  @server_connection.get_qstack tree_depth,recursion_depth
     update_view
   end
 end

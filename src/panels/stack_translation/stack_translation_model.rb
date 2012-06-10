@@ -6,10 +6,19 @@ class StackTranslationModel
 
   def stack_translation=(in_mmap)
     @stack_translation = StackTranslationModel::decode_mmap(in_mmap)
+    @reverse_translation = @stack_translation.reverse.inject({}) do |rev_map,st_map|
+      rev_map.merge! st_map.invert
+    end
     @text = "#{@stack_translation}"
   end
 
   def text=(whatever)
+  end
+
+  def reverse_lookup(val)
+    rmap = @reverse_translation || {}
+    rmap.default=val.to_s.to_sym
+    rmap[val.to_i].id2name
   end
 
   def self.decode_mmap(in_mmap)

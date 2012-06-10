@@ -43,8 +43,7 @@ class ServerConnection
   end
 
   def get_qstack(tree_depth=5, recursion_depth=1)
-    [send_and_recieve_command("get qstack  #{recursion_depth} #{tree_depth}\n"),
-      send_and_recieve_command("get memorymap #{recursion_depth}  #{tree_depth}\n")]
+    send_and_recieve_command("get qstack  #{recursion_depth} #{tree_depth}\n")
   end
 
   def get_stack_translation(tree_depth=5, recursion_depth=1)

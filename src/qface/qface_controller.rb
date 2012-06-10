@@ -49,7 +49,7 @@ class QfaceController < ApplicationController
   def file_simulate_action_performed
 
     SimulateResultsController.instance.server_connection = ServerConnection.instance
-    SimulateResultsController.instance().set_simulate_results model.recursion_spinner
+    SimulateResultsController.instance().set_simulate_results(model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
     SimulateResultsController.instance.open
   end
 
@@ -109,11 +109,11 @@ class QfaceController < ApplicationController
   end
 
   def update_sub_model_data
-    QuantumStackController.instance.set_quantum_stack  model.recursion_spinner
+    StackTranslationController.instance.set_stack_translation(model.tree_depth_spinner, model.recursion_spinner)
+    QuantumStackController.instance.set_quantum_stack(model.tree_depth_spinner,model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
     ExecutableCodeController.instance.set_code_pointer  model.recursion_spinner
     ClassicalStackController.instance.set_classical_stack(model.tree_depth_spinner, model.recursion_spinner)
     DumpController.instance.set_dump(model.tree_depth_spinner, model.recursion_spinner)
-    StackTranslationController.instance.set_stack_translation(model.tree_depth_spinner, model.recursion_spinner)
   end
 
   def step_spinner_state_changed
@@ -139,9 +139,7 @@ class QfaceController < ApplicationController
   def go_button_action_performed
     sc = ServerConnection.instance
     sc.do_run model.recursion_spinner
-
-    QuantumStackController.instance.set_quantum_stack model.recursion_spinner
-    ExecutableCodeController.instance.set_code_pointer model.recursion_spinner
+    update_sub_model_data
     model.go_enabled = false
     model.step_enabled = false
     update_view

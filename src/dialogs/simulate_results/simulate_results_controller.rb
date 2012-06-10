@@ -10,7 +10,8 @@ class SimulateResultsController < ApplicationController
     @server_connection.connect if !@server_connection.connected?
   end
 
-  def set_simulate_data(xml_data)
+  def set_simulate_data(xml_data,stack_translation)
+    model.stack_translation = stack_translation
     model.simulate_results= xml_data
     update_view
   end
@@ -19,7 +20,7 @@ class SimulateResultsController < ApplicationController
     model.simulate_results_text
   end
 
-  def set_simulate_results(recursion_depth)
-    set_simulate_data(@server_connection.get_simulate_results(recursion_depth))
+  def set_simulate_results(recursion_depth, stack_translation)
+    set_simulate_data(@server_connection.get_simulate_results(recursion_depth), stack_translation)
   end
 end

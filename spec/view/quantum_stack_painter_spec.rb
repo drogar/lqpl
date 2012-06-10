@@ -45,12 +45,7 @@ describe QuantumStackPainter do
     end
   end
   describe "get_preferred_size_of_model" do
-    before(:each) do
-      @qshad = QuantumStackPainter.new(QuantumStackModel.new(QSQBHAD,P1 ))
-      @qsval = QuantumStackPainter.new(QuantumStackModel.new(QSVAL5,"" ))
-      @qsb = QuantumStackPainter.new(QuantumStackModel.new("<bottom/>"))
-      @g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    end
+
     it "should cache the size after the first call"
     it "should check if the model element is bottom and return "
     it "should request the size of all substacks on the first call when not bottom"
@@ -59,9 +54,26 @@ describe QuantumStackPainter do
   end
   describe "sizing" do
     before(:each) do
-      @qshad = QuantumStackPainter.new(QuantumStackModel.new(QSQBHAD,P1 ))
-      @qsval = QuantumStackPainter.new(QuantumStackModel.new(QSVAL5,"" ))
-      @qsb = QuantumStackPainter.new(QuantumStackModel.new("<bottom/>"))
+      st = double("StackTranslation")
+      st.stub(:reverse_lookup, :nil? => false) do |val|
+        case val
+        when "1" then "@p"
+        when "2" then "@q"
+        else val
+        end
+      end
+      qh = QuantumStackModel.new
+      qh.stack_translation = st
+      qh.quantum_stack = QSQBHAD
+      @qshad = QuantumStackPainter.new(qh)
+      qv = QuantumStackModel.new
+      qv.stack_translation = st
+      qv.quantum_stack = QSVAL5
+      @qsval = QuantumStackPainter.new(qv)
+      qb = QuantumStackModel.new
+      qb.stack_translation = st
+      qb.quantum_stack = "<bottom/>"
+      @qsb = QuantumStackPainter.new(qb)
       @g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
 
     end

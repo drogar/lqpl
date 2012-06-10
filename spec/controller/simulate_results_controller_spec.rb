@@ -7,14 +7,23 @@ require 'src/dialogs/simulate_results/simulate_results_model'
 describe SimulateResultsController do
   before(:each) do
     @c = SimulateResultsController.instance
+    @st = double("StackTranslation")
+    @st.stub(:reverse_lookup, :nil? => false) do |val|
+        case val
+        when "1" then "@p"
+        when "2" then "@q"
+        else val
+        end
+      end
+
   end
   it "should raise an error when created with junk" do
-    expect { @c.set_simulate_data("junk")}. to raise_error   QuantumStackModelInvalidCreate, /junk/
+    expect { @c.set_simulate_data("junk",@st)}. to raise_error   QuantumStackModelInvalidCreate, /junk/
   end
 
   it "should create a results set when given the correct input" do
-    @c.set_simulate_data(TWOELTS)
-    @c.get_simulate_data.should == "<html>a(Coin) = Heads<br />q(qubit) = 0</html>"
+    @c.set_simulate_data(TWOELTS,@st)
+    @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
   end
 
   it "should set the server_connection when given an sc" do
@@ -28,7 +37,7 @@ describe SimulateResultsController do
     sc.should_receive(:get_simulate_results).and_return(TWOELTS)
 
     @c.server_connection=sc
-    @c.set_simulate_results("5")
-    @c.get_simulate_data.should == "<html>a(Coin) = Heads<br />q(qubit) = 0</html>"
+    @c.set_simulate_results("5",@st)
+    @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
   end
 end

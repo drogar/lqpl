@@ -60,7 +60,7 @@ class AbstractDescriptorPainter
 
   def paintModelAtPoint(g,p,center)
     draw_colour_filled_shape(g,my_shape(center), my_colour)
-    draw_text_to_left_of_point(g,"#{@model_element.name}",Point.new(center.x-node_size, center.y-node_size)) if @model_element.name
+    draw_text_to_left_of_point(g,"#{@model_element.name}",Point.new(center.x-node_size, center.y)) if @model_element.name
     draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+node_size)) if @model_element.length == 0
   end
 
@@ -68,7 +68,7 @@ class AbstractDescriptorPainter
 
   def getPreferredSizeOfModel(g)
     width   =  node_size
-    width   += get_string_size(g,"#{@model_element.name}").width + node_size if @model_element.name
+    width   += 2*(get_string_size(g,"#{@model_element.name}").width )+ node_size if @model_element.name
     height  =  node_size
     valsize =  get_string_size(g," #{@model_element.value} ")
     height  += valsize.height + half_node_size if @model_element.length == 0
