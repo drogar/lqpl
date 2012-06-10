@@ -2,8 +2,7 @@
 \begin{code}
   module QServer.MachineControl (
        stepMachine,
-       executeMachine,
-       simulate
+       executeMachine
        )
   where
 
@@ -49,12 +48,6 @@
       modifyIORef machineStateRef (go depth)
       hPutStrLn shndle "executed"
 
-  simulate :: Int ->
-              IORef (MachineState BaseType) ->
-              Handle ->
-              IO()
-  simulate depth machineStateRef shndle =
-    do
-      hPutStrLn shndle "emulating"
+
 
 \end{code}

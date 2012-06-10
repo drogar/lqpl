@@ -83,27 +83,22 @@
     boundedToXML 0 (a,b) = surroundWith "pair" "<bottom/>"
     boundedToXML n (a,b) = surroundWith "pair" $ boundedToXML n a ++ boundedToXML n b
 
+  instance (XML a, XML b,XML c) => XML (a,b,c) where
+    toXML (a,b,c) = surroundWith "triple" $ toXML a ++ toXML b ++ toXML c
+    boundedToXML 0 (_,_,_) = surroundWith "triple" "<bottom/>"
+    boundedToXML n (a,b,c) = surroundWith "triple" $ boundedToXML n a ++ boundedToXML n b ++ boundedToXML n c
+
   instance XML Basis where
     toXML Z = "<qz/>"
     toXML O = "<qo/>"
 
---  instance XML Label where
- --   toXML = surroundWith "label" . show
-
- -- instance XML NameSupply where
---    toXML (a,b) = surroundWith "nameSupply" $ toXML (a,b)
-
- -- instance XML Constructor where
---    toXML  = surroundWith "constructor"
-
---  instance XML StackAddress where
---    toXML  = (surroundWith "address") . show
-
---  instance XML EntryPoint where
---    toXML = surroundWith "entrypoint" . show
 
   instance XML Int where
     toXML i = surroundWith "int" $ show i
+
+  instance XML Double where
+    toXML d = surroundWith "double" $ show d
+
 
   instance XML ClassicalData where
     toXML (Left i) = surroundWith "cint" $ show i

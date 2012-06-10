@@ -27,8 +27,9 @@ import System.Directory
 
 import QSM.BasicData
 import QSM.QSM
+import QSM.Simulate
 import QServer.Types
-import QServer.MachineControl(stepMachine, executeMachine, simulate)
+import QServer.MachineControl(stepMachine, executeMachine)
 import QServer.ParseServerCommand
 import QServer.StackToXML
 
@@ -212,6 +213,16 @@ assemble assemblyCode machineStateRef shandle =
                 dumpMachine 1 machineStateRef
                 hPutStrLn shandle "Assembled"
 
+simulate :: Int ->
+            IORef (MachineState BaseType) ->
+            Handle ->
+            IO()
+simulate depth machineStateRef shndle =
+  do
+    mstate <- readIORef machineStateRef
+    let qstk = quantumStack $ pickIthMS depth mstate
+    (rval,resultList) <- chooseIt (canonicalize qstk)
+    hPutStrLn shndle $ surroundWith "Simulated" $ toXML rval ++ listToXML "results" resultList
 
 dumpMachine ::  Int -> IORef (MachineState BaseType) -> IO()
 dumpMachine depth machineStateRef =

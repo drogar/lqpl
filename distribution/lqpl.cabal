@@ -31,24 +31,24 @@ Test-Suite stack-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/StackToXMLSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
-   extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,Rank2Types,ScopedTypeVariables,FlexibleContexts,KindSignatures
+   extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,Rank2Types,ScopedTypeVariables,FlexibleContexts,KindSignatures,Rank2Types
    hs-source-dirs:   src
 Test-Suite mmap-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/MMapToXMLSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
-   extensions:       TypeSynonymInstances,FlexibleInstances
+   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
+   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types
    hs-source-dirs:   src
 Test-Suite code-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/CodeToXMLSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
-   extensions:       TypeSynonymInstances,FlexibleInstances
+   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
+   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types
    hs-source-dirs:   src
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/Compiler/CompilerServerSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers,random
    hs-source-dirs:   src
    extensions:       FlexibleInstances
 Test-Suite compiler-server-connection-spec
@@ -90,7 +90,7 @@ Executable lqpl-compiler-server
 
 Executable lqpl-serv
   Main-is:           QServer/QServer.lhs
-  Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec
+  Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random
   hs-source-dirs:    src
-  extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses
+  extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
