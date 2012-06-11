@@ -79,3 +79,12 @@ Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\
     end
   end
 end
+
+Then /^the messages field should contain:$/ do |client_message_table|
+  theTextArea = JTextAreaOperator.new($qe_frame)
+  message_texts = client_message_table.hashes.collect {|h| Regexp.new h.values[0]}
+  message_texts.each do |t|
+    theTextArea.text.should =~ t
+  end
+
+end

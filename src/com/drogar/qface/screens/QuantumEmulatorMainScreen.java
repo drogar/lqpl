@@ -27,7 +27,8 @@ public class QuantumEmulatorMainScreen extends  JFrame{
         setUpSpinner(recursionSpinner, 10,0,100000,1);
         setUpSpinner(treeDepthSpinner, 4,1,100,1);
         setUpMenus();
-        controlPanel.setVisible(false);
+        spinnerPanel.setVisible(false);
+        buttonPanel.setVisible(false);
         Application.getApplication().setAboutHandler(new MacOSAboutHandler());
         Application.getApplication().setQuitHandler(null);
 
@@ -110,6 +111,8 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     private JPanel spinnerPanel;
     private JPanel buttonPanel;
     private JPanel controlPanel;
+    private JTextArea messagesTextArea;
+    private JPanel messagesPanel;
     public JLabel message;
 
     private JMenuItem file_load;

@@ -1,9 +1,13 @@
 class QfaceView < ApplicationView
   set_java_class com.drogar.qface.screens.QuantumEmulatorMainScreen
-  map :view => "controlPanel.visible", :model => :control_panel_visible
+  map :view => "spinnerPanel.visible", :model => :spinner_panel_visible
+  map :view => "buttonPanel.visible", :model => :button_panel_visible
+
   map :view => "stepSpinner.model.value", :model => :step_spinner
   map :view => "recursionSpinner.model.value", :model => :recursion_spinner
   map :view => "treeDepthSpinner.model.value", :model => :tree_depth_spinner
+
+  map :view => "messagesTextArea.text", :model => :messages_text
 
   map :view => "stepButton.enabled", :model => :step_enabled
   map :view => "goButton.enabled", :model => :go_enabled

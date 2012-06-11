@@ -1,5 +1,5 @@
 UI
-  *  Add message info for compile
+  ...DONE  Add message info for compile
   ...DONE  Add name of file to titlebar of qstack and main panel
   +  Hide dump and stack translation at start
   ...DONE  Connect tree depth and recursion spinners to model and event handling

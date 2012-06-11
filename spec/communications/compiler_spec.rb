@@ -62,13 +62,13 @@ describe Compiler do
     it "signals failure when the code has a semantic error" do
       @cmp.compile "#{Dir.pwd}/testdata/qplprograms/invalidsemantics.qpl"
       @cmp.failed.should be_true
-      @cmp.failure_message.should =~ /user error/
+      @cmp.failure_message.should =~ /Semantic Error/
     end
     it "signals a warning when the code has a balance creation error" do
       fname = "#{Dir.pwd}/testdata/qplprograms/invalidbalance.qpl"
       @cmp.compile fname
       @cmp.failed.should be_false
-      @cmp.failure_message.should =~ /Warning/
+      @cmp.failure_message.should =~ /Semantic Warning/
     end
     it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code" do
       fname = "#{Dir.pwd}/testdata/qplprograms/min.qpl"

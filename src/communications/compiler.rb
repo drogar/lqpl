@@ -61,19 +61,37 @@ class Compiler
   def get_qpo_program
     accum=""
     lineno = 0
-    line = @connection.readline
+    line='CS_T'
+    while line =~ /CS_/
+      line = @connection.readline #until line !~ /CS_/
+    end
+    read_warning = (line =~ /w='YES'/)
+    #puts read_warning
     @failed = false
     @failure_message = ""
-    while line and line != "</qpo>\n"  and line != "</compilefail>\n"  and !@failed do
+    while line and line != "</qpo>\n"  and line !~ /<\/compilefail/  and !@failed do
       #puts "lineno=#{lineno}; line='#{line}'"
       @failed = true if line =~  /<compilefail/
-      @failure_message = line if @failed
-      accum += line if !(line =~ /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/)
+      read_failure_message if @failed
+      break if @failed
+      accum += line if line !~ /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/
       send_included_file(line) if line =~ /<getFirst>/
       line = @connection.readline
       lineno += 1
     end
+    read_failure_message if read_warning
     return accum
+  end
+
+  def read_failure_message
+    line = @connection.readline
+    #puts "read_failure_message: line='#{line}'"
+    @failure_message = ""
+    while line and  line !~ /<\/compilefail/ and line !~ /<\/warning/ do
+      @failure_message << line if line !~ /^</
+      line = @connection.readline
+      #puts "read_failure_message: line='#{line}'"
+    end
   end
 
   def send_included_file(line)

@@ -17,7 +17,8 @@ class QfaceController < ApplicationController
       fname = chooser.get_selected_file.get_absolute_path
       cmp = Compiler.get_instance
       cmp.compile fname
-      puts "fail message: #{cmp.failure_message}"
+      model.messages_text = "Compile of #{chooser.get_selected_file.name} was #{cmp.failed ? 'un' : ''}successful\n"
+      model.messages_text << cmp.failure_message
       cmp.write_qpo_file if !cmp.failed
     else
       puts "Did not do approve."
@@ -40,7 +41,8 @@ class QfaceController < ApplicationController
       model.frame_title = "Quantum Emulator - #{base_file_name}"
       model.go_enabled = true
       model.step_enabled = true
-      model.control_panel_visible = true
+      model.spinner_panel_visible = true
+      model.button_panel_visible = true
       initialize_sub_controllers
 
     else
