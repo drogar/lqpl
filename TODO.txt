@@ -1,10 +1,12 @@
 UI
   *  Add message info for compile
-  *  Add name of file to titlebar of qstack and main panel
+  ...DONE  Add name of file to titlebar of qstack and main panel
   +  Hide dump and stack translation at start
+  ...DONE  Connect tree depth and recursion spinners to model and event handling
   ...DONE  Better positioning of all elements
   ...DONE  Better output of Stack Translation (vertical list of maps)
   +  Better text output for Dump (then better altogether)
+  -  Add Recursion Multiplier spinner to main page
   -  Create preferences dialog and allow changing of some things that are constant
 
 LQPL

@@ -29,6 +29,11 @@ When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |fil
 
 end
 
+Then /^the main frame.s title should be "(.*?)"$/ do |the_title|
+  $qe_frame.title.should == the_title
+end
+
+
 Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   theButton = JButtonOperator.new($qe_frame, button_text)
 
@@ -84,7 +89,7 @@ end
 Then /^the selection on the frame "([\w\s]*)" should show ---(.*?)$/ do |frame_name, selec|
 
   theTabbedPane = JTabbedPaneOperator.new(eval(frame_name_var_string(frame_name)))
-  theTextArea = JTextAreaOperator.new(theTabbedPane.selected_component)
+  theTextArea = JTextAreaOperator.new(theTabbedPane.selected_component.viewport.view)
   theTextArea.selected_text.chomp.should == selec
 
 end

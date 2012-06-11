@@ -17,7 +17,8 @@ class QfaceController < ApplicationController
       fname = chooser.get_selected_file.get_absolute_path
       cmp = Compiler.get_instance
       cmp.compile fname
-      cmp.write_qpo_file
+      puts "fail message: #{cmp.failure_message}"
+      cmp.write_qpo_file if !cmp.failed
     else
       puts "Did not do approve."
     end
@@ -32,9 +33,11 @@ class QfaceController < ApplicationController
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
     rval = chooser.show_open_dialog(nil)
     if rval == JFileChooser::APPROVE_OPTION
-      fname = chooser.get_selected_file.get_absolute_path
+      fname = chooser.selected_file.absolute_path
+      base_file_name = chooser.selected_file.name
       server = ServerConnection.instance
       server.send_load_from_file fname
+      model.frame_title = "Quantum Emulator - #{base_file_name}"
       model.go_enabled = true
       model.step_enabled = true
       model.control_panel_visible = true
@@ -122,6 +125,11 @@ class QfaceController < ApplicationController
 
   def recursion_spinner_state_changed
     model.recursion_spinner = view_model.recursion_spinner
+    update_sub_model_data
+  end
+
+  def tree_depth_spinner_state_changed
+    model.tree_depth_spinner = view_model.tree_depth_spinner
     update_sub_model_data
   end
 

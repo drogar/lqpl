@@ -8,6 +8,7 @@ Feature: We can load and run an assembled file at the server
     And I load "coin.reference.qpo" from the directory "testdata/qplprograms"
 
   Scenario:
+    Then the main frame's title should be "Quantum Emulator - coin.reference.qpo"
     Then the button "Step" should appear
     Then the button "Go" should appear
     Then the button "Trim" should appear

@@ -18,6 +18,7 @@ import java.awt.event.*;
 public class QuantumEmulatorMainScreen extends  JFrame{
     public QuantumEmulatorMainScreen() {
         super("Quantum Emulator");
+        frameTitle = "Quantum Emulator";
         setBounds(new Rectangle(10,10,400,300));
         //setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -78,6 +79,17 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     public void setUpSpinner(JSpinner spinner, int val, int min, int max, int step){
         final SpinnerNumberModel model = new SpinnerNumberModel(val, min, max, step);
         spinner.setModel(model);
+    }
+
+    private String frameTitle;
+    public void setFrameTitle(String t){
+        System.err.println("Doing setTitle");
+        this.setTitle(t);
+        frameTitle = t;
+    }
+
+    public String getFrameTitle(){
+        return frameTitle;
     }
 
     private JMenuItem viewClassicalStackMI;

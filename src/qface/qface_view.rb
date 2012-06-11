@@ -2,6 +2,9 @@ class QfaceView < ApplicationView
   set_java_class com.drogar.qface.screens.QuantumEmulatorMainScreen
   map :view => "controlPanel.visible", :model => :control_panel_visible
   map :view => "stepSpinner.model.value", :model => :step_spinner
+  map :view => "recursionSpinner.model.value", :model => :recursion_spinner
+  map :view => "treeDepthSpinner.model.value", :model => :tree_depth_spinner
+
   map :view => "stepButton.enabled", :model => :step_enabled
   map :view => "goButton.enabled", :model => :go_enabled
 
@@ -15,5 +18,11 @@ class QfaceView < ApplicationView
   map :view => "viewExecutingCodeMI.text", :model => :view_menu_executing_code_text
   map :view => "viewStackTranslationMI.text", :model => :view_menu_stack_translation_text
 
+  #map :view => "frameTitle", :model => :frame_title
+  raw_mapping :set_title,nil
+
+  def set_title(model,trans)
+    @main_view_component.title = model.frame_title
+  end
 
 end

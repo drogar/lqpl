@@ -6,6 +6,8 @@ class QfaceModel
   attr_accessor :view_menu_classical_stack_enabled,:view_menu_dump_enabled,:view_menu_executing_code_enabled,:view_menu_stack_translation_enabled
   attr_accessor :view_menu_classical_stack_text,:view_menu_dump_text,:view_menu_executing_code_text,:view_menu_stack_translation_text
 
+  attr_accessor :frame_title
+
   def initialize
     @control_panel_visible = false
     @step_spinner = java.lang.Integer.new(1)
@@ -23,6 +25,7 @@ class QfaceModel
     @view_menu_executing_code_text = "Hide Executing Code"
     @view_menu_dump_text = "Hide Dump"
     @view_menu_classical_stack_text = "Hide Classical Stack"
+    @frame_title = "Quantum Emulator"
   end
 
 

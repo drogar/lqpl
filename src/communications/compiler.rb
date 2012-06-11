@@ -4,6 +4,8 @@ require 'singleton'
 class Compiler
   include Singleton
   attr_accessor :port
+  attr_accessor :failed
+  attr_accessor :failure_message
 
   def initialize(port=7683)
     @port = port
@@ -60,38 +62,35 @@ class Compiler
     accum=""
     lineno = 0
     line = @connection.readline
-    while line and line != "</qpo>\n"  and line != "</compilefail>\n"  do
+    @failed = false
+    @failure_message = ""
+    while line and line != "</qpo>\n"  and line != "</compilefail>\n"  and !@failed do
       #puts "lineno=#{lineno}; line='#{line}'"
-      if line =~  /<compilefail/
-        @failed = true
-      end
-      if !(line =~ /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/)
-        accum += line
-      end
-      if line =~ /<getFirst>/
-        basef = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
-        if File.exists?(basef)
-          f = basef
-        else
-          f = @dir + "/" + basef
-        end
-        fdata=""
-        if File.exists?(f)
-          File.open(f) do |incfile|
-            fdata = incfile.read
-          end
-        else
-          puts "Unable to find or open file #{f}"
-          puts "Looking in #{Dir.pwd}"
-        end
-        @connection.puts "<file name='#{basef}'>"
-        @connection.puts fdata
-        @connection.puts "</file>"
-      end
+      @failed = true if line =~  /<compilefail/
+      @failure_message = line if @failed
+      accum += line if !(line =~ /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/)
+      send_included_file(line) if line =~ /<getFirst>/
       line = @connection.readline
       lineno += 1
     end
     return accum
+  end
+
+  def send_included_file(line)
+    basef = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
+    f = File.exists?(basef) ? basef : @dir + "/" + basef
+    fdata=""
+    if File.exists?(f)
+      File.open(f) do |incfile|
+        fdata = incfile.read
+      end
+      @connection.puts "<file name='#{basef}'>"
+      @connection.puts fdata
+      @connection.puts "</file>"
+    else
+      @failed = true
+      @failure_message =  "Unable to find or open file #{f}, Looking in #{Dir.pwd}"
+    end
   end
 
   def write_qpo_file
