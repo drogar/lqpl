@@ -62,7 +62,7 @@
               cstester ior "app::(| ; )= {skip}"
               rc2 <- cstester ior "</qplprogram>"
               case rc2 of
-                CS_COMPILED_SUCCESS  _ -> return Test.Hspec.Core.Success
+                CS_COMPILED_SUCCESS  _ _-> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"),
        it "accumulates the characters between a 'qplprogram' tag pair"    $
            (do
@@ -174,7 +174,7 @@
               cstester ior "app::(| ; )= {skip}"
               rc2 <- cstester ior "</file>"
               case rc2 of
-                CS_COMPILED_SUCCESS _ -> return Test.Hspec.Core.Success
+                CS_COMPILED_SUCCESS _ _-> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"),
         it "sends back an assembled file when sent compilable info with imports" $
           (do
@@ -186,7 +186,31 @@
               cstester ior "app::(| ; )= {skip}"
               rc2 <- cstester ior "</file>"
               case rc2 of
-                CS_COMPILED_SUCCESS ('a':'p':'p':'_':_) -> return Test.Hspec.Core.Success
+                CS_COMPILED_SUCCESS ('a':'p':'p':'_':_) _ -> return Test.Hspec.Core.Success
+                a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"),
+        it "sends back compile failed status with the error when the code has a syntax error" $
+          (do
+              cstester ior "<qplprogram>"
+              cstester ior "qdata Coin = {head}"
+              rc2 <- cstester ior "</qplprogram>"
+              case rc2 of
+                CS_COMPILED_FAIL ('u':_) -> return Test.Hspec.Core.Success
+                a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"),
+        it "sends back compile failed status with the error when the code has a semantic error" $
+          (do
+              cstester ior "<qplprogram>"
+              cstester ior "qdata Coin = {head}"
+              rc2 <- cstester ior "</qplprogram>"
+              case rc2 of
+                CS_COMPILED_FAIL ('u':_) -> return Test.Hspec.Core.Success
+                a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"),
+        it "sends back compile passed status with the error when the code has a creation balance error" $
+          (do
+              cstester ior "<qplprogram>"
+              cstester ior "main::() = { q = <0; measure q of |0> => {c=1} |1> => {d=2}}"
+              rc2 <- cstester ior "</qplprogram>"
+              case rc2 of
+                CS_COMPILED_SUCCESS ('u':_) w -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'")
         ]
       ]

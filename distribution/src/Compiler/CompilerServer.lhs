@@ -108,8 +108,8 @@
     putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService progAndImps msg
     case css of
-      CS_COMPILED_SUCCESS l   -> do
-        hPutStrLn shandle "<qpo>"
+      CS_COMPILED_SUCCESS l  w  -> do
+        hPutStrLn shandle $ "<qpo w="++w++">"
         hPutStrLn shandle l
         hPutStrLn shandle "</qpo>"
       CS_COMPILED_FAIL l      -> do
@@ -209,7 +209,7 @@
         if "Need file " == take 10 errString
           then setAndReturn ior $ CS_NEED_FILE $ drop 10 errString
           else setAndReturn ior $ CS_COMPILED_FAIL $ ioeGetErrorString e
-      Right txt -> setAndReturn ior $ CS_COMPILED_SUCCESS $ concat $ intersperse "\n" txt
+      Right txt -> setAndReturn ior $ CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) ""
 
   appendJustWith :: [a] -> Maybe [a] -> Maybe [a]
   appendJustWith aas mas = do
@@ -224,7 +224,7 @@
 
   haskey mp k = k `elem` (keys mp)
 
-  data CompilerServiceStatus =  CS_READY | CS_GOT_PROGRAM | CS_COMPILED_SUCCESS String|
+  data CompilerServiceStatus =  CS_READY | CS_GOT_PROGRAM | CS_COMPILED_SUCCESS String String|
                                 CS_COMPILED_FAIL String | CS_MESSAGE String |
                                 CS_VERSION [Int] [String] | CS_NEED_FILE String |
                                 CS_READING_FILE (Maybe String)
