@@ -16,15 +16,15 @@ import Compiler.BaseTypes
 
 import Data.Tuples
 import Data.Stack as Stack
- 
+
 \end{code}
 %endif
 
 \incsubsubsec{\hasktypenoref{SymEntry}}
 \label{haskelltype:SymEntry}\index{Compiler Data Types!symbol table!SymEntry}
 This type is the basic entry in the symbol table, holding our information about
-either arguments, variables or functions that are known at a particular point 
-in time. 
+either arguments, variables or functions that are known at a particular point
+in time.
 
 For arguments and variables, we track the offset, which level it is at, its name and type.
 Functions track their level, name, a generated code label, argument types and return types.
@@ -38,11 +38,11 @@ data SymEntryGlobal
     =  SeData {
                gname::String,
                steTypeVars ::[Identifier],
-               steConstructors :: [ConsIdentifier] } 
+               steConstructors :: [ConsIdentifier] }
     |  SeCons {
                gname::String,
-	       goffset::Int,
-	       argtypes::[Qtype],
+               goffset::Int,
+               argtypes::[Qtype],
                rettypes::[Qtype] }-- Always just one..
     |  SeFun {
               gname::String,
@@ -56,34 +56,34 @@ data SymEntryGlobal
               crettypes::[Qtype] }
      deriving (Eq,Show)
 
-data SymEntryClassical 
+data SymEntryClassical
     = SeUse  {cname::NodeName,
-	      coffset::Int ,
-	      level::Level,
-	      ctype::Qtype }
+              coffset::Int ,
+              level::Level,
+              ctype::Qtype }
     | SeCArg  {
-	      coffset::Int,
-	      level::Level,
-	      cname::NodeName,
-	      ctype::Qtype }
+              coffset::Int,
+              level::Level,
+              cname::NodeName,
+              ctype::Qtype }
    | SeCVar  {level :: Level,
-	      coffset::Int,              
-	      cname::NodeName,
-	      ctype::Qtype }
+              coffset::Int,
+              cname::NodeName,
+              ctype::Qtype }
      deriving (Eq,Show)
 
 data SymEntryLinear
     = SeCaseId  {
-		 offset::Int ,
-	         name::NodeName,
-	         qtype::Qtype }
+                 offset::Int ,
+                 name::NodeName,
+                 qtype::Qtype }
     | SeLArg  {
-	      offset::Int ,
-	      name::NodeName,
-	      qtype::Qtype }
+              offset::Int ,
+              name::NodeName,
+              qtype::Qtype }
     | SeVar {
-	     name::NodeName,
-	     qtype::Qtype }
+             name::NodeName,
+             qtype::Qtype }
      deriving (Eq,Show)
 
 
@@ -93,7 +93,7 @@ data SymEntryLinear
 \label{haskelltype:SymbolTable}\index{Compiler Data Types!symbol table!SymbolTable}
 The symbol table is held a a map from strings (the identifier) to symbol
 table entries. As we will be keeping a stack of symbol tables in the
-semantic analysis phase, we need only keep the 
+semantic analysis phase, we need only keep the
 current current definition of a particular variable.
 \CodeContinueNumbers
 \begin{code}
@@ -105,7 +105,7 @@ type SymbolTableClassical  = Map.Map String SymEntryClassical
 
 \begin{code}
 nameAndType :: SymEntryLinear -> (NodeName, Qtype)
-nameAndType se = (name se, qtype se) 
+nameAndType se = (name se, qtype se)
 \end{code}
 
 \CodeContinueNumbers
@@ -123,15 +123,15 @@ This gets the offset, the level and the current types.
 \begin{code}
 
 makeUseEntries :: Int -> Level -> [SymEntryLinear] -> [SymEntryClassical]
-makeUseEntries  = mkUseEntries' 
+makeUseEntries  = mkUseEntries'
 
 mkUseEntries' :: Int-> Level -> [SymEntryLinear] -> [SymEntryClassical]
 mkUseEntries' i l [] = []
-mkUseEntries' i l (SeVar nn t : es) 
+mkUseEntries' i l (SeVar nn t : es)
     = SeUse nn i l t : mkUseEntries' (i-1) l es
-mkUseEntries' i l (SeLArg o nn t : es) 
+mkUseEntries' i l (SeLArg o nn t : es)
     = SeUse nn i l t : mkUseEntries' (i-1) l es
-mkUseEntries' i l (SeCaseId o nn t : es) 
+mkUseEntries' i l (SeCaseId o nn t : es)
     = SeUse nn i l t : mkUseEntries' (i-1) l es
 
 inUse :: SymEntryClassical -> Bool
@@ -144,7 +144,7 @@ inUse = insideUse . level
 
 subInArgsList :: [SymEntryLinear] ->[SymEntryLinear] -> [SymEntryLinear]
 subInArgsList [] _ = []
-subInArgsList ((SeCaseId offset name QUBIT):qs) ss 
+subInArgsList ((SeCaseId offset name QUBIT):qs) ss
         = (ss !!(-(1 + offset))) : subInArgsList qs ss
 subInArgsList (q:qs) ss
         = q : subInArgsList qs ss
@@ -152,15 +152,15 @@ subInArgsList (q:qs) ss
 
 argsmatch :: SymEntryGlobal->[SymEntryLinear]->Bool
 argsmatch se  =
-     foldl (&&) True . zipWith (==) (argtypes se) . List.map qtype 
- 
- 
+     foldl (&&) True . zipWith (==) (argtypes se) . List.map qtype
+
+
 
 selectQBits :: [SymEntryLinear]->[SymEntryLinear]
 selectQBits [] = []
-selectQBits (s:ss) 
-	     | qtype s == QUBIT = s:selectQBits ss
-	     | otherwise = selectQBits ss
+selectQBits (s:ss)
+             | qtype s == QUBIT = s:selectQBits ss
+             | otherwise = selectQBits ss
 \end{code}
 \incsubsubsec{\hasktypenoref{SemanticState}}
 \label{haskelltype:SemanticState}\index{Compiler Data Types!symbol table!SemanticState}
@@ -169,34 +169,34 @@ level (function and block), the symbol table, the storage requirement, the
 number of arguments and a counter for creating new code labels.
 \incsubsec{Declaration Level}
 \label{incsec:monadsupport}
-The semantic analysis and code generation makes extensive use of 
+The semantic analysis and code generation makes extensive use of
 Exception-State-IO monads. We simplify the use of the monads by the definition
 of various functions and a data type.
 \CodeContinueNumbers
 \begin{code}
-data SemanticState 
+data SemanticState
      = SemState {semLvl :: Level,
-		 stateStabGlobal :: SymbolTableGlobal,
-		 stateStabLinear :: SymbolTableLinear,
-		 stateStabClassical :: SymbolTableClassical,
---		 stor :: Storage,
-		 numArgs :: Int,
-		 idCounter :: Int,
+                 stateStabGlobal :: SymbolTableGlobal,
+                 stateStabLinear :: SymbolTableLinear,
+                 stateStabClassical :: SymbolTableClassical,
+--               stor :: Storage,
+                 numArgs :: Int,
+                 idCounter :: Int,
                  typeVarCounter :: Int,
                  typeConstraints :: Map Identifier Qtype, --Return vars
                  typeEquations :: Map Identifier Qtype, -- malleables
                  warnings :: [String],
                  cStackOffset :: Stack Int,
                  logLevel ::Int
-		}
+                }
 \end{code}
 \incsubsubsec{\hasktypenoref{SemStateMonad}}
 \label{haskelltype:SemStateMonad}\index{Compiler Data Types!symbol table!SemStateMonad}
-A monad based on a state transformer of the \hasktypenoref{SemanticState} and 
+A monad based on a state transformer of the \hasktypenoref{SemanticState} and
 \hasktypenoref{IO}.
 \CodeContinueNumbers
 \begin{code}
-type SemStateMonad   =  StateT SemanticState IO 
+type SemStateMonad   =  StateT SemanticState IO
 \end{code}
 %if false
 \CodeContinueNumbers
@@ -225,21 +225,21 @@ dumpst ll
      = getSymTabLinear >>= (semLog ll . show)
 
 dumpg :: Int ->  WriterT CompilerLogs SemStateMonad ()
-dumpg ll 
+dumpg ll
     = do  semLog ll  "Type SymTab"
           stabt <- getSymTabGlobal
-	  semLog ll (show stabt)
+          semLog ll (show stabt)
 
 dumpsts  ::  Int ->  WriterT CompilerLogs SemStateMonad ()
 dumpsts ll
      = do  semLog ll "Reg SymTab"
            stab <- getSymTabLinear
            semLog ll "got stab"
-	   semLog ll $ show stab
+           semLog ll $ show stab
            dumpg ll
            semLog ll "Classical SymTab"
            stabc <- getSymTabClassical
-	   semLog ll $ show stabc
+           semLog ll $ show stabc
 
 
 \end{code}
@@ -268,7 +268,7 @@ incOffset = incOffsetByN 1
 
 decOffset ::  WriterT CompilerLogs SemStateMonad ()
 decOffset = incOffsetByN (-1)
-            
+
 decOffsetByN :: Int ->  WriterT CompilerLogs SemStateMonad()
 decOffsetByN = incOffsetByN . negate
 
@@ -291,7 +291,7 @@ pushOffset = pushOffsetN 0
 
 copyAndPushOffset :: WriterT CompilerLogs  SemStateMonad ()
 copyAndPushOffset =  getOffset >>= pushOffsetN
-                       
+
 getSemLvl  ::   WriterT CompilerLogs SemStateMonad Level
 getSemLvl =  gets semLvl
 
@@ -301,31 +301,31 @@ setSemLvl l =  modify (\ state -> state {semLvl = l})
 warnssm :: String ->  WriterT CompilerLogs SemStateMonad ()
 warnssm warning =  modify (\ssm -> ssm {warnings = warning : warnings ssm})
 
-modSemTopOfStack ::  (SemanticState -> Stack a)-> 
+modSemTopOfStack ::  (SemanticState -> Stack a)->
                      (Stack a -> SemanticState->SemanticState)->
                      (a -> a) ->  WriterT CompilerLogs SemStateMonad ()
 modSemTopOfStack getit putit modit
      = do  st <-  gets getit
-	   let  (s, st') = pop st
+           let  (s, st') = pop st
                 s' = modit s
            setSemStack putit $ push s' st'
 
 getSemStack  :: (SemanticState -> Stack a)->  WriterT CompilerLogs SemStateMonad a
 getSemStack  =  gets . (Stack.get .)
 
-popSemStack  :: (SemanticState -> Stack a)-> 
+popSemStack  :: (SemanticState -> Stack a)->
                  (Stack a -> SemanticState->SemanticState)->
                       WriterT CompilerLogs SemStateMonad a
-popSemStack getit putit 
+popSemStack getit putit
      =  do  st <- gets getit
-	    let (s, st') = pop st
+            let (s, st') = pop st
             setSemStack putit st'
-	    return s
+            return s
 
-pushSemStack ::  (SemanticState -> Stack a)-> 
+pushSemStack ::  (SemanticState -> Stack a)->
                   (Stack a -> SemanticState->SemanticState) ->
                   a ->  WriterT CompilerLogs SemStateMonad ()
-pushSemStack getit putit st 
+pushSemStack getit putit st
      = do  stk <-  gets getit
            setSemStack putit $ push st stk
 
@@ -357,20 +357,20 @@ updateSymTabClassical s st = st{stateStabClassical = s}
 
 modSymTabGlobal :: (SymbolTableGlobal -> SymbolTableGlobal) ->
                     WriterT CompilerLogs SemStateMonad ()
-modSymTabGlobal f 
-    =  modify (\ state -> state{stateStabGlobal 
+modSymTabGlobal f
+    =  modify (\ state -> state{stateStabGlobal
                                    = f $ stateStabGlobal state})
 
 modSymTabLinear :: (SymbolTableLinear -> SymbolTableLinear) ->
                     WriterT CompilerLogs SemStateMonad ()
-modSymTabLinear f 
-    =  modify (\ state -> state{stateStabLinear 
+modSymTabLinear f
+    =  modify (\ state -> state{stateStabLinear
                                    = f $ stateStabLinear state})
 
 modSymTabClassical :: (SymbolTableClassical -> SymbolTableClassical) ->
                        WriterT CompilerLogs SemStateMonad ()
-modSymTabClassical f 
-    =  modify (\ state -> state{stateStabClassical 
+modSymTabClassical f
+    =  modify (\ state -> state{stateStabClassical
                                    = f $ stateStabClassical state})
 
 
@@ -387,28 +387,28 @@ setSymTabGlobal  ::  SymbolTableGlobal ->  WriterT CompilerLogs SemStateMonad ()
 setSymTabGlobal  = modSymTabGlobal . const
 
 setSymTabLinear  ::  SymbolTableLinear ->  WriterT CompilerLogs SemStateMonad ()
-setSymTabLinear = modSymTabLinear . const 
+setSymTabLinear = modSymTabLinear . const
 
 setSymTabClassical  ::  SymbolTableClassical ->  WriterT CompilerLogs SemStateMonad ()
-setSymTabClassical  = modSymTabClassical . const 
+setSymTabClassical  = modSymTabClassical . const
 
-  
+
 inclabel  ::   WriterT CompilerLogs SemStateMonad ()
-inclabel =  modify (\ state -> 
-		    state {idCounter 
-			   = 1+idCounter state})
+inclabel =  modify (\ state ->
+                    state {idCounter
+                           = 1+idCounter state})
 
 inctypevar  ::   WriterT CompilerLogs SemStateMonad ()
-inctypevar =  modify (\ state -> 
-		          state {typeVarCounter 
-			             = 1+typeVarCounter state})
+inctypevar =  modify (\ state ->
+                          state {typeVarCounter
+                                     = 1+typeVarCounter state})
 
 incargs  ::   WriterT CompilerLogs SemStateMonad ()
-incargs =  modify (\ state -> 
-		   state {numArgs = 1 + numArgs state})
+incargs =  modify (\ state ->
+                   state {numArgs = 1 + numArgs state})
 decargs  ::   WriterT CompilerLogs SemStateMonad ()
-decargs =  modify (\ state -> 
-		   state {numArgs = (-1) + numArgs state})
+decargs =  modify (\ state ->
+                   state {numArgs = (-1) + numArgs state})
 
 getlabel  ::   WriterT CompilerLogs SemStateMonad Int
 getlabel =  gets idCounter
@@ -417,7 +417,7 @@ getTypeConstraints ::  WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 getTypeConstraints = gets typeConstraints
 
 setTypeConstraints :: Map Identifier Qtype ->  WriterT CompilerLogs SemStateMonad ()
-setTypeConstraints mp 
+setTypeConstraints mp
     = modify (\ state -> state{typeConstraints = mp})
 
 addTypeConstraints :: [(Identifier,Qtype)] ->  WriterT CompilerLogs  SemStateMonad ()
@@ -426,13 +426,13 @@ addTypeConstraints = mapM_ (uncurry addTypeConstraint)
 addTypeConstraint :: Identifier -> Qtype -> WriterT CompilerLogs  SemStateMonad ()
 addTypeConstraint iden typ
    = modify (\ state ->
-                state {typeConstraints = 
+                state {typeConstraints =
                            Map.insert iden typ $ typeConstraints state})
 
 remTypeConstraint :: Identifier ->  WriterT CompilerLogs SemStateMonad ()
-remTypeConstraint iden 
+remTypeConstraint iden
    = modify (\ state ->
-                state {typeConstraints = 
+                state {typeConstraints =
                            Map.delete iden $ typeConstraints state})
 
 getTypeRelations ::  WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
@@ -444,7 +444,7 @@ addTypeRelation mlblvr typ
                                    Map.insert mlblvr typ (typeEquations state)})
 
 newTypeVar ::  WriterT CompilerLogs SemStateMonad String
-newTypeVar = 
+newTypeVar =
     do  tvc <- gets typeVarCounter
         modify (\s -> s{typeVarCounter = 1 + tvc})
         return $ "tv" ++ show tvc

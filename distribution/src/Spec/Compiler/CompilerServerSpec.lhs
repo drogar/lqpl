@@ -194,23 +194,23 @@
               cstester ior "qdata Coin = {head}"
               rc2 <- cstester ior "</qplprogram>"
               case rc2 of
-                CS_COMPILED_FAIL ('u':_) -> return Test.Hspec.Core.Success
+                CS_COMPILED_FAIL ('(':'l':'i':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"),
         it "sends back compile failed status with the error when the code has a semantic error" $
           (do
               cstester ior "<qplprogram>"
-              cstester ior "qdata Coin = {head}"
+              cstester ior "main::() = { q = |0>; purejunk q}"
               rc2 <- cstester ior "</qplprogram>"
               case rc2 of
-                CS_COMPILED_FAIL ('u':_) -> return Test.Hspec.Core.Success
+                CS_COMPILED_FAIL ('S':'e':'m':'a':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"),
         it "sends back compile passed status with the error when the code has a creation balance error" $
           (do
               cstester ior "<qplprogram>"
-              cstester ior "main::() = { q = <0; measure q of |0> => {c=1} |1> => {d=2}}"
+              cstester ior "main::() = { q = |0>; measure q of |0> => {c=1} |1> => {d=2}}"
               rc2 <- cstester ior "</qplprogram>"
               case rc2 of
-                CS_COMPILED_SUCCESS ('u':_) w -> return Test.Hspec.Core.Success
+                CS_COMPILED_SUCCESS _ ('S':'e':'m':'a':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'")
         ]
       ]

@@ -105,13 +105,21 @@
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (CompilerServiceStatus, String, Map String (Maybe String))
   commandHandler progAndImps shandle addr msg = do
-    putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
+    --putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService progAndImps msg
+    --putStrLn $ show css
     case css of
-      CS_COMPILED_SUCCESS l  w  -> do
-        hPutStrLn shandle $ "<qpo w="++w++">"
+      CS_COMPILED_SUCCESS l  ""  -> do
+        hPutStrLn shandle $ "<qpo w='NO'>"
         hPutStrLn shandle l
         hPutStrLn shandle "</qpo>"
+      CS_COMPILED_SUCCESS l  w  -> do
+        hPutStrLn shandle $ "<qpo w='YES'>"
+        hPutStrLn shandle l
+        hPutStrLn shandle "</qpo>"
+        hPutStrLn shandle $ "<warning>"
+        hPutStrLn shandle w
+        hPutStrLn shandle "</warning>"
       CS_COMPILED_FAIL l      -> do
         hPutStrLn shandle "<compilefail>"
         hPutStrLn shandle l
@@ -209,18 +217,19 @@
         if "Need file " == take 10 errString
           then setAndReturn ior $ CS_NEED_FILE $ drop 10 errString
           else setAndReturn ior $ CS_COMPILED_FAIL $ ioeGetErrorString e
-      Right txt -> setAndReturn ior $ CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) ""
+      Right (txt,logs) -> setAndReturn ior $ CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) (concat $ intersperse "\n" logs)
 
   appendJustWith :: [a] -> Maybe [a] -> Maybe [a]
   appendJustWith aas mas = do
     theas <- mas
     return $ theas ++ aas
 
-  doCompile :: FileProvider -> String -> IO [String]
+  doCompile :: FileProvider -> String -> IO ([String],[String])
   doCompile fp p = do
     asyn <- parseQPL fp "" "" p []
-    (ir,_) <- W.runWriterT $ W.mapWriterT (removeState 0) (makeIr asyn)
-    ioGenCode ir 0
+    (ir,cls) <- W.runWriterT $ W.mapWriterT (removeState 0) (makeIr asyn)
+    cd <- ioGenCode ir 0
+    return (cd,cls)
 
   haskey mp k = k `elem` (keys mp)
 
