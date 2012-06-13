@@ -54,7 +54,6 @@ public class QuantumStackPanel extends JScrollPane{
         this.quantumStackPainter = quantumStackP;
         Icon qsImage = quantumStackP.imageOfModel();
         qsImageLabel.setIcon(qsImage);
-        qsImageLabel.setMinimumSize(quantumStackP.getPreferredSizeOfModel(null));
         repaint();
     }
 

@@ -15,5 +15,4 @@ public interface Painter {
     public void paintModel(Graphics g, Component parent);
     public void paintModelAtPoint(Graphics g, Component parent, Point center);
     public Icon imageOfModel();
-    public Dimension getPreferredSizeOfModel(Graphics2D g);
 }

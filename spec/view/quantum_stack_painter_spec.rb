@@ -4,44 +4,24 @@ require 'src/panels/quantum_stack/quantum_stack_model'
 require 'src/panels/quantum_stack/quantum_stack_painter'
 
 describe QuantumStackPainter do
-  describe "class method sum_x_offsets" do
-    it "should be id one, two and three element lists" do
-      QuantumStackPainter::sum_x_offsets([30]).should == [30]
-      QuantumStackPainter::sum_x_offsets([30, 14]).should == [30,14]
-      QuantumStackPainter::sum_x_offsets([30, 14, 50]).should == [30,14,50]
+
+  describe "class method compute_offsets" do
+    it "should have a single 0 offest for two element lists" do
+      QuantumStackPainter::compute_offsets([30,40]).should == [0]
     end
-    it "should take the four elt list [a,b,c,d] tp [a+b, b, c, c+d]" do
-      QuantumStackPainter::sum_x_offsets([30, 14, 50, 80]).should == [44,14,50,130]
+    it "should be [-y,v] for the 4 elt list [_,y,v,_]" do
+      QuantumStackPainter::compute_offsets([40,30, 14,50]).should == [-30,14]
     end
-    it "should have the same number of elements as the input" do
-      QuantumStackPainter::sum_x_offsets((1..40).to_a).length.should == 40
+    it "should be [-(b+c), 0, (d+e)] for the 6 element list [_,b,c,d,e,_]" do
+      QuantumStackPainter::compute_offsets([30, 14, 50,8,10,12]).should == [-64,0,18]
     end
-    it "should replace elt 'i' with the sum of elts 'i' to the midpoint of the list" do
-      QuantumStackPainter::sum_x_offsets([2,4,6,8,10,12]).should == [12,10,6,8,18,30]
-      QuantumStackPainter::sum_x_offsets([2,4,0,8,10]).should == [6,4,0,8,18]
+    it "should ignore the first and last element, and then then accumulate the others around the midpoint" do
+      QuantumStackPainter::compute_offsets((1..10).to_a).should == [-14,-9,0,13,30]
+      QuantumStackPainter::compute_offsets((1..12).to_a).should == [-20,-15,-6,7,24,45]
     end
-  end
-  describe "class method make_x_offsets" do
-    it "should have a single 0 offest for one element lists" do
-      QuantumStackPainter::make_x_offsets([30]).should == [0]
-    end
-    it "should be 1/2 of each number for two element lists" do
-      QuantumStackPainter::make_x_offsets([30, 14]).should == [15,7]
-    end
-    it "should be 1/2 of sum of the first 2, 0, 1/2 of the sum of the last 2 for 3 element lists" do
-      QuantumStackPainter::make_x_offsets([30, 14, 50]).should == [22,0,32]
-    end
-    it "should be 1/2 of sum of the first 2, 1/2 of second, 1/2 of third, 1/2 of the sum of the last 2 for 4 element lists" do
-      QuantumStackPainter::make_x_offsets([30, 14, 50, 80]).should == [22,7,25,65]
-    end
-    it "should have the same number of elements as the input" do
-      QuantumStackPainter::make_x_offsets((1..40).to_a).length.should == 40
-    end
-    it "should be the 1/2 the sums of adjacent elements for even lists, with the middle two elements being 1/2 of the existing middle" do
-      QuantumStackPainter::make_x_offsets([2,4,6,8,10,12]).should == [3,5,3,4,9,11]
-    end
-    it "should be the 1/2 the sums of adjacent elements for odd lists, with the middle elements being 0" do
-      QuantumStackPainter::make_x_offsets([2,4,6,8,10]).should == [3,5,0,7,9]
+    it "should return an empty list for empty or nil input" do
+      QuantumStackPainter::compute_offsets([]).should == []
+      QuantumStackPainter::compute_offsets(nil).should == []
     end
   end
   describe "get_preferred_size_of_model" do
@@ -59,6 +39,7 @@ describe QuantumStackPainter do
         case val
         when "1" then "@p"
         when "2" then "@q"
+        when "3" then "superreallylongnametoforceleftbigger"
         else val
         end
       end
@@ -74,6 +55,11 @@ describe QuantumStackPainter do
       qb.stack_translation = st
       qb.quantum_stack = "<bottom/>"
       @qsb = QuantumStackPainter.new(qb)
+
+      qi = QuantumStackModel.new
+      qi.stack_translation = st
+      qi.quantum_stack = QSINT
+      @qsint = QuantumStackPainter.new(qi)
       @g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
 
     end
@@ -85,19 +71,28 @@ describe QuantumStackPainter do
       @qshad.node_separation(:vertical).should == 40.0
     end
     it "should have a preferred size of width > 160 and height > 60 for the hadamard qbit" do
-      ps = @qshad.get_preferred_size_of_model(@g)
-      ps.width.should > 160.0
-      ps.height.should > 60.0
+      ps = @qshad.model_paint_size(@g)
+      ps[:left].should > 80.0
+      ps[:right].should > 80.0
+      ps[:height].should > 60.0
     end
     it "should have a preferred size of width >= 25 and height >= 28 for the value of 0.5 only" do
-      ps = @qsval.get_preferred_size_of_model(@g)
-      ps.width.should >= 25
-      ps.height.should >= 28
+      ps = @qsval.model_paint_size(@g)
+      ps[:left].should > 12.5
+      ps[:right].should > 12.5
+      ps[:height].should > 28.0
     end
     it "should have a preferred size > 10, 15 for bottom" do
-      ps = @qsb.get_preferred_size_of_model(@g)
-      ps.width.should > 10.0
-      ps.height.should > 15.0
+      ps = @qsb.model_paint_size(@g)
+      ps[:left].should > 5.0
+      ps[:right].should > 5.0
+      ps[:height].should > 15.0
+    end
+    it "should have a left size bigger than right width for qsint" do
+      @qsint.model_paint_size(@g)[:left] > @qsint.model_paint_size(@g)[:right]
+    end
+    it "should have a left size ~= right for the had qubit" do
+      (@qsval.model_paint_size(@g)[:left] -  @qsval.model_paint_size(@g)[:right]).abs.should < 2
     end
   end
 end

@@ -65,20 +65,22 @@ class AbstractDescriptorPainter
   end
 
   alias :paint_model_at_point :paintModelAtPoint
+  # end of painter interface
 
-  def getPreferredSizeOfModel(g)
-    width   =  node_size
-    width   += 2*(get_string_size(g,"#{@model_element.name}").width )+ node_size if @model_element.name
+  def model_paint_size(g)
+
+    left_width = half_node_size
+    left_width += get_string_size(g,"#{@model_element.name}").width + node_size if @model_element.name
+    right_width = half_node_size
+
     height  =  node_size
     valsize =  get_string_size(g," #{@model_element.value} ")
     height  += valsize.height + half_node_size if @model_element.length == 0
-    width   =  [width,valsize.width].max
-    Dimension.new(width, height)
+    right_width   =  [right_width,valsize.width*0.5].max
+    left_width = [left_width,valsize.width*0.5].max
+    {:left => left_width, :right => right_width, :height => height}
   end
 
-  alias :get_preferred_size_of_model :getPreferredSizeOfModel
-
-  # end of painter interface
 
 
 end

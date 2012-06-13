@@ -10,7 +10,7 @@ describe StackTranslationController do
   end
   it "should accessibly store the dump text in the model" do
     @d.set_stack_translation_data(P1)
-    @d.get_stack_translation_text.should == "[{:p=>1}]"
+    @d.get_stack_translation_text.should == "<html><ol><li>p=>1</li></ol></html>"
   end
 
   it "should set the server_connection when given an sc" do
