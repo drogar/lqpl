@@ -37,7 +37,7 @@ describe ServerConnection do
       end
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
       fname = "#{Dir.pwd}/testdata/qplprograms/min.reference.qpo"
-      flag = @sc.send_load_from_file fname
+      flag = @sc.send_load_from_file(10,fname)
       flag.should =~ /Assembled/
     end
   end
@@ -46,9 +46,11 @@ describe ServerConnection do
       @sc = ServerConnection.instance
       @sc.connect
       fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
-      flag = @sc.send_load_from_file fname
+      flag = @sc.send_load_from_file(10,fname)
     end
-
+    it "allows depth multiples to be set" do
+      @sc.send_set_depth_multiplier.should =~ /reset/
+    end
     it "steps through a program" do
       @sc.do_step.should =~ /Stepped/
       @sc.do_step(5).should =~ /Stepped/
@@ -70,7 +72,7 @@ describe ServerConnection do
       @sc = ServerConnection.instance
       @sc.connect
       fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
-      flag = @sc.send_load_from_file fname
+      flag = @sc.send_load_from_file(10,fname)
       @sc.do_step(10) # down one branch of the measure
     end
     it "returns the qstack" do

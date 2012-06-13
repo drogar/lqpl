@@ -24,7 +24,8 @@ public class QuantumEmulatorMainScreen extends  JFrame{
 
         setContentPane(controlPanel);
         setUpSpinner(stepSpinner, 1,1,100000,1);
-        setUpSpinner(recursionSpinner, 10,0,100000,1);
+        setUpSpinner(recursionSpinner, 1,1,100000,1);
+        setUpSpinner(recursionMultiplierSpinner, 10,1,100000,1);
         setUpSpinner(treeDepthSpinner, 4,1,100,1);
         setUpMenus();
         spinnerPanel.setVisible(false);
@@ -113,6 +114,8 @@ public class QuantumEmulatorMainScreen extends  JFrame{
     private JPanel controlPanel;
     private JTextArea messagesTextArea;
     private JPanel messagesPanel;
+    private JSpinner recursionMultiplierSpinner;
+    private JLabel multiplierLabelForSpinner;
     public JLabel message;
 
     private JMenuItem file_load;

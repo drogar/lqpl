@@ -36,13 +36,14 @@ class QfaceController < ApplicationController
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.selected_file.absolute_path
       base_file_name = chooser.selected_file.name
-      server = ServerConnection.instance
-      server.send_load_from_file fname
+      @server_connection = ServerConnection.instance
+      @server_connection.send_load_from_file(model.recursion_multiplier_spinner, fname)
       model.frame_title = "Quantum Emulator - #{base_file_name}"
       model.go_enabled = true
       model.step_enabled = true
       model.spinner_panel_visible = true
       model.button_panel_visible = true
+      @server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
       initialize_sub_controllers
 
     else
@@ -122,16 +123,28 @@ class QfaceController < ApplicationController
   end
 
   def step_spinner_state_changed
-    model.step_spinner = view_model.step_spinner
+    model.step_spinner = java.lang.Integer.new(view_model.step_spinner)
   end
 
   def recursion_spinner_state_changed
-    model.recursion_spinner = view_model.recursion_spinner
+    model.recursion_spinner = java.lang.Integer.new(view_model.recursion_spinner)
+    model.go_enabled = true
+    model.step_enabled = true
+    update_view
+    update_sub_model_data
+  end
+
+  def recursion_multiplier_spinner_state_changed
+    model.recursion_multiplier_spinner = java.lang.Integer.new(view_model.recursion_multiplier_spinner)
+    @server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+    model.go_enabled = true
+    model.step_enabled = true
+    update_view
     update_sub_model_data
   end
 
   def tree_depth_spinner_state_changed
-    model.tree_depth_spinner = view_model.tree_depth_spinner
+    model.tree_depth_spinner = java.lang.Integer.new(view_model.tree_depth_spinner)
     update_sub_model_data
   end
 

@@ -32,13 +32,13 @@ class ServerConnection
     @connection.close if connected?
   end
 
-  def send_load_from_file(fname)
+  def send_load_from_file(depth_multiplier, fname)
 
     @fname = fname
     @dir = File.dirname(@fname)
     File.open(fname, "r") do |f|
       qpl_file_data = f.read()
-      send_and_recieve_command "load #{TranslateLineEnds.new qpl_file_data}"
+      send_and_recieve_command "load #{depth_multiplier} #{TranslateLineEnds.new qpl_file_data}"
     end
   end
 
@@ -80,6 +80,9 @@ class ServerConnection
     send_and_recieve_command "simulate #{recursion_depth}"
   end
 
+  def send_set_depth_multiplier(multiplier=10)
+    send_and_recieve_command "setdepthmultiple #{multiplier}"
+  end
   def send_and_recieve_command(command)
     connect if !connected?
     @connection.puts command
