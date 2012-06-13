@@ -29,7 +29,7 @@ import QSM.BasicData
 import QSM.QSM
 import QSM.Simulate
 import QServer.Types
-import QServer.MachineControl(stepMachine, executeMachine)
+import QServer.MachineControl
 import QServer.ParseServerCommand
 import QServer.StackToXML
 
@@ -126,8 +126,10 @@ commandHandler :: HandlerFunc (MachineState BaseType)
 commandHandler machineStateRef shandle addr msg =
   do
     case (getCommand msg) of
-      Right (QCLoad assemblyCode)  ->
-        assemble assemblyCode machineStateRef shandle
+      Right (QCLoad depthmult assemblyCode)  ->
+        assemble depthmult assemblyCode machineStateRef shandle
+      Right (QCDepthMultiple depthMultiple) ->
+        resetDepthMultiplier depthMultiple machineStateRef shandle
       Right (QCStep step depth) ->
         stepMachine step depth machineStateRef shandle
       Right (QCRun depth) ->
@@ -200,8 +202,8 @@ sendDump depth treedepth machineStateRef shndle =
 
 
 
-assemble :: String -> IORef (MachineState BaseType) -> Handle -> IO()
-assemble assemblyCode machineStateRef shandle =
+assemble :: Int -> String -> IORef (MachineState BaseType) -> Handle -> IO()
+assemble depthMult assemblyCode machineStateRef shandle =
     do
       parsedAssembly <- parseQPA "" "" assemblyCode
       case  parsedAssembly of
@@ -209,7 +211,7 @@ assemble assemblyCode machineStateRef shandle =
                 putStrLn $ "Error in parse: " ++ error
                 hPutStrLn shandle $ "ERROR: " ++ error
           Right ((cnotes,trs),loadedCode) -> do
-                writeIORef machineStateRef $ (startMachine defaultCallDepth initialMachine loadedCode)
+                writeIORef machineStateRef $ (startMachine depthMult initialMachine loadedCode)
                 dumpMachine 1 machineStateRef
                 hPutStrLn shandle "Assembled"
 

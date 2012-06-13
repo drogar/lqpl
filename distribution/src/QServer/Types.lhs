@@ -18,11 +18,12 @@
  data QSData = QDQuantumStack | QDClassicalStack | QDDump | QDMemoryMap | QDExecutableCode | QDCodePointer
   deriving (Eq,Show,Read)
 
- data QCommand = QCLoad FilePath |
+ data QCommand = QCLoad Int FilePath |
     QCStep Int Int |
     QCRun Int |
     QCGet QSData Int Int |
-    QCSimulate Int
+    QCSimulate Int |
+    QCDepthMultiple Int
   deriving (Eq,Show,Read)
 
 \end{code}

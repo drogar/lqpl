@@ -2,7 +2,8 @@
 \begin{code}
   module QServer.MachineControl (
        stepMachine,
-       executeMachine
+       executeMachine,
+       resetDepthMultiplier
        )
   where
 
@@ -21,14 +22,14 @@
                   IORef (MachineState BaseType) ->
                   Handle ->
                   IO()
-  stepMachine step depth machineStateRef shndle =
+  stepMachine step depth machineStateRef shandle =
     do
       runIt step machineStateRef
       mstate <- readIORef machineStateRef
       let bms =  pickIthMS  depth mstate
       case runningCode bms of
-        []    ->       hPutStrLn shndle "executed"
-        _     ->       hPutStrLn shndle "Stepped"
+        []    ->       hPutStrLn shandle "executed"
+        _     ->       hPutStrLn shandle "Stepped"
 
 
   runIt ::  Int ->
@@ -43,11 +44,19 @@
                      IORef (MachineState BaseType) ->
                      Handle ->
                      IO()
-  executeMachine depth machineStateRef shndle =
+  executeMachine depth machineStateRef shandle =
     do
       modifyIORef machineStateRef (go depth)
-      hPutStrLn shndle "executed"
+      hPutStrLn shandle "executed"
 
 
+  resetDepthMultiplier ::   Int ->
+                            IORef (MachineState BaseType) ->
+                            Handle ->
+                            IO()
+  resetDepthMultiplier depthMultiple machineStateRef shandle =
+    do
+      modifyIORef machineStateRef (resetCallDepth depthMultiple)
+      hPutStrLn shandle "Depth reset"
 
 \end{code}

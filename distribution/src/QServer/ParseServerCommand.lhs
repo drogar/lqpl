@@ -15,16 +15,20 @@
       Right c -> Right c
 
   parseCommands :: Parser QCommand
-  parseCommands = (try parseLoad) <|> (try parseStep) <|> (try parseRun) <|> (try parseGet) <|> parseSimulate
+  parseCommands = (try parseLoad) <|> (try parseStep) <|> (try parseRun) <|>
+    (try parseSetDepthMultiple) <|>
+    (try parseGet) <|> parseSimulate
 
   parseLoad ::  Parser QCommand
   parseLoad =
     do
       string "load"
       space
+      depthMult <- many1 (digit)
+      many1 space
       assembly <- many1 (satisfy (\c -> c /= '\n'))
       eof
-      return $ QCLoad (translateEOL assembly)
+      return $ QCLoad (read depthMult) (translateEOL assembly)
 
   translateEOL :: String -> String
   translateEOL ('<':'\\':'n':'>':rest)  = '\n':translateEOL rest
@@ -51,6 +55,16 @@
       many space
       eof
       return $ QCRun (read depth)
+
+  parseSetDepthMultiple::  Parser QCommand
+  parseSetDepthMultiple =
+    do
+      string "setdepthmultiple"
+      many1 space
+      depth <- many1 digit
+      many space
+      eof
+      return $ QCDepthMultiple (read depth)
 
   parseGet::  Parser QCommand
   parseGet =

@@ -23,10 +23,10 @@
 
     makeSpec a = it ("hunit test: "++ show a) $ a
 
-    tests =  ["parseL1 " ~: "load xxx returns QCLoad" ~: Right (QCLoad "abc") @=? (getCommand "load abc"),
-      "parseL2 " ~: "load a<\\n>b returns QCLoad" ~: Right (QCLoad "a\nb") @=? (getCommand "load a<\\n>b"),
-      "parseL2a " ~: "load a<\\n>b<\\n>line c returns QCLoad" ~: Right (QCLoad "a\nb\nline c") @=? (getCommand "load a<\\n>b<\\n>line c"),
-      "parseL2aSpace " ~: "'load     /x/xxx addint.qpo' returns QCLoad" ~: Right (QCLoad "/a/bc with space.qpo") @=? (getCommand "load /a/bc with space.qpo"),
+    tests =  ["parseL1 " ~: "load 1 xxx returns QCLoad" ~: Right (QCLoad 1 "abc") @=? (getCommand "load 1 abc"),
+      "parseL2 " ~: "load 1 a<\\n>b returns QCLoad" ~: Right (QCLoad 1 "a\nb") @=? (getCommand "load 1 a<\\n>b"),
+      "parseL2a " ~: "load 1 a<\\n>b<\\n>line c returns QCLoad" ~: Right (QCLoad 1 "a\nb\nline c") @=? (getCommand "load 1 a<\\n>b<\\n>line c"),
+      "parseL2aSpace " ~: "'load  1   /x/xxx addint.qpo' returns QCLoad" ~: Right (QCLoad 1 "/a/bc with space.qpo") @=? (getCommand "load 1 /a/bc with space.qpo"),
       "parseStep1 " ~: "step 1 3 returns QCStep" ~: Right (QCStep 1 3) @=? (getCommand "step 1 3"),
       "parseStep2 " ~: "step 743 4 returns QCStep" ~: Right (QCStep 743 4) @=? (getCommand "step 743 4"),
       "parseStep2a " ~: "step       743 1 returns QCStep" ~: Right (QCStep 743 1) @=? (getCommand "step    743 1"),
