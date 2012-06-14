@@ -9,8 +9,8 @@ describe DumpController do
     @c = DumpController.instance
   end
   it "should accessibly store the dump text in the model" do
-    @c.set_dump_data("junk")
-    @c.get_dump_data.should == "junk"
+    @c.set_dump_data("<Dump>"+DCALL+"</Dump>")
+    @c.get_dump_data.should == "<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>"
   end
 
   it "should set the server_connection when given an sc" do

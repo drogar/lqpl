@@ -20,6 +20,12 @@ describe ClassicalStackModel do
     c.classical_stack ="<Cstack>"+cint(-27)+CIBT+cint(40)+CIBF+"</Cstack>"
     c.classical_stack_text.should == "<html>-27<br />true<br />40<br />false</html>"
   end
+  it "should return a list of the values" do
+
+    c=ClassicalStackModel.new
+    c.classical_stack ="<Cstack>"+cint(-27)+CIBT+cint(40)+CIBF+"</Cstack>"
+    c.to_a.should == [(-27),true,40,false]
+  end
   describe "class method classical_values_to_list" do
     it "should make an empty list with no data" do
       ClassicalStackModel.classical_values_to_list("").should == []

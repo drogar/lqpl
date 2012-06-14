@@ -16,6 +16,7 @@ public class Main
 {
   public static void main(String[] args) throws Exception
   {
+    System.setProperty("com.apple.mrj.application.apple.menu.about.name", "LQPL Emulator");
     RubyInstanceConfig config = new RubyInstanceConfig();
     config.setArgv(args);
     Ruby runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);

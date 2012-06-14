@@ -14,6 +14,10 @@ class ClassicalStackModel
     "<html>"+inside+"</html>"
   end
 
+  def to_a
+    @classical_stack
+  end
+
   def classical_stack=(xml_input)
     cstack_in = CSTACK_PATTERN.match xml_input
     raise QuantumStackModelInvalidCreate, "Invalid Classical Stack: #{xml_input}" if !cstack_in

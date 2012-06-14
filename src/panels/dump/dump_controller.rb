@@ -7,11 +7,11 @@ class DumpController < ApplicationController
     set_dump_data(@server_connection.get_dump(tree_depth,recursion_level))
   end
   def set_dump_data(dump_data)
-    model.dump_text= dump_data
+    model.dump= dump_data
     update_view
   end
 
   def get_dump_data
-    model.dump_text
+    model.text
   end
 end

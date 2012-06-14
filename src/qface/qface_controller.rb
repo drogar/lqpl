@@ -135,7 +135,7 @@ class QfaceController < ApplicationController
   end
 
   def recursion_multiplier_spinner_state_changed
-    model.recursion_multiplier_spinner = java.lang.Integer.new(view_model.recursion_multiplier_spinner)
+    model.recursion_multiplier_spinner = java.lang.Integer.new("#{view_model.recursion_multiplier_spinner}")
     @server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
     model.go_enabled = true
     model.step_enabled = true
