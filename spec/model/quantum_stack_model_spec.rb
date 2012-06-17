@@ -122,7 +122,6 @@ describe QuantumStackModel do
       end
       it "returns the stackaddress as a string if not found in the translation" do
         @qs.quantum_stack = "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
-        puts "sa = #{@qs.stackaddress}, rl = #{@qs.stack_translation.reverse_lookup(-1)}"
         @qs.make_name(:use_stack_address).should == ""
         @qs.make_name(:hide_stack_address).should == ""
       end

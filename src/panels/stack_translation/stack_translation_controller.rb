@@ -4,7 +4,7 @@ class StackTranslationController < ApplicationController
   set_close_action :hide
 
   def set_stack_translation(tree_depth, recursion_level)
-    set_stack_translation_data(@server_connection.get_stack_translation(tree_depth,recursion_level))
+    set_stack_translation_data(server_connection.get_stack_translation(tree_depth,recursion_level))
   end
 
   def set_stack_translation_data(stack_translation_data)

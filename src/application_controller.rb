@@ -9,6 +9,12 @@ class ApplicationController < Monkeybars::Controller
     @server_connection.connect if !@server_connection.connected?
   end
 
+  # doing a suspenders and belt here - will assume default SC if there isn't one.
+  def server_connection
+    @server_connection = ServerConnection.instance if !@server_connection
+    @server_connection
+  end
+
 
   def toggle_visibility
     visible? ? hide : show

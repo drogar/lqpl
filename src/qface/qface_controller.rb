@@ -37,13 +37,13 @@ class QfaceController < ApplicationController
       fname = chooser.selected_file.absolute_path
       base_file_name = chooser.selected_file.name
       @server_connection = ServerConnection.instance
-      @server_connection.send_load_from_file(model.recursion_multiplier_spinner, fname)
+      server_connection.send_load_from_file(model.recursion_multiplier_spinner, fname)
       model.frame_title = "Quantum Emulator - #{base_file_name}"
       model.go_enabled = true
       model.step_enabled = true
       model.spinner_panel_visible = true
       model.button_panel_visible = true
-      @server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+      server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
       initialize_sub_controllers
 
     else
@@ -91,6 +91,7 @@ class QfaceController < ApplicationController
     open_sub_panels
     enable_view_menu_items
   end
+
   def enable_view_menu_items
     model.view_menu_stack_translation_enabled = true
     model.view_menu_dump_enabled = true
@@ -99,11 +100,11 @@ class QfaceController < ApplicationController
   end
 
   def update_sub_controller_scs
-    QuantumStackController.instance.server_connection = ServerConnection.instance
-    ExecutableCodeController.instance.server_connection = ServerConnection.instance
-    ClassicalStackController.instance.server_connection = ServerConnection.instance
-    DumpController.instance.server_connection = ServerConnection.instance
-    StackTranslationController.instance.server_connection = ServerConnection.instance
+    QuantumStackController.instance.server_connection = server_connection
+    ExecutableCodeController.instance.server_connection = server_connection
+    ClassicalStackController.instance.server_connection = server_connection
+    DumpController.instance.server_connection = server_connection
+    StackTranslationController.instance.server_connection = server_connection
   end
 
   def open_sub_panels
@@ -136,7 +137,7 @@ class QfaceController < ApplicationController
 
   def recursion_multiplier_spinner_state_changed
     model.recursion_multiplier_spinner = java.lang.Integer.new("#{view_model.recursion_multiplier_spinner}")
-    @server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+    server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
     model.go_enabled = true
     model.step_enabled = true
     update_view

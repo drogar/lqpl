@@ -7,7 +7,7 @@ Feature: We can load and run an assembled file at the server
     When I select "Load" from the "File" menu
     And I load "coin.reference.qpo" from the directory "testdata/qplprograms"
 
-  @wip
+
   Scenario:
     Then the main frame's title should be "Quantum Emulator - coin.reference.qpo"
     Then the button "Step" should appear
