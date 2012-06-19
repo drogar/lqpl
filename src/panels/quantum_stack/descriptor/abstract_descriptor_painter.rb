@@ -1,6 +1,6 @@
 require 'utility/drawing'
 
-java_import com.drogar.qface.qstack.Painter
+java_import com.drogar.lqpl.qstack.Painter
 java_import java.awt.geom.Dimension2D
 java_import java.awt.BasicStroke
 java_import java.awt.Color

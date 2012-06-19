@@ -52,7 +52,7 @@ end
 GlobalErrorHandler.on_error {|exception, thread| show_error_dialog_and_exit(exception, thread) }
 
 begin
-  QfaceController.instance.open
+  LqplController.instance.open
 rescue => e
   show_error_dialog_and_exit(e)
 end

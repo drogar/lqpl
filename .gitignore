@@ -6,3 +6,4 @@ tmp
 out
 testdata/**/*.qpo
 demo
+package

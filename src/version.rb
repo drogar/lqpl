@@ -1,0 +1,1 @@
+LQPL_GUI_VERSION="0.9.0"

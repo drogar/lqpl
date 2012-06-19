@@ -1,7 +1,7 @@
 require "utility/drawing"
 require "panels/quantum_stack/descriptor/descriptor_painter_factory"
 
-java_import com.drogar.qface.qstack.Painter
+java_import com.drogar.lqpl.qstack.Painter
 java_import java.awt.Dimension
 java_import java.awt.BasicStroke
 java_import java.awt.Color

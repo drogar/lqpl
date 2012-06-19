@@ -1,27 +1,25 @@
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/Qface"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/lqpl_gui"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../devlib/java"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/ruby"
 
 require 'java'
 
-$CLASSPATH << "./out/production/Qface"
-$CLASSPATH << "./qface/lib/java"
+$CLASSPATH << "./out/production/lqpl"
+$CLASSPATH << "./lqpl/lib/java"
 
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../src"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/jemmy-2.2.7.5.jar"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../devlib/java/jemmy-2.3.0.0.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/forms_rt.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/miglayout-3.7.3.1.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/monkeybars-1.1.1.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/Qface"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/lqpl_gui"
 
 
 require "jemmy-2.3.0.0.jar"
 
-#require "junit-4.10.jar"
-#require "uispec4j-2.4-jdk16.jar"
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
 
@@ -73,7 +71,7 @@ JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.la
 
 begin
   puts "Starting up!!!!"
-  com.drogar.qface.Main.main([])
+  com.drogar.lqpl.Main.main([])
 rescue Exception => e
   puts "Exception from main: #{e}"
 end
@@ -83,4 +81,4 @@ $qe_frame = JFrameOperator.new "Quantum Emulator"
 
 at_exit {
   $qe_frame.close
-  QfaceController.instance.close}
+  LqplController.instance.close}

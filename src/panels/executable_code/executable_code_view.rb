@@ -3,7 +3,7 @@ java_import javax.swing.JScrollPane
 
 WIDTH_OF_TEXT_PANE = 60
 class ExecutableCodeView < ApplicationView
-  set_java_class com.drogar.qface.screens.ExecutingCode
+  set_java_class com.drogar.lqpl.screens.ExecutingCode
 
   raw_mapping :set_up_tabbed_views, nil
 
