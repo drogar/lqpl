@@ -1,10 +1,11 @@
+java_import javax.swing.JFileChooser
+java_import javax.swing.filechooser.FileNameExtensionFilter
+
 class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
   set_close_action :exit
 
-  java_import javax.swing.JFileChooser
-  java_import javax.swing.filechooser.FileNameExtensionFilter
 
   def file_compile_action_performed
     chooser = JFileChooser.new()

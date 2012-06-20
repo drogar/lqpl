@@ -7,9 +7,11 @@ class SimulateResultsModel
   attr_accessor :random_value_text
   attr_accessor :stack_translation
 
+  java_signature "void random_value_text(Object)"
   def random_value_text=(whatever)
   end
 
+  java_signature "void simulate_results_text(Object)"
   def simulate_results_text=(whatever)
   end
 
@@ -22,6 +24,7 @@ class SimulateResultsModel
     @random_value_text || ""
   end
 
+  java_signature "void simulate_results(Object)"
   def simulate_results=(xml_data)
     raise QuantumStackModelInvalidCreate, "Missing Stack Translation" if @stack_translation.nil?
     sr = SIMULATE_PATTERN.match xml_data

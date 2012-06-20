@@ -1,13 +1,7 @@
 require 'utility/drawing'
 
-java_import com.drogar.lqpl.qstack.Painter
-java_import java.awt.geom.Dimension2D
-java_import java.awt.BasicStroke
-java_import java.awt.Color
-java_import java.awt.Rectangle
-java_import java.awt.geom.Ellipse2D  #.Double {"Ellipse2Dd"}
-java_import java.awt.geom.Rectangle2D  #.Double {"Ellipse2Dd"}
-java_import java.awt.RenderingHints
+java_import "com.drogar.lqpl.qstack.Painter"
+
 
 class AbstractDescriptorPainter
   include Painter

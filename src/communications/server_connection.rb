@@ -24,6 +24,7 @@ class ServerConnection
     end
   end
 
+  java_signature "boolean is_connected()"
   def connected?
     @connection != nil
   end

@@ -1,6 +1,21 @@
-java_import java.text.AttributedString
-java_import java.text.AttributedCharacterIterator
+["AlphaComposite","BasicStroke","Color","Dimension","Point","Rectangle","RenderingHints"].each do |name|
+  java_import "java.awt.#{name}"
+end
+
 java_import java.awt.font.TextAttribute
+
+["Dimension2D","Line2D","Ellipse2D","Rectangle2D"].each do |name|
+  java_import "java.awt.geom.#{name}"
+end
+
+java_import java.awt.image.BufferedImage
+
+["AttributedString","AttributedCharacterIterator"].each do |name|
+  java_import "java.text.#{name}"
+end
+
+java_import javax.swing.ImageIcon
+
 
 module Drawing
   def draw_text_centered_at_point(g,text, point)

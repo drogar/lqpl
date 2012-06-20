@@ -1,16 +1,8 @@
 require "utility/drawing"
 require "panels/quantum_stack/descriptor/descriptor_painter_factory"
 
-java_import com.drogar.lqpl.qstack.Painter
-java_import java.awt.Dimension
-java_import java.awt.BasicStroke
-java_import java.awt.Color
-java_import java.awt.Rectangle
-java_import java.awt.Point
-java_import java.awt.image.BufferedImage
-java_import java.awt.geom.Line2D
-java_import java.awt.AlphaComposite
-java_import javax.swing.ImageIcon
+java_import "com.drogar.lqpl.qstack.Painter"
+
 
 LINE_LABEL_FONT_SIZE = 8.0
 PLACEMENTS={-1 => :left, 0 => :right, 1 => :right}
