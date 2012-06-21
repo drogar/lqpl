@@ -1,5 +1,5 @@
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/lib/java"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/lib/ruby"
 #$LOAD_PATH << "./lqpl/lib/java"
@@ -17,7 +17,7 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/src"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/jruby-complete.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/forms_rt.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/monkeybars-1.1.1.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 
 
 require "monkeybars-1.1.1.jar"

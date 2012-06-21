@@ -49,14 +49,14 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="d1f48" class="javax.swing.JLabel">
+          <component id="d1f48" class="javax.swing.JLabel" binding="aboutDataLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <background color="-1"/>
               <enabled value="true"/>
-              <text value="&lt;html&gt;&#10;&lt;center&gt;&lt;strong&gt;LQPL Emulator&lt;/strong&gt; - Version 0.9.0 (Experimental)&lt;/center&gt;&#10;&lt;br /&gt;&#10;Contributers: Robin Cockett (robin@ucalgary.ca)&lt;br /&gt;&#10;                      Brett Giles (brett.giles@ucalgary.ca)&lt;br /&gt;&#10;&#10;Website:  http://pll.cpsc.ucalgary.ca/lqpl&#10;&lt;/html&gt;&#10;"/>
+              <text value=""/>
             </properties>
           </component>
         </children>

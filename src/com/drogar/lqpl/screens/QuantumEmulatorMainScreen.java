@@ -1,7 +1,6 @@
 package com.drogar.lqpl.screens;
 
-import com.apple.eawt.Application;
-import com.drogar.lqpl.macosx.MacOSAboutHandler;
+
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
@@ -29,11 +28,9 @@ public class QuantumEmulatorMainScreen extends JFrame {
         setUpSpinner(recursionSpinner, 1, 1, 100000, 1);
         setUpSpinner(recursionMultiplierSpinner, 10, 1, 100000, 1);
         setUpSpinner(treeDepthSpinner, 4, 1, 100, 1);
-        setUpMenus();
+
         spinnerPanel.setVisible(false);
         buttonPanel.setVisible(false);
-        Application.getApplication().setAboutHandler(new MacOSAboutHandler());
-        Application.getApplication().setQuitHandler(null);
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -41,42 +38,6 @@ public class QuantumEmulatorMainScreen extends JFrame {
                 System.exit(0);
             }
         });
-
-    }
-
-    private void setUpMenus() {
-        JMenuBar mbar = new JMenuBar();
-        JMenu fmenu = new JMenu("File");
-
-        file_load = new JMenuItem("Load");
-
-        file_compile = new JMenuItem("Compile");
-
-        file_simulate = new JMenuItem("Simulate");
-        fmenu.add(file_load);
-        fmenu.add(file_compile);
-        fmenu.add(file_simulate);
-
-        JMenu viewMenu = new JMenu("View");
-        viewClassicalStackMI = new JMenuItem("Hide Classical Stack");
-        viewDumpMI = new JMenuItem("Hide Dump");
-        viewExecutingCodeMI = new JMenuItem("Hide Executing Code");
-        viewStackTranslationMI = new JMenuItem("Hide Stack Translation");
-
-        viewClassicalStackMI.setEnabled(false);
-        viewDumpMI.setEnabled(false);
-        viewExecutingCodeMI.setEnabled(false);
-        viewStackTranslationMI.setEnabled(false);
-
-        viewMenu.add(viewClassicalStackMI);
-        viewMenu.add(viewDumpMI);
-        viewMenu.add(viewExecutingCodeMI);
-        viewMenu.add(viewStackTranslationMI);
-
-        mbar.add(fmenu);
-        mbar.add(viewMenu);
-        setJMenuBar(mbar);
-        mbar.setVisible(true);
 
     }
 
@@ -97,11 +58,6 @@ public class QuantumEmulatorMainScreen extends JFrame {
         return frameTitle;
     }
 
-    private JMenuItem viewClassicalStackMI;
-    private JMenuItem viewDumpMI;
-    private JMenuItem viewExecutingCodeMI;
-    private JMenuItem viewStackTranslationMI;
-
     private JButton trimButton;
     private JButton stepButton;
     private JButton goButton;
@@ -121,10 +77,6 @@ public class QuantumEmulatorMainScreen extends JFrame {
     private JLabel multiplierLabelForSpinner;
     public JLabel message;
 
-    private JMenuItem file_load;
-
-    private JMenuItem file_compile;
-    private JMenuItem file_simulate;
 
 
     {

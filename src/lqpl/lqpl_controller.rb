@@ -1,11 +1,22 @@
 java_import javax.swing.JFileChooser
 java_import javax.swing.filechooser.FileNameExtensionFilter
+java_import com.apple.eawt.Application
 
 class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
   set_close_action :exit
 
+  {"the_menu.file_compile" => "file_compile", "the_menu.file_load" => "file_load",
+    "the_menu.file_simulate" => "file_simulate","the_menu.view_classical_stack" => "view_classical_stack",
+    "the_menu.view_dump" => "view_dump","the_menu.view_executing_code" => "view_executing_code",
+    "the_menu.view_stack_translation" => "view_stack_translation"}.each do |k,v|
+      add_listener :type => :action, :components => {k => v}
+    end
+  def load(*args)
+    Application.application.about_handler = AboutController.instance
+    Application.application.quit_handler = nil
+  end
 
   def file_compile_action_performed
     chooser = JFileChooser.new()
@@ -60,25 +71,25 @@ class LqplController < ApplicationController
     SimulateResultsController.instance.open
   end
 
-  def viewClassicalStackMI_action_performed
+  def view_classical_stack_action_performed
     ClassicalStackController.instance.toggle_visibility
     model.view_menu_classical_stack_text = ClassicalStackController.instance.visible? ? "Hide Classical Stack" : "Show Classical Stack"
     update_view
   end
 
-  def viewDumpMI_action_performed
+  def view_dump_action_performed
     DumpController.instance.toggle_visibility
     model.view_menu_dump_text = DumpController.instance.visible? ? "Hide Dump" : "Show Dump"
     update_view
   end
 
-  def viewExecutingCodeMI_action_performed
+  def view_executing_code_action_performed
     ExecutableCodeController.instance.toggle_visibility
     model.view_menu_executing_code_text = ExecutableCodeController.instance.visible? ? "Hide Executing Code" : "Show Executing Code"
     update_view
   end
 
-  def viewStackTranslationMI_action_performed
+  def view_stack_translation_action_performed
     StackTranslationController.instance.toggle_visibility
     model.view_menu_stack_translation_text = StackTranslationController.instance.visible? ? "Hide Stack Translation" : "Show Stack Translation"
     update_view

@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 public class AboutDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
+    private JLabel aboutDataLabel;
 
     public AboutDialog() {
         setContentPane(contentPane);
@@ -22,9 +23,9 @@ public class AboutDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 onOK();
             }
-        });
-        pack();
-        setVisible(true);
+        });        //
+                // pack();
+                // setVisible(true);
     }
 
     private void onOK() {
@@ -70,11 +71,11 @@ public class AboutDialog extends JDialog {
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPane.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setBackground(new Color(-1));
-        label1.setEnabled(true);
-        label1.setText("<html>\n<center><strong>LQPL Emulator</strong> - Version 0.9.0 (Experimental)</center>\n<br />\nContributers: Robin Cockett (robin@ucalgary.ca)<br />\n                      Brett Giles (brett.giles@ucalgary.ca)<br />\n\nWebsite:  http://pll.cpsc.ucalgary.ca/lqpl\n</html>\n");
-        panel3.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        aboutDataLabel = new JLabel();
+        aboutDataLabel.setBackground(new Color(-1));
+        aboutDataLabel.setEnabled(true);
+        aboutDataLabel.setText("");
+        panel3.add(aboutDataLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }
 
     /**
