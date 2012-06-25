@@ -1,10 +1,11 @@
 Name:                lqpl
-Version:             0.8.4
+Version:             0.9.0
 Stability:           Experimental
 Synopsis:            Compiler and Emulator for Linear-QPL
-Description:         A command-line compiler and Gtk2Hs based emulator for Linear-QPL. LQPL is a
+Description:         A command-line compiler and server based emulator for Linear-QPL. LQPL is a
                      quantum programming language that allows people to experiment with and
-                     visualize the effects of quantum algorithms.
+                     visualize the effects of quantum algorithms. A separate GUI front end to the
+                     compiler and emulator is available as lqplfe.
 tested-with:         GHC
 License:             BSD3
 License-file:        LICENSE

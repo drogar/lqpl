@@ -52,7 +52,7 @@ main:: IO()
 
 main = do serveLog defaultPort commandHandler defaultLogger
 
-serveLog :: String              -- ^ Port number or name; 9500 is default
+serveLog :: String              -- ^ Port number or name; 9502 is default
          -> HandlerFunc  (MachineState BaseType)       -- ^ Function to handle incoming messages
          -> Logger               -- ^ Function handle logging
          -> IO ()

@@ -44,8 +44,8 @@
       do -- Look up the port.  Either raises an exception or returns
          -- a nonempty list.
          addrinfos <- getAddrInfo
-                      (Just (defaultHints {addrFlags = []}))
-                      (Just "localhost") (Just port)
+                      (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
+                      Nothing (Just port)
          let serveraddr = head addrinfos
          putStrLn $ show serveraddr
 
