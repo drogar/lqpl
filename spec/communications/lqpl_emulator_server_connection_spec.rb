@@ -1,6 +1,6 @@
 require 'spec/spec_helper'
 
-describe ServerConnection do
+describe LqplEmulatorServerConnection do
   context "creation" do
     context "enforce singleton" do
       before(:each) do
@@ -10,16 +10,16 @@ describe ServerConnection do
         @sc.close_down if @sc
       end
       it "gives an error when trying to create with 'new'" do
-        expect {@sc=ServerConnection.new}.to raise_error NoMethodError
+        expect {@sc=LqplEmulatorServerConnection.new}.to raise_error NoMethodError
       end
       it "allows default creation with a port of 9502" do
-        @sc = ServerConnection.instance
+        @sc = LqplEmulatorServerConnection.instance
         @sc.port.should == 9502
       end
     end
     context "connection" do
       before :each do
-        @sc = ServerConnection.instance
+        @sc = LqplEmulatorServerConnection.get_instance
       end
       after(:each) do
         @sc.close_down if @sc
@@ -32,7 +32,7 @@ describe ServerConnection do
   end
   context "interfaces with the lqpl-serv" do
     before :each do
-        @sc = ServerConnection.instance
+        @sc = LqplEmulatorServerConnection.get_instance
         @sc.connect
       end
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
@@ -43,7 +43,7 @@ describe ServerConnection do
   end
   context "execution control" do
     before(:each) do
-      @sc = ServerConnection.instance
+      @sc = LqplEmulatorServerConnection.get_instance
       @sc.connect
       fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
@@ -69,7 +69,7 @@ describe ServerConnection do
   end
   context "gets the data" do
     before(:each) do
-      @sc = ServerConnection.instance
+      @sc = LqplEmulatorServerConnection.instance
       @sc.connect
       fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)

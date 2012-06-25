@@ -29,14 +29,14 @@ describe SimulateResultsController do
   it "should set the server_connection when given an sc" do
     sc = double('server_connection')
     sc.should_receive(:connected?).and_return(true)
-    @c.server_connection=sc
+    @c.lqpl_emulator_server_connection=sc
   end
   it "should ask the sc for the classical stack when given a depth and recursion" do
     sc = double('server_connection')
     sc.should_receive(:connected?).and_return(true)
     sc.should_receive(:get_simulate_results).and_return(TWOELTS)
 
-    @c.server_connection=sc
+    @c.lqpl_emulator_server_connection=sc
     @c.set_simulate_results("5",@st)
     @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
   end

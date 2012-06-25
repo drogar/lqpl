@@ -1,6 +1,8 @@
 java_import javax.swing.JFileChooser
 java_import javax.swing.filechooser.FileNameExtensionFilter
 java_import com.apple.eawt.Application
+java_import java.awt.event.WindowEvent
+
 
 class LqplController < ApplicationController
   set_model 'LqplModel'
@@ -13,9 +15,19 @@ class LqplController < ApplicationController
     "the_menu.view_stack_translation" => "view_stack_translation"}.each do |k,v|
       add_listener :type => :action, :components => {k => v}
     end
+
+  def java_window_window(e)
+    puts "java_window_Window  called #{e.id}"
+    if e.id == WindowEvent::WINDOW_CLOSING
+      CompilerServerConnection.instance.close_down
+      LqplEmulatorServerConnection.instance.close_down
+    end
+  end
+
+
   def load(*args)
     Application.application.about_handler = AboutController.instance
-    Application.application.quit_handler = nil
+    Application.application.quit_handler = ExitHandler.instance
   end
 
   def file_compile_action_performed
@@ -27,7 +39,7 @@ class LqplController < ApplicationController
     rval = chooser.show_open_dialog(nil)
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.get_selected_file.get_absolute_path
-      cmp = Compiler.get_instance
+      cmp = CompilerServerConnection.get_instance
       cmp.compile fname
       model.messages_text = "Compile of #{chooser.get_selected_file.name} was #{cmp.failed ? 'un' : ''}successful\n"
       model.messages_text << cmp.failure_message
@@ -48,14 +60,14 @@ class LqplController < ApplicationController
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.selected_file.absolute_path
       base_file_name = chooser.selected_file.name
-      @server_connection = ServerConnection.instance
-      server_connection.send_load_from_file(model.recursion_multiplier_spinner, fname)
+      @lqpl_emulator_server_connection = LqplEmulatorServerConnection.get_instance
+      @lqpl_emulator_server_connection.send_load_from_file(model.recursion_multiplier_spinner, fname)
       model.frame_title = "Quantum Emulator - #{base_file_name}"
       model.go_enabled = true
       model.step_enabled = true
       model.spinner_panel_visible = true
       model.button_panel_visible = true
-      server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+      @lqpl_emulator_server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
       initialize_sub_controllers
 
     else
@@ -66,7 +78,7 @@ class LqplController < ApplicationController
 
   def file_simulate_action_performed
 
-    SimulateResultsController.instance.server_connection = ServerConnection.instance
+    SimulateResultsController.instance.lqpl_emulator_server_connection = LqplEmulatorServerConnection.get_instance
     SimulateResultsController.instance().set_simulate_results(model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
     SimulateResultsController.instance.open
   end
@@ -112,11 +124,11 @@ class LqplController < ApplicationController
   end
 
   def update_sub_controller_scs
-    QuantumStackController.instance.server_connection = server_connection
-    ExecutableCodeController.instance.server_connection = server_connection
-    ClassicalStackController.instance.server_connection = server_connection
-    DumpController.instance.server_connection = server_connection
-    StackTranslationController.instance.server_connection = server_connection
+    QuantumStackController.instance.lqpl_emulator_server_connection = @lqpl_emulator_server_connection
+    ExecutableCodeController.instance.lqpl_emulator_server_connection = @lqpl_emulator_server_connection
+    ClassicalStackController.instance.lqpl_emulator_server_connection = @lqpl_emulator_server_connection
+    DumpController.instance.lqpl_emulator_server_connection = @lqpl_emulator_server_connection
+    StackTranslationController.instance.lqpl_emulator_server_connection = @lqpl_emulator_server_connection
   end
 
   def open_sub_panels
@@ -149,7 +161,7 @@ class LqplController < ApplicationController
 
   def recursion_multiplier_spinner_state_changed
     model.recursion_multiplier_spinner = java.lang.Integer.new("#{view_model.recursion_multiplier_spinner}")
-    server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+    lqpl_emulator_server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
     model.go_enabled = true
     model.step_enabled = true
     update_view
@@ -162,7 +174,7 @@ class LqplController < ApplicationController
   end
 
   def step_button_action_performed
-    sc = ServerConnection.instance
+    sc = LqplEmulatorServerConnection.instance
     res = sc.do_step(model.step_spinner,model.recursion_spinner)
     update_sub_model_data
     if res =~ /executed/
@@ -173,7 +185,7 @@ class LqplController < ApplicationController
   end
 
   def go_button_action_performed
-    sc = ServerConnection.instance
+    sc = LqplEmulatorServerConnection.instance
     sc.do_run model.recursion_spinner
     update_sub_model_data
     model.go_enabled = false

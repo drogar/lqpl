@@ -13,7 +13,7 @@ describe QuantumStackController do
 
     sc = double('server_connection')
     sc.should_receive(:connected?).and_return(true)
-    @d.server_connection=sc
+    @d.lqpl_emulator_server_connection=sc
   end
   it "should ask the sc for the quantum stack and the st model for a num when given a depth and recursion and st" do
     sc = double('server_connection')
@@ -23,7 +23,7 @@ describe QuantumStackController do
     st = double("StackTranslation", :nil? => false)
     st.should_receive(:reverse_lookup).and_return("p")
 
-    @d.server_connection=sc
+    @d.lqpl_emulator_server_connection=sc
     @d.set_quantum_stack("5","4",st)
 
   end

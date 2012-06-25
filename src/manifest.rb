@@ -72,12 +72,11 @@ when Monkeybars::Resolver::IN_FILE_SYSTEM
 when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
-require "exceptions/compiler_process_not_found"
+require "exceptions/server_process_not_found"
 require "exceptions/invalid_input"
-require "communications/server_connection"
+require "communications/lqpl_emulator_server_connection"
 require "utility/translate_line_ends"
-require "communications/compiler"
-require "communications/server_connection"
+require "communications/compiler_server_connection"
 
 require "lqpl/lqpl_controller"
 require "panels/quantum_stack/quantum_stack_controller"
@@ -87,5 +86,6 @@ require "panels/executable_code/executable_code_controller"
 require "panels/stack_translation/stack_translation_controller"
 require "dialogs/simulate_results/simulate_results_controller"
 require "dialogs/about/about_controller"
+require "exit_handler"
 
 

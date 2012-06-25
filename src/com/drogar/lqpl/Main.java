@@ -14,12 +14,20 @@ import org.jruby.javasupport.JavaEmbedUtils;
 
 public class Main
 {
+  private static Ruby runtime;
+
+  public static Ruby getRuntime(){
+    return runtime;
+  }
+  public static void setRuntime(Ruby runtim){
+    runtime = runtim;
+  }
   public static void main(String[] args) throws Exception
   {
     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "LQPL Emulator");
     RubyInstanceConfig config = new RubyInstanceConfig();
     config.setArgv(args);
-    Ruby runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);
+    setRuntime(JavaEmbedUtils.initialize(new ArrayList(0), config));
     String mainRubyFile = "main";
     ArrayList<String> config_data = new ArrayList<String>();
     try{

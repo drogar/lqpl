@@ -1,44 +1,19 @@
-require 'socket'
-require 'singleton'
+require 'communications/connection'
 
-class Compiler
-  include Singleton
-  attr_accessor :port
+class CompilerServerConnection < Connection
+ # include Singleton
+
   attr_accessor :failed
   attr_accessor :failure_message
 
   def initialize(port=7683)
-    @port = port
-    @connection = nil
-
+    super(port)
+    @connect_to = "lqpl-compiler-server"
+    connect
   end
 
   def self.get_instance(port=7683)
-    c = self.instance
-    c.port = port
-    c
-  end
-
-  def close_down
-    @connection.close if connected?
-  end
-
-  def connect
-    begin
-      @connection = TCPSocket.new "::1", @port
-    rescue Errno::ECONNREFUSED => e1
-      begin
-        @connection = TCPSocket.new "localhost", @port
-      rescue Errno::ECONNREFUSED => e
-
-        raise CompilerProcessNotFound, "There was no process found on port #{@port}. Please start 'lpql-compiler-server'."
-      end
-    end
-  end
-
-  java_signature "boolean is_connected()"
-  def connected?
-    @connection != nil
+    super(port)
   end
 
   def compile(fname)
@@ -46,12 +21,9 @@ class Compiler
     @dir = File.dirname(@fname)
     File.open(fname, "r") do |f|
       qpl_file_data = f.read()
-      connect if !connected?
-      @connection.puts "<qplprogram>"
-      @connection.readline
+      send_and_receive_command "<qplprogram>"
       qpl_file_data.each_line(separator='\n') do |line|
-        @connection.puts line
-        @connection.readline
+        send_and_receive_command line
       end
       @connection.puts "</qplprogram>"
       @qpo_code = get_qpo_program
@@ -116,7 +88,7 @@ class Compiler
     connect if !connected?
     @connection.puts "<sendversion />"
     version = @connection.readline
-    version_line = "Compiler: Version="+Compiler::makeVersionNumber(version)
+    version_line = "Compiler: Version="+CompilerServerConnection::makeVersionNumber(version)
     File.open(File.dirname(@fname)+File::SEPARATOR+File.basename(@fname,".qpl")+".qpo","w+") do |f|
       f.puts version_line
       f.puts @qpo_code

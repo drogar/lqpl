@@ -1,11 +1,11 @@
 require 'spec/spec_helper'
 
-describe Compiler do
+describe CompilerServerConnection do
 
   context "helper functions" do
     context "makeVersionNumber" do
       it "takes the input CS_VERSION [0,8,4] [] and returns 0.8.4" do
-        res = Compiler::makeVersionNumber("CS_VERSION [0,8,4] []")
+        res = CompilerServerConnection::makeVersionNumber("CS_VERSION [0,8,4] []")
         res.should == "0.8.4"
       end
     end
@@ -20,20 +20,20 @@ describe Compiler do
         @cmp.close_down if @cmp
       end
       it "gives an error when trying to create with 'new'" do
-        expect {@cmp=Compiler.new}.to raise_error NoMethodError
+        expect {@cmp=CompilerServerConnection.new}.to raise_error NoMethodError
       end
       it "allows passing a port number > 1000 on creation" do
-        @cmp = Compiler.get_instance 3456
+        @cmp = CompilerServerConnection.get_instance 3456
         @cmp.port.should == 3456
       end
       it "allows default creation with a port of 7683" do
-        @cmp = Compiler.get_instance
+        @cmp = CompilerServerConnection.get_instance
         @cmp.port.should == 7683
       end
     end
     context "connection" do
       before :each do
-        @cmp = Compiler.get_instance
+        @cmp = CompilerServerConnection.get_instance
       end
       after(:each) do
         @cmp.close_down if @cmp
@@ -46,7 +46,7 @@ describe Compiler do
   end
   context "interfaces with the lqpl-compiler-server" do
     before :each do
-        @cmp = Compiler.get_instance
+        @cmp = CompilerServerConnection.get_instance
         @cmp.connect
       end
     it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do

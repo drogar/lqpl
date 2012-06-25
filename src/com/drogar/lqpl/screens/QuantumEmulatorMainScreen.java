@@ -1,5 +1,6 @@
 package com.drogar.lqpl.screens;
 
+import com.drogar.lqpl.Main;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -7,6 +8,12 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+
+import java.util.ArrayList;
+import org.jruby.Ruby;
+import org.jruby.RubyInstanceConfig;
+import org.jruby.javasupport.JavaEmbedUtils;
 
 /**
  * Author: Brett Giles
@@ -35,6 +42,15 @@ public class QuantumEmulatorMainScreen extends JFrame {
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
+                Ruby runtime = null;
+                try {
+                    runtime = Main.getRuntime();
+                } catch (Exception e) {
+                    RubyInstanceConfig config = new RubyInstanceConfig();
+                    runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);
+                }
+
+                runtime.evalScriptlet("require 'exit_handler';ExitHandler.instance.close_servers");
                 System.exit(0);
             }
         });
