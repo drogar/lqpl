@@ -12,6 +12,10 @@ class LqplMenu
   attr_accessor :file_load
   attr_accessor :file_simulate
 
+  #next are for win/linux only. Mac is handled in lqpl_controller
+  attr_accessor :file_exit
+  attr_accessor :help_about
+
   def initialize(parent)
     mbar = JMenuBar.new
 
@@ -23,6 +27,15 @@ class LqplMenu
     menu_file.add(@file_load);
     menu_file.add(@file_compile);
     menu_file.add(@file_simulate);
+
+    case Config::CONFIG["host_os"]
+    when /darwin/i # OSX specific code
+    #when /^win|mswin/i # Windows specific code
+    #when /linux/i # Linux specific code
+    else # Windows and Linux
+      @file_exit = JMenuItem.new("Exit")
+      menu_file.add(@file_exit)
+    end
 
     menu_view =  JMenu.new("View");
     @view_classical_stack =  JMenuItem.new("Hide Classical Stack");
@@ -42,6 +55,19 @@ class LqplMenu
 
     mbar.add(menu_file);
     mbar.add(menu_view);
+
+
+    case Config::CONFIG["host_os"]
+    when /darwin/i # OSX specific code
+    #when /^win|mswin/i # Windows specific code
+    #when /linux/i # Linux specific code
+    else # Windows and Linux
+      menu_help = JMenu.new("Help")
+      @help_about = JMenuItem.new("About")
+      menu_help.add(@help_about)
+      mbar.add(menu_help)
+    end
+
     parent.set_menu_bar(mbar);
     mbar.visible = true;
   end

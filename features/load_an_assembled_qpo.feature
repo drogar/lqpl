@@ -20,6 +20,16 @@ Feature: We can load and run an assembled file at the server
     Then the frame "Quantum Stack" should be visible
 
   Scenario:
+    Then the messages field should contain:
+      |partial|
+      |loaded|
+    When I click the button "Step" 4 times on the frame "Quantum Emulator"
+    When I click the button "Trim" 1 time on the frame "Quantum Emulator"
+    Then the messages field should contain:
+      |partial|
+      |trimmed|
+
+  Scenario:
     Then the frame "Executing Code" should be visible
     When I click the button "Step" 1 time on the frame "Quantum Emulator"
     Then the selection on the frame "Executing Code" should show ---  1  Call 0 "cflip_fcdlbl0"

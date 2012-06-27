@@ -24,7 +24,9 @@ public class AboutDialog extends JDialog {
                 onOK();
             }
         });        //
-                // pack();
+        pack();
+
+        //setBounds(new Rectangle(50, 110, 360, 230));
                 // setVisible(true);
     }
 

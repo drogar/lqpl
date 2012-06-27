@@ -31,6 +31,15 @@ require 'manifest'
 def show_error_dialog_and_exit(exception, thread=nil)
   puts "Error in application"
   puts "#{exception.class} - #{exception}"
+  rexcep = exception.exception
+  if rexcep.class == ServerProcessNotFound
+    t = "Server(s) not found"
+    m = "LQPL requires the compiler server and emulator server to be installed on your path.
+         Please download or compile these and add them to your path, e.g., in /usr/local/bin.
+         See further details at http://pll.cpsc.ucalgary.ca/lqpl"
+    javax.swing.JOptionPane.show_message_dialog(nil, m, t, javax.swing.JOptionPane::DEFAULT_OPTION)
+    java.lang.System.exit(0)
+  end
   if exception.kind_of? Exception
     puts exception.backtrace.join("\n")
   else

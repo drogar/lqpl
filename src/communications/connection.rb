@@ -2,6 +2,8 @@ require 'singleton'
 require 'socket'
 
 java_import java.lang.ProcessBuilder
+java_import com.drogar.lqpl.Main
+java_import java.net.URLDecoder
 
 class Connection
   include Singleton
@@ -35,15 +37,25 @@ class Connection
 
   def connect
     res = _make_connection
+
+    jar_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
+    jar_path=jar_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
+    puts jar_path
     if !res
       begin
         @process=ProcessBuilder.new(@connect_to, "").start
-        puts "Started a process #{@connect_to}, #{@process}"
         sleep 0.25
         res2 = _make_connection
         raise ServerProcessNotFound if !res2
-      rescue
-        raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+      rescue => e
+        begin
+          @process=ProcessBuilder.new("#{jar_path}bin/#{@connect_to}", "").start
+          sleep 0.25
+          res2 = _make_connection
+          raise ServerProcessNotFound if !res2
+        rescue => e1
+          raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+        end
       end
     end
   end

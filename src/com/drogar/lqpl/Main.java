@@ -33,7 +33,7 @@ public class Main
     try{
       java.io.InputStream ins = Main.class.getClassLoader().getResourceAsStream("run_configuration");
       if (ins == null ) {
-        System.err.println("Did not find configuration file 'run_configuration', using defaults.");
+        //System.err.println("Did not find configuration file 'run_configuration', using defaults.");
       } else {
         config_data = getConfigFileContents(ins);
       }

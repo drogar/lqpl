@@ -61,6 +61,10 @@ describe LqplEmulatorServerConnection do
     it "runs a program and gets the status 'executed'" do
       @sc.do_run.should =~ /executed/
     end
+
+    it "trims a stack and gets the status 'trimmed'" do
+      @sc.do_trim.should =~ /trimmed/
+    end
     it "should allow a step or another run after a run and stil return executed" do
       @sc.do_run
       @sc.do_step.should =~ /executed/

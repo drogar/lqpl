@@ -49,6 +49,9 @@ class LqplEmulatorServerConnection < Connection
     send_and_receive_command "run #{recursion_depth}\n"
   end
 
+  def do_trim
+    send_and_receive_command "trim\n"
+  end
 
   def code_pointer(recursion_depth=1)
     send_and_receive_command "get codepointer #{recursion_depth}"

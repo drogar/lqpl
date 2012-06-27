@@ -1,8 +1,8 @@
 java_import javax.swing.JFileChooser
 java_import javax.swing.filechooser.FileNameExtensionFilter
-java_import com.apple.eawt.Application
 java_import java.awt.event.WindowEvent
-
+require 'dialogs/about/about_controller'
+require 'exit_handler'
 
 class LqplController < ApplicationController
   set_model 'LqplModel'
@@ -16,18 +16,31 @@ class LqplController < ApplicationController
       add_listener :type => :action, :components => {k => v}
     end
 
-  def java_window_window(e)
-    puts "java_window_Window  called #{e.id}"
-    if e.id == WindowEvent::WINDOW_CLOSING
-      CompilerServerConnection.instance.close_down
-      LqplEmulatorServerConnection.instance.close_down
-    end
-  end
-
-
-  def load(*args)
+  case Config::CONFIG["host_os"]
+  when /darwin/i # OSX specific code
+    java_import com.apple.eawt.Application
     Application.application.about_handler = AboutController.instance
     Application.application.quit_handler = ExitHandler.instance
+   #when /^win|mswin/i # Windows specific code
+   #when /linux/i # Linux specific code
+  else # Windows and Linux
+    add_listener :type => :action, :components => {"the_menu.file_exit" => "file_exit"}
+    add_listener :type => :action, :components => {"the_menu.help_about" => "help_about"}
+  end
+
+  def load(*args)
+    cmp = CompilerServerConnection.get_instance
+    cmp.connect
+    @lqpl_emulator_server_connection = LqplEmulatorServerConnection.get_instance
+    @lqpl_emulator_server_connection.connect
+  end
+
+  def file_exit_action_performed
+    ExitHandler.instance.close_servers
+  end
+
+  def help_about_action_performed
+    AboutController.instance.open
   end
 
   def file_compile_action_performed
@@ -45,7 +58,7 @@ class LqplController < ApplicationController
       model.messages_text << cmp.failure_message
       cmp.write_qpo_file if !cmp.failed
     else
-      puts "Did not do approve."
+      model.messages_text  = "Compile action cancelled."
     end
     update_view
   end
@@ -67,11 +80,12 @@ class LqplController < ApplicationController
       model.step_enabled = true
       model.spinner_panel_visible = true
       model.button_panel_visible = true
+      model.messages_text = "#{base_file_name} was loaded."
       @lqpl_emulator_server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
       initialize_sub_controllers
 
     else
-      puts "Did not do approve."
+      model.messages_text =  "QPO file load cancelled."
     end
     update_view
   end
@@ -190,6 +204,14 @@ class LqplController < ApplicationController
     update_sub_model_data
     model.go_enabled = false
     model.step_enabled = false
+    update_view
+  end
+
+  def trim_button_action_performed
+    sc = LqplEmulatorServerConnection.instance
+    model.messages_text = sc.do_trim
+    QuantumStackController.instance.set_quantum_stack(model.tree_depth_spinner,model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
+    DumpController.instance.set_dump(model.tree_depth_spinner, model.recursion_spinner)
     update_view
   end
 end
