@@ -4,6 +4,7 @@ ABOUT_STRING="<html> <center><strong>LQPL Emulator</strong> - Version #{LQPL_GUI
 <table>
 <tr><td>Contributers:</td><td> Robin Cockett (robin@ucalgary.ca)</td></tr>
 <tr><td>&nbsp;</td><td> Brett Giles (brett.giles@ucalgary.ca)</td></tr>
+<tr><td>&nbsp;</td><td>Rajika Kumarasiri</td></tr>
 </table>
 <br />
 Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />

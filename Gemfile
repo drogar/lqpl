@@ -1,13 +1,11 @@
 source 'http://rubygems.org'
+source 'http://gems.neurogami.com'
 
 gem 'rake'
-gem 'rawr'
 gem 'monkeybars', '~>1.1'
-gem "spoon"
-gem "cucumber"
 
 group :test, :development do
-  #specs
   gem "rspec"
+  gem "cucumber"
 end
 

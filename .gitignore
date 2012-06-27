@@ -7,3 +7,4 @@ out
 testdata/**/*.qpo
 demo
 package
+Manifest

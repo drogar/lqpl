@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>src/lqpl/lqpl_controller.rb</string>
+	<string>src/version.rb</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -68,23 +68,39 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>43</integer>
+				<integer>42</integer>
 				<key>line</key>
-				<integer>11</integer>
+				<integer>12</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>4</integer>
+				<key>line</key>
+				<integer>10</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>42</integer>
+				<key>line</key>
+				<integer>12</integer>
+			</dict>
 		</dict>
 		<key>features/load_an_assembled_qpo.feature</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>69</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>17</integer>
+				<integer>20</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -223,14 +239,14 @@
 				<integer>34</integer>
 			</dict>
 		</dict>
-		<key>spec/communications/compiler_spec.rb</key>
+		<key>spec/communications/lqpl_emulator_server_connection_spec.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>9</integer>
+				<integer>36</integer>
 				<key>line</key>
-				<integer>30</integer>
+				<integer>65</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -270,14 +286,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>23</integer>
+				<integer>10</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>35</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>15</integer>
+			<integer>5</integer>
 		</dict>
 		<key>src/com/drogar/lqpl/about/AboutDialog.form</key>
 		<dict>
@@ -298,9 +314,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>26</integer>
+				<integer>10</integer>
 				<key>line</key>
-				<integer>26</integer>
+				<integer>28</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -312,14 +328,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>52</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>29</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>28</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>52</integer>
+				<key>line</key>
+				<integer>29</integer>
+			</dict>
 		</dict>
 		<key>src/com/drogar/lqpl/macosx/MacOSAboutHandler.java</key>
 		<dict>
@@ -361,37 +393,35 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>127</integer>
 		</dict>
-		<key>src/communications/compiler.rb</key>
+		<key>src/communications/connection.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>39</integer>
+				<integer>0</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>22</integer>
-			<key>selectFrom</key>
+			<integer>0</integer>
+		</dict>
+		<key>src/communications/lqpl_emulator_server_connection.rb</key>
+		<dict>
+			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>2</integer>
+				<integer>34</integer>
 				<key>line</key>
-				<integer>38</integer>
+				<integer>52</integer>
 			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>2</integer>
-				<key>line</key>
-				<integer>39</integer>
-			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>26</integer>
 		</dict>
 		<key>src/dialogs/about/about_controller.rb</key>
 		<dict>
@@ -426,9 +456,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>59</integer>
-				<key>line</key>
 				<integer>5</integer>
+				<key>line</key>
+				<integer>10</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -465,19 +495,33 @@
 				<integer>5</integer>
 			</dict>
 		</dict>
-		<key>src/lqpl/lqpl_controller.rb</key>
+		<key>src/exit_handler.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>7</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>14</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+		</dict>
+		<key>src/lqpl/lqpl_controller.rb</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>44</integer>
+				<key>line</key>
+				<integer>34</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>22</integer>
 		</dict>
 		<key>src/lqpl/lqpl_menu.rb</key>
 		<dict>
@@ -514,9 +558,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>14</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>33</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -528,28 +572,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>17</integer>
 				<key>line</key>
-				<integer>54</integer>
+				<integer>34</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>-1</integer>
+			<integer>13</integer>
 		</dict>
 		<key>src/manifest.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>28</integer>
+				<integer>22</integer>
 				<key>line</key>
 				<integer>88</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>6</integer>
+			<integer>47</integer>
 		</dict>
 		<key>src/panels/executable_code/executable_code_view.rb</key>
 		<dict>
@@ -626,14 +670,30 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>35</integer>
 				<key>line</key>
-				<integer>18</integer>
+				<integer>7</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>9</integer>
+				<key>line</key>
+				<integer>7</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>35</integer>
+				<key>line</key>
+				<integer>7</integer>
+			</dict>
 		</dict>
 		<key>src/utility/drawing.rb</key>
 		<dict>
@@ -654,30 +714,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>2</integer>
+				<integer>0</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>12</integer>
-				<key>line</key>
-				<integer>2</integer>
-			</dict>
 		</dict>
 		<key>tasks/ant_compile.rake</key>
 		<dict>
@@ -798,11 +842,11 @@
 	<array>
 		<string>src/application_controller.rb</string>
 		<string>src/application_view.rb</string>
-		<string>src/communications/compiler.rb</string>
 		<string>generated_build.xml</string>
 		<string>build_configuration.rb</string>
 		<string>tasks/ant_compile.rake</string>
 		<string>src/manifest.rb</string>
+		<string>src/resolver.rb</string>
 		<string>runQface.rb</string>
 		<string>src/com/drogar/lqpl/macosx/MacOSAboutHandler.java</string>
 		<string>src/dialogs/about/about_controller.rb</string>
@@ -810,18 +854,24 @@
 		<string>src/main.rb</string>
 		<string>src/lqpl/lqpl_menu.rb</string>
 		<string>src/com/drogar/lqpl/Main.java</string>
+		<string>src/communications/connection.rb</string>
 		<string>src/com/drogar/lqpl/screens/QuantumEmulatorMainScreen.java</string>
 		<string>src/com/drogar/lqpl/about/AboutDialog.java</string>
 		<string>src/com/drogar/lqpl/dialogs/SimulateResultsDialog.java</string>
 		<string>src/version.rb</string>
 		<string>src/com/drogar/lqpl/about/AboutDialog.form</string>
 		<string>src/dialogs/about/about_view.rb</string>
+		<string>spec/communications/lqpl_emulator_server_connection_spec.rb</string>
+		<string>src/communications/lqpl_emulator_server_connection.rb</string>
+		<string>features/load_an_assembled_qpo.feature</string>
+		<string>features/compile_an_lqpl_program.feature</string>
 		<string>src/dialogs/simulate_results/simulate_results_view.rb</string>
 		<string>src/dialogs/about/about_model.rb</string>
 		<string>tasks/manifest.rake</string>
 		<string>src/panels/quantum_stack/quantum_stack_painter.rb</string>
 		<string>src/utility/drawing.rb</string>
 		<string>src/lqpl/lqpl_controller.rb</string>
+		<string>src/exit_handler.rb</string>
 		<string>src/lqpl/lqpl_view.rb</string>
 		<string>tasks/monkeybars.rake</string>
 		<string>src/panels/executable_code/executable_code_view.rb</string>
@@ -832,6 +882,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{840, 209}, {1070, 969}}</string>
+	<string>{{1382, 427}, {1070, 969}}</string>
 </dict>
 </plist>

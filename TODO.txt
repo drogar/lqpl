@@ -5,18 +5,20 @@ UI
   ...DONE  Connect tree depth and recursion spinners to model and event handling
   ...DONE  Better positioning of all elements
   ...DONE  Better output of Stack Translation (vertical list of maps)
-  +  Better text output for Dump (then better altogether)
-  -  Add Recursion Multiplier spinner to main page
+  ...DONE  Better text output for Dump (then better altogether)
+  ...DONE  Add Recursion Multiplier spinner to main page
   -  Create preferences dialog and allow changing of some things that are constant
+  ...DONE  Add BUILDING file
 
 LQPL
-  +  Auto start compiler and lqpl-serv
+  ...DONE  Auto start compiler and lqpl-serv
   -  Allow specification of where to find these (url, ip, port)
   +  Upgrade to Haskell Platform 2012.02
 
 CROSS-PLATFORM
-  +  Get RAWR build working
-  +  Get non-MAC compatibility elements working - menus, About menu item, file/close mi
+  XXX  Get RAWR build working
+  + Get Rake build working
+  ...DONE  Get non-MAC compatibility elements working - menus, About menu item, file/close mi
   +  Get MacPList location done.
 
 WEBSITE
@@ -35,3 +37,4 @@ Legend
   +  Nice before demo, definitely before release
   -  When possible
   ...DONE - Well, done.
+  XXX Decided not to do.
