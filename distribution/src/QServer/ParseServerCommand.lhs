@@ -17,6 +17,7 @@
   parseCommands :: Parser QCommand
   parseCommands = (try parseLoad) <|> (try parseStep) <|> (try parseRun) <|>
     (try parseSetDepthMultiple) <|>
+    (try parseTrim) <|>
     (try parseGet) <|> parseSimulate
 
   parseLoad ::  Parser QCommand
@@ -55,6 +56,15 @@
       many space
       eof
       return $ QCRun (read depth)
+
+  parseTrim::  Parser QCommand
+  parseTrim =
+    do
+      string "trim"
+      many space
+      eof
+      return $ QCTrim
+
 
   parseSetDepthMultiple::  Parser QCommand
   parseSetDepthMultiple =

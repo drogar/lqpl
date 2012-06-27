@@ -79,6 +79,8 @@
 
       "parseSim " ~: "simulate returns QCSimulate" ~: Right (QCSimulate 5) @=? (getCommand "simulate 5"),
       "parseSim1 " ~: "'simulate   ' returns QCSimulate" ~: Right (QCSimulate 3) @=? (getCommand "simulate   3 "),
+      "parseTrim " ~: "trim returns QCTrim" ~: Right QCTrim @=? (getCommand "trim"),
+      "parseTrim1 " ~: "'trim   ' returns QCTrim" ~: Right QCTrim @=? (getCommand "trim    "),
       "parseSimm_e1 " ~: makeBoolParseError "simulate ",
       "parseSimm_e2 " ~: makeBoolParseError "simulate xyz"
      ]

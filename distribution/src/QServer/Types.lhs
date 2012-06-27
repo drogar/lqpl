@@ -23,7 +23,8 @@
     QCRun Int |
     QCGet QSData Int Int |
     QCSimulate Int |
-    QCDepthMultiple Int
+    QCDepthMultiple Int |
+    QCTrim
   deriving (Eq,Show,Read)
 
 \end{code}

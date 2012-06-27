@@ -148,6 +148,8 @@ commandHandler machineStateRef shandle addr msg =
         sendCodePointer depth machineStateRef shandle
       Right (QCSimulate depth) ->
         simulate depth machineStateRef shandle
+      Right (QCTrim) ->
+        trim machineStateRef shandle
       Left x -> putStrLn $ "From " ++ show addr ++ ": unrecognized: " ++ msg ++ " -- " ++ x
 
 
@@ -225,6 +227,14 @@ simulate depth machineStateRef shndle =
     let qstk = quantumStack $ pickIthMS depth mstate
     (rval,resultList) <- chooseIt (canonicalize qstk)
     hPutStrLn shndle $ surroundWith "Simulated" $ toXML rval ++ listToXML "results" resultList
+
+trim :: IORef (MachineState BaseType) ->
+        Handle ->
+        IO()
+trim machineStateRef shndle =
+  do
+    modifyIORef machineStateRef (trimMachine Nothing 0)
+    hPutStrLn shndle "trimmed"
 
 dumpMachine ::  Int -> IORef (MachineState BaseType) -> IO()
 dumpMachine depth machineStateRef =
