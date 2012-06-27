@@ -91,7 +91,7 @@ Executable lqpl-compiler-server
 
 Executable lqpl-serv
   Main-is:           QServer/QServer.lhs
-  Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random
+  Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring
   hs-source-dirs:    src
   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl

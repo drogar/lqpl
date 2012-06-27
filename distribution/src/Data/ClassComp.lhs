@@ -1,6 +1,6 @@
 %include polycode.fmt
 \subsection{Class for complex numbers}\label{subsection:classcomp}
-A simple class that extends |Data.Complex| with a predefined 
+A simple class that extends |Data.Complex| with a predefined
 value for $i$ and a conjugation operation.
 %if false
 \begin{code}
@@ -20,7 +20,7 @@ value for $i$ and a conjugation operation.
      approximate :: a -> Complex Double
      mag :: a -> Double
      pow :: Int -> a
-     
+
 -- instance (RealFloat a) => Comp (Complex a) where
 --     conjgt = conjugate
 --     sqrtMinusOne = 0 :+ 1
@@ -29,7 +29,7 @@ value for $i$ and a conjugation operation.
 --     pow i = (10.0 ^^ i) :+ 0
 
 
-     
+
 \end{code}
 \end{singlespace}
 }

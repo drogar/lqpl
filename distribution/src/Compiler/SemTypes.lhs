@@ -152,7 +152,7 @@ subInArgsList (q:qs) ss
 
 argsmatch :: SymEntryGlobal->[SymEntryLinear]->Bool
 argsmatch se  =
-     foldl (&&) True . zipWith (==) (argtypes se) . List.map qtype
+     Prelude.foldl (&&) True . zipWith (==) (argtypes se) . List.map qtype
 
 
 

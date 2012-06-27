@@ -15,15 +15,15 @@ import Compiler.Qtypes
 import Data.Stack
 import Data.Tuples
 
-type CodeMonad =  StateT CodeState IO 
+type CodeMonad =  StateT CodeState IO
 type Instruction = String
 type Instructions = [String]
 type ProgramCode =  Map String [String]
 type Label = String
 
 type NameSupply = [Int]
-data CodeState 
-   = CodeState { stackNameGen :: NameSupply, 
+data CodeState
+   = CodeState { stackNameGen :: NameSupply,
                  labelGen :: Int,
                  pendingDiscards :: [NodeName],
                  currentProcName :: String,
@@ -63,10 +63,10 @@ progFolder s  = (++)
 
 
 combineProgs :: ProgramCode -> ProgramCode -> ProgramCode
-combineProgs = Map.unionWith (++) 
+combineProgs = Map.unionWith (++)
 
 combineAllProgs :: [ProgramCode] -> ProgramCode
-combineAllProgs  = foldl combineProgs Map.empty
+combineAllProgs  = List.foldl combineProgs Map.empty
 
 genProcHeader :: CodeMonad ProgramCode
 genProcHeader = do
@@ -95,19 +95,19 @@ popProcName =
     do ps <- gets procStack
        let (pname, ps') = popM ps
        case pname of
-           Just pn -> 
-               do modify (\st -> st{currentProcName = pn, 
+           Just pn ->
+               do modify (\st -> st{currentProcName = pn,
                                     procStack = ps'})
                   return pn
            Nothing -> error noProcName
 
 pushProcStack :: String  -> CodeState -> CodeState
-pushProcStack newcpn cstate 
+pushProcStack newcpn cstate
     = cstate{currentProcName = newcpn,
              procStack = push (currentProcName cstate) (procStack cstate)}
 
 pushProcName  :: String -> CodeMonad ()
-pushProcName  = modify . pushProcStack 
+pushProcName  = modify . pushProcStack
 
 mkName :: Int ->String
 mkName = ('^':) . show
@@ -116,14 +116,14 @@ fresh :: NameSupply -> (NameSupply, NodeName)
 fresh  = fresh' 1
 fresh' :: Int-> NameSupply -> (NameSupply, NodeName)
 fresh' start [] = ([start],mkName  start)
-fresh' start ~(j:ns) 
+fresh' start ~(j:ns)
     | j > start = (start:j:ns,mkName start)
     | otherwise = app1of2 (j:) $ fresh' (start+1) ns
 
 reuse :: NodeName -> NameSupply -> NameSupply
-reuse nm 
+reuse nm
       = let el = read  nm :: Int
-        in List.filter (/= el)   
+        in List.filter (/= el)
 
 reuseStackNameM :: Maybe NodeName -> CodeMonad ()
 reuseStackNameM Nothing = return ()
@@ -135,20 +135,20 @@ reuseStackName ('^':nm)
     = do cgLog cgLLTrace $ " Will reuse  name  : '" ++ nm++"'."
          lbls <- gets stackNameGen
          modify (\st -> st{stackNameGen = (reuse nm lbls)})
-                       
+
 reuseStackName _ = return ()
- 
+
 getStackName :: CodeMonad NodeName
-getStackName 
+getStackName
     = do lbls <- gets stackNameGen
          cgLog cgLLDebug3 $ " Getting fresh name from : " ++ showList lbls "."
          let (lbls', nm) = fresh lbls
          cgLog cgLLDebug3 $ " Fresh name is '"++nm++"', name supply is now : " ++ showList lbls "."
          modify (\st -> st{stackNameGen = lbls'})
          return nm
-                 
+
 getLastGenName :: CodeMonad NodeName
-getLastGenName = 
+getLastGenName =
    do ng <- gets stackNameGen
       return $ mkName $ last ng
 
@@ -164,13 +164,13 @@ unsetCurrentActive :: CodeMonad ()
 unsetCurrentActive = modify (\st -> st {currentActive = Nothing})
 
 getLabel :: CodeMonad String
-getLabel = 
+getLabel =
     do lbl <- gets labelGen
        modify (\st -> st{labelGen = 1+lbl})
        return $ "lbl" ++ show lbl
-                 
+
 getLastLabel :: CodeMonad String
-getLastLabel = 
+getLastLabel =
   do lg <- gets labelGen
      return $ show lg
 
@@ -186,15 +186,15 @@ getPendingDiscards = gets pendingDiscards
 
 clearPendingDiscards :: CodeMonad ()
 clearPendingDiscards = modify (\st -> st{pendingDiscards = []})
-                               
+
 addToPendingDiscards :: NodeName -> CodeMonad ()
-addToPendingDiscards nm 
-    =modify (\st -> st{pendingDiscards = 
+addToPendingDiscards nm
+    =modify (\st -> st{pendingDiscards =
                            nm : pendingDiscards st})
- 
+
 removeFromPendingDiscards :: NodeName -> CodeMonad ()
 removeFromPendingDiscards nm
-   = modify (\st -> st{pendingDiscards = 
+   = modify (\st -> st{pendingDiscards =
                            List.filter ( /= nm ) (pendingDiscards st)})
 
 
@@ -204,7 +204,7 @@ minusSequence = scode $ glue [iname_coperation,  (show Negate)]
 classicalOp :: BinOp -> CodeMonad ProgramCode
 classicalOp = scode . glue2 iname_coperation . show
 
-guardBodyCode :: Label -> [(IrExpression, [Istmt])] -> 
+guardBodyCode :: Label -> [(IrExpression, [Istmt])] ->
                 (IrExpression -> CodeMonad ProgramCode) ->
                 (Istmt -> CodeMonad ProgramCode) ->
                 CodeMonad ProgramCode
@@ -223,10 +223,10 @@ guardBodyCode endlbl ((exp,stmts):morees) ec ssc
                 combineProgs cj $
                 combineProgs sc $
                 combineProgs jmp bypass
-         
+
 
 useStartCode :: Label -> Label -> NodeName -> CodeMonad ProgramCode
-useStartCode bdyLabel endLabel nm 
+useStartCode bdyLabel endLabel nm
     = scode $ glue [iname_use,  (address nm), endLabel, bdyLabel]
 
 qend :: CodeMonad ProgramCode
@@ -247,13 +247,13 @@ delayedUse nm
          endq <- qend
          endit <- labelizeM  endLabel descope
          escop <- enscope
-         return (combineProgs escop $ combineProgs use dc, 
+         return (combineProgs escop $ combineProgs use dc,
                  combineProgs endq endit)
 
 
-measCode :: NodeName -> 
-            CodeMonad ProgramCode -> 
-            CodeMonad ProgramCode -> 
+measCode :: NodeName ->
+            CodeMonad ProgramCode ->
+            CodeMonad ProgramCode ->
             CodeMonad ProgramCode
 measCode nm zbr obr
     = do lbl1 <- getLabel
@@ -269,14 +269,14 @@ measCode nm zbr obr
          endq <- qend
          endit <- labelizeM endLabel descope
          return $ combineProgs escop $
-                combineProgs mscd $ 
+                combineProgs mscd $
                 combineProgs z' $
                 combineProgs zbrd $
                 combineProgs endq $
                 combineProgs o' $
                 combineProgs obrd $
                 combineProgs endq endit
-         
+
 controlDoneCode :: CodeMonad ProgramCode
 controlDoneCode = do unsetCurrentActive
                      scode $ glue [iname_popcontrol]
@@ -292,18 +292,18 @@ controlStartCode nms
          return $ combineProgs sc (combineAllProgs fp)
 
 controlVar :: ControlType NodeName -> CodeMonad ProgramCode
-controlVar (OneControl nm) = 
+controlVar (OneControl nm) =
     baseControl nm "1"
 
 controlVar (ZeroControl nm) =
     baseControl nm "0"
 
 baseControl :: NodeName -> String -> CodeMonad ProgramCode
-baseControl nm ctyp =  
+baseControl nm ctyp =
     do pu <- pullup  nm
        cc <- scode $ glue [iname_controlit, ctyp]
        return $ combineProgs pu cc
-         
+
 nooperation :: CodeMonad ProgramCode
 nooperation = scode iname_noop
 
@@ -311,11 +311,11 @@ zeroStackCode :: CodeMonad ProgramCode
 zeroStackCode = scode $ glue [iname_zerostack]
 
 returnop :: Int->CodeMonad ProgramCode
-returnop  = scode . glue2 iname_return . show 
+returnop  = scode . glue2 iname_return . show
 
 labelize :: String -> ProgramCode -> CodeMonad ProgramCode
 labelize lbl =
-    return . Map.map (labelizeFirstIns lbl) 
+    return . Map.map (labelizeFirstIns lbl)
 
 labelizeM :: String -> CodeMonad ProgramCode -> CodeMonad ProgramCode
 labelizeM l  = (>>=  labelize l)
@@ -354,12 +354,12 @@ makeInt  = scode . glue2 iname_newint . address
 alloc :: Qtype -> [NodeName]->CodeMonad ProgramCode
 alloc _ [] = return Map.empty
 alloc t (nm:nms)
-      | isBaseType t 
+      | isBaseType t
           = do allocate <- scode $ glue [(typeToLoadIns t), (address nm), "|0>"]
                rest <- alloc t nms
                return $ combineProgs allocate rest
       | otherwise = fail $ illegalTypeToAllocate t
- 
+
 
 allocQubit :: NodeName -> Bitvalue -> CodeMonad ProgramCode
 allocQubit nm qv
@@ -376,12 +376,12 @@ getClassicalRets (o:os)
          return $ combineProgs ret1 rets
 
 classicalPull :: Int -> CodeMonad ProgramCode
-classicalPull 
+classicalPull
     = scode . glue2 iname_cget . show . (flip (-) 1)
 
 
 classicalPut :: Int -> CodeMonad ProgramCode
-classicalPut 
+classicalPut
     = scode . glue2 iname_cput . show . (flip (-) 1)
 
 popcs :: CodeMonad ProgramCode
@@ -408,7 +408,7 @@ pullup :: NodeName ->
 pullup  = scode . glue2 iname_pullup . address
 --    = do mybeNm <- getCurrentActive
 --         let pull = glue2 iname_pullup (address nm)
---         case mybeNm of 
+--         case mybeNm of
 --           Nothing -> scode pull
 --           Just anme -> if (nm == anme) then return empty
 --                        else scode pull
@@ -427,10 +427,10 @@ doRenames (f:fs) (t:ts)
                                     combineProgs rerest rfinish
     | otherwise      =   do  rfirst <- rename f t
                              rerest <- doRenames fs ts
-                             return $ combineProgs rfirst  rerest 
+                             return $ combineProgs rfirst  rerest
 
 rename :: NodeName ->
-          NodeName -> 
+          NodeName ->
           CodeMonad ProgramCode
 rename oldnm nm
     = if oldnm == nm then return Map.empty
@@ -451,32 +451,32 @@ delayed cd
          return $ combineProgs code dc
 
 call :: Int -> String -> CodeMonad ProgramCode
-call cvals  =  scode . glue3 iname_call (show cvals) 
+call cvals  =  scode . glue3 iname_call (show cvals)
 
 
 
 condJumpCode :: Label -> CodeMonad ProgramCode
-condJumpCode  = scode . glue2 iname_cjump 
+condJumpCode  = scode . glue2 iname_cjump
 
 jumpCode :: Label -> CodeMonad ProgramCode
-jumpCode  = scode . glue2 iname_jump 
+jumpCode  = scode . glue2 iname_jump
 
 splitCode :: NodeName -> Label ->
-             [(ConsIdentifier,Label)] -> 
+             [(ConsIdentifier,Label)] ->
               CodeMonad ProgramCode
-splitCode nm endLabel lis =  scode $ 
+splitCode nm endLabel lis =  scode $
                              glue [iname_split,  (address nm), endLabel, (showSplitList lis)]
 
 showSplitList :: [(ConsIdentifier,Label)] -> String
-showSplitList  = foldr  showCidLblpr ""  
+showSplitList  = List.foldr  showCidLblpr ""
 
 showCidLblpr :: (ConsIdentifier,Label) -> String -> String
 showCidLblpr (cid,lbl) s = s ++ " (#" ++ cid ++ "," ++ lbl ++ ")"
 
-makeSplitCode :: ProgramCode -> NodeName -> [IrCaseClause] -> 
+makeSplitCode :: ProgramCode -> NodeName -> [IrCaseClause] ->
                  (Istmt -> CodeMonad ProgramCode)->
                  CodeMonad ProgramCode
-makeSplitCode pullOrExpression nm clauses gcode = 
+makeSplitCode pullOrExpression nm clauses gcode =
     do  (cidLblprs,cc) <- caseClauses nm clauses gcode
         enscp <- enscope
         lbl <- getLabel
@@ -500,7 +500,7 @@ binds (nn:nns)
 unbinds :: NodeName -> [NodeName] -> CodeMonad (ProgramCode, ProgramCode)
 unbinds _ [] = return (Map.empty, Map.empty)
 unbinds ubnm (nn:nns)
-    = do (delnm, u1) <- 
+    = do (delnm, u1) <-
              if nn == "_"
                  then do nm <- getStackName
                          cd <- scode $ glue3 iname_unbind (address ubnm) (address nm)
@@ -511,13 +511,13 @@ unbinds ubnm (nn:nns)
                          setCurrentActive nn
                          return (Map.empty, cd)
          (delnms,uns) <- unbinds ubnm nns
-         return ( combineProgs delnm delnms, 
+         return ( combineProgs delnm delnms,
                   combineProgs u1 uns)
 
-caseClauses :: NodeName -> [IrCaseClause] ->  
+caseClauses :: NodeName -> [IrCaseClause] ->
                 (Istmt -> CodeMonad ProgramCode)->
                 CodeMonad ([(ConsIdentifier,Label)],ProgramCode)
-caseClauses  nm  [] _ 
+caseClauses  nm  [] _
     =  return ([],empty)
 
 
@@ -538,18 +538,18 @@ caseClauses   nm (cc@(IrCaseClause ci nns stms) :ccs) f
                  combineProgs qend otherCases)
 
 doPendingDiscards :: CodeMonad ProgramCode
-doPendingDiscards 
+doPendingDiscards
     = do discs <- getPendingDiscards
          clearPendingDiscards
          discIns <- mapM destroy discs
          return $ combineAllProgs discIns
-         
+
 
 addDelayedCode :: ProgramCode -> CodeMonad ()
 addDelayedCode cd
     = do old <- getDelayedCode
          setDelayedCode $ combineProgs cd old
-                        
+
 
 getDelayedCode :: CodeMonad ProgramCode
 getDelayedCode = gets delayedCode
@@ -558,11 +558,11 @@ setDelayedCode :: ProgramCode -> CodeMonad ()
 setDelayedCode dc = modify (\st -> st{delayedCode = dc})
 
 popDelayedCode :: CodeMonad ProgramCode
-popDelayedCode 
+popDelayedCode
     = do dc <- getDelayedCode
          dcs <- gets delayedCodeStack
          let (ndc, ndcs) = popM dcs
-             newdc = case ndc of 
+             newdc = case ndc of
                   Nothing -> Map.empty
                   (Just d) -> d
          modify (\st -> st{delayedCode = newdc,
@@ -570,12 +570,12 @@ popDelayedCode
          return dc
 
 pushDelayedCode :: CodeMonad ()
-pushDelayedCode 
+pushDelayedCode
     = modify (\st -> st{delayedCode = Map.empty,
-                        delayedCodeStack = push (delayedCode st) 
-                                           (delayedCodeStack st) 
+                        delayedCodeStack = push (delayedCode st)
+                                           (delayedCodeStack st)
                                               })
-         
+
 address :: NodeName -> String
 address  = ('@' :)
 

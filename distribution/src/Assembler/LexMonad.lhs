@@ -5,6 +5,11 @@ import QSM.Transformations
 import QSM.BasicData
 import Data.Map as Map
 import Data.List as List
+import Data.Word as W
+import Data.Text as T
+import Data.ByteString as BS
+import Data.Text.Encoding as TE
+
 import QSM.Components.Instructions
 \end{code}
  The input type
@@ -15,23 +20,39 @@ constContextSize = 30
 
 type AlexInput = ([AlexPosn],     -- current position,
                   Char,         -- previous char
+                  [Word8],       -- remaining bytes of input char
                   [String])       -- current input string
 
 alexInputPrevChar :: AlexInput -> Char
-alexInputPrevChar (p,c,s) = c
+alexInputPrevChar (p,c,bs,s) = c
+
+alexGetByte :: AlexInput -> Maybe (Word8, AlexInput)
+alexGetByte ((p:ps),c,[],[]) = Nothing
+alexGetByte ((p:ps),c,(b:bs),s) = Just (b, ((p:ps),c,bs,s))
+alexGetByte ((p:ps),c,[],[[]]) = Nothing
+alexGetByte ((p:ps),_,[],(([]):ss))  =
+     alexGetByte (ps,' ',[],ss)
+alexGetByte ((p:ps),_,[],((c:s):ss))  =
+    let  (b:bs) = charToWord8 c
+         p' = alexMove p c
+    in   p' `seq` Just (b, ((p':ps), c, bs, (s:ss)))
+
+charToWord8 :: Char -> [Word8]
+charToWord8 = BS.unpack . TE.encodeUtf8 . T.singleton
+
 
 alexInputString :: AlexInput -> String
-alexInputString (p,c,(s:ss)) = s
-                
+alexInputString (p,c,bs,(s:ss)) = s
 
-alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
-alexGetChar ((p:ps),c,[]) = Nothing
-alexGetChar ((p:ps),c,[[]]) = Nothing
-alexGetChar ((p:ps),_,(([]):ss))  = 
-     alexGetChar (ps,' ',ss)
-alexGetChar ((p:ps),_,((c:s):ss))  = 
-    let p' = alexMove p c in p' `seq`
-         Just (c, ((p':ps), c, (s:ss)))
+
+--alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
+--alexGetChar ((p:ps),c,[]) = Nothing
+--alexGetChar ((p:ps),c,[[]]) = Nothing
+--alexGetChar ((p:ps),_,(([]):ss))  =
+--     alexGetChar (ps,' ',ss)
+--alexGetChar ((p:ps),_,((c:s):ss))  =
+--    let p' = alexMove p c in p' `seq`
+--         Just (c, ((p':ps), c, (s:ss)))
 \end{code}
 
  Token positions
@@ -80,25 +101,25 @@ data AlexState = AlexState {
 -- Compile with -funbox-strict-fields for best results!
 
 runAlex :: String -> Alex a -> IO (Either String a)
-runAlex input (Alex f) 
+runAlex input (Alex f)
    =  do ares <- f AlexState {alex_pos = [alexStartPos],
-                              alex_inp = [input],       
+                              alex_inp = [input],
                               alex_chr = '\n',
                               alex_scd = 0,
                               alex_clvl = 0,
                               alex_cdir = ".",
-                              alex_imps = []} 
-         return $ case ares of 
+                              alex_imps = []}
+         return $ case ares of
                     Left msg -> Left msg
                     Right ( _, a ) -> Right a
 
-newtype Alex a = Alex { unAlex :: AlexState -> 
+newtype Alex a = Alex { unAlex :: AlexState ->
                                   IO(Either String (AlexState, a)) }
 
 instance Monad Alex where
-  m >>= k  = Alex $ \s -> 
+  m >>= k  = Alex $ \s ->
                  do ua <- unAlex m s
-                    case ua of 
+                    case ua of
                             Left msg -> return $ Left msg
                             Right (s',a) -> unAlex (k a) s'
   return a = Alex $ \s -> return $ Right (s,a)
@@ -107,20 +128,20 @@ liftio::IO a -> Alex a
 liftio f = Alex $ \s ->
                 do x<-f
                    return (Right (s,x))
-                   
+
 
 alexGetInput :: Alex AlexInput
 alexGetInput
- = Alex $ \s@AlexState{alex_pos=pos,alex_chr=c,alex_inp=inp} -> 
-        return $ Right (s, (pos,c,inp))
+ = Alex $ \s@AlexState{alex_pos=pos,alex_chr=c,alex_inp=inp} ->
+        return $ Right (s, (pos,c,[],inp))
 
 alexSetInput :: AlexInput -> Alex ()
-alexSetInput (pos,c,inp)
+alexSetInput (pos,c,bs,inp)
  = Alex $ \s -> case s{alex_pos=pos,alex_chr=c,alex_inp=inp,alex_imps=List.map alexCurrFile pos} of
                   s@(AlexState{}) -> return $ Right (s, ())
 
 alexAddInput :: AlexInput -> Alex ()
-alexAddInput (pos,c,inp)
+alexAddInput (pos,c,bs,inp)
  = Alex $ \s -> case s{alex_pos=pos ++ alex_pos s,
                             alex_chr=c,
                             alex_inp=inp ++ alex_inp s,
@@ -130,30 +151,30 @@ alexAddInput (pos,c,inp)
 --alexEOF :: Alex a
 
 alexError :: String -> Alex a
-alexError message = 
+alexError message =
     Alex $ \s -> return $
                    Left (" Lexing Character "++
-                         show (head $ head $ alex_inp s)++ 
+                         show (List.head $ List.head $ alex_inp s)++
                          " at line " ++
-                         show (alexLineNum $ head $ alex_pos s) ++ 
+                         show (alexLineNum $ List.head $ alex_pos s) ++
                          " column " ++
-                         show (alexCharNum $ head $ alex_pos s) ++  
+                         show (alexCharNum $ List.head $ alex_pos s) ++
                          " file " ++
-                         show (alexCurrFile $ head $ alex_pos s) ++ 
+                         show (alexCurrFile $ List.head $ alex_pos s) ++
                          " context: " ++
-                         take constContextSize (head $ alex_inp s) ++
+                         List.take constContextSize (List.head $ alex_inp s) ++
                          "\n" ++ message)
 
 alexGetInpDir :: Alex String
-alexGetInpDir =  Alex $ \s@AlexState{alex_cdir=d} -> 
+alexGetInpDir =  Alex $ \s@AlexState{alex_cdir=d} ->
                           return $ Right (s, d)
 
 alexGetImpFiles :: Alex [String]
-alexGetImpFiles  = Alex $ \s@AlexState{alex_imps=imps} -> 
+alexGetImpFiles  = Alex $ \s@AlexState{alex_imps=imps} ->
                        return $ Right (s, imps)
 
 alexGetStartCode :: Alex Int
-alexGetStartCode = Alex $ \s@AlexState{alex_scd=sc} -> 
+alexGetStartCode = Alex $ \s@AlexState{alex_scd=sc} ->
                        return $ Right (s, sc)
 
 alexSetStartCode :: Int -> Alex ()
@@ -172,9 +193,9 @@ alexIncCommentLevel  =
        alexSetCommentLevel (cl + 1)
 
 alexDecCommentLevel :: Alex ()
-alexDecCommentLevel = 
+alexDecCommentLevel =
     do {  cl <- alexGetCommentLevel
-        ; if cl > 0 
+        ; if cl > 0
           then alexSetCommentLevel (cl - 1)
           else alexSetCommentLevel 0 }
 
@@ -204,55 +225,55 @@ getGate  ('I':gate)        = Inverse $ getGate gate
 getGate  ('(':n:')':gate)  = DefinedOp gate (read  [n])
 getGate  gate              = DefinedOp gate 0
 
-data Token 
-     =  TkKet String  
+data Token
+     =  TkKet String
      | TkNumber Int
      | TkSymbol String
      | TkBool Bool
-     | TkOperator String 
+     | TkOperator String
      | TkOpcode String
      | TkStart
      | TkEnd
      | TkAddress String
      | TkLabel String
-     | TkTrans 
+     | TkTrans
      | TkTransform UnitaryOp
-     | TkCons String 
+     | TkCons String
      | TkCompilerNotes String
-     | TkErr | TkEof 
+     | TkErr | TkEof
        deriving (Eq,Read,Show)
 
 
-setlabels :: [(Maybe String, Instruction Basis, Maybe [String])] -> 
+setlabels :: [(Maybe String, Instruction Basis, Maybe [String])] ->
              [Instruction Basis]
 setlabels sis = ins
     where (lblmap, inslbls) = findlabelspositions sis
-          ins = mergelabels lblmap inslbls 
+          ins = mergelabels lblmap inslbls
 
 
-findlabelspositions ::  [(Maybe String, Instruction Basis, Maybe [String])] -> 
+findlabelspositions ::  [(Maybe String, Instruction Basis, Maybe [String])] ->
                        (Map String Int, [(Instruction Basis, Maybe [String])])
 findlabelspositions = flp' 0 [] Map.empty
 
-flp' :: Int-> 
+flp' :: Int->
         [(Instruction Basis, Maybe [String])] ->
         Map String Int ->
-       [(Maybe String, Instruction Basis, Maybe [String])] -> 
+       [(Maybe String, Instruction Basis, Maybe [String])] ->
        (Map String Int, [(Instruction Basis, Maybe [String])])
-flp' n acclist accmap [] = (accmap, reverse acclist)
+flp' n acclist accmap [] = (accmap, List.reverse acclist)
 flp' n acclist accmap ((Nothing, i , mls):raw )
        = flp' (n+1) ((i,mls):acclist) accmap raw
 flp' n acclist accmap ( (Just l, i , mls):raw )
        = flp' (n+1) ((i,mls):acclist) (Map.insert l n accmap) raw
 
-					   
-mergelabels :: Map String Int -> 
-               [(Instruction Basis , Maybe [String])] -> 
+
+mergelabels :: Map String Int ->
+               [(Instruction Basis , Maybe [String])] ->
               [Instruction Basis]
 mergelabels _ [] = []
 mergelabels lm ((i,Nothing):ins) = i:mergelabels lm ins
-mergelabels lm ((i,Just l):ins) 
-     = setlabel (List.map 
+mergelabels lm ((i,Just l):ins)
+     = setlabel (List.map
            (flip (findWithDefault 0) lm) l ) i : mergelabels lm ins
 
 setlabel :: [Int] -> Instruction Basis -> Instruction Basis
@@ -260,7 +281,7 @@ setlabel (l:_) (Jump _) = Jump l
 setlabel (l:_) (CondJump _) = CondJump l
 setlabel (l1:l2:_) (Use a _ _) = Use a l1 l2
 setlabel (l1:l2:l3:_) (Measure a _ _ _) = Measure a l1 l2 l3
-setlabel (l1:ls) (Split a _ consls) = Split a l1 $ zip (fst $ unzip consls) ls
+setlabel (l1:ls) (Split a _ consls) = Split a l1 $ List.zip (fst $ List.unzip consls) ls
 setlabel _ i = i
 
 ketToBasis :: String -> Basis

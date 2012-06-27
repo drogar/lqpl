@@ -337,7 +337,7 @@ arguments to either can be diagonal or non-diagonal.
 %if codeOnly || showClassDerivations
 \begin{code}
 
-addable ::  (Num b) => QuantumStack b ->  QuantumStack b -> Bool
+addable ::  (Eq b, Num b) => QuantumStack b ->  QuantumStack b -> Bool
 addable s1 s2 = isStackZero s1 ||
                 isStackZero s2 ||
                 address s1 == address s2

@@ -346,8 +346,8 @@ stmtIr (Use ids stmts)
           stc <- getSymTabClassical
           let  lindel:: [SymbolTableLinear -> SymbolTableLinear]
                lindel = List.map Map.delete ids
-          modSymTabLinear (foldl (.) id lindel)
-          modSymTabClassical (foldl (.) id $
+          modSymTabLinear (List.foldl (.) id lindel)
+          modSymTabClassical (List.foldl (.) id $
                              List.map (uncurry Map.insert) $
                              zip ids useids)
 --         dumpst

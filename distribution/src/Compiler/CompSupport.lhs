@@ -46,7 +46,7 @@ uncapitalize = List.map toLower
 
 hasDuplicates :: (Eq a)=>[a]->Bool
 hasDuplicates [] = False
-hasDuplicates (a:als) 
+hasDuplicates (a:als)
      = elem a als || hasDuplicates als
 
 
@@ -58,7 +58,7 @@ of strings and paste them together in a variety of ways.
 \bd
 \item{\haskfuncdef{joinWithSemiNL}{Compiler}{code generation support}:} Place semicolons and newlines after
 each string including the last. Return an empty string from an empty list.
-\item{\haskfuncdef{joinWithComma}{Compiler}{code generation support}:} Place a single comma between items, 
+\item{\haskfuncdef{joinWithComma}{Compiler}{code generation support}:} Place a single comma between items,
 nothing at the end.
 \item{\haskfuncdef{joinWithSpace}{Compiler}{code generation support}:} Place a space between.
 \item{\haskfuncdef{joinWithString}{Compiler}{code generation support}:} Change each string by prepending
@@ -67,7 +67,7 @@ a given string, then join the resulting list with a space.
 
 \begin{code}
 joinWithSemiNL :: [String] -> String
-joinWithSemiNL = foldr (\a b ->a++(';':'\n':b)) "" 
+joinWithSemiNL = List.foldr (\a b ->a++(';':'\n':b)) ""
 
 joinWithComma :: [String] -> String
 joinWithComma = foldl1 (\a b ->a++(',':b))
@@ -79,7 +79,7 @@ joinWithString :: String->[String] -> String
 joinWithString s = joinWithSpace . Prelude.map (s++)
 
 joinWithImport :: [String]->String
-joinWithImport  = foldl (++) "" . Prelude.map (\s->" import "++s++"\n") 
+joinWithImport  = List.foldl (++) "" . Prelude.map (\s->" import "++s++"\n")
 
 
 mkflabel :: String -> String -> String

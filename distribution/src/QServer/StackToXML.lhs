@@ -19,7 +19,7 @@
   import QSM.Components.MemoryMap
 
 
-  instance Quantum LazyNum
+  --instance Quantum LazyNum
 
   fixDiags:: Quantum b => QuantumStack b -> QuantumStack b
   fixDiags stk =
@@ -74,7 +74,7 @@
     toXML = (surroundWith "number") . show
 
   instance (XML k,XML v)=>XML (Map k v) where
-    toXML a = surroundWith "map"  $ foldl (++) "" $ fmap (surroundWith "kvpair") $
+    toXML a = surroundWith "map"  $ List.foldl (++) "" $ fmap (surroundWith "kvpair") $
       uncurry (zipWith (++)) $ unzip $
       fmap (pair (surroundWith "key" . toXML) (surroundWith "value" . toXML)) $ Map.toList a
 
