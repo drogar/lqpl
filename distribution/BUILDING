@@ -26,6 +26,9 @@ it will normally be installed to:
 To use the program, please add this directory to your path.
 
 TESTS:
+The tests use "hspec" in addition to other test modules in the haskell platform. To install it, type
+
+    cabal update && cabal install hspec
 
 You can build and run the tests in the following way:
 
