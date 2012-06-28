@@ -1,7 +1,7 @@
 \begin{code}
   module Main where
-    import Test.Hspec
-    import Test.Hspec.Core
+    import Test.Hspec.Core(Example(..),Result(..))
+    import Test.Hspec.Monadic
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -37,105 +37,103 @@ The Parser Specification
       whiteSpace
       return k
 
-    parserSpecs = describe "parser" [
-      context "tokenizer" [
+    parserSpecs = describe "parser" $ do
+      context "tokenizer" $ do
         it "tokenizes '|0>' and '|1>' as kets"
-          $ testParse "Kets" "|0>" (unsafePerformIO $ runParserT ket [] "" "|0>"),
-        context "operators" $ map (checkTokenValidator id (\s -> "parses the operator '"++s++"'") reservedOp) ops,
-        context "symbols" $ map (checkTokenValidator id (\c -> "parses the symbol '"++c++"'") symbolDiscard) $ map (:[]) symbols,
-        context "Reserved Words" $ map (checkTokenValidator id (\s -> "parses the reserved word '"++s++"'") reserved) reserveds,
-        context "Quantum Gates" $
-          map (checkParse id (\s -> "parses the gate '"++s++"'") quantumGate) $ allGates,
-        context "numbers " $
-          map (checkParse show (\n -> "parses the number '"++n++"'") integer) $ numbers,
-        context "identifiers " $
-          map (checkParse id (\s -> "parses the identifier '"++s++"'") identifier) $ legalVariables,
-        context "Types and Constructors " $
-          map (checkParse id (\s -> "parses the Constructor or TypeID '"++s++"'") constructor) $ legalConstructors,
-        context "comments " $ [
+          $ testParse "Kets" "|0>" (unsafePerformIO $ runParserT ket [] "" "|0>")
+        context "operators" $
+          mapM_ (checkTokenValidator id (\s -> "parses the operator '"++s++"'") reservedOp) ops
+        context "symbols" $ do
+          mapM_ (checkTokenValidator id (\c -> "parses the symbol '"++c++"'") symbolDiscard) $ map (:[]) symbols
+        context "Reserved Words" $ do
+          mapM_ (checkTokenValidator id (\s -> "parses the reserved word '"++s++"'") reserved) reserveds
+        context "Quantum Gates" $ do
+          mapM_ (checkParse id (\s -> "parses the gate '"++s++"'") quantumGate) $ allGates
+        context "numbers " $ do
+          mapM_ (checkParse show (\n -> "parses the number '"++n++"'") integer) $ numbers
+        context "identifiers " $ do
+          mapM_ (checkParse id (\s -> "parses the identifier '"++s++"'") identifier) $ legalVariables
+        context "Types and Constructors " $ do
+          mapM_ (checkParse id (\s -> "parses the Constructor or TypeID '"++s++"'") constructor) $ legalConstructors
+        context "comments " $ do
           it "should accept /* and */ as delimiters for multiline comments" $
-            testTokenValidator "/* comments" (unsafePerformIO $ runParserT (exhaustParser $ whiteSpace ) [] "" "/* cm \n cms */"),
+            testTokenValidator "/* comments" (unsafePerformIO $ runParserT (exhaustParser $ whiteSpace ) [] "" "/* cm \n cms */")
           it "should accept // as a line comment" $
-            testTokenValidator "// comments" (unsafePerformIO $ runParserT (exhaustParser $ whiteSpace ) [] "" "// cm \n"),
+            testTokenValidator "// comments" (unsafePerformIO $ runParserT (exhaustParser $ whiteSpace ) [] "" "// cm \n")
           it "should ignore items within /* and */" $
-            testParseResult (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "/* junk */|0>") (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "|0>"),
+            testParseResult (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "/* junk */|0>") (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "|0>")
           it "should ignore lines starting with //" $
               testParseResult (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "// junk \n|0>") (unsafePerformIO $ runParserT (exhaustParser $ wket) [] "" "|0>")
-          ],
-        context "miscellaneous tokenizers" [
+        context "miscellaneous tokenizers" $ do
           it "parses 'a' as filename a"
-            $ testParse "filenames" "a" (unsafePerformIO $ runParserT validFileName [] "" "a"),
+            $ testParse "filenames" "a" (unsafePerformIO $ runParserT validFileName [] "" "a")
           it "parses 'a  \\n' as filename a"
-            $ testParse "filenames" "a" (unsafePerformIO $ runParserT validFileName [] "" "a  \n"),
+            $ testParse "filenames" "a" (unsafePerformIO $ runParserT validFileName [] "" "a  \n")
           it "parses 'ab  \\n' as filename ab"
-            $ testParse "filenames" "ab" (unsafePerformIO $ runParserT validFileName [] "" "ab  \n"),
+            $ testParse "filenames" "ab" (unsafePerformIO $ runParserT validFileName [] "" "ab  \n")
           it "parses 'a b  \\n' as filename 'a b'"
-            $ testParse "filenames" "a b" (unsafePerformIO $ runParserT validFileName [] "" "a b  \n"),
+            $ testParse "filenames" "a b" (unsafePerformIO $ runParserT validFileName [] "" "a b  \n")
           it "parses 'file.ext' as filename file.ext"
-            $ testParse "filenames" "file.ext" (unsafePerformIO $ runParserT validFileName [] "" "file.ext"),
+            $ testParse "filenames" "file.ext" (unsafePerformIO $ runParserT validFileName [] "" "file.ext")
           it "parses 'include\\nexclude' as filename include"
             $ testParse "filenames" "include" (unsafePerformIO $ runParserT validFileName [] "" "include\nexclude")
-          ]
-        ],
-      context "Parser" [
+      context "Parser" $ do
         context "terms" $
-          map (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") term ) ) testTerms,
+          mapM_ (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") term ) ) testTerms
         context "terms  as expressions " $
-         map (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") expr ) ) testTerms,
+         mapM_ (uncurry (checkParseToResult (\s -> "parses the term '"++s++"'") expr ) ) testTerms
         context "Compound Expressions" $
-          map (uncurry (checkParseToResult (\s -> "parses the expression '"++s++"'") expr ) ) testExpressions,
+          mapM_ (uncurry (checkParseToResult (\s -> "parses the expression '"++s++"'") expr ) ) testExpressions
         context "Statements" $
-          map (uncurry (checkParseToResult (\s -> "parses the statement '"++s++"'") statement ) ) testStatements,
+          mapM_ (uncurry (checkParseToResult (\s -> "parses the statement '"++s++"'") statement ) ) testStatements
         context "Data Definitions" $
-          map (uncurry (checkParseToResult (\s -> "parses the data definition '"++s++"'") dataDef ) ) testDataDefs,
+          mapM_ (uncurry (checkParseToResult (\s -> "parses the data definition '"++s++"'") dataDef ) ) testDataDefs
         context "Procedure Definitions" $
-          map (uncurry (checkParseToResult (\s -> "parses the procedure definition '"++s++"'") procDef ) ) testProcDefs
-        ],
-      context "Imports" [
+          mapM_ (uncurry (checkParseToResult (\s -> "parses the procedure definition '"++s++"'") procDef ) ) testProcDefs
+      context "Imports" $ do
         it "should produce a program from a single import" $
           (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f") of
             Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
-            Right _  -> Test.Hspec.Core.Success),
+            Right _  -> Test.Hspec.Core.Success)
         it "should produce the correct parse from an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == parseResultOf "f"
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should ignore leading and trailing blanks and produce the correct parse from an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n \n") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == parseResultOf "f"
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should handle a complex program" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import g") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == parseResultOf "g"
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "g") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "g") ++ ", but got "++ show p)
         it "should continue the parse after an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\nap::(| ; d:Bool)= {skip}") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "f") ++ [ProcDef $ Procedure "ap" [] [] [ParameterDefinition "d" BOOL ] [] [Skip]])
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should parse multiple imports" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n#Import g") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "f") ++ (parseResultOf "g"))
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ show (parseResultOf "g") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ show (parseResultOf "g") ++ ", but got "++ show p)
         it "should handle nested multiple imports" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import top") of
               Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "top"))
                             then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "top") ++ ", but got "++ show p),
+                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "top") ++ ", but got "++ show p)
         it "should only import a file once." $
           testParseResult (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f") (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f\n#Import f")
-        ]
-      ]
+
 
 \end{code}
 Parser test data
@@ -320,23 +318,23 @@ Parser spec helpers.
                                        | otherwise = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show t'
     testMultipleParse err t (Left p)  = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show p
 
-    testTokenValidator :: String -> Either ParseError  () -> Test.Hspec.Core.Result
+    --testTokenValidator :: String -> Either ParseError  () -> Test.Hspec.Core.Result
     testTokenValidator err (Right _)   = Test.Hspec.Core.Success
     testTokenValidator err (Left p)  = Test.Hspec.Core.Fail $ err ++ ": expected, but got "++ show p
 
-    checkTokenValidator :: (a -> String) -> (String -> String) -> (String -> Parser ()) -> a -> [Spec]
+    --checkTokenValidator :: (a -> String) -> (String -> String) -> (String -> Parser ()) -> a -> SpecM ()
     checkTokenValidator mkParseString mkItString  tstTokenizer inp =
       let pstring = mkParseString inp
           istring = mkItString pstring
       in it istring $ testTokenValidator "" (unsafePerformIO $ runParserT (exhaustParser (tstTokenizer pstring)) [] "" pstring)
 
-    checkParse :: Show a => (a -> String) -> (String -> String) -> Parser a -> a -> [Spec]
+    --checkParse :: Show a => (a -> String) -> (String -> String) -> Parser a -> a -> SpecM ()
     checkParse mkParseString mkItString  tstTokenizer inp =
       let pstring = mkParseString inp
           istring = mkItString pstring
       in it istring $ testParse "" pstring (unsafePerformIO $ runParserT (exhaustParser tstTokenizer) [] "" pstring)
 
-    checkParseToResult :: Show a => (String -> String) -> Parser a -> String -> a -> [Spec]
+    --checkParseToResult :: Show a => (String -> String) -> Parser a -> String -> a -> SpecM ()
     checkParseToResult mkItString  p inp res =
       let istring = mkItString inp
       in it istring $ testParse "" (show res) (unsafePerformIO $ runParserT (exhaustParser p) [] "" inp)

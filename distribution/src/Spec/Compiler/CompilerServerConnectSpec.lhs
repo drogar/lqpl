@@ -1,7 +1,7 @@
 \begin{code}
   module Main where
-    import Test.Hspec
-    import Test.Hspec.Core
+    import Test.Hspec.Core(Example(..),Result(..))
+    import Test.Hspec.Monadic
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -20,12 +20,11 @@
 
 
     main = do
-      hspecX compilerSpecs
+      hspec compilerSpecs
 
-    compilerSpecs = describe "compiler" [
-      context "startup" [
-        it ("runs on port "++default_port++" by default") $
-          do
+    compilerSpecs = describe "compiler" $ do
+      context "startup" $ do
+        it ("runs on port "++default_port++" by default") $ do
             putStrLn "Checking open port"
             running <- checkOpenPort default_port
             if running
@@ -37,19 +36,16 @@
                 threadDelay 2000
                 putStrLn $ "Waited 2s for server to start"
                 checkOpenPort default_port
-        ],
-      context "compiler server" [
-       it "accepts the XML tag 'qplprogram'"    $
-           (do
+      context "compiler server" $ do
+        it "accepts the XML tag 'qplprogram'" $ do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
               hFlush hndl
               res <- hGetLine hndl
               case res of
                 "CS_READY"  -> return Test.Hspec.Core.Success
-                _     -> return $ Test.Hspec.Core.Fail $ "invalid back status: " ++ res),
-        it "sends back a valid assembler code when sent a qpl program" $
-          (do
+                _     -> return $ Test.Hspec.Core.Fail $ "invalid back status: " ++ res
+        it "sends back a valid assembler code when sent a qpl program" $ do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
               hFlush hndl
@@ -66,9 +62,8 @@
               res <- hGetLine hndl
               case res of
                 "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
-                _                       -> return $ Test.Hspec.Core.Fail $ "invalid program: " ++ res),
-        it "sends back a 'getFirst' request when sent a program with import" $
-          (do
+                _                       -> return $ Test.Hspec.Core.Fail $ "invalid program: " ++ res
+        it "sends back a 'getFirst' request when sent a program with import" $ do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
               hFlush hndl
@@ -81,9 +76,8 @@
               res <- hGetLine hndl
               case res of
                 "<getFirst>f</getFirst>"    -> return Test.Hspec.Core.Success
-                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res),
-        it "successfully compiles after a 'getFirst' request when sent a valid program" $
-          (do
+                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
+        it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer default_port
               hPutStrLn hndl "<qplprogram>"
               hFlush hndl
@@ -112,9 +106,7 @@
                     case fres2 of
                       "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
                       _                       -> return $ Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres2
-                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res)
-        ]
-      ]
+                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
 
 
     connectToServer :: String -> IO Handle

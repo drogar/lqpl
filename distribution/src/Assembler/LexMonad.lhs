@@ -45,14 +45,14 @@ alexInputString :: AlexInput -> String
 alexInputString (p,c,bs,(s:ss)) = s
 
 
---alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
---alexGetChar ((p:ps),c,[]) = Nothing
---alexGetChar ((p:ps),c,[[]]) = Nothing
---alexGetChar ((p:ps),_,(([]):ss))  =
---     alexGetChar (ps,' ',ss)
---alexGetChar ((p:ps),_,((c:s):ss))  =
---    let p' = alexMove p c in p' `seq`
---         Just (c, ((p':ps), c, (s:ss)))
+alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
+alexGetChar ((p:ps),c,_,[]) = Nothing
+alexGetChar ((p:ps),c,_,[[]]) = Nothing
+alexGetChar ((p:ps),_,_,(([]):ss))  =
+     alexGetChar (ps,' ',[],ss)
+alexGetChar ((p:ps),_,_,((c:s):ss))  =
+    let p' = alexMove p c in p' `seq`
+         Just (c, ((p':ps), c,[], (s:ss)))
 \end{code}
 
  Token positions

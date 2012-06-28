@@ -15,8 +15,9 @@
   import System.Directory
   import System.FilePath
   import System.IO
-  import Test.Hspec
-  import Test.Hspec.Core
+  --import Test.Hspec
+  import Test.Hspec.Core(Example(..),Result(..))
+  import Test.Hspec.Monadic
 
   getTempFileName :: String -> IO(String)
   getTempFileName name = do
@@ -50,6 +51,11 @@
       do
         r <- f
         return r
+
+#if MIN_VERSION_hspec(1,1,2)
+
+#else
   context = describe
+#endif
 
 \end{code}

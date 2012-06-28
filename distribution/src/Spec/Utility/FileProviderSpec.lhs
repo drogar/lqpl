@@ -1,7 +1,6 @@
 \begin{code}
   module Main where
-    import Test.Hspec
-    import Test.Hspec.Core
+    import Test.Hspec.Monadic
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -15,32 +14,29 @@
     import Utility.FileProvider.FileSystem
 
 
-    main = hspecX fileProviderSpecs
+    main = hspec fileProviderSpecs
 
-    fileProviderSpecs = describe "FileProvider" [
-      context "filesystem provider helpers" [
-
-      ],
-      context "filesystem provider class implementation" [
-              it "returns 'True' for a file that exists"
+    fileProviderSpecs = describe "FileProvider" $ do
+      context "filesystem provider class implementation" $ do
+         it "returns 'True' for a file that exists"
                 (do  fname <- getTempFileWithContent "fileprovider" "test"
                      putStrLn fname
                      (fpDoesFileExist fpFileSystem) fname
-                  ),
-              it "returns 'False' for a non-existent file"
+                  )
+         it "returns 'False' for a non-existent file"
                 (do  fname <- removeTempFile "fileprovider"
                      x <- (fpDoesFileExist fpFileSystem)  fname
                      return $ not x
-                  ),
-              it "returns the contents from a file"
+                  )
+         it "returns the contents from a file"
                 (do   let content = "test content\nwith two lines"
                       fname <- getTempFileWithContent "fileprovider" content
                       readcontent <- (fpReadFile fpFileSystem) fname
                       return $ readcontent == content
-                      )],
-      context "Network connection file provider" [
+                      )
+      context "Network connection file provider" $ do
               it "sends the message '<doesfileexist name=xyz />' to the socket "
-                $ pending "test that it sends a request" ]]
+                $ pending "test that it sends a request"
 
     dotOnFirst = [".", "abc"]
     dotOnSecond = ["first", ".", "abc"]

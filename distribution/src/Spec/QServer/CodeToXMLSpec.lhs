@@ -1,7 +1,6 @@
 \begin{code}
   module Main where
-    import Test.Hspec
-    import Test.Hspec.Core
+    import Test.Hspec.Monadic
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -23,12 +22,12 @@
         "<Code><map><kvpair><key><string>main</string></key><value><instructions><i>QDelete \"q\"</i><i>QPullup \"r\"</i></instructions></value></kvpair></map></Code>")]
                   -- May need to revise as order of maps is undefined....
 
-    checkIt :: Memory Basis -> String -> [Spec]
+    --checkIt :: Memory Basis -> String -> SpecM ()
     checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ res ~=? (surroundWith "Code" $ toXML cd)
 
-    tests =  describe "StackToXML" $ List.map (uncurry checkIt) xmlValues
+    tests =  describe "StackToXML" $ mapM_ (uncurry checkIt) xmlValues
 
 
-    main = hspecX tests
+    main = hspec tests
 
 \end{code}
