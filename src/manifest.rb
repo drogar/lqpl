@@ -87,5 +87,6 @@ require "panels/stack_translation/stack_translation_controller"
 require "dialogs/simulate_results/simulate_results_controller"
 require "dialogs/about/about_controller"
 require "exit_handler"
+require "utility/xml_decode"
 
 

@@ -41,19 +41,12 @@ class DataDescriptorModel < AbstractDescriptorModel
 
 
   def self.parse_address_list(addresses_string)
-    return [] if addresses_string == ""
-    md = LIST_PATTERN.match addresses_string
-    raise InvalidInput, addresses_string if !md
-    rval=[md[2].to_i]
-    num_found = 1
-    while md
-      md = LIST_PATTERN.match(addresses_string[md[1].length*num_found,addresses_string.length])
-      return rval if !md
+    r = values_to_list addresses_string, LIST_PATTERN, do |rval, md|
       elem = md[2].to_i
       raise InvalidInput, "StackAddress '#{elem}' duplicated for single constructor" if rval.include? elem
       rval << elem
-      num_found += 1
     end
-    rval
+    raise InvalidInput, addresses_string if r.length == 0 and addresses_string and addresses_string.length > 0
+    r
   end
 end

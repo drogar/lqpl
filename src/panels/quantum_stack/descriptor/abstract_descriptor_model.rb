@@ -2,6 +2,7 @@
 
 
 class AbstractDescriptorModel
+  include XmlDecode
   attr_accessor :value
   attr_accessor :name
 

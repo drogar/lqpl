@@ -39,8 +39,12 @@ class Connection
     res = _make_connection
 
     jar_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
-    jar_path=jar_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
-    puts jar_path
+    if jar_path
+      jar_path=jar_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
+    else
+      jar_path = "./"
+    end
+
     if !res
       begin
         @process=ProcessBuilder.new(@connect_to, "").start

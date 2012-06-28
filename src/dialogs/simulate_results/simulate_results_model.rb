@@ -2,6 +2,7 @@ require 'exceptions/quantum_stack_model_invalid_create'
 
 
 class SimulateResultsModel
+  include XmlDecode
   attr_accessor :simulate_results
   attr_accessor :simulate_results_text
   attr_accessor :random_value_text
@@ -35,16 +36,7 @@ class SimulateResultsModel
   end
 
   def self.result_values_to_list(rvals,stack_trans)
-    return [] if !rvals or "" == rvals
-    ret = []
-    rv = TRIPLE_PATTERN.match(rvals)
-    return ret if !rv
-    matched_len = rv[0].length
-    ret << [stack_trans.reverse_lookup(rv[1]),rv[2],rv[3]]
-    while rv
-      rv = TRIPLE_PATTERN.match(rvals[matched_len, rvals.length])
-      return ret if !rv
-      matched_len += rv[0].length
+    values_to_list rvals, TRIPLE_PATTERN, do |ret, rv|
       ret << [stack_trans.reverse_lookup(rv[1]),rv[2],rv[3]]
     end
   end

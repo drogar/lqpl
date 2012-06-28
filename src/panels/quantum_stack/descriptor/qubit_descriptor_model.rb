@@ -22,17 +22,16 @@ class QubitDescriptorModel < AbstractDescriptorModel
 
   def self.parse_list(qubit_string)
     raise InvalidInput, "Must have qubit indicators" if !qubit_string or qubit_string.length == 0
-    md = LIST_PATTERN.match qubit_string
-    raise InvalidInput, qubit_string if !md
-    rval=[[self.translate_qubit(md[2]), self.translate_qubit(md[5])]]
-    [1,2,3].each do |num_found|
-      md = LIST_PATTERN.match(qubit_string[md[1].length*num_found,qubit_string.length])
-      return rval if !md
+    r = values_to_list qubit_string, LIST_PATTERN, do |rval,md|
       elem = [self.translate_qubit(md[2]), self.translate_qubit(md[5])]
       raise InvalidInput, "#{elem} duplicated in qubit" if rval.include? elem
       rval << elem
     end
-    rval
+
+    raise InvalidInput, qubit_string if r.length > 4
+
+    raise InvalidInput, qubit_string if r.length == 0 and qubit_string and qubit_string.length > 0
+    r
   end
 
   def self.translate_qubit(single_qubit)

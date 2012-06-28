@@ -1,6 +1,7 @@
 require 'panels/executable_code/code_pointer'
 
 class ExecutableCodeModel
+  include XmlDecode
   attr_accessor :the_code
   attr_accessor :the_code_pointer
   attr_accessor :the_code_was_updated
@@ -50,19 +51,10 @@ class ExecutableCodeModel
   end
 
   def self.instructions_to_list(instructions)
-    return [] if !instructions or instructions == ""
-    ret = []
-    ins = INSTRUCTIONS_PATTERN.match instructions
-    return ret if !ins
     count = 0
-    ret << sprintf("%3d  %s",count,ins[1])
-    matched_len = ins[0].length
-    while ins
-      ins = INSTRUCTIONS_PATTERN.match(instructions[matched_len,instructions.length])
-      return ret if !ins
+    values_to_list instructions, INSTRUCTIONS_PATTERN, do |ret, ins|
+      ret << sprintf("%3d  %s",count,ins[1])
       count += 1
-      ret <<  sprintf("%3d  %s",count,ins[1])
-      matched_len += ins[0].length
     end
   end
 
