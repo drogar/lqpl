@@ -10,7 +10,7 @@ ABOUT_STRING="<html> <center><strong>LQPL Emulator</strong> - Version #{LQPL_GUI
 Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />
 </html>"
 
-LICENSE="
+LICENSE_STRING="
 <html>
 Copyright &copy; 2006-2012, Brett G. Giles, Robin Cockett, University of Calgary<br />
 All rights reserved.<br />
@@ -30,5 +30,12 @@ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PRO
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,<br />
 STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,<br />
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<br />
+
+lqpl includes software redistributed under:</br>
+<ul>
+<li>The Apache 2.0 license - forms_rt.jar</li>
+<li>The Ruby license - monkeybars.jar - available at https://github.com/monkeybars/monkeybars-core</li>
+<li>The Common Public License version 1.0 - jruby-complete.jar - available at www.jruby.org</li>
+</ul>
 </html>
 "

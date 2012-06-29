@@ -15,3 +15,17 @@ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PRO
 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Licences of included software:
+
+forms_rt.jar: Licensed from Idea under the Apache version 2.0 licence. - See http://www.apache.org/licenses/LICENSE-2.0
+
+monkeybars.jar: Available at https://github.com/monkeybars/monkeybars-core - Licenced under the Ruby licence. See COPYING.markdown at that site. This includes the Foxtrot library also noted in COPYING.markdown
+
+jruby-complete.jar: Avaliable at www.jruby.org: JRuby is Copyright (c) 2007-2012 The JRuby project, and is released
+under a tri CPL/GPL/LGPL license. You can use it, redistribute it and/or modify it under the terms of the:
+
+  Common Public License version 1.0
+  GNU General Public License version 2
+  GNU Lesser General Public License version 2.1
+

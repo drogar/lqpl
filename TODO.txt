@@ -13,7 +13,7 @@ UI
 LQPL
   ...DONE  Auto start compiler and lqpl-serv
   -  Allow specification of where to find these (url, ip, port)
-  +  Upgrade to Haskell Platform 2012.02
+  ...DONE  Upgrade to Haskell Platform 2012.02
 
 CROSS-PLATFORM
   XXX  Get RAWR build working
