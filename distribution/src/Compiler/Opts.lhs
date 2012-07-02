@@ -52,7 +52,7 @@ options =
 
 inp,outp,incs,ll :: Maybe String -> Flag
 outp = Output . fromMaybe "stdout"
-inp  = Input  . fromMaybe "stdout"
+inp  = Input  . fromMaybe "stdin"
 incs = SearchDirs . filter (/= ";") . groupBy (\x y -> x /= ';' && y /= ';') . fromMaybe "."
 ll = LogLevel . read . fromMaybe "0"
 
