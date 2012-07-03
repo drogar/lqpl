@@ -24,9 +24,14 @@ public class Main
   }
   public static void main(String[] args) throws Exception
   {
+    String[] real_args;
+    real_args = new String[1];
+    real_args[0] = "--1.9";
     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "LQPL Emulator");
     RubyInstanceConfig config = new RubyInstanceConfig();
-    config.setArgv(args);
+
+    config.setArgv(real_args);
+    config.setCompatVersion(org.jruby.CompatVersion.RUBY1_9);
     setRuntime(JavaEmbedUtils.initialize(new ArrayList(0), config));
     String mainRubyFile = "main";
     ArrayList<String> config_data = new ArrayList<String>();

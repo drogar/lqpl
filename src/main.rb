@@ -42,6 +42,9 @@ def show_error_dialog_and_exit(exception, thread=nil)
   end
   if exception.kind_of? Exception
     puts exception.backtrace.join("\n")
+    File.open("lqplEmulatorError.log", "w") do |f|
+      f.puts exception.backtrace.join("\n")
+    end
   else
     # Workaround for JRuby issue #2673, getStackTrace returning an empty array
     output_stream = java.io.ByteArrayOutputStream.new

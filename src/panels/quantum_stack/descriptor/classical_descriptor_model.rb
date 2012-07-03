@@ -1,4 +1,5 @@
 class ClassicalDescriptorModel< AbstractDescriptorModel
+  include XmlDecode
   PATTERN=Regexp.new /^<ClassicalStack>(((<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>))*)<\/ClassicalStack>$/
 
   LIST_PATTERN = Regexp.new /^(<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>)/
