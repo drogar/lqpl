@@ -1,0 +1,6 @@
+#Import treeElection.qpl
+
+main::() =
+{  tre = FullNode(11,BottomNode(7),OneNode(5,BottomNode(3)));
+   ldr = elect(tre)
+}

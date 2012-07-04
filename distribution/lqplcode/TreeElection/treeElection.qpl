@@ -1,0 +1,109 @@
+qdata Coin     = {Heads | Tails}
+qdata Boolean  = {TRUE|FALSE}
+qdata ETree a  = {FullNode (a, ETree(a), ETree(a))  | OneNode (a,ETree(a)) | BottomNode (a)}
+
+toss ::( ; c:Coin) =
+{  q = |0>;
+   Had q;
+   measure q of 
+     |0> => {c = Heads}
+     |1> => {c = Tails}
+}
+
+elect::(tre:ETree(Int); leader :Int) = {
+  vote(tre; tre,atoss);
+  discard atoss;
+  case tre of
+    FullNode(d, left,right) => {
+            leader = elect (FullNode (d, left,right))
+       }
+    OneNode(d, child) => {
+            leader = elect (OneNode (d, child))
+       }
+    BottomNode(d) => {leader = d}
+}
+
+vote::(intre:ETree(Int); outtre:ETree(Int), aToss:Coin) = {
+  case intre of
+    BottomNode(d) => { outtre = BottomNode(d);aToss = toss() }
+    OneNode(d,child) => {
+       vote(child ; child, ctoss);
+       checkOneisBN(child;child,bool);
+       case bool of
+         TRUE => {singleVote(d,child,ctoss; outtre,aToss)}
+         FALSE =>{discard ctoss; outtre = OneNode(d,child); aToss = toss()}
+    }
+    FullNode(d,left,right) => {
+      vote(left;left,ltoss);
+      vote(right;right,rtoss);
+      checkBothAreBN(left,right;left,right,bool);
+      case bool of
+        FALSE => {outtre = FullNode(d,left,right); 
+              discard ltoss; discard rtoss;
+              aToss = toss();}
+        TRUE => {doubleVote(d,left,ltoss,right,rtoss;outtre,aToss)}
+    }
+}
+
+checkOneisBN::(intr:ETree(Int) ; out:ETree(Int), bool:Boolean) = {
+   case intr of
+    BottomNode(d)    => {out = BottomNode(d);    bool = TRUE}
+    OneNode(d,child) => {out = OneNode(d,child); bool = FALSE}
+    FullNode(d,l,r)  => {out = FullNode(d,l,r);  bool = FALSE}
+}
+
+checkBothAreBN::( in1:ETree(Int),  in2:ETree(Int);
+               out1:ETree(Int), out2:ETree(Int), bool:Boolean) = {
+ case in1 of
+    BottomNode(d)    => { out1 = BottomNode(d);
+      case in2 of
+         BottomNode(e)    => {out2 = BottomNode(e);    bool = TRUE}
+         OneNode(e,child) => {out2 = OneNode(e,child); bool = FALSE}
+         FullNode(e,l,r)  => {out2 = FullNode(e,l,r);  bool = FALSE}
+   }
+    OneNode(d,child) => {out1 = OneNode(d,child); out2 = in2; bool = FALSE}
+    FullNode(d,l,r)  => {out1 = FullNode(d,l,r);  out2 = in2; bool = FALSE}
+}
+
+singleVote::(val:Int,child:ETree(Int),ctoss:Coin; outt :ETree(Int),myToss:Coin) = {
+   case toss() of
+     Heads => { myToss = Heads;
+      case ctoss of
+       Heads => {outt = OneNode(val,child)}
+       Tails => {outt = BottomNode(val); discard child}
+     }
+     Tails => { 
+      case ctoss of
+       Tails => {outt = OneNode(val,child); myToss = Tails}
+       Heads => {outt = child; discard val; myToss = Heads}
+     }
+}
+
+doubleVote::(val:Int,left:ETree(Int),ltoss:Coin,right:ETree(Int),rtoss:Coin; 
+             outtre :ETree(Int),myToss:Coin) = {
+      case toss() of 
+        Tails => {
+          case ltoss of	 
+            Heads => { 
+              case rtoss of 
+                Heads => {outtre = FullNode(val,left,right); myToss = Heads}
+                Tails => {outtre = left; discard val; discard right; myToss = Heads}
+            }
+            Tails => { 
+              case rtoss of 
+                Tails => {outtre = FullNode(val,left,right); myToss = Tails}
+                Heads => {outtre = right; discard val; discard left; myToss = Heads}
+            }
+          }
+        Heads => {myToss = Heads;
+          case ltoss of 
+            Heads => { discard rtoss;  outtre = FullNode(val,left,right)}
+            Tails => {
+              case rtoss of 
+                Heads => {outtre = FullNode(val,left,right)}
+                Tails => {outtre = BottomNode(val); discard left; discard right}
+            }
+        }
+}
+
+

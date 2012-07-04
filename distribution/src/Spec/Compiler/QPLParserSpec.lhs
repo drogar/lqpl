@@ -161,6 +161,7 @@ Parser test data
                   ("Cons(a,b)", Econs "Cons" [Evar "a", Evar "b"]),
                   ("sub()", Ecall "sub" [] [] []),
                   ("sub(a)", Ecall "sub" [] [Evar "a"] []),
+                  ("sub(b, a mod b)", Ecall "sub" [] [Evar "b", Eapply Mod (Evar "a") (Evar "b")] []),
                   ("sub(a ; b)", Ecall "sub" [] [Evar "a"] ["b"]),
                   ("sub( ; b)", Ecall "sub" [] [] ["b"]),
                   ("sub(a ; )", Ecall "sub" [] [Evar "a"] []),

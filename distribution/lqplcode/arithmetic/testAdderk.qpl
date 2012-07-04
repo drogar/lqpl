@@ -1,0 +1,24 @@
+#Import adderkill.qpl
+#Import qubitListToInt.qpl
+
+main::()=
+{
+   a0 = |1>;
+   a1 = |0>;
+   Had a1;
+   a2 = |0>;
+   Had a2;
+   a3 = |0>;
+   Had a3;
+   b0 = |1>;
+   b1 = |1>;
+   b2=|0>;
+   Had b2;
+   b3=|0>;
+   ain = Cons(a0,Cons(a1,Cons(a2,Cons(a3,Nil))));
+   bin = Cons(b0,Cons(b1,Cons(b2,Cons(b3,Nil))));
+   c0 = |0>;
+   adderk( c0, ain, bin; c0,bin);
+   discard c0;
+   n = qubitListToInt(bin);
+}

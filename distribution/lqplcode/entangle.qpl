@@ -1,0 +1,14 @@
+
+main::() =
+{  
+ q=|0>;
+ r=|0>;
+ Had q;
+ {Had r; Not r}  <= q;
+ 
+
+ measure q of
+  |0> => {}
+  |1> => {}
+
+}

@@ -1,0 +1,25 @@
+#Import carrysave.qpl
+#Import carrysumgates.qpl
+adder::(c0:Qubit, asin:List(Qubit), bsin:List(Qubit);
+        c0:Qubit, asout:List(Qubit), aplusbout:List(Qubit)) =
+{   case asin of
+      Nil => { asout = Nil; aplusbout = Nil}
+      Cons(a, taila) =>
+        { case bsin of
+             Nil => { asout = Nil; aplusbout = Nil;}
+             Cons(b, tailb) =>
+              { c1 = |0>;
+                carry c0 a b c1;
+                case tailb of
+                  Nil => { Not b <= a;
+                           sum c0 a b;
+                           tailb = Cons(c1,Nil)}
+                  Cons( t, tlb') =>
+                         { tailb = Cons(t,tlb');
+                           adder c1 taila tailb;
+                           carryRev c0 a b c1;
+                           sum c0 a b;
+                           discard c1};
+                asout = Cons(a,taila);
+                aplusbout = Cons(b,tailb)}}
+}

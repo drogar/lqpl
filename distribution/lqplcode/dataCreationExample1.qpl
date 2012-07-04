@@ -1,0 +1,8 @@
+main::() = 
+{  q = |0>;
+   Had q;
+   measure q of //`\label{line:measure1}`
+     |0> => {i = 0}
+     |1> => {i = 17};
+   q = |0> //`\label{line:iexists}`
+}

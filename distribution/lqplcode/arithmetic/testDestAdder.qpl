@@ -1,0 +1,25 @@
+#Import destAdder.qpl
+#Import qubitListToInt.qpl
+
+main::()=
+{
+   a0 = |1>;
+   a1 = |0>;
+   Had a1;
+   a2 = |0>;
+   Had a2;
+   a3 = |0>;
+   Had a3;
+   a4=|1>;
+a5=|1>;
+   b0 = |1>;
+   b1 = |1>;
+   b2=|0>;
+   Had b2;
+   b3=|1>;
+   ain = Cons(a0,Cons(a1,Cons(a2,Cons(a3,Cons(a4,Cons(a5,Nil))))));
+   bin = Cons(b0,Cons(b1,Cons(b2,Cons(b3,Nil))));
+   c0 = |0>;
+   destAdder( c0,  ain, bin; aplusb);
+   n = qubitListToInt(aplusb);
+}

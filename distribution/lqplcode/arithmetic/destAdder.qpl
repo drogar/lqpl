@@ -1,0 +1,32 @@
+#Import Prelude.qpl
+#Import destCarry.qpl
+
+destAdder::(c0:Qubit, asin:List(Qubit), bsin:List(Qubit);
+        aplusbout:List(Qubit)) =
+{
+   case asin of 
+      Nil =>
+        {
+           case bsin of 
+             Nil => {aplusbout = Cons(c0,Nil)}
+             Cons(b,tailb) =>
+               { destCarry(c0,|0>,b; c0,b);
+                 destAdder(c0,Nil,tailb; tailb);
+                 aplusbout = Cons(b,tailb);
+               }
+        }
+
+      Cons(a, taila) =>
+        {
+       case bsin of 
+            Nil => {  destCarry(c0,|0>,a; c0,a);
+                 destAdder(c0,Nil,taila; taila);
+                 aplusbout = Cons(a,taila);
+              }
+             Cons(b, tailb) =>
+              { destCarry(c0,a,b; c0,b);
+                 destAdder(c0,taila,tailb; tailb);
+                 aplusbout = Cons(b,tailb);
+              }
+       }
+}

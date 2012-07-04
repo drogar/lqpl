@@ -1,0 +1,13 @@
+prepare::( ; a:Qubit, b:Qubit)=
+{ a = |0>;  b = |0>;
+  Had a;
+  Not b <= a;
+}
+teleport::(n:Qubit, a:Qubit, b:Qubit ; b:Qubit) =
+{ Not a <= n ;
+  Had n;
+  measure a of 
+      |0> => {}  |1> => {Not b};
+  measure n of
+      |0> => {}  |1> => {RhoZ b}
+}

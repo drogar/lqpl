@@ -1,0 +1,18 @@
+
+destCarry::(c:Qubit, a:Qubit, b:Qubit; c:Qubit, b:Qubit) =
+{ // MUST RETEST - Doesn't seem to give the right answer now.
+   measure a of
+     |0> => { 
+        Not b <= c;
+        c' = |0>;
+        Not c' <= b,c;
+        Not c <= c';
+        discard c' }
+     |1> => {
+        b' =|0>;
+        Not b' <= b;
+        Not b <= ~c;
+        Not c <= ~b,b';
+        discard b' }
+}
+         

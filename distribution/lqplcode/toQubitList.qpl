@@ -1,0 +1,17 @@
+#Import Prelude.qpl
+
+toQubitList::(n:Int ;  
+              nq:List(Qubit), n:Int)= 
+{ use n in 
+  { if n == 0      => 
+            { nq        = Nil}
+    (n mod 2) == 0 => 
+            { n'        = n >> 1; 
+              (nq', n') = toQubitList(n');
+              nq        = Cons(|0>, nq') }
+    else => { n'        = n >> 1; 
+              toQubitList(n'; nq',n');
+              nq        = Cons(|1>, nq') };
+    n = n 
+  }
+}

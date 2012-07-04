@@ -1,0 +1,14 @@
+#Import Prelude.qpl
+
+qubitListToInt :: (nq :List(Qubit) ; n :Int)= 
+{ case nq of
+    Nil => { n = 0}
+    Cons(q, nq') => 
+       { n' = qubitListToInt(nq');
+         measure q of 
+            |0> => {n1 = 0}
+            |1> => {n1 = 1};
+         use n1, n';
+         n = n1 + (n' << 1)
+       }
+}     

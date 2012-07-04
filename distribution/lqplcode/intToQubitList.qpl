@@ -1,0 +1,18 @@
+#Import Prelude.qpl 
+//`\label{line:itqlimport}` 
+
+toQubitList::(n:Int ;                 //Input: a probabilistic int `\label{line:itqlfunctionstart}`
+              nq:List(Qubit), n:Int)= //Output: qubit list, original int `\label{line:itqlfunctionend}`
+{ use n in 
+  { if n == 0      => //`\label{line:itqln0}`
+            { nq        = Nil}
+    (n mod 2) == 0 =>    //`\label{line:itqln1}`
+            { n'        = n >> 1;  //`\label{line:itqln2}`
+              (nq', n') = toQubitList(n');
+              nq        = Cons(|0>, nq') }
+    else => { n'        = n >> 1;  //`\label{line:itqln3}`
+              toQubitList(n'; nq',n');
+              nq        = Cons(|1>, nq') };
+    n = n //Recreate as probabilistic int //`\label{line:itqln4}`
+  }
+}

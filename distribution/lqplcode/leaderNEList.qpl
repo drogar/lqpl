@@ -1,0 +1,67 @@
+qdata Coin      = {Heads | Tails}
+qdata NList a  = {Cens (a, NList(a))  | Nel (a)}
+
+toss ::( ; c:Coin) =
+{  q = |0>;
+   Had q;
+   measure q of 
+     |0> => {c = Heads}
+     |1> => {c = Tails}
+}
+
+elect::(lis:NList(Int); leader :Int) = {
+  vote lis;
+  case lis of 
+    Cens(h,t) => { leader = elect (Cens(h,t))  }
+    Nel(hed)  => { leader = hed }
+}
+
+
+vote::(inlis:NList(Int); outlis:NList(Int)) = {
+   subvote(inlis ; btoss,tltoss, tres);
+   case tltoss of
+     Heads => { discard btoss; outlis = tres}
+     Tails => { case btoss of 
+         Tails => { outlis = tres}
+         Heads => { case tres of 
+             Nel (hed) => {outlis = Nel(hed)}
+             Cens(hd,tail) => { discard hd; outlis = tail}
+         }
+     }        
+}
+
+subvote::(inslis:NList(Int); bToss: Coin, prevToss :Coin, outslis :NList(Int)) ={
+  case inslis of
+    Nel(hed)  => { 
+      outslis = Nel(hed);
+      case toss() of
+        Heads => { bToss = Heads; prevToss = Heads}
+        Tails => { bToss = Tails; prevToss = Tails}
+    }
+    Cens(h,tl) => {
+      subvote(tl ; bToss, prToss, tailRes);
+      case toss() of 
+        Heads => { case prToss of 
+          Heads => { outslis = Cens (h, tailRes)}
+          Tails => { case tailRes of
+             Nel (b) => { discard b; outslis = Nel(h)}
+             Cens(b,tl) => { discard b; outslis = Cens (h,tl)}
+          };
+          prevToss = Heads
+        }
+        Tails => { outslis = Cens(h,tailRes); prevToss = Tails; discard prToss;}
+    }
+}
+    
+makeNListOfLength::(i:Int | ; mlis : NList(Int)) = {
+  if i == 1 => { mlis = Nel(1) }
+  else => {
+     ident = i;
+     tl = makeNListOfLength(i-1|);
+     mlis = Cens( ident, tl)
+  }
+}
+main::() =
+{  lis = makeNListOfLength(3|);
+   ldr = elect(lis)
+}

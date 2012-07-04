@@ -1,0 +1,8 @@
+qdata List a = {Nil | Cons(a, List(a))}
+
+append::(list1:List(a), list2:List(a); appendList:List(a))=
+{  case list1 of
+     Nil => {appendList = list2}
+     Cons(hd, tail) =>
+       { appendList = Cons(hd, append(tail, list2))}
+}

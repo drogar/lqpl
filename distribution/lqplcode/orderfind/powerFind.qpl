@@ -1,0 +1,23 @@
+#Import power.qpl
+
+powList::(base:QuintMod, pow:List(Qubit) ; 
+          res:QuintMod,  pow:List(Qubit))=
+{  case base of QuintMod(sizeA,modA,baseDig) => 
+     { use sizeA,modA;
+       res = cintToQuintMod(1,modA|sizeA);
+       base = QuintMod(sizeA,modA,baseDig);
+       case pow of 
+          Nil           => {pow=Nil; discard base} //  base^0 is 1
+          Cons(hdA,tlA) =>
+            { ctlCopyOne(hdA,base;hdA,base,basecopy); 
+              multiplyM basecopy  res;  
+              discard basecopy;
+              square(base; basesqd); 
+              powList basesqd tlA;
+              multiplyM basesqd res;  discard basesqd;
+              pow = Cons(hdA,tlA)}}
+}
+
+
+
+

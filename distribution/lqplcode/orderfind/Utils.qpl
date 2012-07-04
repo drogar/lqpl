@@ -1,0 +1,10 @@
+#Import inverseQft.qpl
+#Import ListUtils.qpl
+
+gcd::(a:Int, b:Int ; ans: Int) =
+{  use a, b in {
+     if b == 0 => {ans = a}
+        a == 0 => {ans = b}
+        a >= b => {ans = gcd(b, a mod b)}
+     else      => {ans = gcd(a, b mod a)}}
+}

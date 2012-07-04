@@ -1,0 +1,17 @@
+carry::(c0:Qubit, a:Qubit, b:Qubit, c1:Qubit;
+        c0:Qubit, a:Qubit, b:Qubit, c1:Qubit) =
+{  Not c1 <= b, a; 
+   Not b  <= a;
+   Not c1 <= b, c0
+}
+sum::(c:Qubit, a:Qubit, b:Qubit;
+      c:Qubit, a:Qubit, b:Qubit) =
+{ Not b <= a;
+  Not b <= c;
+}
+carryRev::(c0:Qubit, a:Qubit, b:Qubit, c1:Qubit;
+           c0:Qubit, a:Qubit, b:Qubit, c1:Qubit) =
+{  Not c1 <= b, c0;
+   Not b  <= a;
+   Not c1 <= b,a
+}

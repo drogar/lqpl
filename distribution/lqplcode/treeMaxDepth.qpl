@@ -1,0 +1,12 @@
+qdata TTree a = {Tip | Br(TTree(a), a, TTree(a)) | Node(a)}
+
+treeMaxDepth::(t:TTree(a); depth:Int) =
+{  case t of //`\label{line:flattenTree:casedepth}`
+     Tip     => {depth = 0}
+     Node(_) => {depth = 1}
+     Br(t1,_,t2) => 
+                { j := treeMaxDepth(t1);
+                  k := treeMaxDepth(t2);
+                  if j > k => { depth = 1 + j}
+                  else     => { depth = 1 + k}}
+}

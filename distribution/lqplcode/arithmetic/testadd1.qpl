@@ -1,0 +1,16 @@
+#Import Prelude.qpl
+#Import adder.qpl
+
+main::()=
+{
+   a0 = |0>;
+   Had a0;
+   b0 = |1>;
+   ain = Cons(a0,Nil);
+   bin = Cons(b0,Nil);
+   c0 = |0>;
+   adder c0 ain bin;
+   discard ain;
+   bsout = bin;
+   discard c0;
+}

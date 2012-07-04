@@ -1,0 +1,46 @@
+#Import Prelude.qpl
+
+ndestLength::(inLis:List(a); 
+              len:Int, outLis:List(a))=
+{  case inLis of
+     Nil => { len = 0; outLis = Nil}
+     Cons(hd,tl) => 
+            { ndestLength(tl; tlen, tail);
+              use tlen in { len = 1 + tlen};
+              outLis = Cons(hd, tail)}
+}
+
+makeZeroQubitList::(len:Int | ; outLis:List(Qubit))=
+{  if (len =< 0) => { outLis = Nil}
+   else          => { outListTail = makeZeroQubitList( len-1 |);
+                      outLis = Cons(|0>,outListTail)}
+}
+
+
+hadList::(inhqs:List(Qubit) ; outhqs:List (Qubit))= 
+{ case inhqs of 
+    Nil             => { outhqs = Nil }
+    Cons(q,hadtail) => 
+       {  Had q;
+          hadList hadtail;
+          outhqs = Cons(q, hadtail)}
+}
+
+append::(list1:List(a), list2:List(a) ; app:List(a))= 
+{ case list1 of
+     Nil           => {app = list2}
+     Cons(a,subl1) => 
+       { app = Cons(a, append(subl1, list2)) }
+}
+
+reverse::(inlis:List(a) ; rvlis:List(a))= 
+{  rvlis = rev'(inlis, Nil) }
+
+rev'::(inlist:List(a), accin:List(a) ; revlist:List(a)) = 
+{ case inlist of
+    Nil             => {revlist = accin}
+    Cons(a,sublist) => 
+      { acc     = Cons(a, accin);
+        revlist = rev'(sublist, acc) }
+}
+

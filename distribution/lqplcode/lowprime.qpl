@@ -1,0 +1,8 @@
+smallPrime::(a:Int | ;
+             isSmallPrime:Bool) =
+{ if a =< 1 => {isSmallPrime = false}
+     a == 2 || a == 3 || a == 5  => 
+               {isSmallPrime = true}
+     a == 4 => {isSmallPrime = false}
+  else      => {isSmallPrime = false}
+}   

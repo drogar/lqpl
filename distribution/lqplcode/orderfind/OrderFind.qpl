@@ -1,0 +1,19 @@
+#Import powerFind.qpl
+#Import inverseQft.qpl
+
+orderFind::(n:Int, x:Int | ; order:Int)= //`\label{of:signature}`
+{
+   size   := determineIntSize(n);  // `\label{of:sizeofn}`
+   sizeT  := 2 * size + 1 + 2;     // `\label{of:sizeoft}` 
+   makeZeroQubitList(sizeT | ; tList ); //`\label{of:makelist}`
+   hadList tList;                    //`\label{of:hadlist}`
+   xQm     = intToQuintMod(x);       //   `\label{of:makeqmod}`
+   powList xQm tList;              //  `\label{of:dotransform}`
+   discard xQm;                    //  `\label{of:implicitmeasure}`
+   inverseQft tList;               //  `\label{of:iqft}`
+   result  = qubitListToInt(tList);//   `\label{of:measure}`
+   gcdrs  := gcd(result,(2 << sizeT));
+   order   = sizeT mod gcdrs; //`\label{of:cfrac}`
+}
+   
+   
