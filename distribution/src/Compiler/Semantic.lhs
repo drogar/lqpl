@@ -529,7 +529,8 @@ checkCallArgs :: [Qtype] -> [Bool] -> [ Qtype]->
                  SymEntryGlobal ->
                   WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 checkCallArgs ctypes ctypsok qtypes fentry
-    = do  checkClassicals ctypsok
+    = do  semLog semLLTrace $ "checking Call Args (c) "++(show ctypes)++" (q) "++(show qtypes)
+          checkClassicals ctypsok
           let cargs = cargtypes fentry
           argCountOK ctypes cargs
           cmp <- argTypesOK isRigidTypeVar Map.empty ctypes cargs
@@ -541,7 +542,8 @@ checkCallArgs ctypes ctypsok qtypes fentry
 checkConsArgs :: [Qtype] -> SymEntryGlobal ->
                   WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 checkConsArgs  qtypes consentry
-    = do  let qargs = argtypes consentry
+    = do  semLog semLLTrace $ "checking Cons Args (q) "++(show qtypes)
+          let qargs = argtypes consentry
           argCountOK qtypes qargs
           cmp' <- argTypesOK isTypeVar Map.empty qtypes qargs
           semLog semLLDebug3 $ "Resulting map is "++show cmp'
@@ -566,7 +568,8 @@ argTypesOK :: (Qtype -> Bool) ->Map Identifier Qtype->[Qtype] ->
               [Qtype] ->
                WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 argTypesOK vartype mp qs rs
-           = instanceOfList vartype (zip qs rs) mp
+           = do semLog semLLDebug3 $ "checking Arg types: "++(show qs)++" to "++(show rs)
+                instanceOfList vartype (zip qs rs) mp
 
 
 

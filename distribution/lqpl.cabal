@@ -66,6 +66,12 @@ Test-Suite lqpl-parser-spec
    build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process
    hs-source-dirs:   src
    extensions:       CPP
+Test-Suite type-unification-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/TypeUnificationSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process,containers,mtl
+   hs-source-dirs:   src
+   extensions:       CPP
 Test-Suite utility-fileprovider-spec
     type:             exitcode-stdio-1.0
     main-is:          Spec/Utility/FileProviderSpec.lhs

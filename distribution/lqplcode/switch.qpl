@@ -1,0 +1,9 @@
+qdata Either a b = {Left (a) | Right (b)}
+
+eswitch::(ein:Either(a,b); eout:Either(b,a))=
+{ case ein of
+     Left(lef) =>
+       {eout = Right(lef)}
+     Right(rit) =>
+       {eout = Left(rit)}
+}

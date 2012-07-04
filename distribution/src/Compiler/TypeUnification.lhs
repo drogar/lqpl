@@ -22,50 +22,50 @@ import Compiler.UnificationErrors
 The whole type unification thing!
 
 First - Need to treat type variable in declarations differently from those
-that are created as we go.  Type declaration vars are created as 
-|TypeVariable| types, Function declaration vars are created as 
-|RigidVariable| types.  Anything created as we go will be a 
+that are created as we go.  Type declaration vars are created as
+|TypeVariable| types, Function declaration vars are created as
+|RigidVariable| types.  Anything created as we go will be a
 |MalleableVariable|.
 
 So, the type declaration:
 
-    qtype Either a b = {Left a | Right b}
+    qdata Either a b = {Left (a) | Right (b)}
 
 treats both |a| and |b| as |TypeVariables| and stores them that way
 in the global symbol table. This means there will be three entries:
 
    Either - ["a","b"] ["Left", "Right"]
 
-   Left -> input:[TypeVariable "a"], 
+   Left -> input:[TypeVariable "a"],
            output :[Either (TypeVariable "a")(TypeVariable "b")]
-   Right-> input:[TypeVariable "b"], 
+   Right-> input:[TypeVariable "b"],
            output :[Either (TypeVariable "a")(TypeVariable "b")]
 
-Note this means, for example that |Right 0| would return a type of 
+Note this means, for example that |Right 0| would return a type of
 |Either (MalleableVariable ti) (INT)|.
 
 This is the only way |MalleableVariable|s are introduced.
 
 The function declaration:
- 
-   eswitch::(ein:Either a b; eout:Either b a)={...}
+
+   eswitch::(ein:Either(a,b); eout:Either(b,a))={...}
 
 treats the |a| and |b| here as |RigidVariables|. The symbol table entry for
-|eswitch| will indicate an input argument type of 
+|eswitch| will indicate an input argument type of
 \[DeclaredType "Either" [RigidVariable "a", RigidVariable "b"]\]
 and the output will be similar:
 \[DeclaredType "Either" [RigidVariable "b", RigidVariable "a"]\]
 
 Assuming the code for |eswitch| is as follows:
-{ case ein of 
-     Left(lef) => 
+{ case ein of
+     Left(lef) =>
        {eout = Right(lef)}
      Right(rit) =>
        {eout = Left(rit)}
 }
 the following typechecking and unifications would take place:
 \subsubsection{Function declaration and entry}
-At the declaration a number of symbol table entries are committed. 
+At the declaration a number of symbol table entries are committed.
 First, the global symbol table for the function itself as indicated above.
 This is not actually used further in the body of a non-recursive function.
 
@@ -78,13 +78,13 @@ This constraint is removed at the end of the function, when |eout|
 will not longer be in scope.
 
 \subsubsection{First, at |case ein of|}
-The variable ein will be evaluated and its type saved. In this case it 
+The variable ein will be evaluated and its type saved. In this case it
 is a variable of type as above. Then the case clauses are checked.
 
 \subsubsection{|Left| clause}
 The constructor |Left| is checked in the global symbol table to ensure
 it is a constructor of |ein|'s type. Then, the type of |lef| is determined
-by a reverse construction of |ein|'s type. That is, what type would |lef| 
+by a reverse construction of |ein|'s type. That is, what type would |lef|
 have to have to give |ein| its type. This sets the type of |lef| to
 |RigidVariable "a"|
 \subsubsection{First assignment to |eout|}.
@@ -92,49 +92,49 @@ The statement |eout = Right(lef)| does the following: First, the expression
 |Right (lef)| is evaluated. |Right| is found in the global symbol table. It
 takes one argument of type |TypeVariable "b"| and returns the type
 |Either (TypeVariable "a") (TypeVariable "b")|. The |TypeVariable b| is
-matched to |lef|'s type, giving that $b \rightarrow RigidVariable a$. 
+matched to |lef|'s type, giving that $b \rightarrow RigidVariable a$.
 When evaluating the return type of the constructor, we will not find a binding
 for the typevariable "a" in the constructors arguments. Therefore, we will
 create a new |MalleableVariable| for that one, giving a return type of
-|Either (MalleableVariable "tv0") (RigidVariable "a"). 
+|Either (MalleableVariable "tv0") (RigidVariable "a").
 
 Upon assignment to |eout|, this will be compared to the constraint of
-|eout -> Either (RigidVariable "b") (RigidVariable "a")|. This will 
+|eout -> Either (RigidVariable "b") (RigidVariable "a")|. This will
 give us the equation |MalleableVariable "tv0" = RigidVariable "b"|.
 
 \subsubsection{Other side of case (|Left|)}
-Conversely, the other case gives us a typing of 
+Conversely, the other case gives us a typing of
 |eout -> Either (RigidVariable "b") (MalleableVariable "tv1")| and
 the equation |MalleableVariable "tv1" = RigidVariable "a"|
 
 At the end of the case, each of the cases will have created an entry
 in the linear symbol table. These must now be merged.
 
-The first step is to apply any equations that give values for the 
-|MalleableVariables|.  As illustrated above, we have two and the result 
+The first step is to apply any equations that give values for the
+|MalleableVariables|.  As illustrated above, we have two and the result
 will be that both entries for |eout| will show a type of
 |Either (RigidVariable "b") (RigidVariable "a")|. Therefore, we have no issues.
 
 
 \subsection{Invalid return type}
 Consider, however, the code:
-  badsw::{ein:Either (a,b); eout : Either (b,a) = 
+  badsw::{ein:Either (a,b); eout : Either (b,a) =
 { case ein of Left(lef) => {eout = Left(lef)}
               Right(righ) => {eout = Right(righ)} }
 
 In this code, the routine declaration generates the same symbol table entries
 and constraints as the correct one. However the code in the first clause
-will give a typing for |eout| of 
-|Either (RigidVariable "a") (MaleableVariable "tv0")|. This gives an 
-immediate error when checking the constraint as trying to equate 
+will give a typing for |eout| of
+|Either (RigidVariable "a") (MaleableVariable "tv0")|. This gives an
+immediate error when checking the constraint as trying to equate
 |RigidVariable "a"| and |RigidVariable "b"| leads to an immediate error.
 
 
 
-The function instanceOf checks to see if |t1| is an instance of 
+The function instanceOf checks to see if |t1| is an instance of
 |t2|, given that |t2| may be (or contain) type variables (of either
-the |TypeVariable| or |RigidVariable| kind) and these may point to 
-any one thing. (i.e., having them already in the map is an error, 
+the |TypeVariable| or |RigidVariable| kind) and these may point to
+any one thing. (i.e., having them already in the map is an error,
 unless the entry is already the same). Other type checking is done
 at the same time.
 
@@ -142,36 +142,40 @@ at the same time.
 Next, consider the statement
 
    c = Cons(0,Nil)
-The first part of the processing generates a type for the $Nil$ 
-constructor. As above, this will be given the type 
+The first part of the processing generates a type for the $Nil$
+constructor. As above, this will be given the type
   \[  List (MalleableVariable tv0)\]
 The constant $0$ has the type $INT$.
 
-When we try to check the argument types of the $Cons$, we will get to 
-a point where the typevariable "a" must be both an INT and a 
-MalleableVariable tv0.  This must be added as a type relation for the 
+When we try to check the argument types of the $Cons$, we will get to
+a point where the typevariable "a" must be both an INT and a
+MalleableVariable tv0.  This must be added as a type relation for the
 rest of the program and used to replace any uses of tv0 in the future.
 
 \begin{code}
 
 
-instanceOf :: (Qtype -> Bool) ->Qtype -> Qtype -> Map Identifier Qtype -> 
+instanceOf :: (Qtype -> Bool) ->Qtype -> Qtype -> Map Identifier Qtype ->
          WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
-instanceOf varType t1 t2 un 
+instanceOf varType t1 t2 un
     | t1 == t2 = return un
     | ((isBaseType t1 && isBaseType t2) && (t1 /= t2))   ||
-      (isBaseType t1 && isDeclType t2) || 
+      (isBaseType t1 && isDeclType t2) ||
       (isBaseType t2 && isDeclType t1)
           = fail $ unequalDataType  (show t1) (show t2)
     | isProc t1 || isProc t2  = fail noFuncTypes
     | varType t1 = fail $ illegalLHSType (show t1) (show t2)
     | varType t2 = instanceOfVar (getTypeVar t2) t1 un
-    | isMalleableTypeVar t1 
+    | isMalleableTypeVar t1
         = instanceOfVar (getTypeVar t1) t2 un
     | isMalleableTypeVar t2
         = instanceOfVar (getTypeVar t2) t1 un
-    | isDeclType t1 && isDeclType t2 
-        = if typeId t1 == typeId t2 
+    | isTypeVar t1 && ( not $ varType t1)       --Allow typevar when hating rigid types :)
+        = instanceOfVar (getTypeVar t1) t2 un
+    | isTypeVar t2 && (not $ varType t2)
+        = instanceOfVar (getTypeVar t2) t1 un
+    | isDeclType t1 && isDeclType t2
+        = if typeId t1 == typeId t2
             then instanceOfList varType (zip (typeParms t1) (typeParms t2)) un
             else fail $ uncontainableDataType (show t1) (show t2)
     | otherwise = fail $ unequalDataType (show t1) (show t2)
@@ -182,15 +186,15 @@ instanceOfVar Nothing t _
     = fail $ patternMissing "instanceOfVar" "No variable" (show t)
 instanceOfVar (Just a) t un
     = case (Map.lookup a un) of
-           Just telse -> 
+           Just telse ->
                if t == telse then return un -- un' <- unify t telse un
                else do  t' <- unify t telse
                         return $ Map.insert a t' un
-           Nothing -> 
+           Nothing ->
                  return $ Map.insert a t un
 
-instanceOfList :: (Qtype -> Bool) ->[(Qtype,Qtype)] -> 
-                  Map Identifier Qtype -> 
+instanceOfList :: (Qtype -> Bool) ->[(Qtype,Qtype)] ->
+                  Map Identifier Qtype ->
                   WriterT CompilerLogs SemStateMonad(Map Identifier Qtype)
 instanceOfList vt [] un = return un
 instanceOfList vt ((a,b):ts) un
@@ -213,7 +217,7 @@ restriction t1 t2
     = do containedInOrFail t1 t2 -- OK - can restrict
          restrict t1 t2 Map.empty
 
-restrict:: Qtype -> Qtype -> Map Identifier Qtype 
+restrict:: Qtype -> Qtype -> Map Identifier Qtype
         -> WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 restrict t1 t2 mp
    | t1 == t2      =  return mp
@@ -224,7 +228,7 @@ restrict t1 t2 mp
                           restrictList (zip t1s t2s) mp
    | otherwise     = fail $ patternMissing  "restrict" (show t1)  (show t2)
 
-restrictList :: [(Qtype,Qtype)] -> Map Identifier Qtype -> 
+restrictList :: [(Qtype,Qtype)] -> Map Identifier Qtype ->
                 WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 restrictList [] mp = return mp
 restrictList (t1t2:ts) mp
@@ -235,11 +239,11 @@ restrictList (t1t2:ts) mp
 \end{code}
 
 The |containedInOrFail| stuff is there to check that the right
-hand argument is a rigid type variable (or only contains rigid ones) 
+hand argument is a rigid type variable (or only contains rigid ones)
 when the left hand is not the same as the right hand.  So
  List (QUBIT) List(a) would be ok
 
-but 
+but
  List(b) List (a) would not.
 
 \begin{code}
@@ -250,24 +254,24 @@ containedInOrFailm t1 (Just t2) = containedInOrFail t1 t2
 
 containedInOrFail :: Qtype -> Qtype -> WriterT CompilerLogs SemStateMonad ()
 containedInOrFail t1 t2
-    | t1 == t2 = do  semLog semLLDebug  "ciof types are equal" 
+    | t1 == t2 = do  semLog semLLDebug  "ciof types are equal"
                      return ()
     | (isBaseType t1 && isBaseType t2) ||
-      (isBaseType t1 && isDeclType t2) || 
-      (isBaseType t2 && isDeclType t1) 
+      (isBaseType t1 && isDeclType t2) ||
+      (isBaseType t2 && isDeclType t1)
            = fail $ uncontainableDataType (show t1) (show t2)
    | isRigidTypeVar t1 && isRigidTypeVar t2
         = fail $ nocontainOfRigidVariables (show t1) (show t2)
-   | isRigidTypeVar t2 || isTypeVar t2 
-       =  semLog semLLDebug $ "Contained In or fail with tv on right " ++ 
+   | isRigidTypeVar t2 || isTypeVar t2
+       =  semLog semLLDebug $ "Contained In or fail with tv on right " ++
           show t1 ++ show t2
    | isDeclType t1 && isDeclType t2
        = if (getDeclTypeId t1 == getDeclTypeId t2) then
                 do  semLog semLLDebug  $ "Ciof with mapping " ++ (show t1) ++ (show t2)
-                    mapM_  (uncurry containedInOrFail) $ 
+                    mapM_  (uncurry containedInOrFail) $
                             zip (getDeclTypes t1) (getDeclTypes t2)
          else  fail $ uncontainableDataType (show t1) (show t2)
-   | isMalleableTypeVar t2 
+   | isMalleableTypeVar t2
        = do   semLog semLLDebug $ "Ciof with t2 malleable " ++ (show t2)
               unifyVar (fromMaybe "" $ getTypeVar t2) t1
               return ()
@@ -278,7 +282,7 @@ containedInOrFail t1 t2
    | otherwise = fail $ patternMissing "containedInOrFail" (show t1)  (show t2)
 
 
-checkTypesInMapPairs :: Map String (SymEntryLinear,SymEntryLinear) -> 
+checkTypesInMapPairs :: Map String (SymEntryLinear,SymEntryLinear) ->
                         WriterT CompilerLogs SemStateMonad SymbolTableLinear
 checkTypesInMapPairs sts =
     do let (eqPrs, uneqPrs) = Map.partition (uncurry (==)) sts
@@ -303,17 +307,17 @@ checkType st1 st2 assigns =
        t' <-  deriveType isMalleableTypeVar assigns (qtype st1) --Fix malleables?
        return (assigns, st1{qtype = t'})
 
-       
+
 --tupleizeTE :: TypeRelation -> (Qtype,Qtype)
 --tupleizeTE (ContainedIn qt1 qt2) = (qt1, qt2)
 
---unifyTE :: TypeRelation -> Map Identifier Qtype -> 
+--unifyTE :: TypeRelation -> Map Identifier Qtype ->
 --           WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 --unifyTE (ContainedIn qt1 qt2) = unify qt1 qt2
 --
---unifyTESet :: Set TypeRelation -> Map Identifier Qtype -> 
+--unifyTESet :: Set TypeRelation -> Map Identifier Qtype ->
 --              WriterT CompilerLogs SemStateMonad(Map Identifier Qtype)
---unifyTESet setTE 
+--unifyTESet setTE
 --    = unifyList $ Set.toList $ Set.map tupleizeTE setTE
 
 
@@ -326,25 +330,25 @@ I'm not sure if this is usable  or needed at all anymore
 
 unify :: Qtype -> Qtype -> WriterT CompilerLogs SemStateMonad ( Qtype)
 unify t1 t2  | t1 == t2 = return t1
-unify t1 t2 
+unify t1 t2
    | ((isBaseType t1 && isBaseType t2) && (t1 /= t2))   ||
-     (isBaseType t1 && isDeclType t2) || 
+     (isBaseType t1 && isDeclType t2) ||
      (isBaseType t2 && isDeclType t1)
-       = fail $ unequalDataType  (show t1) (show t2)
+       = fail $ unequalDataType  ("from Unify"++show t1) (show t2)
 
 unify (Qproc _ _) _   = fail noFuncTypes
 unify _ (Qproc _ _)   = fail noFuncTypes
 
 
 unify (MalleableVariable a) t --a must be a "t"
-    = unifyVar a t 
+    = unifyVar a t
 
 unify t (MalleableVariable a)  -- a must be at least "t"
-    = unifyVar a t 
+    = unifyVar a t
 
 
 unify (DeclaredType tid ts) (DeclaredType pid ps)
-   | tid == pid = do typs <- unifyList (zip ts ps) 
+   | tid == pid = do typs <- unifyList (zip ts ps)
                      return $ DeclaredType tid typs
    | otherwise = fail $ unequalDataType tid pid
 
@@ -365,7 +369,7 @@ unifyList = mapM (uncurry unify)
 
 \end{code}
 
-|deriveTypes| is used when calling a cons or proc. The rigid or typevariables in the 
+|deriveTypes| is used when calling a cons or proc. The rigid or typevariables in the
 declarations are "specified" by the input arguments.
 
 Deriving will then replace the rigids with their respective items, or new
@@ -373,14 +377,14 @@ malleable type vars if not specified.
 
 \begin{code}
 
-deriveTypes :: (Qtype -> Bool) -> Map Identifier Qtype -> [Qtype] -> 
+deriveTypes :: (Qtype -> Bool) -> Map Identifier Qtype -> [Qtype] ->
                WriterT CompilerLogs SemStateMonad [Qtype]
-deriveTypes vt  = mapM . deriveType vt 
+deriveTypes vt  = mapM . deriveType vt
 
-deriveType :: (Qtype -> Bool) -> Map Identifier Qtype -> 
+deriveType :: (Qtype -> Bool) -> Map Identifier Qtype ->
               Qtype -> WriterT CompilerLogs SemStateMonad(Qtype)
 deriveType vt mp t
-    | isDeclType t = 
+    | isDeclType t =
         do let dtypes = getDeclTypes t
            dtypes' <- deriveTypes vt mp dtypes
            return $ setDeclTypes t dtypes'
@@ -406,12 +410,12 @@ fixMalleable  t@(DeclaredType tid tparms)
          return $ DeclaredType tid tparms'
 fixMalleable t = return t
 
-fixMalleablesInMap :: Map Identifier Qtype -> 
+fixMalleablesInMap :: Map Identifier Qtype ->
                       WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 fixMalleablesInMap mp
     = do let (keys,vals) = unzip $ Map.toList mp
          vals' <- fixMalleables vals
          return $ Map.fromList $ zip keys vals'
-           
+
 
 \end{code}

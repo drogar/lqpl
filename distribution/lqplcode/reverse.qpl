@@ -1,0 +1,22 @@
+qdata List a = {Nil | Cons(a, List(a))}
+
+reverse::(lis:List(a) ; revlis:List(a))= 
+{  rev' (lis, Nil ; revlis) }
+
+rev'::(lis:List(a), accumIn:List(a) ; returnList:List(a))= 
+{  case lis of //`\label{line:rev:caserev}`
+     Nil            => { returnList = accumIn}
+     Cons(hd, tail) => { acc        = Cons(hd, accumIn);
+                         returnList = rev'(tail, acc)}
+}
+
+main ::() = {
+q=|0>;
+Had q;
+measure q of
+    |0> => {lis = Cons (1, Cons(2,Nil))}
+    |1> => {lis = Cons(9,Cons(5, Cons(7,Nil)))};
+
+reverse lis
+
+}
