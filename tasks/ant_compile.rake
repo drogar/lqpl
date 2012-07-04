@@ -81,8 +81,8 @@ dist = namespace :dist do
   end
   desc "Make a server source distribution"
   task :server_source =>["out/lqpl-server-#{LQPL_GUI_VERSION}-source"] do
-    Dir.foreach(LQPL_SERVER_DIR+"distribution") do |ssource|
-      sh "cp -aR #{LQPL_SERVER_DIR}distribution/#{ssource} out/lqpl-server-#{LQPL_GUI_VERSION}-source" if not SERVER_EXCLUDE_FROM_SOURCE.include? ssource
+    Dir.foreach(LQPL_SERVER_DIR) do |ssource|
+      sh "cp -aR #{LQPL_SERVER_DIR}/#{ssource} out/lqpl-server-#{LQPL_GUI_VERSION}-source" if not SERVER_EXCLUDE_FROM_SOURCE.include? ssource
     end
     $stdout << "Creating tar file: out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz"
     sh "tar #{tar_options} -czf out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-server-#{LQPL_GUI_VERSION}-source"
