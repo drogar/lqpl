@@ -2,10 +2,20 @@ require 'ant'
 require 'src/version'
 require 'config/build_config'
 
+directory "out/bin"
 directory "out/production"
 directory "out/production/lqpl_gui"
 
 build = namespace :build do
+  desc 'Build the Haskell LQPL server'
+  task :server => "out/bin" do
+    db = "/dist/build"
+    sh "(cd #{LQPL_SERVER_DIR}; runghc Setup.hs clean && runghc Setup.hs configure && runghc Setup.hs build)"
+    SERVER_PROGRAMS.each do |sp|
+      sh "cp #{LQPL_SERVER_DIR}#{db}/#{sp}/#{sp} out/bin"
+      sh "strip out/bin/#{sp}"
+    end
+  end
   desc 'Copy JRuby files in preparation for JAR'
   task :copy_jruby => "out/production/lqpl_gui" do
     ant.copy :todir => "out/production/lqpl_gui" do
@@ -53,7 +63,7 @@ dist = namespace :dist do
   task :binary => ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",build[:jar]] do
     sh "cp -a out/production/lqpl_gui.jar out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/"
     sh "cp -a lib/java/* out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java/"
-    BIN_INCLUDES.each do |f|
+    DIST_INCLUDES.each do |f|
       sh "cp -a #{f}  out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/" if File.file?(f)
       sh "cp -aR #{f}  out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/" if File.directory?(f)
     end
