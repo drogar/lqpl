@@ -1,0 +1,58 @@
+Name:                lqpl
+Version:             0.9.0
+Stability:           Experimental
+Synopsis:            Compiler for Linear-QPL
+Description:         A command-line and server based compilerfor Linear-QPL. LQPL is a functional
+                     quantum programming language that allows people to experiment with and
+                     visualize the effects of quantum algorithms. A separate GUI front end to the
+                     compiler and emulator is available.
+tested-with:         GHC
+License:             BSD3
+License-file:        ../LICENSE
+Author:              Brett Giles, Robin Cockett
+Maintainer:          brett.giles@ucalgary.ca
+bug-reports:         mailto:brett.giles@ucalgary.ca
+Stability:           Experimental
+homepage:            http://pll.cpsc.ucalgary.ca/lqpl
+Build-Type:          Simple
+Cabal-Version:       >=1.9.2
+Test-Suite compiler-server-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers,random
+   hs-source-dirs:   src,../Common/src
+   extensions:       FlexibleInstances,CPP
+Test-Suite compiler-server-connection-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerConnectSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers
+   hs-source-dirs:   src,../Common/src
+   extensions:       FlexibleInstances,CPP
+Test-Suite lqpl-parser-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/QPLParserSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process
+   hs-source-dirs:   src,../Common/src
+   extensions:       CPP
+Test-Suite type-unification-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/TypeUnificationSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process,containers,mtl
+   hs-source-dirs:   src,../Common/src
+   extensions:       CPP
+Test-Suite utility-fileprovider-spec
+    type:             exitcode-stdio-1.0
+    main-is:          Spec/Utility/FileProviderSpec.lhs
+    build-depends:    HUnit,hspec,QuickCheck,base,directory,filepath,network,parsec,process,unix
+    hs-source-dirs:   src,../Common/src
+    extensions:       FlexibleInstances,CPP
+Executable lqpl
+  Main-is:           Compiler/Main.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,transformers,parsec,hspec
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    src,../Common/src
+Executable lqpl-compiler-server
+  Main-is:           Compiler/ServerMain.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,hspec
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    src,../Common/src
