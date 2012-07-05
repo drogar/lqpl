@@ -1,2 +1,0 @@
-class InvalidInput < RuntimeError
-end
