@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
+<dict>
+  <key>CFBundleName</key>
+  <string>LQPL Emulator</string>
+  <key>CFBundleIdentifier</key>
+  <string>com.drogar.lqpl</string>
+  <key>CFBundleVersion</key>
+  <string>100.0</string>
+  <key>CFBundleAllowMixedLocalizations</key>
+  <string>true</string>
+  <key>CFBundleExecutable</key>
+  <string>JavaApplicationStub</string>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>LQPL</string>
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+  <key>CFBundleIconFile</key>
+  <string>lqpl.icns</string>
+  <key>Java</key>
+  <dict>
+    <key>MainClass</key>
+    <string>com.drogar.lqpl.Main</string>
+    <key>JVMVersion</key>
+    <string>1.6+</string>
+    <key>apple.laf.useScreenMenuBar</key>
+    <string>true</string>
+    <key>ClassPath</key>
+    <string>$JAVAROOT/lqpl_gui.jar:$JAVAROOT/lib/java/forms_rt.jar:$JAVAROOT/lib/java/jruby-complete.jar:$JAVAROOT/lib/java/monkeybars-1.1.1.jar</string>
+  </dict>
+</dict>
+</plist>

@@ -1,0 +1,10 @@
+qdata Coin = {heads | tails}
+cflip::( ; c:Coin) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = Heads}
+     |1> => {c = Tails}
+}
+main::() =
+{  a = cflip()}
