@@ -68,7 +68,8 @@ dist = namespace :dist do
       sh "cp -aR #{f}  out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/" if File.directory?(f)
     end
     copy_server_bin "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin/"
-    $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz"
+    $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
+    sleep 0.75
     sh "tar #{tar_options} -czf out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}"
   end
   desc "Make a gui source distribution"
@@ -76,7 +77,8 @@ dist = namespace :dist do
     Dir.foreach(".") do |gsource|
       sh "cp -aR #{gsource} out/lqpl-gui-#{LQPL_GUI_VERSION}-source" if not GUI_EXCLUDE_FROM_SOURCE.include? gsource
     end
-    $stdout << "Creating tar file: out/lqpl-gui-#{LQPL_GUI_VERSION}-source.tgz"
+    $stdout << "Creating tar file: out/lqpl-gui-#{LQPL_GUI_VERSION}-source.tgz\n"
+    sleep 0.25
     sh "tar #{tar_options} -czf out/lqpl-gui-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-gui-#{LQPL_GUI_VERSION}-source"
   end
   desc "Make a server source distribution"
@@ -84,7 +86,8 @@ dist = namespace :dist do
     Dir.foreach(LQPL_SERVER_DIR) do |ssource|
       sh "cp -aR #{LQPL_SERVER_DIR}/#{ssource} out/lqpl-server-#{LQPL_GUI_VERSION}-source" if not SERVER_EXCLUDE_FROM_SOURCE.include? ssource
     end
-    $stdout << "Creating tar file: out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz"
+    $stdout << "Creating tar file: out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz\n"
+    sleep 0.25
     sh "tar #{tar_options} -czf out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-server-#{LQPL_GUI_VERSION}-source"
   end
   if mac
