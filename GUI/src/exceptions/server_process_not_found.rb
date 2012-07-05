@@ -1,0 +1,2 @@
+class ServerProcessNotFound < RuntimeError
+end
