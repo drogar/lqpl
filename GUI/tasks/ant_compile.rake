@@ -10,9 +10,15 @@ build = namespace :build do
   desc 'Build the Haskell LQPL server'
   task :server => "out/bin" do
     db = "/dist/build"
-    sh "(cd #{LQPL_SERVER_DIR}; runghc Setup.hs clean && runghc Setup.hs configure && runghc Setup.hs build)"
+    sh "(cd #{LQPL_COMPILER_DIR}; runghc Setup.hs clean && runghc Setup.hs configure && runghc Setup.hs build)"
+    sh "(cd #{LQPL_EMULATOR_DIR}; runghc Setup.hs clean && runghc Setup.hs configure && runghc Setup.hs build)"
     SERVER_PROGRAMS.each do |sp|
-      sh "cp #{LQPL_SERVER_DIR}#{db}/#{sp}/#{sp} out/bin"
+      if File.file? "#{LQPL_COMPILER_DIR}#{db}/#{sp}/#{sp}"
+        sh "cp #{LQPL_COMPILER_DIR}#{db}/#{sp}/#{sp} out/bin"
+      end
+      if File.file? "#{LQPL_EMULATOR_DIR}#{db}/#{sp}/#{sp}"
+        sh "cp #{LQPL_EMULATOR_DIR}#{db}/#{sp}/#{sp} out/bin"
+      end
       sh "strip out/bin/#{sp}"
     end
   end
@@ -71,21 +77,19 @@ dist = namespace :dist do
     $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz"
     sh "tar #{tar_options} -czf out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}"
   end
-  desc "Make a gui source distribution"
-  task :gui_source =>["out/lqpl-gui-#{LQPL_GUI_VERSION}-source"] do
+  desc "Make a source distribution"
+  task :source =>["out/lqpl-#{LQPL_GUI_VERSION}-source"] do
     Dir.foreach(".") do |gsource|
       sh "cp -aR #{gsource} out/lqpl-gui-#{LQPL_GUI_VERSION}-source" if not GUI_EXCLUDE_FROM_SOURCE.include? gsource
     end
-    $stdout << "Creating tar file: out/lqpl-gui-#{LQPL_GUI_VERSION}-source.tgz"
-    sh "tar #{tar_options} -czf out/lqpl-gui-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-gui-#{LQPL_GUI_VERSION}-source"
-  end
-  desc "Make a server source distribution"
-  task :server_source =>["out/lqpl-server-#{LQPL_GUI_VERSION}-source"] do
-    Dir.foreach(LQPL_SERVER_DIR) do |ssource|
-      sh "cp -aR #{LQPL_SERVER_DIR}/#{ssource} out/lqpl-server-#{LQPL_GUI_VERSION}-source" if not SERVER_EXCLUDE_FROM_SOURCE.include? ssource
+    HASKELL_SOURCE_DIRS.each do |theDir|
+      sh "mkdir out/lqpl#{LQPL_GUI_VERSION}-source/#{theDir}"
+      Dir.foreach(theDir) do |ssource|
+        sh "cp -aR #{theDir}/#{ssource} out/lqpl#{LQPL_GUI_VERSION}-source/#{theDir}" if not SERVER_EXCLUDE_FROM_SOURCE.include? ssource
+      end
     end
-    $stdout << "Creating tar file: out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz"
-    sh "tar #{tar_options} -czf out/lqpl-server-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-server-#{LQPL_GUI_VERSION}-source"
+    $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-source.tgz\n"
+    sh "tar #{tar_options} -czf out/lqpl-#{LQPL_GUI_VERSION}-source.tgz out/lqpl-gui-#{LQPL_GUI_VERSION}-source"
   end
   if mac
     task :mac_dirs => ["out/LQPLEmulator.app/Contents/MacOS", "out/LQPLEmulator.app/Contents/PkgInfo","out/LQPLEmulator.app/Contents/Resources/Java/bin","out/LQPLEmulator.app/Contents/Resources/Java/lib/java"]
