@@ -1,0 +1,10 @@
+.bundle
+.idea
+*.iml
+*.lock
+tmp
+out
+testdata/**/*.qpo
+demo
+package
+Manifest

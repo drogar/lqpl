@@ -1,0 +1,2 @@
+class QuantumStackModelInvalidCreate < RuntimeError
+end
