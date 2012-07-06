@@ -16,7 +16,7 @@
     makeBoolParseError :: String -> Assertion
     makeBoolParseError s = assertBool ("'"++s++"' returns error") (expectLeftString (getCommand s))
 
-    main = hspec $ describe "Parse Server Commands" $ mapM_ (makeSpec) tests
+    main = hspecX $ describe "Parse Server Commands" $ mapM_ (makeSpec) tests
 
     makeSpec a = it ("hunit test: "++ show a) $ a
 

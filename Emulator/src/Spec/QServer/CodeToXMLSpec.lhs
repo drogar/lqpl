@@ -28,6 +28,6 @@
     tests =  describe "StackToXML" $ mapM_ (uncurry checkIt) xmlValues
 
 
-    main = hspec tests
+    main = hspecX tests
 
 \end{code}

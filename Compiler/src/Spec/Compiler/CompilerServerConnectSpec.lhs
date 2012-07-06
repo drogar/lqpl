@@ -20,7 +20,7 @@
 
 
     main = do
-      hspec compilerSpecs
+      hspecX compilerSpecs
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do

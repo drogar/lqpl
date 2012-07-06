@@ -1,4 +1,5 @@
 require 'communications/connection'
+EMULATOR = "lqpl-emulator"
 
 class LqplEmulatorServerConnection < Connection
   #include Singleton
@@ -6,7 +7,7 @@ class LqplEmulatorServerConnection < Connection
 
   def initialize(port=9502)
     super(port)
-    @connect_to = "lqpl-serv"
+    @connect_to = EMULATOR
     connect
   end
 

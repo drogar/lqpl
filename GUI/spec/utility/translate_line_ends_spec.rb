@@ -10,7 +10,7 @@ describe TranslateLineEnds do
     "#{TranslateLineEnds.new "abc\n123\nwho boy\n"}".should == "abc<\\n>123<\\n>who boy<\\n>"
   end
   it "changes all the line endings in the file min.qpo" do
-    File.open("testdata/qplprograms/min.reference.qpo", "r") do |f|
+    File.open("#{TEST_QP_PATH}/min.reference.qpo", "r") do |f|
       qpl_file_data = f.read()
       "#{TranslateLineEnds.new qpl_file_data}".should == "Compiler: Version=0.9.0<\\n>app_fcdlbl0   Start<\\n>EnScope<\\n>DeScope<\\n>    Return 0<\\n>   EndProc<\\n>"
     end

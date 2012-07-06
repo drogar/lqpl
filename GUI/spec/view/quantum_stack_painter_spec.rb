@@ -67,8 +67,8 @@ describe QuantumStackPainter do
       @qshad.node_separation(:horizontal).should == 55.0
     end
 
-    it "should have a default vertical node sep of 40.0" do
-      @qshad.node_separation(:vertical).should == 40.0
+    it "should have a default vertical node sep of 50.0" do
+      @qshad.node_separation(:vertical).should == 50.0
     end
     it "should have a preferred size of width > 160 and height > 60 for the hadamard qbit" do
       ps = @qshad.model_paint_size(@g)

@@ -1,14 +1,13 @@
-Name:                lqplEmulator
+Name:                lqpl
 Version:             0.9.0
 Stability:           Experimental
-Synopsis:            Emulator for Linear-QPL
-Description:         A server based emulator for Linear-QPL. LQPL is a functional
-                     quantum programming language that allows people to experiment with and
-                     visualize the effects of quantum algorithms. A separate GUI front end to the
-                     compiler and emulator is available.
+Synopsis:            Compiler and Emulator for Linear-QPL
+Description:         A command-line compiler, a server based compiler and a server based emulator
+                     for Linear-QPL. LQPL is a functional quantum programming language that allows
+                     experimenting with and visualizing the effects of quantum algorithms.
 tested-with:         GHC
 License:             BSD3
-License-file:        ../LICENSE
+License-file:        LICENCE
 Author:              Brett Giles, Robin Cockett
 Maintainer:          brett.giles@ucalgary.ca
 bug-reports:         mailto:brett.giles@ucalgary.ca
@@ -18,42 +17,82 @@ Build-Type:          Simple
 Cabal-Version:       >=1.9.2
 --data-dir:            src
 --data-files:          glade/qstack.glade
+Test-Suite compiler-server-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers,random
+   hs-source-dirs:   Compiler/src,Common/src
+   extensions:       FlexibleInstances,CPP
+Test-Suite compiler-server-connection-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/CompilerServerConnectSpec.lhs
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers
+   hs-source-dirs:   Compiler/src,Common/src
+   extensions:       FlexibleInstances,CPP
+Test-Suite lqpl-parser-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/QPLParserSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process
+   hs-source-dirs:   Compiler/src,Common/src
+   extensions:       CPP
+Test-Suite type-unification-spec
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Compiler/TypeUnificationSpec.lhs
+   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process,containers,mtl
+   hs-source-dirs:   Compiler/src,Common/src
+   extensions:       CPP
+Test-Suite utility-fileprovider-spec
+    type:             exitcode-stdio-1.0
+    main-is:          Spec/Utility/FileProviderSpec.lhs
+    build-depends:    HUnit,hspec,QuickCheck,base,directory,filepath,network,parsec,process,unix
+    hs-source-dirs:   Compiler/src,Common/src
+    extensions:       FlexibleInstances,CPP
+Executable lqpl
+  Main-is:           Compiler/Main.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,transformers,parsec,hspec
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    Compiler/src,Common/src
+Executable lqpl-compiler-server
+  Main-is:           Compiler/ServerMain.lhs
+  Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,hspec
+  extensions:        ExistentialQuantification
+  hs-source-dirs:    Compiler/src,Common/src
 Test-Suite test-all
    type:             exitcode-stdio-1.0
    main-is:          Tests/RunTests.lhs
    build-depends:    base,parsec,network,HUnit,filepath,hspec
-   hs-source-dirs:   src,../Common/src
+   hs-source-dirs:   Emulator/src,Common/src
 Test-Suite parse-server-command-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/ParseServerCommandSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck
    extensions:       CPP
-   hs-source-dirs:   src,../Common/src
+   hs-source-dirs:   Emulator/src,Common/src
 Test-Suite stack-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/StackToXMLSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
    extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,Rank2Types,ScopedTypeVariables,
                      FlexibleContexts,KindSignatures,Rank2Types,CPP
-   hs-source-dirs:   src,../Common/src
+   hs-source-dirs:   Emulator/src,Common/src
 Test-Suite mmap-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/MMapToXMLSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
    extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
-   hs-source-dirs:   src,../Common/src
+   hs-source-dirs:   Emulator/src,Common/src
 Test-Suite code-to-xml-spec
    type:             exitcode-stdio-1.0
    main-is:          Spec/QServer/CodeToXMLSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
    extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
-   hs-source-dirs:   src,../Common/src
+   hs-source-dirs:   Emulator/src,Common/src
 Executable lqpl-emulator
   Main-is:           QServer/QServer.lhs
   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
-  hs-source-dirs:    src,../Common/src
+  hs-source-dirs:    Emulator/src,Common/src
   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
-  Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqplemulator
+  Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
 
 -- Below is the former configuration for the GTK2HS GUI. This code is still included in the distribution
 -- but may not currently compile. To try it out, comment out the following lines and the lines

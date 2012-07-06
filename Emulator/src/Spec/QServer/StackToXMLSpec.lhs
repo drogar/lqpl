@@ -17,6 +17,9 @@
 
     instance Quantum LazyNum
 
+    main = hspecX tests
+
+
     xmlValues =  [(StackZero, "<Zero/>"),
                   (StackValue (SZero), "<Value><number>0</number></Value>" )]
 
@@ -57,6 +60,5 @@
       context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackXML
       context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedXML
 
-    main = hspec tests
 
 \end{code}

@@ -36,7 +36,7 @@ describe LqplEmulatorServerConnection do
         @sc.connect
       end
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
-      fname = "#{Dir.pwd}/testdata/qplprograms/min.reference.qpo"
+      fname = "#{TEST_QP_PATH}/min.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
       flag.should =~ /Assembled/
     end
@@ -45,7 +45,7 @@ describe LqplEmulatorServerConnection do
     before(:each) do
       @sc = LqplEmulatorServerConnection.get_instance
       @sc.connect
-      fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
+      fname = "#{TEST_QP_PATH}/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
     end
     it "allows depth multiples to be set" do
@@ -75,7 +75,7 @@ describe LqplEmulatorServerConnection do
     before(:each) do
       @sc = LqplEmulatorServerConnection.instance
       @sc.connect
-      fname = "#{Dir.pwd}/testdata/qplprograms/coin.reference.qpo"
+      fname = "#{TEST_QP_PATH}/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
       @sc.do_step(10) # down one branch of the measure
     end

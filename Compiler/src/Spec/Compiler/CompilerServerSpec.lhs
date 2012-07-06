@@ -28,7 +28,7 @@
 
     main = do
       ior <- newIORef (CS_READY, "", empty)
-      hspec (compilerSpecs ior)
+      hspecX (compilerSpecs ior)
 
     compilerSpecs ior = describe "compiler server" $ do
       context "input commands" $ do

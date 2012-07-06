@@ -1,5 +1,5 @@
 require 'communications/connection'
-
+COMPILER_SERVER="lqpl-compiler-server"
 class CompilerServerConnection < Connection
  # include Singleton
 
@@ -8,7 +8,7 @@ class CompilerServerConnection < Connection
 
   def initialize(port=7683)
     super(port)
-    @connect_to = "lqpl-compiler-server"
+    @connect_to = COMPILER_SERVER
     connect
   end
 

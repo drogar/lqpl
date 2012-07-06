@@ -37,16 +37,16 @@ p252 :: QuantumStack  LazyNum
 p253 :: QuantumStack  LazyNum
 p254 :: QuantumStack  LazyNum
 
-p251 = QuantumStack  1 True [] (StackValue (Snum 0.25)) 
-p252 = QuantumStack  2 True [] (StackValue (Snum 0.25)) 
-p253 = QuantumStack  3 True [] (StackValue (Snum 0.25)) 
-p254 = QuantumStack  4 True [] (StackValue (Snum 0.25)) 
+p251 = QuantumStack  1 True [] (StackValue (Snum 0.25))
+p252 = QuantumStack  2 True [] (StackValue (Snum 0.25))
+p253 = QuantumStack  3 True [] (StackValue (Snum 0.25))
+p254 = QuantumStack  4 True [] (StackValue (Snum 0.25))
 
 
 pgirl :: QuantumStack  LazyNum
 pboys  :: QuantumStack  LazyNum
 
-pgirl =  QuantumStack 6 True [p251] (StackData [("Girl", [])]) 
+pgirl =  QuantumStack 6 True [p251] (StackData [("Girl", [])])
 pboys =  QuantumStack 7 True [p252,p253] (StackData [("Boy1", []),("Boy2",[])])
 
 mmgirl :: MemoryMap
@@ -134,7 +134,7 @@ ons = ([],14)
 
 
 plft ::  QuantumStack  LazyNum -- 15->14,12,2,1
-prgt ::  QuantumStack  LazyNum -- 15->17,12,2,16 
+prgt ::  QuantumStack  LazyNum -- 15->17,12,2,16
 
 pl1a  ::  QuantumStack  LazyNum
 pl1b  ::  QuantumStack  LazyNum

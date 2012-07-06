@@ -14,7 +14,7 @@
     import Utility.FileProvider.FileSystem
 
 
-    main = hspec fileProviderSpecs
+    main = hspecX fileProviderSpecs
 
     fileProviderSpecs = describe "FileProvider" $ do
       context "filesystem provider class implementation" $ do
