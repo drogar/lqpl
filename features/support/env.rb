@@ -1,21 +1,23 @@
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/lqpl_gui"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../devlib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/ruby"
+if not (defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby')
+  abort 'Sorry - Feature tests of LQPL requires JRuby. You appear to be running or defaulted to some other ruby engine.'
+end
+
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/src"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/ruby"
 
 require 'java'
 
-$CLASSPATH << "./out/production/lqpl"
-$CLASSPATH << "./lqpl/lib/java"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
 
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../src"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../devlib/java/jemmy-2.3.0.0.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/forms_rt.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../lib/java/monkeybars-1.1.1.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/production/lqpl_gui"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/jruby-complete.jar"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java/jemmy-2.3.0.0.jar"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/forms_rt.jar"
+$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/monkeybars-1.1.1.jar"
 
 
 require "jemmy-2.3.0.0.jar"
@@ -23,7 +25,7 @@ require "jemmy-2.3.0.0.jar"
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
 
-ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
+ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../out/bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
 java.lang.System.set_property("com.drogar.testing.jemmy","true")

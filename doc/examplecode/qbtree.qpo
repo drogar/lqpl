@@ -1,0 +1,26 @@
+Compiler: Version=0.9.0
+main   Start
+EnScope
+    QCons @^1 #Tip
+    QLoad @^2 |0>
+    QApply 0 !Not @^2
+    QLoad @^3 |0>
+    QCons @^4 #Node
+    QBind @^3
+    QLoad @^3 |0>
+    QApply 0 !Not @^3
+    QLoad @^5 |0>
+    QApply 0 !Not @^5
+    QCons @^6 #Node
+    QBind @^5
+    QCons @^5 #Br
+    QBind @^6
+    QBind @^3
+    QBind @^4
+    QCons @^3 #Br
+    QBind @^5
+    QBind @^2
+    QBind @^1
+    Rename @^3 @qbtree
+DeScope
+   EndProc

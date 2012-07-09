@@ -1,6 +1,6 @@
    gcd::(a:Int, b:Int | ; ans: Int) =
    { if b == 0 => {ans = a}
         a == 0 => {ans = b}
-        a >= b => {ans = gcd(b, a mod b)}
-     else      => {ans = gcd(a, b mod a)}
-   }   
+        a >= b => {ans = gcd(b, a mod b|)}
+     else      => {ans = gcd(a, b mod a|)}
+   }

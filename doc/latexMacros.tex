@@ -8,7 +8,7 @@
 %\setlength{\evensidemargin}{-.3in}
 % macros for processing of the literate files
 
-% reference formats - 
+% reference formats -
 \labelformat{chapter}{chapter~#1}
 \labelformat{section}{section~#1}
 \labelformat{subsection}{sub-section~#1}
@@ -27,7 +27,7 @@
 \DefineVerbatimEnvironment%
  {happycodecont}{Verbatim}{gobble=2,numbers=left,firstnumber=last,fontsize=\footnotesize}
 % import and redefinition of general macros
-\input{/home/grads/gilesb/latexFiles/macros}
+\input{macros/macros}
 \newcommand{\inflist}[1]{\ensuremath{\mathbb{IL}({#1})}}
 \renewcommand{\incsec}[1]{\subsection{#1}}
 % end of redefinitions.
@@ -59,30 +59,30 @@
   basewidth={0.5em,0.45em},
   morekeywords={Map},
   % The following replace compound charcters like ->
-  % Something is missing - someone kindly sent me an email which 
+  % Something is missing - someone kindly sent me an email which
   % I've lost - but it's obvious how to add more.
-  literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1 
-	   {*}{{$\times$}}1 {=}{{$=$}}1
-	   {\%}{{$\%$}}1 {=}{{$=$}}1
-           {>}{{$>$}}1 {<}{{$<$}}1 
+  literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1
+     {*}{{$\times$}}1 {=}{{$=$}}1
+     {\%}{{$\%$}}1 {=}{{$=$}}1
+           {>}{{$>$}}1 {<}{{$<$}}1
            {>>}{{$\gg$}}2 {<<}{{$\ll$}}2
            {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
            {<=}{{$\leq$}}2
-           {<==}{{$\Longleftarrow$}}3 
-           {=/=}{{$\neq$}}3 
-} 
+           {<==}{{$\Longleftarrow$}}3
+           {=/=}{{$\neq$}}3
+}
 \lstdefinestyle{origlinqpl}{language=lqpl,basicstyle=\footnotesize\ttfamily,%
-	numbers=left,%
+  numbers=left,%
         numberstyle=\tiny,%
         numbersep=6pt }
 \lstdefinestyle{linqpl}{language=lqpl,basicstyle=\footnotesize,%
-	numbers=left,%
+  numbers=left,%
         numberstyle=\tiny,%
         numbersep=6pt,%
-	escapechar=`,%
+  escapechar=`,%
   literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1%
-	   {*}{{$\times$}}1 {=}{{$=$}}1%
-	   {\%}{{$\%$}}1 {=}{{$=$}}1%
+     {*}{{$\times$}}1 {=}{{$=$}}1%
+     {\%}{{$\%$}}1 {=}{{$=$}}1%
            {>}{{$>$}}1 {<}{{$<$}}1%
            {>>}{{$\gg$}}2 {<<}{{$\ll$}}2%
            {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2%
@@ -90,10 +90,10 @@
            {<=}{{$\Leftarrow$}}3%
            {=/=}{{$\neq$}}3 }
 \lstdefinestyle{linqplnonum}{language=lqpl,basicstyle=\footnotesize,%
-	escapechar=`,%
+  escapechar=`,%
   literate={-}{{$-$}}1 {+}{{$+$}}1 {/}{{$/$}}1%
-	   {*}{{$\times$}}1 {=}{{$=$}}1%
-	   {\%}{{$\%$}}1 {=}{{$=$}}1%
+     {*}{{$\times$}}1 {=}{{$=$}}1%
+     {\%}{{$\%$}}1 {=}{{$=$}}1%
            {>}{{$>$}}1 {<}{{$<$}}1%
            {>>}{{$\gg$}}2 {<<}{{$\ll$}}2%
            {=>}{{$\Rightarrow$}}2 {>=}{{$\geq$}}2%
@@ -101,7 +101,7 @@
            {<=}{{$\Leftarrow$}}3%
            {=/=}{{$\neq$}}3 }
 \lstdefinestyle{inlinqpl}{language=lqpl,basicstyle=\footnotesize\ttfamily,%
-	escapechar=`}
+  escapechar=`}
 
 \newcommand{\lbl}{{\cdptr}}
 \newcommand{\cd}{\ensuremath{\mathcal{C}}}
@@ -155,6 +155,15 @@
 \newcommand{\cms}{\specialcat{Cqsm}}
 \newcommand{\ms}{\specialcat{QSM}}
 
+\newcommand{\qubit}{\ensuremath{\mathbold{qubit}}}
+\newcommand{\bit}{\ensuremath{\mathbold{bit}}}
+\newcommand{\qubits}{\ensuremath{\mathbold{qubits}}}
+\newcommand{\bits}{\ensuremath{\mathbold{bits}}}
+
+\newcommand{\complex}{\ensuremath{\mathbb{C}}}
+
+\newcommand{\qbits}{\qubits}
+
 \newcommand{\qsp}{\ensuremath{\to}}
 
 \newcommand{\qsnodeij}[4]{\ensuremath{#1\{{#2}\qsp {#3}\}^{#4}}}
@@ -166,24 +175,24 @@
 \newcommand{\qsqubit}[6]{\ensuremath{#1\{00\qsp {#2};01\qsp {#3};10\qsp {#4};11\qsp {#5}\}^{#6}}}
 
 \newcommand{\qsbitUp}[4]{\ensuremath{#1\left\{\begin{array}{l}%
-                	0\qsp {#2}\\%
+                  0\qsp {#2}\\%
                         1\qsp {#3}%
                         \end{array}%
-	             \right\}^{#4}}}
+               \right\}^{#4}}}
 
 
 \newcommand{\qsqubitUp}[6]{\ensuremath{#1\left\{\begin{array}{ll}%
-                	00\qsp {#2};&01\qsp {#3}\\%
+                  00\qsp {#2};&01\qsp {#3}\\%
                         10\qsp {#4};&11\qsp {#5}%
                         \end{array}%
-	             \right\}^{#6}}}
+               \right\}^{#6}}}
 \newcommand{\qsqubitAllUp}[6]{\ensuremath{#1\left\{\begin{array}{l}%
-                	00\qsp {#2}\\%
+                  00\qsp {#2}\\%
                         01\qsp {#3}\\%
                         10\qsp {#4}\\%
                         11\qsp {#5}%
                         \end{array}%
-	             \right\}^{#6}}}
+               \right\}^{#6}}}
 
 \newcommand{\eentail}{\ensuremath{\Vdash\!\!\dashv}}
 \newcommand{\ientail}{\ensuremath{\Vdash}}
@@ -198,7 +207,7 @@
 \newcommand{\qresultsin}[2]{\qresultsind{}{#1}{#2}}
 \newcommand{\qresultsindUp}[3]{\ensuremath{\begin{array}{l}%
              {#2}\overset{#1}{\leadsto}\\%
-	\qquad{#3}}%
+  \qquad{#3}}%
           \end{array}}
 \newcommand{\qresultsinUp}[2]{\qresultsindUp{}{#1}{#2}}
 \newcommand{\stackthree}[3]{\ensuremath{\begin{array}{l}{#1}\\{#2}\\{#3}\end{array}}}

@@ -90,8 +90,10 @@ Windows:
     - Install Cygwin, then follow much of the above. Good luck :) - rvm.io has
       links to blogs on how to install rvm within cygwin.
 
-BUILDING:
+BUILDING/RUNNING:
 
-Type 'rake build:jar' at the command line. Then copy the jar from 'out/production'
-to the top directory and run with 'java -jar lqpl_gui.jar'. Note this will abort
-immediately if you do not have the lqpl servers in your path or running.
+Type 'rake run:lqpl' at the command line when in the top level directory of the
+project. This command will:
+  - Compile the java classes and add the JRuby classes to a jar in the 'out' dir
+  - Compile the Haskell servers and place their binaries in the 'out/bin' dir
+  - Run the jar with the default java command.

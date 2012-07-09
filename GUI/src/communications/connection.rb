@@ -42,9 +42,9 @@ class Connection
     if jar_path
       jar_path=jar_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
     else
-      jar_path = "./"
+      jar_path = File.expand_path(File.dirname(__FILE__))+"/../../"
     end
-
+    puts " will try from #{jar_path}"
     if !res
       begin
         @process=ProcessBuilder.new(@connect_to, "").start

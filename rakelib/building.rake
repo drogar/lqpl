@@ -73,7 +73,7 @@ end
 
 directory "out"
 directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin"
-directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib"
+directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java"
 directory "out/lqpl-#{LQPL_GUI_VERSION}-source"
 
 directory "out/LQPLEmulator.app/Contents/MacOS"
@@ -83,35 +83,40 @@ directory "out/LQPLEmulator.app/Contents/Resources/Java/lib"
 
 
 
-bin_dist_includes = FileList.new
 
-DIST_INCLUDES.each {|incf| bin_dist_includes.include(incf)}
-
-source_dist_files = FileList.new('./*')
-
-EXCLUDE_FROM_SOURCE_DIST.each {|exf| source_dist_files.exclude(exf)}
 
 dist = namespace :dist do
+  bin_dist_includes = FileList.new
+  DIST_INCLUDES.each {|incf| bin_dist_includes.include(incf)}
+
+  source_dist_files = FileList.new('./*', './.*')
+  EXCLUDE_FROM_SOURCE_DIST.each {|exf| source_dist_files.exclude(exf)}
+
+  $stdout << "Source Dist #{source_dist_files}\n"
+  $stdout << "bin Dist #{bin_dist_includes}\n"
+
   desc "Make a #{tech} binary distribution"
   task :binary => ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",build[:jar]] do
     cp "out/lqpl_gui.jar","out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",:preserve => true
 
     redist_jars.each {|jar| cp jar,  "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",:preserve => true}
     bin_dist_includes.each do |f|
-      cp "#{f}", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",:preserve => true
+      cp_r "#{f}", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",:preserve => true
     end
     copy_server_bin "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin/"
     $stdout << "Creating tar file: lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
-    sh "tar #{tar_options} -C out -czf lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz lqpl-#{LQPL_GUI_VERSION}-bin-#{tech})"
   end
+
   desc "Make a source distribution"
   task :source =>["out/lqpl-#{LQPL_GUI_VERSION}-source"] do
-    source_dist_files do |gsource|
-      cp("#{gsource}","out/lqpl-#{LQPL_GUI_VERSION}-source",:preserve => true)
+    source_dist_files.each do |gsource|
+      cp_r("#{gsource}","out/lqpl-#{LQPL_GUI_VERSION}-source",:preserve => true)
     end
     $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-source.tgz\n"
-    sh "tar #{tar_options} -C out  -czf out/lqpl-#{LQPL_GUI_VERSION}-source.tar_optionsMgz out/lqpl-#{LQPL_GUI_VERSION}-source"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-source.tgz lqpl-#{LQPL_GUI_VERSION}-source)"
   end
+
   if mac
     task :mac_dirs => ["out/LQPLEmulator.app/Contents/MacOS", "out/LQPLEmulator.app/Contents/PkgInfo","out/LQPLEmulator.app/Contents/Resources/Java/bin","out/LQPLEmulator.app/Contents/Resources/Java/lib"]
     desc "make a mac app"
@@ -120,7 +125,7 @@ dist = namespace :dist do
       cp "config/Info.plist","out/LQPLEmulator.app/Contents/"
       cp "GUI/icons/lqpl.icns","out/LQPLEmulator.app/Contents/Resources"
       cp "out/production/lqpl_gui.jar","out/LQPLEmulator.app/Contents/Resources/Java"
-      cp "GUI/lib/java","out/LQPLEmulator.app/Contents/Resources/Java/lib/"
+      cp_r "GUI/lib/java","out/LQPLEmulator.app/Contents/Resources/Java/lib/"
       copy_server_bin "out/LQPLEmulator.app/Contents/Resources/Java/bin/"
     end
   end
@@ -138,10 +143,28 @@ tests = namespace :test do
 
   desc "Run lqpl Compiler and Emulator tests"
   task :server_tests =>[build[:server_with_tests]] do
-     sh "runghc Setup.hs test --show-details=failures"
-   end
-   desc "Run all tests"
-   task :all => [:spec,:server_tests]
+    sh "runghc Setup.hs test --show-details=failures"
+  end
+
+  desc "Run all tests"
+  task :all => [:spec,:server_tests]
+
+  begin
+    require 'cucumber'
+    require 'cucumber/rake/task'
+    # puts "#{Cucumber::BINARY}"
+    Cucumber::Rake::Task.new(:features) do |t|
+      t.cucumber_opts = "--format pretty"
+      t.profile = "all"
+    end
+    task :features => [build[:compile], build[:copy_jruby]]
+  rescue LoadError
+    desc 'Cucumber rake task not available'
+    task :features do
+      abort 'Cucumber rake task is not available. Be sure to install cucumber as a gem or plugin'
+    end
+  end
+
 end
 
 task :clean => [build[:server_clean]]
@@ -157,7 +180,9 @@ def copy_server_bin(to_dir)
   bin_copied = false
   HASKELL_BIN_DIRS.each do |d|
     if File.file?("#{d}/lqpl") and not bin_copied
-      cp "#{d}/lqpl*","#{to_dir}"
+      cp "#{d}/lqpl","#{to_dir}"
+      cp "#{d}/lqpl-emulator","#{to_dir}"
+      cp "#{d}/lqpl-compiler-server","#{to_dir}"
       bin_copied=true
     end
   end

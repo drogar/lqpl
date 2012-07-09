@@ -37,9 +37,12 @@ And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
   fc.get_current_directory.get_absolute_path.should ==  Dir.getwd
   fc.is_file_selection_enabled.should == true
   fc.is_directory_selection_enabled.should == false
+  cdir = fc.get_current_directory.get_absolute_path
 
-  fl = fc.get_file_list
-  exact_string_comp = Operator::DefaultStringComparator.new(true,true)
+  if not (cdir =~ /GUI/)
+    fc.set_current_directory(java.io.File.new(cdir,"GUI"))
+  end
+  topdir = fc.get_current_directory.get_absolute_path
 
 
   dirs = dir.split("/")
@@ -47,7 +50,7 @@ And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
     cdir = fc.get_current_directory.get_absolute_path
     fc.set_current_directory (java.io.File.new(cdir, d))
   end
-  fc.get_current_directory.get_absolute_path.should ==  Dir.getwd+"/"+dir
+  fc.get_current_directory.get_absolute_path.should ==  topdir+"/"+dir
 
 
   sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
@@ -61,7 +64,11 @@ end
 
 
 Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
-  realdir = Dir.getwd + "/" +outdir
+  topdir = Dir.getwd
+  if not (topdir =~ /GUI/)
+    topdir = topdir + "/GUI"
+  end
+  realdir = topdir + "/" +outdir
   theFile = realdir + "/" + outfile
   sleep_until(10) {File.exist?(theFile)}
   # tries = 0

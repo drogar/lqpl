@@ -2,7 +2,7 @@ qdata Coin = {Heads | Tails}
 cflip::( ; c:Coin) =
 {  q = |0>;
    Had q;
-   measure q of 
+   measure q of `\label{line:cflipmeasure}`
      |0> => {c = Heads}
      |1> => {c = Tails}
 }

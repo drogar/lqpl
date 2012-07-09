@@ -9,16 +9,18 @@ When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |fil
   fc.is_file_selection_enabled.should == true
   fc.is_directory_selection_enabled.should == false
 
-  fl = fc.get_file_list
-  exact_string_comp = Operator::DefaultStringComparator.new(true,true)
-
+  cdir = fc.get_current_directory.get_absolute_path
+  if not (cdir =~ /GUI/)
+    fc.set_current_directory(java.io.File.new(cdir,"GUI"))
+  end
+  topdir = fc.get_current_directory.get_absolute_path
 
   dirs = dir.split("/")
   dirs.each do |d|
     cdir = fc.get_current_directory.get_absolute_path
     fc.set_current_directory (java.io.File.new(cdir, d))
   end
-
+  fc.get_current_directory.get_absolute_path.should ==  topdir+"/"+dir
 
   sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
 #  p sel_file

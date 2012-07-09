@@ -1,0 +1,339 @@
+\newcommand{\LG}{\ensuremath{L^1(G)}}
+
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\KG}{\ensuremath{KG}}
+\newcommand{\integers}{\ensuremath{ \mathbb{Z}}}
+\newcommand{\naturals}{\ensuremath{ \mathbb{N}}}
+
+\newcommand{\burnat}[1]{\ensuremath{ \mathbb{N}(#1)}}
+\newcommand{\NA}{\burnat{A}}
+\newcommand{\NNA}{\burnat{\NA}}
+\newcommand{\NNNA}{\burnat{\NNA}}
+\newcommand{\NB}{\burnat{B}}
+\newcommand{\NNB}{\burnat{\NB}}
+\newcommand{\NNNB}{\burnat{\NNB}}
+\newcommand{\NC}{\burnat{C}}
+\newcommand{\NNC}{\burnat{\NC}}
+\newcommand{\NNNC}{\burnat{\NNC}}
+\newcommand{\Nf}{\burnat{f}}
+\newcommand{\Ng}{\burnat{g}}
+\newcommand{\Nh}{\burnat{h}}
+\newcommand{\NNf}{\burnat{\Nf}}
+\newcommand{\NNg}{\burnat{\Ng}}
+\newcommand{\NNh}{\burnat{\Nh}}
+\newcommand{\N}{\naturals}
+\newcommand{\add}[1]{\ensuremath{\mathsf{add}_{#1}}}
+\newcommand{\adda}{\ensuremath{\mathsf{add}_A}}
+\newcommand{\addna}{\ensuremath{\mathsf{add}_{\NA}}}
+\newcommand{\addb}{\ensuremath{\mathsf{add}_B}}
+\newcommand{\addnb}{\ensuremath{\mathsf{add}_{\NB}}}
+
+\newcommand{\rec}[1]{\ensuremath{\mathbb{RC}(#1)}}
+\newcommand{\recab}{\rec{A,B}}
+\newcommand{\crs}[2]{\ensuremath{#1\times#2}}
+
+
+\newcommand{\rationals}{\ensuremath{ \mathbb{Q}}}
+\newcommand{\complexes}{\ensuremath{ \mathbb{C}}}
+\newcommand{\reals}{\ensuremath{ \Re}}
+\newcommand{\series}[3]{\ensuremath{#1_{#2}, \ldots, #1_{#3}}}
+\newcommand{\pseries}[4]{\ensuremath{#1_{#3}:{#2}_{#3}, \ldots, #1_{#4}:{#2}_{#4}}}
+\newcommand{\seriesd}[6]{\ensuremath{#1_{#2}, \ldots, #1_{#3}#4_{#5}, \ldots, #4_{#6}}}
+\newcommand{\BigO}[1]{\ensuremath{\mathscr{O}({#1})}}
+\newcommand{\etape}{\ensuremath{\sqcup\sqcup\ldots}}
+\newcommand{\di}[1]{{\bfseries \itshape {#1}}}
+\newcommand{\czero}{\ensuremath{\mathscr{C}_0}}
+\newcommand{\cone}{\ensuremath{\mathscr{C}_1}}
+\newcommand{\dzero}[1]{\ensuremath{D_0(#1)}}
+\newcommand{\done}[1]{\ensuremath{D_1(#1)}}
+\newcommand{\fab}{\ensuremath{f:A\to{}B}}
+\newcommand{\gbc}{\ensuremath{g:B\to{}C}}
+\newcommand{\hcd}{\ensuremath{h:C\to{}D}}
+
+% for 613
+\newcommand{\ora}[1]{\ensuremath{\overrightarrow{#1}}}
+\newcommand{\ola}[1]{\ensuremath{\overleftarrow{#1}}}
+\newcommand{\entails}[1]{\vdash^{#1}}
+\newcommand{\nat}[1]{\{\text{succ}\colonn{#1},\text{zero}\colonn{()}\}}
+\newcommand{\munat}{\mu{}x.\nat{x}}
+\newcommand{\colonn}[1]{\coln#1}
+%\newcommand{\colon}{\coln\!\!}
+\newcommand{\coln}{\!\!:\!\!}
+\newcommand{\dcolon}{\!\!::\!\!}
+\newcommand{\banl}{\{\!|}
+\newcommand{\banr}{|\!\}}
+\newcommand{\fold}[2]{\ensuremath{\banl #1 | #2 \banr}}
+%\newcommand{\implies}{\ensuremath{\Rightarrow}}
+\renewcommand{\L}[1]{\ensuremath{\mathbb{L}(#1)}}
+\newcommand{\LA}{\L{A}}
+
+\newcommand{\Leaf}{\ensuremath{\text{\footnotesize\textsc{Leaf}}}}
+\newcommand{\Node}{\ensuremath{\text{\footnotesize\textsc{Node}}}}
+\newcommand{\clt}{\prgtransfunc{clt}}
+\newcommand{\Zero}{\ensuremath{\text{\footnotesize\textsc{Zero}}}}
+\newcommand{\Succ}{\ensuremath{\text{\footnotesize\textsc{Succ}}}}
+\newcommand{\muzero}{\ensuremath{\ola{\Zero}}}
+\newcommand{\musucc}{\ensuremath{\ola{\Succ}\cdot}}
+\newcommand{\prgtransfunc}[1]{\ensuremath{\text{#1}}}
+\newcommand{\zip}{\prgtransfunc{zip}}
+\newcommand{\unzip}{\prgtransfunc{unzip}}
+\newcommand{\zp}{\prgtransfunc{zp}}
+\newcommand{\unz}{\prgtransfunc{unz}}
+\newcommand{\nil}{\prgtransfunc{nil}}
+\newcommand{\cons}{\prgtransfunc{cons}}
+\newcommand{\tl}{\prgtransfunc{tl}}
+\newcommand{\hd}{\prgtransfunc{hd}}
+\newcommand{\rev}{\prgtransfunc{rev}}
+\newcommand{\frev}{\prgtransfunc{frev}}
+\newcommand{\acc}{\prgtransfunc{acc}}
+\newcommand{\evens}{\prgtransfunc{evens}}
+\newcommand{\evn}{\prgtransfunc{evn}}
+\newcommand{\dbl}{\prgtransfunc{dbl}}
+\newcommand{\get}{\prgtransfunc{get}}
+\newcommand{\gtt}{\prgtransfunc{gtt}}
+\newcommand{\gttc}[1]{\gtt\llbracket #1 \rrbracket}
+\newcommand{\app}{\prgtransfunc{app}}
+\newcommand{\appc}[1]{\app\llbracket #1 \rrbracket}
+\newcommand{\munil}{\ensuremath{\ola{\nil}}}
+\newcommand{\mucons}{\ensuremath{\ola{\cons}}}
+\newcommand{\tlnu}{\ensuremath{\ora{\tl}\cdot}}
+\newcommand{\hdnu}{\ensuremath{\ora{\hd}\cdot}}
+
+
+\newcommand{\il}[1]{\ensuremath{\mathbb{IL}(#1)}}
+\newcommand{\ila}{\il{A}}
+\newcommand{\ilila}{\il{\ila}}
+\newcommand{\ils}{\ensuremath{[a_1,a_2,a_3,\ldots]}}
+\newcommand{\ilss}[1]{\ensuremath{a_{#1 1},a_{#1 2},a_{#1 3},\ldots]}}
+\newcommand{\ilmataa}{\ensuremath{\begin{bmatrix} [a_{11},a_{12},a_{13},\ldots]\\
+ [a_{21},a_{22},a_{23},\ldots]\\
+ [a_{31},a_{32},a_{33},\ldots]\\
+\vdots
+\end{bmatrix}}}
+\newcommand{\ilmataatr}{\ensuremath{\begin{bmatrix} [a_{11},a_{21},a_{31},\ldots]\\
+ [a_{12},a_{22},a_{32},\ldots]\\
+ [a_{13},a_{23},a_{33},\ldots]\\
+\vdots
+\end{bmatrix}}}
+
+
+
+\newcommand{\nm}{\ensuremath{n\times{}m}}
+\newcommand{\mn}{\ensuremath{m\times{}n}}
+
+\newcommand{\specialcat}[1]{\textsc{#1}}
+\newcommand{\ltrcat}[1]{\ensuremath{\mathfrak{#1}}}
+\newcommand{\B}{\ltrcat{B}}
+\newcommand{\C}{\ltrcat{C}}
+\newcommand{\X}{\ltrcat{X}}
+\newcommand{\sets}{\specialcat{Sets}}
+\newcommand{\rel}{\specialcat{Rel}}
+\newcommand{\mon}{\specialcat{Mon}}
+\newcommand{\ring}{\specialcat{Rng}}
+\newcommand{\cring}{\specialcat{CRng}}
+\newcommand{\cat}{\textbf{\specialcat{Cat}}}
+\newcommand{\poset}{\specialcat{Poset}}
+\newcommand{\preorder}{\specialcat{Preorder}}
+
+
+\newcommand{\obj}[1]{\ensuremath{#1_{obj}}}
+\newcommand{\bottom}[1]{\perp_{#1}}
+\newcommand{\finpower}{\mathscr{P}_{fin}}
+
+\newcommand{\category}[4]{%
+\begin{description}%
+\item{\textbf{Objects: }}{#1}%
+\item{\textbf{Maps: }}{#2}%
+\item{\textbf{Identity: }}{#3}%
+\item{\textbf{Composition: }}{#4}%
+ \end{description}%
+%
+}
+
+\newcommand{\pfcategory}[3]{%
+\begin{description}%
+\item{\textbf{Well-Defined: }}{#1}%
+\item{\textbf{Identities: }}{#2}%
+\item{\textbf{Associativity: }}{#3}%
+ \end{description}%
+%
+}
+%\newcommand{\categoryp}[4]{%
+%\paragraph{Objects:}{#1}\\%
+ %
+%\paragraph{Maps:}{#2}\\%
+ %
+%\paragraph{Identity:}{#3}\\%
+ %
+%\paragraph{Composition:}{#4}\\%
+ %
+% }
+\newenvironment{tageqnarray*}{\begin{equation*}\begin{array}{rclr}}{\end{array}\end{equation*}}
+
+\newcounter{cdiagram}[section]
+\renewcommand{\thecdiagram}{%
+\thesection.\arabic{cdiagram}
+}
+
+\newcommand{\dicapt}[2]{%
+{%
+\refstepcounter{cdiagram}%
+\begin{center}%
+\thecdiagram\quad{}#1\label{#2} %
+\end{center}%
+}
+}
+\newcounter{annctr}
+\newsavebox{\AnnpBox}
+\newenvironment{annproof}
+{\setcounter{annctr}{16}}
+{\usebox{\AnnpBox}}
+
+\newcommand{\annp}[1]{%
+\stepcounter{annctr}%
+\sbox{\AnnpBox}{\linebreak \theannctr{}.\quad{}#1}%
+\theannctr%
+}
+
+\newcommand{\entailf}[1]{\vdash^{\annp{#1}}}
+
+
+%\newcounter{cdiagram}[section]
+%\newcommand{\dicapt}[2]{%
+%\begin{center}%
+%#1 #2 %
+%\end{center}%
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{example}{Example}
+\newtheorem{exercise}{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem*{cor}{Corollary}
+%\newtheorem*{vhyp}{Valiant's Hypothesis}
+
+\newcommand{\cclass}[2]{\ensuremath{\mathrm{#1}(#2)}}
+\newcommand{\Time}[1]{\cclass{TIME}{#1}}
+\newcommand{\Ntime}[1]{\cclass{NTIME}{#1}}
+\newcommand{\Space}[1]{\cclass{SPACE}{#1}}
+\newcommand{\Nspace}[1]{\cclass{NSPACE}{#1}}
+
+% general math symbols
+\newcommand{\union}{\ensuremath{\bigcup}}
+\newcommand{\disjunion}{\ensuremath{\sqcup}}
+\newcommand{\intersect}{\ensuremath{\bigcap}}
+\newcommand{\logor}{\ensuremath{\lor}}
+\newcommand{\logand}{\ensuremath{\land}}
+\newcommand{\lognand}{\ensuremath{\barwedge}}
+\newcommand{\natmap}{\ensuremath{\Rightarrow}}
+\newcommand{\fctrmap}{\ensuremath{\to}}
+\newcommand{\fnctrmap}{\fctrmap}
+\newcommand{\fmap}{\ensuremath{\to}}
+\newcommand{\produces}{\ensuremath{\to}}
+\newcommand{\ladjoint}{\ensuremath{\dashv}}
+\newcommand{\pproj}{\ensuremath{\preceq_p}}
+
+
+\numberwithin{equation}{section}
+\newenvironment{coproduct}{\left\{ \begin{array}{l}} {\end{array} \right\} }
+%\newcommand{\coproductthree}[3]{\ensuremath{
+%\left\{ \begin{array}{l} #1 \\ #2 \\#3 \end{array} \right\} }}
+%\newcommand{\coproduct}[2]{\ensuremath{
+%\left\{ \begin{array}{l} #1 \\ #2  \end{array} \right\} }}
+\newcommand{\product}[2]{\ensuremath{
+\left( \begin{array}{l} #1 \\ #2  \end{array} \right) }}
+\newcommand{\inductf}[3]{\ensuremath{
+\left[ \begin{array}{l}  \# #1\mapsto #2 (#3)  \end{array} \right]}}
+\newcommand{\coinductf}[2]{\ensuremath{
+\left[ \begin{array}{l}  \# #1\mapsto #2   \end{array} \right]}}
+
+% adding commands for prooftheory
+\newcommand{\context}[3] {%
+\ensuremath{%
+\begin{array}[b]{c}%
+  \begin{array}[b]{|c|}%
+  \hline %
+   \begin{array}[b]{c}
+     #2\quad%
+   \end{array}\\
+  \hline \\%
+  #3\\%
+  \hline%
+  \end{array} \\%
+#1 \\%
+\end{array}%
+}%
+}
+
+\newcommand{\muInfer}[4] {%
+\ensuremath{%
+\begin{array}[b]{c}%
+  \begin{array}[b]{|c}%
+  \hline %
+   \begin{array}[b]{c|c}
+     #2\quad & \quad#3%
+   \end{array}\\
+  \hline \\%
+  #4\\%
+  \hline%
+  \end{array} \\%
+#1 \\%
+\end{array}%
+}%
+}
+
+
+\newcommand{\muInferC}[5] {%
+\ensuremath{%
+\begin{array}[b]{c}%
+  \begin{array}[b]{|c}%
+  \hline %
+   \begin{array}[b]{c|c|c}
+     #2\quad & \quad#3&\quad#4%
+   \end{array}\\
+  \hline \\%
+  #5\\%
+  \hline%
+  \end{array} \\%
+#1 \\%
+\end{array}%
+}%
+}
+
+\newcommand{\nuInfer}[4] {
+\ensuremath{
+\begin{array}[b]{c}
+  \begin{array}[b]{c|}
+  \hline
+   \begin{array}[b]{c|c}
+     #2\quad & \quad#3%
+   \end{array}\\
+  \hline \\
+  #4 \\
+  \hline
+  \end{array} \\
+#1 \\
+\end{array}
+}
+}
+
+
+\newcommand{\nuInferC}[5] {
+\ensuremath{
+\begin{array}[b]{c}
+  \begin{array}[b]{c|}
+  \hline
+   \begin{array}[b]{c|c|c}
+     #2\quad & \quad#3&\quad#4%
+   \end{array}\\
+  \hline \\
+  #5 \\
+  \hline
+  \end{array} \\
+#1 \\
+\end{array}
+}
+}
+

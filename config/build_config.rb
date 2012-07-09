@@ -1,6 +1,6 @@
 require 'etc'
 
-EXCLUDE_FROM_SOURCE_DIST=["out", ".git", ".gitignore", "dist"]
+EXCLUDE_FROM_SOURCE_DIST=["./out", "./.git", "./.gitignore", "./dist", "./.DS_Store", "./.", "./.."]
 
 
 SERVER_PROGRAMS=["lqpl-emulator", "lqpl", "lqpl-compiler-server"]
