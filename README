@@ -1,22 +1,5 @@
 LQPL - a functional quantum programming language.
 
-LQPL is written in Haskell, Java and JRuby. There are three main components, each stored in their own
-subdirectory.
-
-LQPL is a functional quantum programming language based on the semantics as
-presented in "Towards a Quantum Programming Language" by Peter Selinger. LQPL is
-available as a source distribution as well, at http://pll.cpsc.ucalgary.ca/lqpl
-
-To run LQPL, open a terminal, change to the directory where you expanded the tar file
-and type
-
-'java -jar lqpl_gui.jar'
-
-You will need to have a copy of the Java 6 runtime environment installed.
-
-See the LICENCE file for the licence.
-
-
 LQPL is a functional quantum programming language based on the semantics as
 presented in "Towards a Quantum Programming Language" by Peter Selinger. LQPL is
 available as a source distribution as well, at http://pll.cpsc.ucalgary.ca/lqpl
