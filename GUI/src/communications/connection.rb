@@ -44,7 +44,7 @@ class Connection
     else
       jar_path = File.expand_path(File.dirname(__FILE__))+"/../../"
     end
-    puts " will try from #{jar_path}"
+    #puts " will try from #{jar_path}"
     if !res
       begin
         @process=ProcessBuilder.new(@connect_to, "").start

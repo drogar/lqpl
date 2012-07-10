@@ -19,11 +19,11 @@ build = namespace :build do
     sh "runghc Setup.hs clean"
   end
   task :server_config do
-    sh "runghc Setup.hs configure --prefix=#{abs_out}"
+    sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
   end
 
   task :server_config_with_tests do
-    sh "runghc Setup.hs configure --prefix=#{abs_out} --enable-tests"
+    sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
   end
   desc 'Build the Haskell Compiler and Emulator'
   task :server => ["out/bin",:server_config] do
@@ -92,9 +92,6 @@ dist = namespace :dist do
   source_dist_files = FileList.new('./*', './.*')
   EXCLUDE_FROM_SOURCE_DIST.each {|exf| source_dist_files.exclude(exf)}
 
-  $stdout << "Source Dist #{source_dist_files}\n"
-  $stdout << "bin Dist #{bin_dist_includes}\n"
-
   desc "Make a #{tech} binary distribution"
   task :binary => ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",build[:jar]] do
     cp "out/lqpl_gui.jar","out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",:preserve => true
@@ -152,7 +149,6 @@ tests = namespace :test do
   begin
     require 'cucumber'
     require 'cucumber/rake/task'
-    # puts "#{Cucumber::BINARY}"
     Cucumber::Rake::Task.new(:features) do |t|
       t.cucumber_opts = "--format pretty"
       t.profile = "all"
