@@ -1,0 +1,10 @@
+#Import Prelude.qpl
+
+phase::(inqs:List(Qubit) ; outqs:List(Qubit))=
+{  a=|1>;
+   Had a;
+   Not a <= ~inqs; //Not a when all elts of inqs are |0>
+   Had a; Not a; discard a;
+   outqs=inqs
+}
+

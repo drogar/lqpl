@@ -14,26 +14,36 @@ directory "out/lib/java"
 abs_out = File.absolute_path('out')
 redist_jars = FileList.new('GUI/lib/java/*')
 
+haskell_source_files = FileList.new('Common/src/**/*hs')
+haskell_source_files.include('Compiler/src/**/*hs')
+haskell_source_files.include('Emulator/src/**/*hs')
+haskell_source_files.include('Emulator/src/Assembler/AssemLexer.hs')
+haskell_source_files.include('Emulator/src/Assembler/AssemParser.ly')
+
 build = namespace :build do
   task :server_clean do
     sh "runghc Setup.hs clean"
+    sh "rm out/bin/lqpl*"
   end
   task :server_config do
-    sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
+    unless uptodate?("dist/setup-config",["lqpl.cabal"])
+      sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
+    end
   end
 
   task :server_config_with_tests do
     sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
   end
+
   desc 'Build the Haskell Compiler and Emulator'
   task :server => ["out/bin",:server_config] do
-    sh "runghc Setup.hs build && runghc Setup.hs install"
-    #sh "strip out/bin/#{sp}"
+    unless uptodate?("out/bin/lqpl", haskell_source_files.to_a)
+      sh "runghc Setup.hs build && runghc Setup.hs install"
+    end
   end
 
   task :server_with_tests => ["out/bin",:server_config_with_tests] do
     sh "runghc Setup.hs build && runghc Setup.hs install"
-    #sh "strip out/bin/#{sp}"
   end
 
   desc 'Copy JRuby files in preparation for JAR'
@@ -168,7 +178,7 @@ task :clean => [build[:server_clean]]
 namespace :run do
   desc "Run lqpl, ensuring all built"
   task :lqpl => [build[:all]] do
-    sh "(cd out; java -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
+    sh "(cd out; java -Xmx1G -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
   end
 end
 

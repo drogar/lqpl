@@ -1,0 +1,8 @@
+#Import intListConversion.qpl
+#Import gtrans.qpl
+main::()=
+{ dataqbs = intToZeroQubitList(7 | );
+  hadList dataqbs;
+  doNGrovers(3) dataqbs;
+  i = qubitListToInt(dataqbs);
+}
