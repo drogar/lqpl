@@ -129,9 +129,10 @@ dist = namespace :dist do
     desc "make a mac app"
     task :mac_app => [:mac_dirs,build[:jar]] do
       cp "/System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub","out/LQPLEmulator.app/Contents/MacOS/"
+      sh "chmod +x out/LQPLEmulator.app/Contents/MacOS/JavaApplicationStub"
       cp "config/Info.plist","out/LQPLEmulator.app/Contents/"
       cp "GUI/icons/lqpl.icns","out/LQPLEmulator.app/Contents/Resources"
-      cp "out/production/lqpl_gui.jar","out/LQPLEmulator.app/Contents/Resources/Java"
+      cp "out/lqpl_gui.jar","out/LQPLEmulator.app/Contents/Resources/Java"
       cp_r "GUI/lib/java","out/LQPLEmulator.app/Contents/Resources/Java/lib/"
       copy_server_bin "out/LQPLEmulator.app/Contents/Resources/Java/bin/"
     end
@@ -187,8 +188,11 @@ def copy_server_bin(to_dir)
   HASKELL_BIN_DIRS.each do |d|
     if File.file?("#{d}/lqpl") and not bin_copied
       cp "#{d}/lqpl","#{to_dir}"
+      sh "chmod +x #{to_dir}/lqpl"
       cp "#{d}/lqpl-emulator","#{to_dir}"
+      sh "chmod +x #{to_dir}/lqpl-emulator"
       cp "#{d}/lqpl-compiler-server","#{to_dir}"
+      sh "chmod +x #{to_dir}/lqpl-compiler-server"
       bin_copied=true
     end
   end
