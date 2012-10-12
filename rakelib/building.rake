@@ -155,7 +155,7 @@ tests = namespace :test do
   end
 
   desc "Run all tests"
-  task :all => [:spec,:server_tests]
+  task :all => [:features,:spec,:server_tests]
 
   begin
     require 'cucumber'
@@ -164,7 +164,7 @@ tests = namespace :test do
       t.cucumber_opts = "--format pretty"
       t.profile = "all"
     end
-    task :features => [build[:compile], build[:copy_jruby]]
+    task :features => [build[:all]]
   rescue LoadError
     desc 'Cucumber rake task not available'
     task :features do

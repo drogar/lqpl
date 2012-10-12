@@ -21,3 +21,4 @@ Manifest
 *eps-converted-to.pdf
 lqplcode/**/*.qpo
 lqplcode/*.qpo
+coverage
