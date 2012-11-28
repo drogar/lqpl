@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start
 
 if not (defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby')
   abort 'Sorry - Feature tests of LQPL requires JRuby. You appear to be running or defaulted to some other ruby engine.'

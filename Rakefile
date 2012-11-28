@@ -10,6 +10,6 @@ end
 
 
 
-CLEAN.include "out/lqpl*", "out/**/*.class", "Manifest","out/**/*.rb"
+CLEAN.include "out/**/*.class", "Manifest","out/**/*.rb", "out/lqpl*"
 
 CLOBBER.include "out"

@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require 'rbconfig'
 require 'java'
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../src"

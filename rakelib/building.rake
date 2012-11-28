@@ -103,7 +103,7 @@ dist = namespace :dist do
   EXCLUDE_FROM_SOURCE_DIST.each {|exf| source_dist_files.exclude(exf)}
 
   desc "Make a #{tech} binary distribution"
-  task :binary => ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",build[:jar]] do
+  task :binary => ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",build[:all]] do
     cp "out/lqpl_gui.jar","out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",:preserve => true
 
     redist_jars.each {|jar| cp jar,  "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",:preserve => true}
@@ -127,7 +127,7 @@ dist = namespace :dist do
   if mac
     task :mac_dirs => ["out/LQPLEmulator.app/Contents/MacOS", "out/LQPLEmulator.app/Contents/PkgInfo","out/LQPLEmulator.app/Contents/Resources/Java/bin","out/LQPLEmulator.app/Contents/Resources/Java/lib"]
     desc "make a mac app"
-    task :mac_app => [:mac_dirs,build[:jar]] do
+    task :mac_app => [:mac_dirs,build[:all]] do
       cp "/System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub","out/LQPLEmulator.app/Contents/MacOS/"
       sh "chmod +x out/LQPLEmulator.app/Contents/MacOS/JavaApplicationStub"
       cp "config/Info.plist","out/LQPLEmulator.app/Contents/"
@@ -155,7 +155,7 @@ tests = namespace :test do
   end
 
   desc "Run all tests"
-  task :all => [:spec,:server_tests]
+  task :all => [:features,:spec,:server_tests]
 
   begin
     require 'cucumber'
@@ -164,7 +164,7 @@ tests = namespace :test do
       t.cucumber_opts = "--format pretty"
       t.profile = "all"
     end
-    task :features => [build[:compile], build[:copy_jruby]]
+    task :features => [build[:all]]
   rescue LoadError
     desc 'Cucumber rake task not available'
     task :features do
