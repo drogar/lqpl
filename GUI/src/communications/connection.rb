@@ -44,21 +44,34 @@ class Connection
     else
       jar_path = File.expand_path(File.dirname(__FILE__))+"/../../"
     end
-    #puts " will try from #{jar_path}"
+    # puts " will try from #{jar_path}"
     if !res
       begin
+        # try executing from PATH first - probably not right for testing.... 
+        #TODO - add flag to pick order of these.
         @process=ProcessBuilder.new(@connect_to, "").start
         sleep 0.25
         res2 = _make_connection
         raise ServerProcessNotFound if !res2
       rescue => e
         begin
+          # Assume executables just below jar path 
+          # Works for bundled executables.
           @process=ProcessBuilder.new("#{jar_path}bin/#{@connect_to}", "").start
           sleep 0.25
           res2 = _make_connection
           raise ServerProcessNotFound if !res2
         rescue => e1
-          raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+          begin
+            # assume one further .. and then over to out/bin 
+            # works for rspec and cucumber 
+            @process=ProcessBuilder.new("#{jar_path}../out/bin/#{@connect_to}", "").start
+            sleep 0.25
+            res2 = _make_connection
+            raise ServerProcessNotFound if !res2
+          rescue => e2
+            raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+          end
         end
       end
     end
