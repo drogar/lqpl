@@ -36,7 +36,7 @@ describe CompilerServerConnection do
       before :each do
         @cmp = CompilerServerConnection.get_instance
       end
-      after(:each) do
+      after(:all) do
         @cmp.close_down if @cmp
       end
       it "connects to the lqpl-compiler process when created" do
@@ -47,9 +47,12 @@ describe CompilerServerConnection do
   end
   context "interfaces with the lqpl-compiler-server" do
     before :each do
-        @cmp = CompilerServerConnection.get_instance
-        @cmp.connect
-      end
+      @cmp = CompilerServerConnection.get_instance
+      @cmp.connect
+    end
+    after(:all) do
+      @cmp.close_down if @cmp
+    end
     it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do
       fname = "#{TEST_QP_PATH}/min.qpl"
       qpocode = @cmp.compile fname
