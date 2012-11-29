@@ -21,7 +21,7 @@ describe LqplEmulatorServerConnection do
       before :each do
         @sc = LqplEmulatorServerConnection.get_instance
       end
-      after(:each) do
+      after(:all) do
         @sc.close_down if @sc
       end
       it "connects to the lqpl-serv process when created" do
@@ -35,6 +35,10 @@ describe LqplEmulatorServerConnection do
         @sc = LqplEmulatorServerConnection.get_instance
         @sc.connect
       end
+    
+    after :all do
+      @sc.close_down if @sc
+    end
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
       fname = "#{TEST_QP_PATH}/min.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
@@ -47,6 +51,9 @@ describe LqplEmulatorServerConnection do
       @sc.connect
       fname = "#{TEST_QP_PATH}/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
+    end
+    after :all do
+      @sc.close_down if @sc
     end
     it "allows depth multiples to be set" do
       @sc.send_set_depth_multiplier.should =~ /reset/
@@ -78,6 +85,9 @@ describe LqplEmulatorServerConnection do
       fname = "#{TEST_QP_PATH}/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
       @sc.do_step(10) # down one branch of the measure
+    end
+    after :all do
+      @sc.close_down if @sc
     end
     it "returns the qstack" do
       @sc.get_qstack.should =~ /<Qstack/
