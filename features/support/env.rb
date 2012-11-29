@@ -84,5 +84,8 @@ java_import org.netbeans.jemmy.operators.JFrameOperator
 $qe_frame = JFrameOperator.new "Quantum Emulator"
 
 at_exit {
+  
+  LqplController.instance.close
   $qe_frame.close
-  LqplController.instance.close}
+ 
+}
