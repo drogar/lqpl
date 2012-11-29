@@ -77,7 +77,7 @@ require "exceptions/invalid_input"
 require "communications/lqpl_emulator_server_connection"
 require "utility/translate_line_ends"
 require "communications/compiler_server_connection"
-
+# 
 require "lqpl/lqpl_controller"
 require "panels/quantum_stack/quantum_stack_controller"
 require "panels/classical_stack/classical_stack_controller"

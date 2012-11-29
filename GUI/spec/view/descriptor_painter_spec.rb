@@ -9,6 +9,9 @@ describe ClassicalDescriptorPainter do
   before(:each) do
    @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>")
   end
+  after (:all) do
+    @sd = nil
+  end
   it "should have the colour green" do
     @sd.my_colour.should == Color.green
   end
