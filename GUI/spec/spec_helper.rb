@@ -9,10 +9,11 @@ SimpleCov.start
 # result.format! sometimes prints a line as well, but not always.
 
 SimpleCov.at_exit do
+  status= $!.is_a?(::SystemExit) ? $!.status : 0
   SimpleCov.result.format!
   java.lang.System.err.println "SimpleCov report generated, covered #{SimpleCov.result.covered_lines} lines of #{SimpleCov.result.total_lines} for a coverage of %#{SimpleCov.result.covered_percent}."
   LqplController.instance.close
-  java.lang.System.exit(0)
+  java.lang.System.exit(status)
 end
 
 
