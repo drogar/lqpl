@@ -68,7 +68,7 @@ build = namespace :build do
 
 end
 mac=false
-case Config::CONFIG["host_os"]
+case RbConfig::CONFIG["host_os"]
 when /darwin/i # OSX specific code
   tech="x86_64-apple-darwin"
   tar_options = "--disable-copyfile"

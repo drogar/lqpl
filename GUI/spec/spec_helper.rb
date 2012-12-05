@@ -16,15 +16,17 @@ SimpleCov.at_exit do
   java.lang.System.exit(status)
 end
 
+where_am_i = File.expand_path(File.dirname(__FILE__))
+$LOAD_PATH << where_am_i+"/../src"
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../src"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../devlib/java/jemmy-2.3.0.0.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../lib/java/forms_rt.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../lib/java/monkeybars-1.1.1.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
+# java classpath
+$CLASSPATH << where_am_i+"/../lib/java/jruby-complete.jar"
+$CLASSPATH << where_am_i+"/../devlib/java/jemmy-2.3.0.0.jar"
+$CLASSPATH << where_am_i+"/../lib/java/forms_rt.jar"
+$CLASSPATH << where_am_i+"/../lib/java/monkeybars-1.1.1.jar"
+$CLASSPATH << where_am_i+"/../../out/lqpl_gui"
 
-TEST_QP_PATH=File.expand_path(File.dirname(__FILE__))+"/../testdata/qplprograms/"
+TEST_QP_PATH = where_am_i+"/../testdata/qplprograms/"
 
 require 'manifest'
 
