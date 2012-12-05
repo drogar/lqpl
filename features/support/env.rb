@@ -37,20 +37,12 @@ require 'manifest'
 java_import org.netbeans.jemmy.JemmyProperties
 java_import org.netbeans.jemmy.TestOut
 
-java_import org.netbeans.jemmy.operators.JFileChooserOperator
-java_import org.netbeans.jemmy.operators.Operator
+["JFileChooserOperator","Operator","JButtonOperator","JLabelOperator","ContainerOperator",
+  "JSpinnerOperator","JTabbedPaneOperator","JTextAreaOperator","JFrameOperator",
+  "JDialogOperator","JMenuBarOperator","JMenuOperator","JMenuItemOperator"].each do |c|
+    java_import "org.netbeans.jemmy.operators."+c
+end
 
-java_import org.netbeans.jemmy.operators.JButtonOperator
-java_import org.netbeans.jemmy.operators.JLabelOperator
-java_import org.netbeans.jemmy.operators.ContainerOperator
-java_import org.netbeans.jemmy.operators.JSpinnerOperator
-java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
-java_import org.netbeans.jemmy.operators.JTextAreaOperator
-java_import org.netbeans.jemmy.operators.JFrameOperator
-java_import org.netbeans.jemmy.operators.JDialogOperator
-java_import org.netbeans.jemmy.operators.JMenuBarOperator
-java_import org.netbeans.jemmy.operators.JMenuOperator
-java_import org.netbeans.jemmy.operators.JMenuItemOperator
 java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
 
 
@@ -80,7 +72,6 @@ rescue Exception => e
   puts "Exception from main: #{e}"
 end
 
-java_import org.netbeans.jemmy.operators.JFrameOperator
 $qe_frame = JFrameOperator.new "Quantum Emulator"
 
 at_exit {
