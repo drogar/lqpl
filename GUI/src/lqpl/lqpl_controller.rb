@@ -16,7 +16,7 @@ class LqplController < ApplicationController
       add_listener :type => :action, :components => {k => v}
     end
 
-  case Config::CONFIG["host_os"]
+  case RbConfig::CONFIG["host_os"]
   when /darwin/i # OSX specific code
     java_import com.apple.eawt.Application
     Application.application.about_handler = AboutController.instance

@@ -3,35 +3,23 @@
 
 Given /^the frame "([\w\s]*)" is visible$/ do |frame_name|
 
-  eval "@#{frame_name.gsub(/ /,'_')} = JFrameOperator.new frame_name"
+  eval "@#{frame_name.gsub(/ /,'_')} = FrameFixture.new frame_name"
 end
 
 Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 
-  mbar = JMenuBarOperator.new $qe_frame.get_jmenu_bar
-  #jm = mbar.get_menu(0)
-  fmenu = JMenuOperator.new(mbar,menu)
-  fmenu.should_not be_nil
-  item_count = fmenu.get_item_count
-  ((0...item_count).any? do |i|
-    mitem == fmenu.get_item(i.to_int).get_text
-  end).should be_true
-  jmi = nil
-  (0...item_count).each do |i|
-    jmi = fmenu.get_item(i.to_int) if mitem == fmenu.get_item(i.to_int).get_text
-  end
-  fmenu_item = JMenuItemOperator.new(jmi)
-  fmenu_item.should_not be_nil
-  fmenu_item.should be_enabled
+  menu_item =  @qe_frame.menu_item_with_path("menu", "mitem")
+  menu_item.should_not be_nil
+  menu_item.should be_enabled
 
-  mbar.push_menu_no_block("#{menu}|#{mitem}")
+  menu_item.click()
   #fmenu_item.push_no_block
 end
 
 
 And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 
-  fc = JFileChooserOperator.new
+  fc = @qe_frame.file_chooser();
   fc.get_dialog_title.should == "Open LQPL File for Compiling"
 
   fc.get_current_directory.get_absolute_path.should ==  Dir.getwd

@@ -1,9 +1,11 @@
+
 Feature: We can load and compile lqpl code
 
   As a researcher
   I want the program allow me to choose a "*.qpl" program and create a corresponding "*.qpo" file
   so I can start experimenting with LQPL
 
+	@wip
   Scenario: I compile a simple qpl program
     Given I select "Compile" from the "File" menu
     And I load "coin.qpl" from the directory "testdata/qplprograms"

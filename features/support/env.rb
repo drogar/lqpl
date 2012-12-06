@@ -22,7 +22,7 @@ $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/form
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/monkeybars-1.1.1.jar"
 
 
-require "jemmy-2.3.0.0.jar"
+require "fest-swing-1.2.jar"
 
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
@@ -34,16 +34,22 @@ java.lang.System.set_property("com.drogar.testing.jemmy","true")
 
 require 'manifest'
 
-java_import org.netbeans.jemmy.JemmyProperties
-java_import org.netbeans.jemmy.TestOut
+java_import org.fest.swing.edt.GuiActionRunner
+java_import org.fest.swing.edt.GuiQuery
+java_import org.fest.swing.fixture.JMenuItemFixture
+java_import org.fest.swing.fixture.FrameFixture
+java_import org.fest.swing.core.matcher.JButtonMatcher
+java_import org.fest.swing.core.matcher.JLabelMatcher
+#java_import org.netbeans.jemmy.JemmyProperties
+#java_import org.netbeans.jemmy.TestOut
 
-["JFileChooserOperator","Operator","JButtonOperator","JLabelOperator","ContainerOperator",
-  "JSpinnerOperator","JTabbedPaneOperator","JTextAreaOperator","JFrameOperator",
-  "JDialogOperator","JMenuBarOperator","JMenuOperator","JMenuItemOperator"].each do |c|
-    java_import "org.netbeans.jemmy.operators."+c
-end
-
-java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
+# ["JFileChooserOperator","Operator","JButtonOperator","JLabelOperator","ContainerOperator",
+#   "JSpinnerOperator","JTabbedPaneOperator","JTextAreaOperator","JFrameOperator",
+#   "JDialogOperator","JMenuBarOperator","JMenuOperator","JMenuItemOperator"].each do |c|
+#     java_import "org.netbeans.jemmy.operators."+c
+# end
+# 
+# java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
 
 
 
@@ -58,25 +64,47 @@ java_import javax.swing.JButton
 # JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
 
 # testout - (in, trace out, error out, notes out)
-JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
+# JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
 
 # amd = AppleMenuDriver.new
 #
 # JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuOperator",amd)
 # JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuBarOperator",amd)
 
-begin
-  puts "Starting up!!!!"
-  com.drogar.lqpl.Main.main([])
-rescue Exception => e
-  puts "Exception from main: #{e}"
+class AppStarter < GuiTask
+  # Launch the app in the Event Dispatch Thread (EDT),
+  # which is the thread reserved for user interfaces.
+  # FEST will call this method for us before the test.
+  #
+  def executeInEDT
+    com.drogar.lqpl.Main.main([])
+  end
 end
 
-$qe_frame = JFrameOperator.new "Quantum Emulator"
+Before do
+  runner = GuiActionRunner.execute(AppStarter.new)
+  @qe_frame = FrameFixture.new(runner)
+end
+
+
+After do
+  title = 'Confirm Exit - PresentationClock'
+  @window.close
+  @window.option_pane.require_title(title).yes_button.click
+end
+
+# begin
+#   puts "Starting up!!!!"
+#   com.drogar.lqpl.Main.main([])
+# rescue Exception => e
+#   puts "Exception from main: #{e}"
+# end
+# 
+# $qe_frame = JFrameOperator.new "Quantum Emulator"
 
 at_exit {
   
   LqplController.instance.close
-  $qe_frame.close
+ # $qe_frame.close
  
 }
