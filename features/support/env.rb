@@ -46,13 +46,18 @@ end
   java_import "org.fest.swing.edt."+c
 end
 
+%w{WindowFinder}.each do |c|
+  java_import "org.fest.swing.finder."+c
+end
+
 %w{JMenuItemFixture FrameFixture JTextComponentFixture JSpinnerFixture}.each do |c|
   java_import "org.fest.swing.fixture."+c
 end
 
-%w{JButtonMatcher JLabelMatcher }.each do |c|
+%w{JButtonMatcher JLabelMatcher FrameMatcher}.each do |c|
   java_import "org.fest.swing.core.matcher."+c
 end
+
 
 
 java_import javax.swing.JButton

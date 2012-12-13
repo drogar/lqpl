@@ -1,7 +1,7 @@
 
 
 Then /^the main frame.s title should be "(.*?)"$/ do |the_title|
-  ft = GuiActionRunner.execute(FrameTitleQuery.new($qe_frame.component))
+  ft = GuiActionRunner.execute(TitleQuery.new($qe_frame))
   ft.should == the_title
 end
 
@@ -25,20 +25,20 @@ Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ d
   theSpinner.text.should == "#{spin_value}"
 end
 
-Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_name,visible|
-   set_frame_name_var(frame_name)
-   frame_op = eval(frame_name_var_string frame_name)
+Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_title,visible|
+   set_frame_ref_var(frame_title)
+   frame_fixture = eval(frame_ref_var_string frame_title)
    if visible == 'not '
-     sleep_until(5) {!frame_op.visible?}
+     sleep_until(5) {!frame_fixture.visible?}
      # tries=0
      #      while tries < 5 do
      #        sleep 0.25
-     #        break if !frame_op.visible?
+     #        break if !frame_fixture.visible?
      #      end
-     frame_op.should_not be_visible
+     frame_fixture.should_not be_visible
    else
-     sleep_until(5) {frame_op.visible?}
-     frame_op.should be_visible
+     sleep_until(5) {frame_fixture.visible?}
+     frame_fixture.should be_visible
    end
 end
 

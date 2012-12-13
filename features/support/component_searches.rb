@@ -1,4 +1,4 @@
-module ComponentSearchs
+module ComponentSearches
   def check_component_contains_label(container,message_text)
     found = false
     container.components.each do |comp|
@@ -13,4 +13,4 @@ module ComponentSearchs
   end
 end
 
-World(ComponentSearchs)
+World(ComponentSearches)
