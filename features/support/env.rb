@@ -4,22 +4,26 @@ SimpleCov.start
 if not (defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby')
   abort 'Sorry - Feature tests of LQPL requires JRuby. You appear to be running or defaulted to some other ruby engine.'
 end
+where_i_am = File.expand_path(File.dirname(__FILE__))
+%w{src lqpl_gui lib/java lib/ruby devlib/java}.each do |dir|
+  $LOAD_PATH << where_i_am+"/../../GUI/"+ dir
+end
+$LOAD_PATH << where_i_am+"/../../out/lqpl_gui"
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/src"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/ruby"
 
 require 'java'
 
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
+$CLASSPATH << where_i_am+"/../../out/lqpl_gui"
 
+#runtime jars
+%w{jruby-complete forms_rt monkeybars-1.1.1}.each do |jar|
+  $CLASSPATH << where_i_am+"/../../GUI/lib/java/"+jar+".jar"
+end
 
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java/jemmy-2.3.0.0.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/forms_rt.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/monkeybars-1.1.1.jar"
+#testing jars
+%w{fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2 fest-util-1.1.2 jcip-annotations-1.0}.each do |jar|
+  $CLASSPATH << where_i_am+"/../../GUI/devlib/java/" + jar+".jar"
+end
 
 
 require "fest-swing-1.2.jar"
@@ -27,19 +31,29 @@ require "fest-swing-1.2.jar"
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
 
-ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../out/bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
+ENV['PATH'] = "#{where_i_am + '/../../out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
 java.lang.System.set_property("com.drogar.testing.jemmy","true")
 
 require 'manifest'
 
-java_import org.fest.swing.edt.GuiActionRunner
-java_import org.fest.swing.edt.GuiQuery
-java_import org.fest.swing.fixture.JMenuItemFixture
-java_import org.fest.swing.fixture.FrameFixture
-java_import org.fest.swing.core.matcher.JButtonMatcher
-java_import org.fest.swing.core.matcher.JLabelMatcher
+%w{BasicRobot}.each do |c|
+  java_import "org.fest.swing.core."+c
+end
+
+%w{GuiActionRunner GuiQuery GuiTask}.each do |c|
+  java_import "org.fest.swing.edt."+c
+end
+
+%w{JMenuItemFixture FrameFixture JTextComponentFixture}.each do |c|
+  java_import "org.fest.swing.fixture."+c
+end
+
+%w{JButtonMatcher JLabelMatcher}.each do |c|
+  java_import "org.fest.swing.core.matcher."+c
+end
+
 #java_import org.netbeans.jemmy.JemmyProperties
 #java_import org.netbeans.jemmy.TestOut
 
@@ -71,7 +85,7 @@ java_import javax.swing.JButton
 # JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuOperator",amd)
 # JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuBarOperator",amd)
 
-class AppStarter < GuiTask
+class AppStarter < GuiQuery
   # Launch the app in the Event Dispatch Thread (EDT),
   # which is the thread reserved for user interfaces.
   # FEST will call this method for us before the test.
@@ -83,14 +97,15 @@ end
 
 Before do
   runner = GuiActionRunner.execute(AppStarter.new)
-  @qe_frame = FrameFixture.new(runner)
+  @robot = BasicRobot.robot_with_current_awt_hierarchy
+  @qe_frame = FrameFixture.new(@robot, "Quantum Emulator")
 end
 
 
 After do
   title = 'Confirm Exit - PresentationClock'
-  @window.close
-  @window.option_pane.require_title(title).yes_button.click
+  @qe_frame.close
+  @qe_frame.option_pane.require_title(title).yes_button.click
 end
 
 # begin

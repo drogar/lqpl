@@ -130,6 +130,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
+                  <name value="messagesTextArea"/>
                 </properties>
               </component>
             </children>

@@ -8,45 +8,34 @@ end
 
 Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 
-  menu_item =  @qe_frame.menu_item_with_path("menu", "mitem")
+  menu_item =  @qe_frame.menu_item_with_path [menu, mitem].to_java(:string)
   menu_item.should_not be_nil
-  menu_item.should be_enabled
-
   menu_item.click()
-  #fmenu_item.push_no_block
 end
 
 
 And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 
   fc = @qe_frame.file_chooser();
-  fc.get_dialog_title.should == "Open LQPL File for Compiling"
 
-  fc.get_current_directory.get_absolute_path.should ==  Dir.getwd
-  fc.is_file_selection_enabled.should == true
-  fc.is_directory_selection_enabled.should == false
-  cdir = fc.get_current_directory.get_absolute_path
+  cdir =   Dir.getwd
 
   if not (cdir =~ /GUI/)
-    fc.set_current_directory(java.io.File.new(cdir,"GUI"))
+    cdir = java.io.File.new(cdir,"GUI")
+    fc.set_current_directory(cdir)
   end
-  topdir = fc.get_current_directory.get_absolute_path
-
-
+  
   dirs = dir.split("/")
   dirs.each do |d|
-    cdir = fc.get_current_directory.get_absolute_path
-    fc.set_current_directory (java.io.File.new(cdir, d))
+    cdir = java.io.File.new(cdir, d)
+    fc.set_current_directory (cdir)
   end
-  fc.get_current_directory.get_absolute_path.should ==  topdir+"/"+dir
+  
+  sel_file = java.io.File.new(cdir,file)
 
+  fc.select_file sel_file
 
-  sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-
-  fc.set_selected_file sel_file
-
-  fc.approve_selection
-
+  fc.approve
 
 end
 
@@ -76,7 +65,7 @@ Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\
 end
 
 Then /^the messages field should contain:$/ do |client_message_table|
-  theTextArea = JTextAreaOperator.new($qe_frame)
+  theTextArea = JTextComponentFixture.new(@robot,"messagesTextArea")
   message_texts = client_message_table.hashes.collect {|h| Regexp.new h.values[0]}
   message_texts.each do |t|
     theTextArea.text.should =~ t
