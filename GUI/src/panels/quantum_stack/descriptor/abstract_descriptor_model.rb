@@ -21,6 +21,12 @@ class AbstractDescriptorModel
     raise StackDescriptorModelInvalidCreate
   end
 
+  def check_and_return_value(pattern,in_string,data_parser)
+    matched = pattern.match in_string
+    raise StackDescriptorModelInvalidCreate, "Invalid input for #{self.class}: #{in_string}" if ! matched
+    data_parser matched[1]
+  end
+  
   def length
     return @value.length
   end

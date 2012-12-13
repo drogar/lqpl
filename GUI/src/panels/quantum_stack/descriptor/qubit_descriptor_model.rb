@@ -6,9 +6,7 @@ class QubitDescriptorModel < AbstractDescriptorModel
   # match 2 and 5
 
   def initialize(in_string)
-    matc = PATTERN.match in_string
-    raise StackDescriptorModelInvalidCreate, in_string if !matc
-    @value = QubitDescriptorModel::parse_list matc[1]
+    @value = check_and_return_value(PATTERN,in_string,QubitDescriptorModel::parse_list)
   end
 
   def length
@@ -22,7 +20,7 @@ class QubitDescriptorModel < AbstractDescriptorModel
 
   def self.parse_list(qubit_string)
     raise InvalidInput, "Must have qubit indicators" if !qubit_string or qubit_string.length == 0
-    r = values_to_list qubit_string, LIST_PATTERN, do |rval,md|
+    r = values_to_list qubit_string, LIST_PATTERN  do |rval,md|
       elem = [self.translate_qubit(md[2]), self.translate_qubit(md[5])]
       raise InvalidInput, "#{elem} duplicated in qubit" if rval.include? elem
       rval << elem

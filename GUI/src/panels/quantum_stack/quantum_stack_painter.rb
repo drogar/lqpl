@@ -14,10 +14,7 @@ class QuantumStackPainter
   attr :model_element
 
   def initialize(model_element)
-    @model_element = model_element
-
-    @descriptor_painter = DescriptorPainterFactory.make_painter(model_element.descriptor)
-    @sstack_painters = @model_element.substacks.collect {|s| QuantumStackPainter.new(s)}
+    self.model_element=model_element
   end
 
   def model_element=(model)
@@ -67,6 +64,7 @@ class QuantumStackPainter
   # end of painter interface
 
   def model_paint_size(g)
+    #todo - refactor to make "size" a class
     return @preferred_size if @preferred_size
     if model_element.bottom?
       dim= get_string_size(g,"...")

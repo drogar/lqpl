@@ -20,13 +20,11 @@ class ClassicalStackModel
   end
 
   def classical_stack=(xml_input)
-    cstack_in = CSTACK_PATTERN.match xml_input
-    raise QuantumStackModelInvalidCreate, "Invalid Classical Stack: #{xml_input}" if !cstack_in
-    @classical_stack = ClassicalStackModel::classical_values_to_list(cstack_in[1])
+    @classical_stack = check_and_return_value(PATTERN,in_string,ClassicalStackModel::classical_values_to_list)
   end
 
   def self.classical_values_to_list(cvals)
-    values_to_list cvals, CLASSICALVALUES_PATTERN, do | ret, cv|
+    values_to_list cvals[1], CLASSICALVALUES_PATTERN  do | ret, cv|
       ret << cv[2].to_i if cv[2]
       ret << (cv[4] == "True" or cv[4] == "true") if cv[4]
     end

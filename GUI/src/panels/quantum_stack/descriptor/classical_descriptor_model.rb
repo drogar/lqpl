@@ -5,13 +5,11 @@ class ClassicalDescriptorModel< AbstractDescriptorModel
   LIST_PATTERN = Regexp.new /^(<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>)/
 
   def initialize(in_string)
-    matc = PATTERN.match in_string
-    raise StackDescriptorModelInvalidCreate, in_string if ! matc
-    @value = ClassicalDescriptorModel::parse_list matc[1]
+    @value = check_and_return_value(PATTERN,in_string,ClassicalDescriptorModel::parse_list)
   end
 
   def self.parse_list(sub_string)
-    r = values_to_list sub_string, LIST_PATTERN, do |ret, md|
+    r = values_to_list sub_string, LIST_PATTERN do |ret, md|
       ret << md[2].to_i if md[2]
       ret << (md[4] == 'True') if md[4]
     end
