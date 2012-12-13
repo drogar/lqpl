@@ -7,7 +7,7 @@ require 'exit_handler'
 class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
-  set_close_action :exit
+  set_close_action :close
 
   {"the_menu.file_compile" => "file_compile", "the_menu.file_load" => "file_load",
     "the_menu.file_simulate" => "file_simulate","the_menu.view_classical_stack" => "view_classical_stack",
@@ -35,6 +35,9 @@ class LqplController < ApplicationController
     @lqpl_emulator_server_connection.connect
   end
 
+  def close()
+  end
+  
   def file_exit_action_performed
     ExitHandler.instance.close_servers
   end

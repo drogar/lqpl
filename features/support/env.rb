@@ -95,18 +95,35 @@ class AppStarter < GuiQuery
   end
 end
 
-Before do
+#Before do
+Around do |sc, blk|
+  puts "Starting 'Around'"
   runner = GuiActionRunner.execute(AppStarter.new)
-  @robot = BasicRobot.robot_with_current_awt_hierarchy
-  @qe_frame = FrameFixture.new(@robot, "Quantum Emulator")
+  $robot = BasicRobot.robot_with_current_awt_hierarchy
+  $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
+  blk.call
+  puts "finished scenario "
+  $robot.clean_up
+  puts "called robot cleanup "
+  #sleep 1.0
+  $robot = nil
+  puts "killed robot"
+  #sleep 1.0
+  $qe_frame = nil
+  puts "killed frame"
+  #sleep 1.0
+  LqplController.instance.close
+  puts "closed Controller"
 end
 
 
-After do
-  title = 'Confirm Exit - PresentationClock'
-  @qe_frame.close
-  @qe_frame.option_pane.require_title(title).yes_button.click
-end
+# After do
+#   puts "doing after do"
+#   #title = 'Confirm Exit - PresentationClock'
+#   LqplController.instance.close
+#   #@qe_frame.close
+#  # @qe_frame.option_pane.require_title(title).yes_button.click
+# end
 
 # begin
 #   puts "Starting up!!!!"
