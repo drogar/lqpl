@@ -15,7 +15,7 @@ Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 end
 
 
-And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
+And /^I load "([\w\.]*?\....)" from the directory "([\w\s\/]*)"$/ do |file, dir|
 
   fc = $qe_frame.file_chooser()
 

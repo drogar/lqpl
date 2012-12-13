@@ -22,7 +22,6 @@ Feature: We can load and compile lqpl code
       |invalidsyntax.qpl was unsuccessful|
       |unexpected|
 
-  @wip
   Scenario: I try to compile a qpl program with syntax errors
     Given I select "Compile" from the "File" menu
     And I load "invalidsemantics.qpl" from the directory "testdata/qplprograms"
@@ -31,7 +30,6 @@ Feature: We can load and compile lqpl code
       |invalidsemantics.qpl was unsuccessful|
       |Semantic Error|
 
-  @wip
   Scenario: I compile a qpl program with warnings errors
     Given I select "Compile" from the "File" menu
     And I load "invalidbalance.qpl" from the directory "testdata/qplprograms"

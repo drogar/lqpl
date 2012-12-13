@@ -1,60 +1,28 @@
 
 
-When /I load "([a-zA-Z0-9_\.]*?\.qpo)" from the directory "([\w\s\/]*)"/ do |file, dir|
-
-  fc = JFileChooserOperator.new
-  fc.get_dialog_title.should == "Load LQPO (Assembly) File"
-
-  fc.get_current_directory.get_absolute_path.should ==  Dir.getwd
-  fc.is_file_selection_enabled.should == true
-  fc.is_directory_selection_enabled.should == false
-
-  cdir = fc.get_current_directory.get_absolute_path
-  if not (cdir =~ /GUI/)
-    fc.set_current_directory(java.io.File.new(cdir,"GUI"))
-  end
-  topdir = fc.get_current_directory.get_absolute_path
-
-  dirs = dir.split("/")
-  dirs.each do |d|
-    cdir = fc.get_current_directory.get_absolute_path
-    fc.set_current_directory (java.io.File.new(cdir, d))
-  end
-  fc.get_current_directory.get_absolute_path.should ==  topdir+"/"+dir
-
-  sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-#  p sel_file
-  fc.set_selected_file sel_file
-
-  fc.approve_selection
-
-
-end
-
 Then /^the main frame.s title should be "(.*?)"$/ do |the_title|
-  $qe_frame.title.should == the_title
+  ft = GuiActionRunner.execute(FrameTitleQuery.new($qe_frame.component))
+  ft.should == the_title
 end
 
 
 Then /^the button "([\w\s]*)" should appear$/ do |button_text|
-  theButton = JButtonOperator.new($qe_frame, button_text)
+  theButton = $qe_frame.button(JButtonMatcher.with_text button_text)
 
   theButton.should_not == nil
-  theButton.text.should == button_text
-  theButton.should be_visible
+  theButton.require_visible
 end
 
 Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ do |spinner_label, spin_value|
 
-  theLabel = JLabelOperator.new($qe_frame, spinner_label)
+  theLabel = $qe_frame.label(JLabelMatcher.with_text spinner_label)
 
   theLabel.should_not == nil
-  theLabel.text.should == spinner_label
-  theLabel.should be_visible
-
-  theSpinner = JSpinnerOperator.new(theLabel.label_for)
+  theLabel.require_visible
+  lf = GuiActionRunner.execute(LabelForQuery.new theLabel.component)
+  theSpinner = JSpinnerFixture.new($robot,lf)
   theSpinner.should_not == nil
-  "#{theSpinner.value}".should == spin_value
+  theSpinner.text.should == "#{spin_value}"
 end
 
 Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_name,visible|

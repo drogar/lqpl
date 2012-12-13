@@ -46,11 +46,11 @@ end
   java_import "org.fest.swing.edt."+c
 end
 
-%w{JMenuItemFixture FrameFixture JTextComponentFixture}.each do |c|
+%w{JMenuItemFixture FrameFixture JTextComponentFixture JSpinnerFixture}.each do |c|
   java_import "org.fest.swing.fixture."+c
 end
 
-%w{JButtonMatcher JLabelMatcher}.each do |c|
+%w{JButtonMatcher JLabelMatcher }.each do |c|
   java_import "org.fest.swing.core.matcher."+c
 end
 

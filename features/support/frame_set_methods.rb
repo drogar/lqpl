@@ -1,4 +1,4 @@
-module JemmyFrameSetup
+module FrameSetup
   def frame_name_var_string(frame_name)
     case frame_name
     when "Quantum Emulator" then "$qe_frame"
@@ -9,10 +9,16 @@ module JemmyFrameSetup
   def set_frame_name_var(frame_name)
     case frame_name
     when "Quantum Emulator" then return
-    else fnvs = frame_name_var_string(frame_name)
-      eval "#{fnvs} = JFrameOperator.new frame_name"
+    else 
+      # todo - Need to get all components, loop through them and check against
+      # a FrameMatcher to get the right frame, then create. 
+      # use $robot to get ComponentHierarchy - get roots, check the roots, then
+      # check the children recursively and so forth.
+      
+      fnvs = frame_name_var_string(frame_name)
+      eval "#{fnvs} = FrameFixture.new($robot,FrameMatcher.with_title \"#{frame_name}\")"
     end
   end
 end
 
-World(JemmyFrameSetup)
+World(FrameSetup)
