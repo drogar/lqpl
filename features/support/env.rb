@@ -54,36 +54,10 @@ end
   java_import "org.fest.swing.core.matcher."+c
 end
 
-#java_import org.netbeans.jemmy.JemmyProperties
-#java_import org.netbeans.jemmy.TestOut
-
-# ["JFileChooserOperator","Operator","JButtonOperator","JLabelOperator","ContainerOperator",
-#   "JSpinnerOperator","JTabbedPaneOperator","JTextAreaOperator","JFrameOperator",
-#   "JDialogOperator","JMenuBarOperator","JMenuOperator","JMenuItemOperator"].each do |c|
-#     java_import "org.netbeans.jemmy.operators."+c
-# end
-# 
-# java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
-
-
-
-#  java_import org.netbeans.jemmy.Timeouts
-#  btn_timeout = Timeouts.new
-#  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
 
 java_import javax.swing.JButton
 
 
-# props = JemmyProperties.properties
-# JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
-
-# testout - (in, trace out, error out, notes out)
-# JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
-
-# amd = AppleMenuDriver.new
-#
-# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuOperator",amd)
-# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuBarOperator",amd)
 
 class AppStarter < GuiQuery
   # Launch the app in the Event Dispatch Thread (EDT),
@@ -95,44 +69,21 @@ class AppStarter < GuiQuery
   end
 end
 
-#Before do
+# consider starting up servers now and dropping during at_exit.
 Around do |sc, blk|
-  puts "Starting 'Around'"
+
   runner = GuiActionRunner.execute(AppStarter.new)
   $robot = BasicRobot.robot_with_current_awt_hierarchy
   $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
   blk.call
-  puts "finished scenario "
+
   $robot.clean_up
-  puts "called robot cleanup "
-  #sleep 1.0
   $robot = nil
-  puts "killed robot"
-  #sleep 1.0
+
   $qe_frame = nil
-  puts "killed frame"
-  #sleep 1.0
   LqplController.instance.close
-  puts "closed Controller"
 end
 
-
-# After do
-#   puts "doing after do"
-#   #title = 'Confirm Exit - PresentationClock'
-#   LqplController.instance.close
-#   #@qe_frame.close
-#  # @qe_frame.option_pane.require_title(title).yes_button.click
-# end
-
-# begin
-#   puts "Starting up!!!!"
-#   com.drogar.lqpl.Main.main([])
-# rescue Exception => e
-#   puts "Exception from main: #{e}"
-# end
-# 
-# $qe_frame = JFrameOperator.new "Quantum Emulator"
 
 at_exit {
   
