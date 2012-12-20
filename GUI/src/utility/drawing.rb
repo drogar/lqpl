@@ -56,7 +56,7 @@ module Drawing
   def get_string_size(g,text)
     case text
     when AttributedCharacterIterator then
-      this_font = g.font.derive_font(8.0)
+      this_font = g.font.java_send :deriveFont, [Java::float], 8.0
       this_font.get_string_bounds(text,0, text.end_index, g.font_render_context)
     else g.font.get_string_bounds(text,g.font_render_context)
     end

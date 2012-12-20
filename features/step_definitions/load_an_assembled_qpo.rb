@@ -10,61 +10,60 @@ Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   theButton = $qe_frame.button(JButtonMatcher.with_text button_text)
 
   theButton.should_not == nil
-  theButton.require_visible
+  theButton.should be_edt_visible
 end
 
 Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ do |spinner_label, spin_value|
-
-  theLabel = $qe_frame.label(JLabelMatcher.with_text spinner_label)
-
-  theLabel.should_not == nil
-  theLabel.require_visible
-  lf = GuiActionRunner.execute(LabelForQuery.new theLabel.component)
-  theSpinner = JSpinnerFixture.new($robot,lf)
+  theSpinner = spinner_for_label(spinner_label)
   theSpinner.should_not == nil
+  theSpinner.should be_edt_visible
   theSpinner.text.should == "#{spin_value}"
 end
 
 Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_title,visible|
-   set_frame_ref_var(frame_title)
-   frame_fixture = eval(frame_ref_var_string frame_title)
+   # set_frame_ref_var(frame_title)
+   # frame_fixture = eval(frame_ref_var_string frame_title)
+   frame_fixture = set_and_return_frame_fixture(frame_title)
    if visible == 'not '
-     sleep_until(5) {!frame_fixture.visible?}
+     sleep_until(5) {!frame_fixture.edt_visible?}
      # tries=0
      #      while tries < 5 do
      #        sleep 0.25
      #        break if !frame_fixture.visible?
      #      end
-     frame_fixture.should_not be_visible
+     frame_fixture.should_not be_edt_visible
    else
-     sleep_until(5) {frame_fixture.visible?}
-     frame_fixture.should be_visible
+     sleep_until(5) {frame_fixture.edt_visible?}
+     frame_fixture.should be_edt_visible
    end
 end
 
-Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frm|
-  theSpinner = JSpinnerOperator.new(JLabelOperator.new(eval(frame_name_var_string frm), spinner_label).label_for)
-  spin_button = theSpinner.increase_operator
-  spin_button = theSpinner.decrease_operator if direction == "down"
-  count.to_i.times {|i| spin_button.do_click}
+Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frame_title|
+  frame_ref=set_and_return_frame_fixture(frame_title)
+  theSpinner = spinner_for_label(spinner_label,frame_ref)
+  theSpinner.increment(count.to_i) if direction == "up"
+  theSpinner.decrement(count.to_i) if direction == "down"
+  
+end
+
+When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frame_title|
+  frame_ref=set_and_return_frame_fixture(frame_title)
+  theButton = frame_ref.button(JButtonMatcher.with_text button_text)
+  count.to_i.times {|i| theButton.click}
 
 end
 
-When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frm|
-  theButton = JButtonOperator.new(eval(frame_name_var_string(frm)), button_text)
-  count.to_i.times {|i| theButton.do_click}
+Then /^the selection on the frame "([\w\s]*)" should show ---(.*?)$/ do |frame_title, selection|
+  frame_ref=set_and_return_frame_fixture(frame_title)
+  
+  theTabbedPane = frame_ref.tabbed_pane
+  theTextArea = theTabbedPane.edt_selected_component.edt_viewport.edt_view
+  theTextArea.selected_text.chomp.should == selection
 
 end
 
-Then /^the selection on the frame "([\w\s]*)" should show ---(.*?)$/ do |frame_name, selec|
-
-  theTabbedPane = JTabbedPaneOperator.new(eval(frame_name_var_string(frame_name)))
-  theTextArea = JTextAreaOperator.new(theTabbedPane.selected_component.viewport.view)
-  theTextArea.selected_text.chomp.should == selec
-
-end
-
-Then /^the button "([\w\s]*)" on the frame "([\w\s]*)" should be (dis|en)abled$/ do |button_text, frm, dis_or_en|
-  the_button = JButtonOperator.new(eval(frame_name_var_string(frm)), button_text)
-  the_button.enabled.should == (dis_or_en == 'en')
+Then /^the button "([\w\s]*)" on the frame "([\w\s]*)" should be (dis|en)abled$/ do |button_text, frame_title, dis_or_en|
+  frame_ref=set_and_return_frame_fixture(frame_title)
+  the_button = frame_ref.button(JButtonMatcher.with_text button_text)
+  the_button.edt_enabled?.should == (dis_or_en == 'en')
 end

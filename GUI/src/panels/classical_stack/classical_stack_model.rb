@@ -1,7 +1,6 @@
 require 'exceptions/quantum_stack_model_invalid_create'
 
-class ClassicalStackModel
-  include XmlDecode
+class ClassicalStackModel < XmlBasedModel
   attr_accessor :classical_stack_text
   attr_accessor :classical_stack
 
@@ -20,7 +19,8 @@ class ClassicalStackModel
   end
 
   def classical_stack=(xml_input)
-    @classical_stack = check_and_return_value(PATTERN,in_string,ClassicalStackModel::classical_values_to_list)
+    @classical_stack = check_and_return_value(CSTACK_PATTERN,xml_input,
+      lambda { |m| ClassicalStackModel::classical_values_to_list m})
   end
 
   def self.classical_values_to_list(cvals)

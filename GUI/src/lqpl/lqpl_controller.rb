@@ -28,6 +28,13 @@ class LqplController < ApplicationController
     add_listener :type => :action, :components => {"the_menu.help_about" => "help_about"}
   end
 
+  def close
+    puts "Called lqpl controller close"
+    all_controllers_dispose
+    file_exit_action_performed
+    super
+  end
+
   def load(*args)
     cmp = CompilerServerConnection.get_instance
     cmp.connect
@@ -35,9 +42,6 @@ class LqplController < ApplicationController
     @lqpl_emulator_server_connection.connect
   end
 
-  def close()
-  end
-  
   def file_exit_action_performed
     ExitHandler.instance.close_servers
   end
@@ -93,6 +97,16 @@ class LqplController < ApplicationController
     update_view
   end
 
+  def all_controllers_dispose
+    AboutController.instance.dispose
+    SimulateResultsController.instance.dispose
+    ClassicalStackController.instance.dispose
+    DumpController.instance.dispose
+    ExecutableCodeController.instance.dispose
+    StackTranslationController.instance.dispose
+    QuantumStackController.instance.dispose
+  end
+  
   def file_simulate_action_performed
 
     SimulateResultsController.instance.lqpl_emulator_server_connection = LqplEmulatorServerConnection.get_instance

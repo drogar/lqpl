@@ -60,6 +60,7 @@ GlobalErrorHandler.on_error {|exception, thread| log_the_error(exception, thread
 
 begin
   LqplController.instance.open
+  puts 'Returned from open/close...'
 rescue => e
-  show_error_dialog_and_exit(e)
+  show_error_dialog_and_exit("error",e.to_s)
 end

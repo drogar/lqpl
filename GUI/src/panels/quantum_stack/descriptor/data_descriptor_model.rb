@@ -8,7 +8,8 @@ class DataDescriptorModel < AbstractDescriptorModel
   # match 2
 
   def initialize(in_string)
-    @value = check_and_return_value(PATTERN,in_string,DataDescriptorModel::parse_pairs)
+    @value = check_and_return_value(PATTERN,in_string,
+      lambda { |m| DataDescriptorModel::parse_pairs m})
   end
 
 

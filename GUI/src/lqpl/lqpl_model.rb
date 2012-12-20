@@ -1,4 +1,4 @@
-class LqplModel
+class LqplModel < ApplicationModel
   attr_accessor :spinner_panel_visible, :button_panel_visible
   attr_accessor :step_spinner, :recursion_spinner, :recursion_multiplier_spinner, :tree_depth_spinner
   attr_accessor :go_enabled, :step_enabled

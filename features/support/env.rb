@@ -50,7 +50,7 @@ end
   java_import "org.fest.swing.finder."+c
 end
 
-%w{JMenuItemFixture FrameFixture JTextComponentFixture JSpinnerFixture}.each do |c|
+%w{ComponentFixture JMenuItemFixture FrameFixture JTextComponentFixture JSpinnerFixture JLabelFixture JButtonFixture}.each do |c|
   java_import "org.fest.swing.fixture."+c
 end
 
@@ -59,9 +59,12 @@ end
 end
 
 
+java_import java.awt.Component
 
 java_import javax.swing.JButton
 
+java_import java.awt.event.InputEvent
+java_import java.awt.event.KeyEvent
 
 
 class AppStarter < GuiQuery
@@ -74,6 +77,7 @@ class AppStarter < GuiQuery
   end
 end
 
+
 # consider starting up servers now and dropping during at_exit.
 Around do |sc, blk|
 
@@ -81,12 +85,18 @@ Around do |sc, blk|
   $robot = BasicRobot.robot_with_current_awt_hierarchy
   $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
   blk.call
-
+  $robot.press_modifiers(InputEvent::META_MASK)
+  $robot.press_key(KeyEvent::VK_Q)
+  $robot.release_key(KeyEvent::VK_Q)
+#  $qe_frame.close
+  
   $robot.clean_up
   $robot = nil
 
   $qe_frame = nil
-  LqplController.instance.close
+  #LqplController.instance.close
+  runner = nil
+  sleep 2
 end
 
 

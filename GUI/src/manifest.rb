@@ -72,6 +72,10 @@ when Monkeybars::Resolver::IN_FILE_SYSTEM
 when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
+
+require 'application_model'
+require 'utility/xml_decode'
+require 'xml_based_model'
 ["server_process_not_found", "invalid_input"].each do |f|
   require "exceptions/"+f
 end

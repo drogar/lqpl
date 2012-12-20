@@ -6,7 +6,8 @@ class QubitDescriptorModel < AbstractDescriptorModel
   # match 2 and 5
 
   def initialize(in_string)
-    @value = check_and_return_value(PATTERN,in_string,QubitDescriptorModel::parse_list)
+    @value = check_and_return_value(PATTERN,in_string,
+      lambda { |m| QubitDescriptorModel::parse_list m})
   end
 
   def length

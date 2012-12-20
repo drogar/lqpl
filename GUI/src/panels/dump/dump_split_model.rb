@@ -1,4 +1,4 @@
-class DumpSplitModel
+class DumpSplitModel <XmlBasedModel
 
   def initialize(inx)
     self.dumpsplit=inx
@@ -6,7 +6,7 @@ class DumpSplitModel
 
   def dumpsplit=(in_xml)
     m = DS_PATTERN.match in_xml
-    raise QuantumStackModelInvalidCreate, "Invalid dump split: #{in_xml}" if !m
+    raise ModelCreateError, "Invalid dump split: #{in_xml}" if !m
     @ds_text= m[0]
   end
 

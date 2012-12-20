@@ -11,7 +11,7 @@ Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
   menu_item =  $qe_frame.menu_item_with_path [menu, mitem].to_java(:string)
   menu_item.should_not be_nil
   menu_item.click()
-  sleep 2.0
+  sleep 0.5
 end
 
 
