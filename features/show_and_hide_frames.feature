@@ -22,7 +22,7 @@ Feature: We can show and hide the various frames
     When I select "Show Stack Translation" from the "View" menu
     Then the frame "Stack Translation" should be visible
 
-	@wip
+
   Scenario:
     When I select "Load" from the "File" menu
     And I load "coin.reference.qpo" from the directory "testdata/qplprograms"
@@ -31,6 +31,7 @@ Feature: We can show and hide the various frames
     Then the frame "Dump" should not be visible
     When I select "Show Dump" from the "View" menu
     Then the frame "Dump" should be visible
+
 
   Scenario:
     When I select "Load" from the "File" menu

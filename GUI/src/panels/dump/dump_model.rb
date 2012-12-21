@@ -21,7 +21,7 @@ class DumpModel <XmlBasedModel
   end
 
   def self.dump_values_to_list(dumpvals)
-    values_to_list dumpvals[1], DUMP_LIST_PATTERN  do |ret, dv|
+    values_to_list dumpvals, DUMP_LIST_PATTERN  do |ret, dv|
       ret << DumpCallModel.new(dv[1]) if dv[1]
       ret << DumpSplitModel.new(dv[2]) if dv[2]
     end

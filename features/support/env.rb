@@ -54,10 +54,11 @@ end
   java_import "org.fest.swing.fixture."+c
 end
 
-%w{JButtonMatcher JLabelMatcher FrameMatcher}.each do |c|
+%w{JButtonMatcher JLabelMatcher FrameMatcher DialogMatcher}.each do |c|
   java_import "org.fest.swing.core.matcher."+c
 end
 
+java_import java.util.regex.Pattern
 
 java_import java.awt.Component
 
@@ -65,6 +66,7 @@ java_import javax.swing.JButton
 
 java_import java.awt.event.InputEvent
 java_import java.awt.event.KeyEvent
+
 
 
 class AppStarter < GuiQuery
@@ -79,30 +81,37 @@ end
 
 
 # consider starting up servers now and dropping during at_exit.
-Around do |sc, blk|
+# Around do |sc, blk|
+# 
+#   runner = GuiActionRunner.execute(AppStarter.new)
+#   $robot = BasicRobot.robot_with_current_awt_hierarchy
+#   $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
+#   blk.call
+#   $robot.press_modifiers(InputEvent::META_MASK)
+#   $robot.press_key(KeyEvent::VK_Q)
+#   $robot.release_key(KeyEvent::VK_Q)
+# #  $qe_frame.close
+#   
+#   $robot.clean_up
+#   $robot = nil
+# 
+#   $qe_frame = nil
+#   #LqplController.instance.close
+#   runner = nil
+#   sleep 2
+# end
 
-  runner = GuiActionRunner.execute(AppStarter.new)
-  $robot = BasicRobot.robot_with_current_awt_hierarchy
-  $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
-  blk.call
-  $robot.press_modifiers(InputEvent::META_MASK)
-  $robot.press_key(KeyEvent::VK_Q)
-  $robot.release_key(KeyEvent::VK_Q)
-#  $qe_frame.close
-  
-  $robot.clean_up
-  $robot = nil
-
-  $qe_frame = nil
-  #LqplController.instance.close
-  runner = nil
-  sleep 2
-end
+runner = GuiActionRunner.execute(AppStarter.new)
+$robot = BasicRobot.robot_with_current_awt_hierarchy
+$qe_frame = FrameFixture.new($robot, "Quantum Emulator")
 
 
 at_exit {
   
-  LqplController.instance.close
- # $qe_frame.close
+  #LqplController.instance.close
+  $qe_frame.close
+  $qe_frame = nil
+  $robot.clean_up
+  $robot = nil
  
 }

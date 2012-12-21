@@ -24,7 +24,7 @@ class ClassicalStackModel < XmlBasedModel
   end
 
   def self.classical_values_to_list(cvals)
-    values_to_list cvals[1], CLASSICALVALUES_PATTERN  do | ret, cv|
+    values_to_list cvals, CLASSICALVALUES_PATTERN  do | ret, cv|
       ret << cv[2].to_i if cv[2]
       ret << (cv[4] == "True" or cv[4] == "true") if cv[4]
     end

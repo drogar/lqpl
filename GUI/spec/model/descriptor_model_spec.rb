@@ -6,7 +6,7 @@ describe AbstractDescriptorModel do
   it "should only be created by the factory" do
     expect {
       sd = AbstractDescriptorModel.new
-    }.to raise_error(StackDescriptorModelInvalidCreate)
+    }.to raise_error(ModelCreateError)
   end
   it "should create an instance of ZeroDescriptorModel when created with  <Zero/>" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"
@@ -32,18 +32,18 @@ describe AbstractDescriptorModel do
   it "should raise an error when the input string to the factory doesn't start with one of <Zero, <Value, <Class, <Qubi, or <Alge" do
     expect {
       sd = AbstractDescriptorModel.make_instance "somethng"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
+    }.to  raise_error(ModelCreateError)
     expect {
       sd = AbstractDescriptorModel.make_instance "ab<Zero/>"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
+    }.to  raise_error(ModelCreateError)
     expect {
       sd = AbstractDescriptorModel.make_instance "<Alg<Qubit>"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
+    }.to  raise_error(ModelCreateError)
   end
   it "should embed the incorrect value when raising a create exception" do
     expect {
       sd = AbstractDescriptorModel.make_instance "somethng"
-    }.to  raise_error(StackDescriptorModelInvalidCreate, /somethng/)
+    }.to  raise_error(ModelCreateError, /somethng/)
   end
 
 
@@ -61,7 +61,7 @@ describe ClassicalDescriptorModel do
   it  "should raise an error if constructed with something other than <ClassicalStack>list of ints or bools</ClassicalStack>" do
     expect {
       sc = AbstractDescriptorModel.make_instance "<ClassicalStack>err</ClassicalStack>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<ClassicalStack>err</ClassicalStack>")
+    }.to raise_error(ModelCreateError, /<ClassicalStack>err<\/ClassicalStack>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
@@ -88,7 +88,7 @@ describe ClassicalDescriptorModel do
     it "should raise an error when the list is invalid" do
       expect {
         ClassicalDescriptorModel::parse_list("invalid")
-      }.to raise_error(StackDescriptorModelInvalidCreate, "invalid")
+      }.to raise_error(ModelCreateError, "invalid")
     end
     it "should prepare a list of length 0 when there is no list" do
       ClassicalDescriptorModel::parse_list("").should == []
@@ -113,7 +113,7 @@ describe DataDescriptorModel do
   it  "should raise an error if constructed with something other than <AlgebraicData>list of z,o pairs</AlgebraicData>" do
     expect {
       sc = AbstractDescriptorModel.make_instance "<AlgebraicData>err</AlgebraicData>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<AlgebraicData>err</AlgebraicData>")
+    }.to raise_error(ModelCreateError, /<AlgebraicData>err<\/AlgebraicData>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
@@ -195,7 +195,7 @@ describe QubitDescriptorModel do
   it  "should raise an error if constructed with something other than <Qubits>list of z,o pairs</Qubits>" do
     expect {
       sc = AbstractDescriptorModel.make_instance "<Qubits>err</Qubits>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<Qubits>err</Qubits>")
+    }.to raise_error(ModelCreateError, /<Qubits>err<\/Qubits>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
@@ -292,10 +292,10 @@ describe ZeroDescriptorModel do
   it "should raise an error if constructed with something other than <Zero/>" do
     expect {
       sd = AbstractDescriptorModel.make_instance "<Zero>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<Zero>")
+    }.to raise_error(ModelCreateError, /<Zero>/)
     expect {
       sd = ZeroDescriptorModel.new "wrong"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "wrong")
+    }.to raise_error(ModelCreateError, /wrong/)
   end
   it "should have no name" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"

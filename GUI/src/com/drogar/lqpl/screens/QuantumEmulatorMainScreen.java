@@ -36,7 +36,6 @@ public class QuantumEmulatorMainScreen extends JFrame {
         setUpSpinner(recursionSpinner, 1, 1, 100000, 1);
         setUpSpinner(recursionMultiplierSpinner, 10, 1, 100000, 1);
         setUpSpinner(treeDepthSpinner, 4, 1, 100, 1);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         spinnerPanel.setVisible(false);
         buttonPanel.setVisible(false);
 
@@ -110,49 +109,63 @@ public class QuantumEmulatorMainScreen extends JFrame {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        controlPanel = new javax.swing.JPanel();
-        controlPanel.setLayout(new GridLayoutManager(3, 1, new java.awt.Insets(0, 0, 0, 0), -1, -1));
-        spinnerPanel = new javax.swing.JPanel();
-        spinnerPanel.setLayout(new GridLayoutManager(4, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        controlPanel = new JPanel();
+        controlPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        spinnerPanel = new JPanel();
+        spinnerPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         controlPanel.add(spinnerPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        stepSpinner = new javax.swing.JSpinner();
+        stepSpinner = new JSpinner();
         spinnerPanel.add(stepSpinner, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        stepLabelForSpinner = new javax.swing.JLabel();
+        stepLabelForSpinner = new JLabel();
+        stepLabelForSpinner.setText("Step Size");
         spinnerPanel.add(stepLabelForSpinner, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        recursionSpinner = new javax.swing.JSpinner();
+        recursionSpinner = new JSpinner();
         spinnerPanel.add(recursionSpinner, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        recursionLabelForSpinner = new javax.swing.JLabel();
+        recursionLabelForSpinner = new JLabel();
+        recursionLabelForSpinner.setText("Recursion Depth");
         spinnerPanel.add(recursionLabelForSpinner, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        treeDepthSpinner = new javax.swing.JSpinner();
+        treeDepthSpinner = new JSpinner();
         spinnerPanel.add(treeDepthSpinner, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        treeDepthLabelForSpinner = new javax.swing.JLabel();
+        treeDepthLabelForSpinner = new JLabel();
+        treeDepthLabelForSpinner.setText("Tree Depth");
         spinnerPanel.add(treeDepthLabelForSpinner, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        recursionMultiplierSpinner = new javax.swing.JSpinner();
+        recursionMultiplierSpinner = new JSpinner();
         spinnerPanel.add(recursionMultiplierSpinner, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        multiplierLabelForSpinner = new javax.swing.JLabel();
+        multiplierLabelForSpinner = new JLabel();
+        multiplierLabelForSpinner.setText("Recursion Multiplier");
         spinnerPanel.add(multiplierLabelForSpinner, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        buttonPanel = new javax.swing.JPanel();
-        buttonPanel.setLayout(new GridLayoutManager(1, 3, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        buttonPanel.setEnabled(true);
         controlPanel.add(buttonPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        trimButton = new javax.swing.JButton();
+        trimButton = new JButton();
+        trimButton.setText("Trim");
         buttonPanel.add(trimButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        stepButton = new javax.swing.JButton();
+        stepButton = new JButton();
+        stepButton.setText("Step");
         buttonPanel.add(stepButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        goButton = new javax.swing.JButton();
+        goButton = new JButton();
+        goButton.setText("Go");
         buttonPanel.add(goButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        messagesPanel = new javax.swing.JPanel();
-        messagesPanel.setLayout(new java.awt.BorderLayout(0, 0));
+        messagesPanel = new JPanel();
+        messagesPanel.setLayout(new BorderLayout(0, 0));
         controlPanel.add(messagesPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final javax.swing.JScrollPane scrollPane1 = new javax.swing.JScrollPane();
+        final JScrollPane scrollPane1 = new JScrollPane();
         messagesPanel.add(scrollPane1, BorderLayout.CENTER);
-        messagesTextArea = new javax.swing.JTextArea();
+        messagesTextArea = new JTextArea();
+        messagesTextArea.setEditable(false);
+        messagesTextArea.setName("messagesTextArea");
         scrollPane1.setViewportView(messagesTextArea);
+        stepLabelForSpinner.setLabelFor(stepSpinner);
+        recursionLabelForSpinner.setLabelFor(recursionSpinner);
+        treeDepthLabelForSpinner.setLabelFor(treeDepthSpinner);
+        multiplierLabelForSpinner.setLabelFor(recursionMultiplierSpinner);
     }
 
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return controlPanel;
     }
 }
