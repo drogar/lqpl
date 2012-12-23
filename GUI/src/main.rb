@@ -13,7 +13,7 @@ require 'java'
 
 case RbConfig::CONFIG["host_os"]
 when /darwin/i # OSX specific code
-  testing = java.lang.System.get_property("com.drogar.testing.jemmy")
+  testing = java.lang.System.get_property("com.drogar.testing.fest")
   if !testing or testing != "true"
     java.lang.System.set_property("apple.laf.useScreenMenuBar", "true")
   end

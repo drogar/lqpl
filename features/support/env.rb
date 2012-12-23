@@ -4,7 +4,10 @@ SimpleCov.start
 if not (defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby')
   abort 'Sorry - Feature tests of LQPL requires JRuby. You appear to be running or defaulted to some other ruby engine.'
 end
+
 where_i_am = File.expand_path(File.dirname(__FILE__))
+$project_dir = where_i_am +"/../../"
+
 %w{src lqpl_gui lib/java lib/ruby devlib/java}.each do |dir|
   $LOAD_PATH << where_i_am+"/../../GUI/"+ dir
 end
@@ -34,7 +37,7 @@ require "forms_rt.jar"
 ENV['PATH'] = "#{where_i_am + '/../../out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
-java.lang.System.set_property("com.drogar.testing.jemmy","true")
+java.lang.System.set_property("com.drogar.testing.fest","true")
 
 require 'manifest'
 
@@ -46,27 +49,24 @@ end
   java_import "org.fest.swing.edt."+c
 end
 
-%w{WindowFinder}.each do |c|
-  java_import "org.fest.swing.finder."+c
+%w{Window}.each do |c|
+  java_import "org.fest.swing.finder."+c+"Finder"
 end
 
-%w{ComponentFixture JMenuItemFixture FrameFixture JTextComponentFixture JSpinnerFixture JLabelFixture JButtonFixture}.each do |c|
-  java_import "org.fest.swing.fixture."+c
+%w{Component JMenuItem Frame JTextComponent JSpinner JLabel JButton JFileChooser}.each do |c|
+  java_import "org.fest.swing.fixture."+c+"Fixture"
 end
 
-%w{JButtonMatcher JLabelMatcher FrameMatcher DialogMatcher}.each do |c|
-  java_import "org.fest.swing.core.matcher."+c
+%w{JButton JLabel Frame Dialog}.each do |c|
+  java_import "org.fest.swing.core.matcher."+c+"Matcher"
 end
 
 java_import java.util.regex.Pattern
 
 java_import java.awt.Component
 
-java_import javax.swing.JButton
 
-java_import java.awt.event.InputEvent
-java_import java.awt.event.KeyEvent
-
+require 'support/component_query'
 
 
 class AppStarter < GuiQuery
@@ -81,30 +81,11 @@ end
 
 
 # consider starting up servers now and dropping during at_exit.
-# Around do |sc, blk|
-# 
-#   runner = GuiActionRunner.execute(AppStarter.new)
-#   $robot = BasicRobot.robot_with_current_awt_hierarchy
-#   $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
-#   blk.call
-#   $robot.press_modifiers(InputEvent::META_MASK)
-#   $robot.press_key(KeyEvent::VK_Q)
-#   $robot.release_key(KeyEvent::VK_Q)
-# #  $qe_frame.close
-#   
-#   $robot.clean_up
-#   $robot = nil
-# 
-#   $qe_frame = nil
-#   #LqplController.instance.close
-#   runner = nil
-#   sleep 2
-# end
 
 runner = GuiActionRunner.execute(AppStarter.new)
 $robot = BasicRobot.robot_with_current_awt_hierarchy
 $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
-
+#$owner = FrameFixture.new($robot,$qe_frame.edt_owner)
 
 at_exit {
   

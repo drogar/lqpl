@@ -11,72 +11,29 @@ Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
   menu_item =  $qe_frame.menu_item_with_path [menu, mitem].to_java(:string)
   menu_item.should_not be_nil
   menu_item.click()
-  sleep 0.5
+  sleep 0.25
 end
 
 
-And /^I load "([\w\.]*?\....)" from the directory "([\w\s\/]*)"$/ do |file, dir|
+And /^I load "([\w\.]*?\....)" from the project directory "([\w\s\/]*)"$/ do |file, dir|
 
-  fc = $qe_frame.file_chooser()
+  fc = JFileChooserFixture.new($robot) #   $qe_frame.file_chooser()
 
-  cdir =   Dir.getwd
-   
-   if not (cdir =~ /GUI/)
-     cdir = java.io.File.new(cdir,"GUI")
-     fc.set_current_directory(cdir)
-     sleep 0.1
-   end
-   
-   dirs = dir.split("/")
-   dirs.each do |d|
-     cdir = java.io.File.new(cdir, d)
-     fc.set_current_directory (cdir)
-     sleep 0.1
-   end
-  # Above is right way....
-  
-  # cdir =  "/Users/gilesb/programming/mixed/lqpl/GUI/testdata/qplprograms"
-  #  fc.set_current_directory (java.io.File.new cdir)
-  #  sleep 0.25
- 
-  sel_file = java.io.File.new(cdir,file)
-  sleep 0.25
-  fc.select_file sel_file
-  sleep 0.25
+  fc.select_file_in_project_directory(dir,file)
+
   fc.approve
 
 end
 
 
-Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
-  topdir = Dir.getwd
-  if not (topdir =~ /GUI/)
-    topdir = topdir + "/GUI"
-  end
-  realdir = topdir + "/" +outdir
-  theFile = realdir + "/" + outfile
-  sleep_until(10) {File.exist?(theFile)}
-  # tries = 0
-  #   while tries < 10 do # wait up to 2.5 seconds for compile to finish
-  #     sleep 0.25
-  #     break if File.exist?(theFile)
-  #     tries += 1
-  #   end
-  File.exist?(realdir + "/" + outfile).should be_true
-  File.open(realdir + "/" + outfile) do |newone|
-    result = newone.read
-    File.open(realdir + "/" + reference) do |ref|
-      refvalue = ref.read
-      result.should == refvalue
-    end
-  end
+Then /^"([\w\s]*?\.qpo)" should be created in the project directory "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
+  the_file = File.file_in_project_subdir(outdir, outfile)
+  
+  sleep_until_file_exists(10,the_file).should be_true
+  
+  File.read(the_file).should == File.read(File.file_in_project_subdir(outdir,reference))
 end
 
 Then /^the messages field should contain:$/ do |client_message_table|
-  theTextArea = JTextComponentFixture.new($robot,"messagesTextArea")
-  message_texts = client_message_table.hashes.collect {|h| Regexp.new h.values[0]}
-  message_texts.each do |t|
-    theTextArea.text.should =~ t
-  end
-
+  all_text_is_in_text_component(client_message_table, JTextComponentFixture.new($robot,"messagesTextArea"))
 end

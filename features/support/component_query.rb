@@ -23,12 +23,13 @@ class TitleQuery < ComponentQuery
   end
 end
 
-class VisibleQuery < ComponentQuery
+class OwnerQuery < ComponentQuery
   
   def executeInEDT
-    @component.is_visible
+    @component.owner
   end
 end
+
 
 class EnabledQuery < ComponentQuery
   
@@ -43,6 +44,12 @@ class SelectedComponentQuery < ComponentQuery
   end
 end
 
+class SelectedTextQuery < ComponentQuery
+  
+  def executeInEDT
+    @component.selected_text
+  end
+end
 
 class ViewportQuery < ComponentQuery
   
@@ -59,10 +66,10 @@ class ViewQuery < ComponentQuery
   end
 end
 
-class SelectedTextQuery < ComponentQuery
+class VisibleQuery < ComponentQuery
   
   def executeInEDT
-    @component.selected_text
+    @component.is_visible
   end
 end
 
@@ -84,6 +91,10 @@ module EDTQuery
     return GuiActionRunner.execute(LabelForQuery.new(self))
   end
   
+  def edt_owner
+    return GuiActionRunner.execute(OwnerQuery.new(self))
+  end
+    
   def edt_selected_text
     return GuiActionRunner.execute(SelectedTextQuery.new(self))
   end

@@ -34,7 +34,11 @@ class LqplController < ApplicationController
     file_exit_action_performed
     super
   end
-
+  
+  def my_frame
+    @__view.the_frame
+  end
+  
   def load(*args)
     cmp = CompilerServerConnection.get_instance
     cmp.connect
@@ -56,7 +60,7 @@ class LqplController < ApplicationController
     qplfiles = FileNameExtensionFilter.new("LQPL source file", ["qpl"].to_java(:string))
     chooser.set_file_filter(qplfiles)
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
-    rval = chooser.show_open_dialog(nil)
+    rval = chooser.show_open_dialog(self.my_frame)
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.get_selected_file.get_absolute_path
       cmp = CompilerServerConnection.get_instance

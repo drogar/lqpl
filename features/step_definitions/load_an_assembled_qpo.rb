@@ -20,22 +20,9 @@ Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ d
   theSpinner.text.should == "#{spin_value}"
 end
 
-Then /^the frame "([\w\s]*)" should (not )?be visible$/ do |frame_title,visible|
-   # set_frame_ref_var(frame_title)
-   # frame_fixture = eval(frame_ref_var_string frame_title)
-   frame_fixture = set_and_return_frame_fixture(frame_title)
-   if visible == 'not '
-     sleep_until(5) {!frame_fixture.edt_visible?}
-     # tries=0
-     #      while tries < 5 do
-     #        sleep 0.25
-     #        break if !frame_fixture.visible?
-     #      end
-     frame_fixture.should_not be_edt_visible
-   else
-     sleep_until(5) {frame_fixture.edt_visible?}
-     frame_fixture.should be_edt_visible
-   end
+Then /^the frame "([\w\s]*)" should (be|not be) visible$/ do |frame_title,visible|
+  frame_fixture = set_and_return_frame_fixture(frame_title)
+  sleep_until_visibility(5,frame_fixture,visible).should be_true
 end
 
 Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frame_title|
