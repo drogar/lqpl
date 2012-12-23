@@ -8,9 +8,8 @@ class DataDescriptorModel < AbstractDescriptorModel
   # match 2
 
   def initialize(in_string)
-    matc = PATTERN.match in_string
-    raise StackDescriptorModelInvalidCreate, in_string if ! matc
-    @value = DataDescriptorModel::parse_pairs matc[1]
+    @value = check_and_return_value(PATTERN,in_string,
+      lambda { |m| DataDescriptorModel::parse_pairs m})
   end
 
 
@@ -41,7 +40,7 @@ class DataDescriptorModel < AbstractDescriptorModel
 
 
   def self.parse_address_list(addresses_string)
-    r = values_to_list addresses_string, LIST_PATTERN, do |rval, md|
+    r = values_to_list addresses_string, LIST_PATTERN do |rval, md|
       elem = md[2].to_i
       raise InvalidInput, "StackAddress '#{elem}' duplicated for single constructor" if rval.include? elem
       rval << elem

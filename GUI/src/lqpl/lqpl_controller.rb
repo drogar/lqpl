@@ -7,7 +7,7 @@ require 'exit_handler'
 class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
-  set_close_action :exit
+  set_close_action :close
 
   {"the_menu.file_compile" => "file_compile", "the_menu.file_load" => "file_load",
     "the_menu.file_simulate" => "file_simulate","the_menu.view_classical_stack" => "view_classical_stack",
@@ -16,7 +16,7 @@ class LqplController < ApplicationController
       add_listener :type => :action, :components => {k => v}
     end
 
-  case Config::CONFIG["host_os"]
+  case RbConfig::CONFIG["host_os"]
   when /darwin/i # OSX specific code
     java_import com.apple.eawt.Application
     Application.application.about_handler = AboutController.instance
@@ -28,6 +28,17 @@ class LqplController < ApplicationController
     add_listener :type => :action, :components => {"the_menu.help_about" => "help_about"}
   end
 
+  def close
+    puts "Called lqpl controller close"
+    all_controllers_dispose
+    file_exit_action_performed
+    super
+  end
+  
+  def my_frame
+    @__view.the_frame
+  end
+  
   def load(*args)
     cmp = CompilerServerConnection.get_instance
     cmp.connect
@@ -49,7 +60,7 @@ class LqplController < ApplicationController
     qplfiles = FileNameExtensionFilter.new("LQPL source file", ["qpl"].to_java(:string))
     chooser.set_file_filter(qplfiles)
     chooser.set_current_directory(java.io.File.new(Dir.getwd))
-    rval = chooser.show_open_dialog(nil)
+    rval = chooser.show_open_dialog(self.my_frame)
     if rval == JFileChooser::APPROVE_OPTION
       fname = chooser.get_selected_file.get_absolute_path
       cmp = CompilerServerConnection.get_instance
@@ -90,6 +101,16 @@ class LqplController < ApplicationController
     update_view
   end
 
+  def all_controllers_dispose
+    AboutController.instance.dispose
+    SimulateResultsController.instance.dispose
+    ClassicalStackController.instance.dispose
+    DumpController.instance.dispose
+    ExecutableCodeController.instance.dispose
+    StackTranslationController.instance.dispose
+    QuantumStackController.instance.dispose
+  end
+  
   def file_simulate_action_performed
 
     SimulateResultsController.instance.lqpl_emulator_server_connection = LqplEmulatorServerConnection.get_instance

@@ -28,7 +28,7 @@ class LqplMenu
     menu_file.add(@file_compile);
     menu_file.add(@file_simulate);
 
-    case Config::CONFIG["host_os"]
+    case RbConfig::CONFIG["host_os"]
     when /darwin/i # OSX specific code
     #when /^win|mswin/i # Windows specific code
     #when /linux/i # Linux specific code
@@ -57,7 +57,7 @@ class LqplMenu
     mbar.add(menu_view);
 
 
-    case Config::CONFIG["host_os"]
+    case RbConfig::CONFIG["host_os"]
     when /darwin/i # OSX specific code
     #when /^win|mswin/i # Windows specific code
     #when /linux/i # Linux specific code

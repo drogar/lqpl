@@ -13,7 +13,7 @@ describe ClassicalStackModel do
     expect {
       c=ClassicalStackModel.new
       c.classical_stack = "junk"
-    }.to raise_error  QuantumStackModelInvalidCreate, /junk/
+    }.to raise_error  ModelCreateError, /junk/
   end
   it "should set the text to each item with line returns" do
     c=ClassicalStackModel.new

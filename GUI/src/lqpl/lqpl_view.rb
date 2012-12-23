@@ -42,4 +42,7 @@ class LqplView < ApplicationView
     @main_view_component.title = model.frame_title
   end
 
+  def the_frame
+    @main_view_component
+  end
 end

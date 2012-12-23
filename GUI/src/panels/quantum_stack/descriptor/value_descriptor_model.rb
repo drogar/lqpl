@@ -6,7 +6,7 @@ class ValueDescriptorModel < AbstractDescriptorModel
 
   def initialize(in_string)
     matc = PATTERN.match in_string
-    raise StackDescriptorInvalidCreate, in_string if ! matc
+    raise ModelCreateError, in_string if ! matc
     @value = matc[2]
     @name = nil
   end

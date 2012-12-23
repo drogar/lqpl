@@ -1,0 +1,3 @@
+Had to "name" all the swing items I wanted to find for testing.
+
+Import the base and then extend those with desired methods (e.g., componentfixture...)

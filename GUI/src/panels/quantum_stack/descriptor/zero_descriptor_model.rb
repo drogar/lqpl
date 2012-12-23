@@ -1,7 +1,7 @@
 class ZeroDescriptorModel <AbstractDescriptorModel
 
   def initialize(in_string="<Zero/>")
-    raise StackDescriptorModelInvalidCreate, in_string if in_string != "<Zero/>"
+    raise ModelCreateError, in_string if in_string != "<Zero/>"
     @value = "0"
   end
 

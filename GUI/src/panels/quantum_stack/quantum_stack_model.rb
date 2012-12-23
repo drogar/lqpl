@@ -7,7 +7,7 @@ require "panels/quantum_stack/descriptor/classical_descriptor_model"
 require "panels/quantum_stack/descriptor/qubit_descriptor_model"
 require "panels/quantum_stack/descriptor/data_descriptor_model"
 
-class QuantumStackModel
+class QuantumStackModel < XmlBasedModel
 
   attr_accessor :substacks
   attr_accessor :descriptor

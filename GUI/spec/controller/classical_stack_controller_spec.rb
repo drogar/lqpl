@@ -9,7 +9,7 @@ describe ClassicalStackController do
     @c = ClassicalStackController.instance
   end
   it "should raise an error when created with junk" do
-    expect { @c.set_classical_stack_data("junk")}. to raise_error   QuantumStackModelInvalidCreate, /junk/
+    expect { @c.set_classical_stack_data("junk")}. to raise_error   ModelCreateError, /junk/
   end
 
   it "should create a classical stack when given the correct input" do

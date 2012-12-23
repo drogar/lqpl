@@ -11,9 +11,9 @@ require 'java'
 
 
 
-case Config::CONFIG["host_os"]
+case RbConfig::CONFIG["host_os"]
 when /darwin/i # OSX specific code
-  testing = java.lang.System.get_property("com.drogar.testing.jemmy")
+  testing = java.lang.System.get_property("com.drogar.testing.fest")
   if !testing or testing != "true"
     java.lang.System.set_property("apple.laf.useScreenMenuBar", "true")
   end
@@ -28,20 +28,15 @@ require 'manifest'
 
 # Set up global error handling so that it is consistantly logged or outputed
 # You will probably want to replace the puts with your application's logger
-def show_error_dialog_and_exit(exception, thread=nil)
-  puts "Error in application"
-  puts "#{exception.class} - #{exception}"
+def log_the_error(exception, thread=nil)
   rexcep = exception.exception
   if rexcep.class == ServerProcessNotFound
-    t = "Server(s) not found"
-    m = "LQPL requires the compiler server and emulator server to be installed on your path.
+    show_error_dialog("Server(s) not found",
+         "LQPL requires the compiler server and emulator server to be installed on your path.
          Please download or compile these and add them to your path, e.g., in /usr/local/bin.
-         See further details at http://pll.cpsc.ucalgary.ca/lqpl"
-    javax.swing.JOptionPane.show_message_dialog(nil, m, t, javax.swing.JOptionPane::DEFAULT_OPTION)
-    java.lang.System.exit(0)
+         See further details at http://pll.cpsc.ucalgary.ca/lqpl");
   end
   if exception.kind_of? Exception
-    puts exception.backtrace.join("\n")
     File.open("lqplEmulatorError.log", "w") do |f|
       f.puts exception.backtrace.join("\n")
     end
@@ -51,20 +46,21 @@ def show_error_dialog_and_exit(exception, thread=nil)
     exception.printStackTrace(java.io.PrintStream.new(output_stream))
     puts output_stream.to_string
   end
-
-  # Your error handling code goes here
-
-  # Show error dialog informing the user that there was an error
-  title = "Application Error"
-  message = "The application has encountered an error and must shut down."
-
-  javax.swing.JOptionPane.show_message_dialog(nil, message, title, javax.swing.JOptionPane::DEFAULT_OPTION)
-  java.lang.System.exit(0)
+  # add other error handling code goes here
+  show_error_dialog("Application Error","The application has encountered an error and must shut down.")
+  System.exit(0)
 end
-GlobalErrorHandler.on_error {|exception, thread| show_error_dialog_and_exit(exception, thread) }
+
+def show_error_dialog_and_exit(title, message)
+  JOptionPane.show_message_dialog(nil, message, title, JOptionPane::DEFAULT_OPTION)
+  System.exit(0)
+end
+
+GlobalErrorHandler.on_error {|exception, thread| log_the_error(exception, thread) }
 
 begin
   LqplController.instance.open
+  puts 'Returned from open/close...'
 rescue => e
-  show_error_dialog_and_exit(e)
+  show_error_dialog_and_exit("error",e.to_s)
 end

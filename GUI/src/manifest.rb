@@ -72,21 +72,31 @@ when Monkeybars::Resolver::IN_FILE_SYSTEM
 when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
-require "exceptions/server_process_not_found"
-require "exceptions/invalid_input"
-require "communications/lqpl_emulator_server_connection"
-require "utility/translate_line_ends"
-require "communications/compiler_server_connection"
-# 
-require "lqpl/lqpl_controller"
-require "panels/quantum_stack/quantum_stack_controller"
-require "panels/classical_stack/classical_stack_controller"
-require "panels/dump/dump_controller"
-require "panels/executable_code/executable_code_controller"
-require "panels/stack_translation/stack_translation_controller"
-require "dialogs/simulate_results/simulate_results_controller"
-require "dialogs/about/about_controller"
+
+require 'application_model'
+require 'utility/xml_decode'
+require 'xml_based_model'
+["server_process_not_found", "invalid_input"].each do |f|
+  require "exceptions/"+f
+end
+
+["translate_line_ends","xml_decode"].each do |f|
+  require "utility/"+f
+end
+
+["lqpl_emulator_server_connection","compiler_server_connection"].each do |f|
+  require "communications/"+f
+end
+
+{ ""=>["lqpl"], 
+  "panels/" => ["quantum_stack", "classical_stack","dump","executable_code", "stack_translation"],
+  "dialogs/" =>["simulate_results", "about"]}.each do |k,v|
+    v.each {|f|   require k+f+"/"+f+"_controller" }
+end
+
 require "exit_handler"
-require "utility/xml_decode"
+
+java_import javax.swing.JOptionPane
+java_import java.lang.System
 
 
