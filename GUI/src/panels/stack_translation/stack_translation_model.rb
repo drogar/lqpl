@@ -1,6 +1,6 @@
 require 'exceptions/quantum_stack_model_invalid_create'
 
-class StackTranslationModel
+class StackTranslationModel < XmlBasedModel
   attr_accessor :stack_translation
   attr_accessor :text
 
