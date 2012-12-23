@@ -36,7 +36,7 @@ class SimulateResultsModel
   end
 
   def self.result_values_to_list(rvals,stack_trans)
-    values_to_list rvals, TRIPLE_PATTERN, do |ret, rv|
+    values_to_list rvals, TRIPLE_PATTERN  do |ret, rv|
       ret << [stack_trans.reverse_lookup(rv[1]),rv[2],rv[3]]
     end
   end

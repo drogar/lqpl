@@ -27,6 +27,7 @@ public class QuantumEmulatorMainScreen extends JFrame {
     public QuantumEmulatorMainScreen() {
         super("Quantum Emulator");
         frameTitle = "Quantum Emulator";
+        setName(frameTitle);
         setBounds(new Rectangle(10, 10, 400, 300));
         //setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -35,25 +36,24 @@ public class QuantumEmulatorMainScreen extends JFrame {
         setUpSpinner(recursionSpinner, 1, 1, 100000, 1);
         setUpSpinner(recursionMultiplierSpinner, 10, 1, 100000, 1);
         setUpSpinner(treeDepthSpinner, 4, 1, 100, 1);
-
         spinnerPanel.setVisible(false);
         buttonPanel.setVisible(false);
 
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent windowEvent) {
-                Ruby runtime = null;
-                try {
-                    runtime = Main.getRuntime();
-                } catch (Exception e) {
-                    RubyInstanceConfig config = new RubyInstanceConfig();
-                    runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);
-                }
-
-                runtime.evalScriptlet("require 'exit_handler';ExitHandler.instance.close_servers");
-                System.exit(0);
-            }
-        });
+        // this.addWindowListener(new WindowAdapter() {
+        //   @Override
+        //   public void windowClosing(WindowEvent windowEvent) {
+        //     Ruby runtime = null;
+        //     try {
+        //         runtime = Main.getRuntime();
+        //     } catch (Exception e) {
+        //         RubyInstanceConfig config = new RubyInstanceConfig();
+        //         runtime = JavaEmbedUtils.initialize(new ArrayList(0), config);
+        //     }
+        // 
+        //     runtime.evalScriptlet("require 'exit_handler';ExitHandler.instance.close_servers");
+        //     System.exit(0);
+        //   }
+        //  });
 
     }
 
@@ -92,7 +92,6 @@ public class QuantumEmulatorMainScreen extends JFrame {
     private JSpinner recursionMultiplierSpinner;
     private JLabel multiplierLabelForSpinner;
     public JLabel message;
-
 
 
     {
@@ -155,6 +154,7 @@ public class QuantumEmulatorMainScreen extends JFrame {
         messagesPanel.add(scrollPane1, BorderLayout.CENTER);
         messagesTextArea = new JTextArea();
         messagesTextArea.setEditable(false);
+        messagesTextArea.setName("messagesTextArea");
         scrollPane1.setViewportView(messagesTextArea);
         stepLabelForSpinner.setLabelFor(stepSpinner);
         recursionLabelForSpinner.setLabelFor(recursionSpinner);

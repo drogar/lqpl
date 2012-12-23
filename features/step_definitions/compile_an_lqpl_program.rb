@@ -3,95 +3,37 @@
 
 Given /^the frame "([\w\s]*)" is visible$/ do |frame_name|
 
-  eval "@#{frame_name.gsub(/ /,'_')} = JFrameOperator.new frame_name"
+  eval "@#{frame_name.gsub(/ /,'_')} = FrameFixture.new frame_name"
 end
 
 Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 
-  mbar = JMenuBarOperator.new $qe_frame.get_jmenu_bar
-  #jm = mbar.get_menu(0)
-  fmenu = JMenuOperator.new(mbar,menu)
-  fmenu.should_not be_nil
-  item_count = fmenu.get_item_count
-  ((0...item_count).any? do |i|
-    mitem == fmenu.get_item(i.to_int).get_text
-  end).should be_true
-  jmi = nil
-  (0...item_count).each do |i|
-    jmi = fmenu.get_item(i.to_int) if mitem == fmenu.get_item(i.to_int).get_text
-  end
-  fmenu_item = JMenuItemOperator.new(jmi)
-  fmenu_item.should_not be_nil
-  fmenu_item.should be_enabled
-
-  mbar.push_menu_no_block("#{menu}|#{mitem}")
-  #fmenu_item.push_no_block
+  menu_item =  $qe_frame.menu_item_with_path [menu, mitem].to_java(:string)
+  menu_item.should_not be_nil
+  menu_item.click()
+  sleep 0.25
 end
 
 
-And /^I load "([\w]*?\.qpl)" from the directory "([\w\s\/]*)"$/ do |file, dir|
+And /^I load "([\w\.]*?\....)" from the project directory "([\w\s\/]*)"$/ do |file, dir|
 
-  fc = JFileChooserOperator.new
-  fc.get_dialog_title.should == "Open LQPL File for Compiling"
+  fc = JFileChooserFixture.new($robot) #   $qe_frame.file_chooser()
 
-  fc.get_current_directory.get_absolute_path.should ==  Dir.getwd
-  fc.is_file_selection_enabled.should == true
-  fc.is_directory_selection_enabled.should == false
-  cdir = fc.get_current_directory.get_absolute_path
+  fc.select_file_in_project_directory(dir,file)
 
-  if not (cdir =~ /GUI/)
-    fc.set_current_directory(java.io.File.new(cdir,"GUI"))
-  end
-  topdir = fc.get_current_directory.get_absolute_path
-
-
-  dirs = dir.split("/")
-  dirs.each do |d|
-    cdir = fc.get_current_directory.get_absolute_path
-    fc.set_current_directory (java.io.File.new(cdir, d))
-  end
-  fc.get_current_directory.get_absolute_path.should ==  topdir+"/"+dir
-
-
-  sel_file = java.io.File.new(fc.get_current_directory.get_absolute_path,file)
-
-  fc.set_selected_file sel_file
-
-  fc.approve_selection
-
+  fc.approve
 
 end
 
 
-Then /^"([\w\s]*?\.qpo)" should be created in "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
-  topdir = Dir.getwd
-  if not (topdir =~ /GUI/)
-    topdir = topdir + "/GUI"
-  end
-  realdir = topdir + "/" +outdir
-  theFile = realdir + "/" + outfile
-  sleep_until(10) {File.exist?(theFile)}
-  # tries = 0
-  #   while tries < 10 do # wait up to 2.5 seconds for compile to finish
-  #     sleep 0.25
-  #     break if File.exist?(theFile)
-  #     tries += 1
-  #   end
-  File.exist?(realdir + "/" + outfile).should be_true
-  File.open(realdir + "/" + outfile) do |newone|
-    result = newone.read
-    File.open(realdir + "/" + reference) do |ref|
-      refvalue = ref.read
-      result.should == refvalue
-    end
-  end
+Then /^"([\w\s]*?\.qpo)" should be created in the project directory "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
+  the_file = File.file_in_project_subdir(outdir, outfile)
+  
+  sleep_until_file_exists(10,the_file).should be_true
+  
+  File.read(the_file).should == File.read(File.file_in_project_subdir(outdir,reference))
 end
 
 Then /^the messages field should contain:$/ do |client_message_table|
-  theTextArea = JTextAreaOperator.new($qe_frame)
-  message_texts = client_message_table.hashes.collect {|h| Regexp.new h.values[0]}
-  message_texts.each do |t|
-    theTextArea.text.should =~ t
-  end
-
+  all_text_is_in_text_component(client_message_table, JTextComponentFixture.new($robot,"messagesTextArea"))
 end
