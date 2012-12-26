@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public interface Painter {
     public void setModelElement(Object model);
-    public void paintModel(Graphics g, Component parent);
-    public void paintModelAtPoint(Graphics g, Component parent, Point center);
+    public void paintModel(Graphics g);
+    public void paintModelAtPoint(Graphics g,  Point center);
     public Icon imageOfModel();
 }

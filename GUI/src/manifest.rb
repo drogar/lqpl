@@ -73,7 +73,9 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 
+require 'painting/canvas_size'
 require 'application_model'
+require 'utility/monkey/array'
 require 'utility/xml_decode'
 require 'xml_based_model'
 ["server_process_not_found", "invalid_input"].each do |f|

@@ -45,14 +45,14 @@ class AbstractDescriptorPainter
 
   alias :image_of_model :imageOfModel
 
-  def paintModel(g, p)
+  def paintModel(g)
     #Not to be used
     raise RuntimeError, "do not call paintModel on descriptors, use paintModelAtPoint"
   end
 
   alias :paint_model :paintModel
 
-  def paintModelAtPoint(g,p,center)
+  def paintModelAtPoint(g,center)
     draw_colour_filled_shape(g,my_shape(center), my_colour)
     draw_text_to_left_of_point(g,"#{@model_element.name}",Point.new(center.x-node_size, center.y)) if @model_element.name
     draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+node_size)) if @model_element.length == 0
@@ -72,7 +72,7 @@ class AbstractDescriptorPainter
     height  += valsize.height + half_node_size if @model_element.length == 0
     right_width   =  [right_width,valsize.width*0.5].max
     left_width = [left_width,valsize.width*0.5].max
-    {:left => left_width, :right => right_width, :height => height}
+    CanvasSize.new_with_measures(left_width, right_width, height)
   end
 
 

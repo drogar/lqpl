@@ -16,8 +16,7 @@ end
 
 java_import javax.swing.ImageIcon
 
-VERTICAL_NODE_SEPARATION=50.0
-HORIZONTAL_NODE_SEPARATION=55.0
+
 
 module Drawing
   def draw_text_centered_at_point(g,text, point)
@@ -74,17 +73,5 @@ module Drawing
     g.color = Color.black
     g.draw shape
   end
-
-
-  def node_separation(direction)
-    case direction
-    when :vertical then VERTICAL_NODE_SEPARATION
-    when :horizontal then HORIZONTAL_NODE_SEPARATION
-    else VERTICAL_NODE_SEPARATION
-    end
-  end
-
-
-
 
 end
