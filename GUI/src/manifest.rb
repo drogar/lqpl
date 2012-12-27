@@ -101,4 +101,8 @@ require "exit_handler"
 java_import javax.swing.JOptionPane
 java_import java.lang.System
 
+java_import java.awt.Point
+
+require 'utility/monkey/point'
+
 

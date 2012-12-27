@@ -86,6 +86,10 @@ class CanvasSize
     @height = [@height,other_canvas_size.height].max
   end
   
+  def self.vertical_node_separation
+    node_separation(:vertical)
+  end
+  
   def self.node_separation(direction)
     case direction
     when :vertical then VERTICAL_NODE_SEPARATION

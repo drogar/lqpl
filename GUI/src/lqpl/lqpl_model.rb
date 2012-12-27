@@ -32,5 +32,21 @@ class LqplModel < ApplicationModel
     @frame_title = "Quantum Emulator"
   end
 
-
+  def toggle_view_menu(current_command)
+    self.send(LqplModel::symbol_for_view_menu_item(current_command), LqplModel::new_view_command(current_command))
+  end
+  
+  def self.toggle_action(current)
+    return "Hide" if current == "Show"
+    "Show"
+  end
+  
+  def self.new_view_command(current_command)
+    toggle_action(current_command[0])+" "+current_command[1,current_command.size-1].join(" ")
+  end
+  
+  def self.symbol_for_view_menu_item(current_command)
+    which_menu=current_command[1,current_command.size-1].collect(&:downcase).join("_")
+    "view_menu_#{which_menu}_text=".to_sym
+  end
 end

@@ -10,9 +10,9 @@ class LqplController < ApplicationController
   set_close_action :close
 
   {"the_menu.file_compile" => "file_compile", "the_menu.file_load" => "file_load",
-    "the_menu.file_simulate" => "file_simulate","the_menu.view_classical_stack" => "view_classical_stack",
-    "the_menu.view_dump" => "view_dump","the_menu.view_executing_code" => "view_executing_code",
-    "the_menu.view_stack_translation" => "view_stack_translation"}.each do |k,v|
+    "the_menu.file_simulate" => "file_simulate","the_menu.view_classical_stack" => "view_sub_panel",
+    "the_menu.view_dump" => "view_sub_panel","the_menu.view_executing_code" => "view_sub_panel",
+    "the_menu.view_stack_translation" => "view_sub_panel"}.each do |k,v|
       add_listener :type => :action, :components => {k => v}
     end
 
@@ -29,15 +29,12 @@ class LqplController < ApplicationController
   end
 
   def close
-    puts "Called lqpl controller close"
     all_controllers_dispose
     file_exit_action_performed
     super
   end
   
-  def my_frame
-    @__view.the_frame
-  end
+
   
   def load(*args)
     cmp = CompilerServerConnection.get_instance
@@ -118,30 +115,13 @@ class LqplController < ApplicationController
     SimulateResultsController.instance.open
   end
 
-  def view_classical_stack_action_performed
-    ClassicalStackController.instance.toggle_visibility
-    model.view_menu_classical_stack_text = ClassicalStackController.instance.visible? ? "Hide Classical Stack" : "Show Classical Stack"
+  def view_sub_panel_action_performed(e)
+    command_and_sub_panel = e.action_command.scan(/\w+/)
+    ApplicationController.controller_from_name(command_and_sub_panel).instance.toggle_visibility
+    model.toggle_view_menu(command_and_sub_panel)
     update_view
   end
-
-  def view_dump_action_performed
-    DumpController.instance.toggle_visibility
-    model.view_menu_dump_text = DumpController.instance.visible? ? "Hide Dump" : "Show Dump"
-    update_view
-  end
-
-  def view_executing_code_action_performed
-    ExecutableCodeController.instance.toggle_visibility
-    model.view_menu_executing_code_text = ExecutableCodeController.instance.visible? ? "Hide Executing Code" : "Show Executing Code"
-    update_view
-  end
-
-  def view_stack_translation_action_performed
-    StackTranslationController.instance.toggle_visibility
-    model.view_menu_stack_translation_text = StackTranslationController.instance.visible? ? "Hide Stack Translation" : "Show Stack Translation"
-    update_view
-  end
-
+ 
   def initialize_sub_controllers
     update_sub_controller_scs
     ExecutableCodeController.instance.set_code_and_code_pointer  model.recursion_spinner

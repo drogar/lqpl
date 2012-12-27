@@ -82,7 +82,10 @@ class QuantumStackPainter
   end
 
   def substack_label(index)
-    "#{@model_element.descriptor.substack_labels[i]}"
+    d = @model_element.descriptor.substack_labels
+    return d[index].to_s if d
+    "Nil for model descriptor"
+    #"#{@model_element.descriptor.substack_labels[index]}"
   end
   
   def substack_label_placement(index)
@@ -91,16 +94,16 @@ class QuantumStackPainter
   
   def paint_substacks(top_point,g)
     offsets = CanvasSize::compute_offsets(sub_stack_sizes(g))
-    Range.new(0,@sstack_painters.size).each do |i|
-      paint_at_point = top_point.copy_with_x_and_y_offset(offsets[i], node_separation(:vertical))
-      paint_substack(i,top_point,paint_at_point)
+    Range.new(0,@sstack_painters.size-1).each do |i|
+      paint_at_point = top_point.copy_with_x_and_y_offset(offsets[i], CanvasSize::vertical_node_separation)
+      paint_substack(g,i,top_point,paint_at_point)
     end
   end
   
-  def paint_substack(index,top_point,paint_point)
+  def paint_substack(g,index,top_point,paint_point)
     draw_black_line(g,top_point, paint_point)
-    draw_sized_text(g,LINE_LABEL_FONT_SIZE,substack_label(index),top_point, paint_point,substack_label_placement(i))
-    @sstack_painters[i].paint_model_at_point(g,paint_point)
+    draw_sized_text(g,LINE_LABEL_FONT_SIZE,substack_label(index),top_point, paint_point,substack_label_placement(index))
+    @sstack_painters[index].paint_model_at_point(g,paint_point)
 
   end
 
