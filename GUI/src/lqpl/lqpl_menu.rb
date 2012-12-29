@@ -1,5 +1,5 @@
-["JMenuBar", "JMenu", "JMenuItem"].each do |nm|
-  java_import  "javax.swing.#{nm}"
+%w{JMenuBar JMenu JMenuItem}.each do |nm|
+  java_import  "javax.swing."+nm
 end
 
 class LqplMenu
@@ -28,11 +28,7 @@ class LqplMenu
     menu_file.add(@file_compile);
     menu_file.add(@file_simulate);
 
-    case RbConfig::CONFIG["host_os"]
-    when /darwin/i # OSX specific code
-    #when /^win|mswin/i # Windows specific code
-    #when /linux/i # Linux specific code
-    else # Windows and Linux
+    not_on_mac do
       @file_exit = JMenuItem.new("Exit")
       menu_file.add(@file_exit)
     end
@@ -57,11 +53,7 @@ class LqplMenu
     mbar.add(menu_view);
 
 
-    case RbConfig::CONFIG["host_os"]
-    when /darwin/i # OSX specific code
-    #when /^win|mswin/i # Windows specific code
-    #when /linux/i # Linux specific code
-    else # Windows and Linux
+    not_on_mac do
       menu_help = JMenu.new("Help")
       @help_about = JMenuItem.new("About")
       menu_help.add(@help_about)

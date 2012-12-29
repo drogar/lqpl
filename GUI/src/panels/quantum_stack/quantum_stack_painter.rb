@@ -108,7 +108,7 @@ class QuantumStackPainter
   end
 
   def sub_stack_sizes(g)
-    @sstack_painters.collect {|ret,sstack_painter| sstack_painter.model_paint_size(g)}
+    @sstack_painters.collect {|sstack_painter| sstack_painter.model_paint_size(g)}
   end
 
  

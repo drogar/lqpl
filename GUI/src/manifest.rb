@@ -98,11 +98,16 @@ end
 
 require "exit_handler"
 
-java_import javax.swing.JOptionPane
+%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter}.each do |cfile|
+  java_import "javax.swing."+cfile
+end
+
 java_import java.lang.System
 
 java_import java.awt.Point
 
+
 require 'utility/monkey/point'
+require 'utility/monkey/jfile_chooser'
 
 

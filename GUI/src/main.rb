@@ -9,16 +9,28 @@ require 'java'
 # Platform specific operations, feel free to remove or override any of these
 # that don't work for your platform/application
 
+def on_mac
+ yield if RbConfig::CONFIG["host_os"] =~ /darwin/i
+end
+
+def on_win
+  yield if  RbConfig::CONFIG["host_os"] =~ /^win|mswin/i 
+end
+
+def on_linux
+  yield if  RbConfig::CONFIG["host_os"] =~ /^win|mswin/i 
+end
 
 
-case RbConfig::CONFIG["host_os"]
-when /darwin/i # OSX specific code
+def not_on_mac
+  yield if  !(RbConfig::CONFIG["host_os"] =~ /darwin/i)
+end
+  
+on_mac do
   testing = java.lang.System.get_property("com.drogar.testing.fest")
   if !testing or testing != "true"
     java.lang.System.set_property("apple.laf.useScreenMenuBar", "true")
   end
-when /^win|mswin/i # Windows specific code
-when /linux/i # Linux specific code
 end
 
 # End of platform specific code
@@ -30,6 +42,7 @@ require 'manifest'
 # You will probably want to replace the puts with your application's logger
 def log_the_error(exception, thread=nil)
   rexcep = exception.exception
+  puts exception
   if rexcep.class == ServerProcessNotFound
     show_error_dialog("Server(s) not found",
          "LQPL requires the compiler server and emulator server to be installed on your path.
@@ -48,10 +61,9 @@ def log_the_error(exception, thread=nil)
   end
   # add other error handling code goes here
   show_error_dialog("Application Error","The application has encountered an error and must shut down.")
-  System.exit(0)
 end
 
-def show_error_dialog_and_exit(title, message)
+def show_error_dialog(title, message)
   JOptionPane.show_message_dialog(nil, message, title, JOptionPane::DEFAULT_OPTION)
   System.exit(0)
 end
@@ -60,7 +72,6 @@ GlobalErrorHandler.on_error {|exception, thread| log_the_error(exception, thread
 
 begin
   LqplController.instance.open
-  puts 'Returned from open/close...'
 rescue => e
-  show_error_dialog_and_exit("error",e.to_s)
+  log_the_error(e)
 end

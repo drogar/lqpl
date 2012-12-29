@@ -31,6 +31,10 @@ class CompilerServerConnection < Connection
     @qpo_code
   end
 
+  def compile_and_write_qpo(fname)
+    write_qpo_file if compile(fname)
+  end
+  
   def get_qpo_program
     accum=""
     lineno = 0
@@ -67,6 +71,10 @@ class CompilerServerConnection < Connection
     end
   end
 
+  def success_or_fail_message(file_name)
+    "Compile of #{file_name} was #{failed ? 'un' : ''}successful\n"+failure_message
+  end
+  
   def send_included_file(line)
     basef = line[/(<getFirst>)(.*)(<\/getFirst>)/,2]
     f = File.exists?(basef) ? basef : @dir + "/" + basef

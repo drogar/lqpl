@@ -36,6 +36,22 @@ class LqplModel < ApplicationModel
     self.send(LqplModel::symbol_for_view_menu_item(current_command), LqplModel::new_view_command(current_command))
   end
   
+  def enable_view_menu_items
+    self.view_menu_stack_translation_enabled = true
+    self.view_menu_dump_enabled = true
+    self.view_menu_executing_code_enabled = true
+    self.view_menu_classical_stack_enabled = true
+  end
+  
+  def set_title_and_enable(base_file_name)
+    self.frame_title = "Quantum Emulator - #{base_file_name}"
+    self.go_enabled = true
+    self.step_enabled = true
+    self.spinner_panel_visible = true
+    self.button_panel_visible = true
+    self.messages_text = "#{base_file_name} was loaded."
+  end
+  
   def self.toggle_action(current)
     return "Hide" if current == "Show"
     "Show"
