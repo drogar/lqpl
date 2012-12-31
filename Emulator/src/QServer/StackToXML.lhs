@@ -105,13 +105,13 @@
     toXML (Right b) = surroundWith "cbool" $ show b
 
   instance XML ClassicalStack where
-    toXML a = listToXML "Cstack"  $ Stack.toList a
-    boundedToXML n  a = listToXML "Cstack"  $ take n $ Stack.toList a
+    toXML a = listToXML "Classical"  $ Stack.toList a
+    boundedToXML n  a = listToXML "Classical"  $ take n $ Stack.toList a
 
   instance (XML b) => XML (StackDescriptor b) where
     toXML StackZero = "<Zero/>"
     toXML (StackValue b) = surroundWith "Value" $ toXML b
-    toXML (StackClassical cs) = listToXML "ClassicalStack" cs
+    toXML (StackClassical cs) = listToXML "Classical" cs
     toXML (StackQubit b) = listToXML "Qubits" b
     toXML (StackData constructors) =
       surroundWith "AlgebraicData" $ sdXML constructors
