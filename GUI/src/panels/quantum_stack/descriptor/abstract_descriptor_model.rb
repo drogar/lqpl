@@ -1,4 +1,4 @@
-class AbstractDescriptorModel <XmlBasedModel
+class AbstractDescriptorModel <ApplicationModel
   attr_accessor :value
   attr_accessor :name
 

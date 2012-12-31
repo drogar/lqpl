@@ -1,8 +1,3 @@
-require 'utility/drawing'
-
-java_import "com.drogar.lqpl.qstack.Painter"
-
-
 class AbstractDescriptorPainter
   include Painter
   include Drawing

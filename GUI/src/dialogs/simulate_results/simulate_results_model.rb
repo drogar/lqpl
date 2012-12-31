@@ -27,10 +27,10 @@ class SimulateResultsModel
 
   java_signature "void simulate_results(Object)"
   def simulate_results=(xml_data)
-    raise QuantumStackModelInvalidCreate, "Missing Stack Translation" if @stack_translation.nil?
+    raise ModelCreateError, "Missing Stack Translation" if @stack_translation.nil?
     sr = SIMULATE_PATTERN.match xml_data
 
-    raise QuantumStackModelInvalidCreate, "Invalid Simulate Results: #{xml_data}" if !sr
+    raise ModelCreateError, "Invalid Simulate Results: #{xml_data}" if !sr
     @random_value_text = "Random Value: "+sr[1]
     @simulate_results = SimulateResultsModel.result_values_to_list(sr[2],@stack_translation)
   end

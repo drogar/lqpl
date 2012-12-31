@@ -28,7 +28,7 @@ describe SimulateResultsModel do
     it "should throw an error if given invalid input" do
       expect {
         @m.simulate_results = "junk"
-      }.to raise_error  QuantumStackModelInvalidCreate, /junk/
+      }.to raise_error  ModelCreateError, /junk/
     end
     it "should set the text or the random value to 'Random Value: rv" do
       @m.simulate_results =ONEELT

@@ -1,6 +1,5 @@
 require 'spec/spec_helper'
 require 'src/panels/executable_code/executable_code_model'
-require 'src/exceptions/quantum_stack_model_invalid_create'
 
 KVPS6='<i>EnScope</i><i>QLoad "@q" 0</i><i>QApply 0 Hadamard "@q"</i>'+
   '<i>QPullup "@q"</i><i>EnScope</i><i>Measure "@q" 14 6 10</i>'
@@ -72,7 +71,7 @@ describe ExecutableCodeModel do
         @ecm = ExecutableCodeModel.new
       end
       it "should throw an exception with bad input" do
-        expect {@ecm.the_code="junk"}.to raise_error QuantumStackModelInvalidCreate, /code xml/
+        expect {@ecm.the_code="junk"}.to raise_error ModelCreateError, /code xml/
       end
       it "should return the created code map when given correct input" do
         @ecm.the_code=CMAP_2
@@ -87,7 +86,7 @@ describe ExecutableCodeModel do
         @ecm = ExecutableCodeModel.new
       end
       it "should throw an exception with bad input" do
-        expect {@ecm.the_code_pointer="junk"}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+        expect {@ecm.the_code_pointer="junk"}.to raise_error ModelCreateError, /code pointer xml/
       end
       it "should return the created code map when given correct input when there is code" do
         @ecm.the_code=CMAP_2
@@ -133,13 +132,13 @@ end
 describe CodePointer do
   describe "creation" do
     it "should throw an exception with bad input" do
-      expect {CodePointer.new("junk")}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+      expect {CodePointer.new("junk")}.to raise_error ModelCreateError, /code pointer xml/
     end
     it "should throw an exception with nil input" do
-      expect {CodePointer.new(nil)}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+      expect {CodePointer.new(nil)}.to raise_error ModelCreateError, /code pointer xml/
     end
     it "should throw an exception with blank input" do
-      expect {CodePointer.new("")}.to raise_error QuantumStackModelInvalidCreate, /code pointer xml/
+      expect {CodePointer.new("")}.to raise_error ModelCreateError, /code pointer xml/
     end
     it "should create a CodePointer instance with correct input " do
       @cp = CodePointer.new("<pair><string>main</string><int>0</int></pair>")

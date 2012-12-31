@@ -1,9 +1,3 @@
-require "utility/drawing"
-require "panels/quantum_stack/descriptor/descriptor_painter_factory"
-
-java_import "com.drogar.lqpl.qstack.Painter"
-
-
 LINE_LABEL_FONT_SIZE = 8.0
 PLACEMENTS={-1 => :left, 0 => :right, 1 => :right}
 

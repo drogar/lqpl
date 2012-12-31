@@ -1,7 +1,5 @@
-java_import javax.swing.JTextArea
-java_import javax.swing.JScrollPane
-
 WIDTH_OF_TEXT_PANE = 60
+
 class ExecutableCodeView < ApplicationView
   set_java_class com.drogar.lqpl.screens.ExecutingCode
 

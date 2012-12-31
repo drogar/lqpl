@@ -73,41 +73,63 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 
-require 'painting/canvas_size'
-require 'application_model'
-require 'utility/monkey/array'
-require 'utility/xml_decode'
-require 'xml_based_model'
-["server_process_not_found", "invalid_input"].each do |f|
-  require "exceptions/"+f
-end
 
-["translate_line_ends","xml_decode"].each do |f|
-  require "utility/"+f
-end
-
-["lqpl_emulator_server_connection","compiler_server_connection"].each do |f|
-  require "communications/"+f
-end
-
-{ ""=>["lqpl"], 
-  "panels/" => ["quantum_stack", "classical_stack","dump","executable_code", "stack_translation"],
-  "dialogs/" =>["simulate_results", "about"]}.each do |k,v|
-    v.each {|f|   require k+f+"/"+f+"_controller" }
-end
-
-require "exit_handler"
-
-%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter}.each do |cfile|
+%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter JTextArea JScrollPane}.each do |cfile|
   java_import "javax.swing."+cfile
 end
+
+java_import com.drogar.lqpl.qstack.Painter
 
 java_import java.lang.System
 
 java_import java.awt.Point
 
+%w{point jfile_chooser array}.each do |rfile|
+  require 'utility/monkey/'+rfile
+end
 
-require 'utility/monkey/point'
-require 'utility/monkey/jfile_chooser'
+
+%w{translate_line_ends xml_decode drawing}.each do |f|
+  require "utility/"+f
+end
+
+%w{abstract zero value abstract_list qubit data classical}.each do |rf|
+  require "panels/parsers/"+rf+"_pattern_parser"
+end
+
+require 'painting/canvas_size'
+require 'application_model'
+
+require 'xml_based_model'
+
+%w{server_process_not_found invalid_input}.each do |f|
+  require "exceptions/"+f
+end
+
+
+%w{lqpl_emulator_server_connection compiler_server_connection}.each do |f|
+  require "communications/"+f
+end
+%w{abstract classical data qubit value zero}.each do |rf|
+  require "panels/quantum_stack/descriptor/#{rf}_descriptor_model"
+  require "panels/quantum_stack/descriptor/#{rf}_descriptor_painter"
+end
+
+require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
+require 'panels/quantum_stack/quantum_stack_painter'
+
+{ ""=>%w{lqpl}, 
+  "panels/" => %w{quantum_stack classical_stack dump executable_code stack_translation},
+  "dialogs/" =>%w{simulate_results about}}.each do |k,v|
+    v.each do |f|   
+      require k+f+"/"+f+"_view" 
+      require k+f+"/"+f+"_model" 
+      require k+f+"/"+f+"_controller" 
+    end
+end
+
+require "exit_handler"
+
+
 
 

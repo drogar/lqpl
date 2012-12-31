@@ -28,5 +28,6 @@ $CLASSPATH << where_am_i+"/../../out/lqpl_gui"
 
 TEST_QP_PATH = where_am_i+"/../testdata/qplprograms/"
 
+require 'config/platform'
 require 'manifest'
 

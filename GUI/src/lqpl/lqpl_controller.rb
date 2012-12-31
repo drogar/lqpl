@@ -99,8 +99,8 @@ class LqplController < ApplicationController
   end
       
   def all_controllers_dispose
-    @dialogs.each {|d| d.dispose}
-    @sub_controllers.each{|sc| sc.dispose}
+    @dialogs.each {|d| d.dispose} if @dialogs
+    @sub_controllers.each{|sc| sc.dispose} if @sub_controllers
   end
   
   def file_simulate_action_performed

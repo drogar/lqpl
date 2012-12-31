@@ -1,21 +1,12 @@
 class ClassicalDescriptorModel< AbstractDescriptorModel
-  include XmlDecode
-  PATTERN=Regexp.new /^<ClassicalStack>(((<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>))*)<\/ClassicalStack>$/
-
-  LIST_PATTERN = Regexp.new /^(<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>)/
-
-  def initialize(in_string)
-    @value = check_and_return_value(PATTERN,in_string,
-      lambda { |m| ClassicalDescriptorModel::parse_list m})
+  
+  def self.validate_substacks_count(substacks)
+    raise ModelCreateError, "Classical element on stack should have substacks" if !substacks || substacks.size == 0
   end
 
-  def self.parse_list(sub_string)
-    r = values_to_list sub_string, LIST_PATTERN do |ret, md|
-      ret << md[2].to_i if md[2]
-      ret << (md[4] == 'True') if md[4]
-    end
-    raise ModelCreateError, sub_string if sub_string and sub_string.length > 0 and r.length == 0
-    r
+  def initialize(in_string)
+    cpp = ClassicalPatternParser.new in_string
+    @value = cpp.parsed_value
   end
 
   def length

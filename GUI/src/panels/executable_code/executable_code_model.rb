@@ -8,7 +8,7 @@ class ExecutableCodeModel
 
   def the_code=(xml_string)
     @the_code = ExecutableCodeModel::code_xml_to_map(xml_string)
-    raise QuantumStackModelInvalidCreate, "code xml was ill-formed" if !self.the_code
+    raise ModelCreateError, "code xml was ill-formed" if !self.the_code
   end
 
   def the_code_pointer=(xml_string)

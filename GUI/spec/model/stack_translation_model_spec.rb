@@ -39,7 +39,7 @@ describe StackTranslationModel do
     expect {
       s = StackTranslationModel.new
       s.stack_translation= "err"
-    }.to raise_error QuantumStackModelInvalidCreate, /err/
+    }.to raise_error ModelCreateError, /err/
   end
   it "should create a text representation in its text attribute" do
     s = StackTranslationModel.new

@@ -1,5 +1,3 @@
-require 'exceptions/quantum_stack_model_invalid_create'
-
 class StackTranslationModel < XmlBasedModel
   attr_accessor :stack_translation
   attr_accessor :text
@@ -32,7 +30,7 @@ class StackTranslationModel < XmlBasedModel
     return [] if in_mmap == ""
     ret = []
     match_list_of_maps = MMAP_PATTERN.match in_mmap
-    raise QuantumStackModelInvalidCreate, in_mmap if !match_list_of_maps
+    raise ModelCreateError, in_mmap if !match_list_of_maps
     lom = match_list_of_maps[1]
     list_elem = LIST_ELEMENT_PATTERN.match(lom)
     return [] if !list_elem

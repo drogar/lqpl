@@ -76,32 +76,32 @@ describe QuantumStackModel do
     it "should give an invalid create error when created with incorrect data" do
       expect {
         @qs.quantum_stack = "err"
-      }.to raise_error QuantumStackModelInvalidCreate, /err/
+      }.to raise_error ModelCreateError, /err/
     end
     it "should give an error when stackzero has substacks" do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Zero/></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /not have/
+      }.to raise_error ModelCreateError, /not have/
     end
     it "should give an error when stackvalue has substacks" do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Value>0.5</Value></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /not have/
+      }.to raise_error ModelCreateError, /not have/
     end
     it "should give an error when stackqubit does not have substacks" do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /should have/
+      }.to raise_error ModelCreateError, /should have/
     end
     it "should give an error when stackclassical does not have substacks"  do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><ClassicalStack><cint>14</cint></ClassicalStack></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /should have/
+      }.to raise_error ModelCreateError, /should have/
     end
     it "should give an error when stackdata does not have substacks" do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /should have/
+      }.to raise_error ModelCreateError, /should have/
     end
     it "should successfully create the start qstack" do
       @qs.quantum_stack = "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
@@ -152,7 +152,7 @@ describe QuantumStackModel do
     expect {
         qs = QuantumStackModel.new
         qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Zero/></Qstack>"
-      }.to raise_error QuantumStackModelInvalidCreate, /Missing/
+      }.to raise_error ModelCreateError, /Missing/
   end
   it "should assign a name for a quantum descriptor" do
     qs = QuantumStackModel.new

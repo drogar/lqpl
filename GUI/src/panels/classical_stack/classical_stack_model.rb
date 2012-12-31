@@ -1,5 +1,3 @@
-require 'exceptions/quantum_stack_model_invalid_create'
-
 class ClassicalStackModel < XmlBasedModel
   attr_accessor :classical_stack_text
   attr_accessor :classical_stack
