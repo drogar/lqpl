@@ -131,7 +131,7 @@ class QuantumStackModel < XmlBasedModel
       <int>(?<stackaddress>-?(\d)*)<\/int>  #Stackaddress ([1])
       <bool>(?<on_diagonal>(True)|(False))<\/bool> #on diagonal ([3])
       <substacks>(?<substacks>.*)<\/substacks> # the substacks ([6])
-      (?<descriptor>(<Zero\/>)|(<Value>.*<\/Value>)|(<Qubits>.*<\/Qubits>)|(<ClassicalStack>.*<\/ClassicalStack>)|(<AlgebraicData>.*<\/AlgebraicData>))  # stack descriptor [7]
+      (?<descriptor>(<Zero\/>)|(<Value>.*<\/Value>)|(<Qubits>.*<\/Qubits>)|(<Classical>.*<\/Classical>)|(<AlgebraicData>.*<\/AlgebraicData>))  # stack descriptor [7]
       <\/Qstack>/x
 
 

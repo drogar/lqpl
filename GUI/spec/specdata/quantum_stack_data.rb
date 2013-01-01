@@ -12,7 +12,7 @@ QSQBHAD = make_multi_sstacks("<Qstack><int>1</int><bool>True</bool>",
   QSVAL5,4)
 
 QSINT = make_multi_sstacks("<Qstack><int>3</int><bool>True</bool>",
-  "<ClassicalStack><cint>27</cint><cint>5</cint></ClassicalStack></Qstack>",
+  "<Classical><cint>27</cint><cint>5</cint></Classical></Qstack>",
   QSVAL5,2)
 
 

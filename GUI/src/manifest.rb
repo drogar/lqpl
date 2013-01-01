@@ -97,6 +97,11 @@ end
   require "panels/parsers/"+rf+"_pattern_parser"
 end
 
+
+%w{stack_translation code_pointer executable_code}.each do |rf|
+  require "panels/parsers/"+rf+"_parser"
+end
+
 require 'painting/canvas_size'
 require 'application_model'
 

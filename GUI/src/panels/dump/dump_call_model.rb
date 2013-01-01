@@ -17,5 +17,5 @@ class DumpCallModel
     "Return to #{@ret_label}(#{@ret_offset}). CS=#{@cstack.to_a}"
   end
 
-  DC_PATTERN= Regexp.new /<DumpCall><int>(\d*)<\/int><string>([\w\d_]*)<\/string>(<Cstack>.*?<\/Cstack>)<\/DumpCall>/
+  DC_PATTERN= Regexp.new /<DumpCall><int>(\d*)<\/int><string>([\w\d_]*)<\/string>(<Classical>.*?<\/Classical>)<\/DumpCall>/
 end

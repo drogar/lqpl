@@ -2,10 +2,9 @@ class CodePointer
   attr_accessor :qpo_method
   attr_accessor :line_number
   def initialize(xml_string)
-    cp_match = CODE_POINTER_PATTERN.match xml_string
-    raise ModelCreateError, "code pointer xml was ill-formed"  if !cp_match
-    @qpo_method = cp_match[1].to_sym
-    @line_number = cp_match[2].to_i
+    cp_match = CodePointerParser.new xml_string
+    @qpo_method = cp_match.parsed_value[0]
+    @line_number = cp_match.parsed_value[1]
   end
 
   def normalize(max_plus_one)
@@ -16,5 +15,4 @@ class CodePointer
     end
   end
 
-  CODE_POINTER_PATTERN = Regexp.new /^<pair><string>(.*?)<\/string><int>(\d*)<\/int><\/pair>$/
 end

@@ -12,6 +12,7 @@ KVTH13 = "<kvpair><key><string>th</string></key><value><int>13</int></value></kv
 
 P1 = "<MMap><map>"+KVP1+"</map></MMap>"
 P2 = "<MMap><map>"+KVP2+"</map></MMap>"
+P1WITHREX27 = "<MMap><map>"+KVP1+KVREX27+"</map></MMap>"
 P1ANDR1 = "<MMap><map>"+KVP1+"</map><map>"+KVR1+"</map></MMap>"
 P1ANDR1ANDS1 = "<MMap><map>"+KVP1+"</map><map>"+KVR1+"</map><map>"+KVS1+"</map></MMap>"
 
