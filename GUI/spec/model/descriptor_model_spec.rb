@@ -17,8 +17,8 @@ describe AbstractDescriptorModel do
     sd.class.should == ValueDescriptorModel
   end
 
-  it "should create an instance of ClassicalDescriptorModel when created with  <ClassicalStack><cint>5</cint><cbool>True</cbool></ClassicalStack>" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>5</cint><cbool>True</cbool></ClassicalStack>"
+  it "should create an instance of ClassicalDescriptorModel when created with  <Classical><cint>5</cint><cbool>True</cbool></Classical>" do
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>5</cint><cbool>True</cbool></Classical>"
     sd.class.should == ClassicalDescriptorModel
   end
   it "should create an instance of QubitDescriptorModel when created with  <Qubits><pair><qz/><qz/></pair></Qubits>" do
@@ -58,29 +58,29 @@ end
 
 
 describe ClassicalDescriptorModel do
-  it  "should raise an error if constructed with something other than <ClassicalStack>list of ints or bools</ClassicalStack>" do
+  it  "should raise an error if constructed with something other than <Classical>list of ints or bools</Classical>" do
     expect {
-      sc = AbstractDescriptorModel.make_instance "<ClassicalStack>err</ClassicalStack>"
-    }.to raise_error(ParserError, /<ClassicalStack>err<\/ClassicalStack>/)
+      sc = AbstractDescriptorModel.make_instance "<Classicalk>err</Classical>"
+    }.to raise_error(ParserError, /<Classical>err<\/Classical>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
     sd.length.should == 1
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.length.should == 3
   end
   it "should have the value being the list of classicalvalues in the construction string" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.value.should == [1,true,14]
   end
   it "should return a list of length 'length' when asked for substack labels" do
-     sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
+     sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
     sd.substack_labels.length.should == 1
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.substack_labels.length.should == 3
   end
   it "should have the substack_labels being the list of classicalvalues in the construction string" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.substack_labels.should == ["1","true","14"]
   end
   context "class methods" do

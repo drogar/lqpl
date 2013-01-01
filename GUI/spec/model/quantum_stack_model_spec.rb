@@ -95,7 +95,7 @@ describe QuantumStackModel do
     end
     it "should give an error when stackclassical does not have substacks"  do
       expect {
-        @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><ClassicalStack><cint>14</cint></ClassicalStack></Qstack>"
+        @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Classical><cint>14</cint></Classical></Qstack>"
       }.to raise_error ModelCreateError, /should have/
     end
     it "should give an error when stackdata does not have substacks" do
@@ -144,7 +144,7 @@ describe QuantumStackModel do
     it "should have the same number of substacks as the length of the descriptor" do
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
       @qs.substacks.length.should == 1
-      @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/><bottom/><bottom/></substacks><ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack></Qstack>"
+      @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/><bottom/><bottom/></substacks><Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical></Qstack>"
       @qs.substacks.length.should == 3
     end
   end
