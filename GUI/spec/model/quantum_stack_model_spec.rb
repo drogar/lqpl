@@ -8,65 +8,6 @@ require 'src/panels/quantum_stack/quantum_stack_model'
 
 
 describe QuantumStackModel do
-
-
-  describe "class method get_next_qstack" do
-    it "should return a nil when given the empty string" do
-      qsp = QuantumStackModel::get_next_qstack("")
-      qsp.should be_nil
-    end
-    it "should return a pair of the qstack and empty string when only given only one" do
-      qsp = QuantumStackModel::get_next_qstack(QSVAL5)
-      qsp[0].should == QSVAL5
-      qsp[1].should == ""
-    end
-    it "should return a pair of the qstack and empty string when only given only bottom" do
-      qsp = QuantumStackModel::get_next_qstack("<bottom/>")
-      qsp[0].should == "<bottom/>"
-      qsp[1].should == ""
-    end
-    it "should return a pair of the qstack and bottom string when only given two bottoms" do
-      qsp = QuantumStackModel::get_next_qstack("<bottom/><bottom/>")
-      qsp[0].should == "<bottom/>"
-      qsp[1].should == "<bottom/>"
-    end
-    it "should return the first, then the second when given two and the second call is on the remainder" do
-      qsp = QuantumStackModel::get_next_qstack(QSVAL5+QSVAL5)
-      qsp[0].should == QSVAL5
-      qsp[1].should == QSVAL5
-      qsp2 = QuantumStackModel::get_next_qstack(qsp[1])
-      qsp2[0].should == QSVAL5
-      qsp2[1].should == ""
-    end
-
-    it "should return the first, then the second when when given two stacks with more substacks" do
-      qsp = QuantumStackModel::get_next_qstack(QSQBHAD+QSQBHAD)
-      qsp[0].should == QSQBHAD
-      qsp[1].should == QSQBHAD
-      qsp2 = QuantumStackModel::get_next_qstack(qsp[1])
-      qsp2[0].should == QSQBHAD
-      qsp2[1].should == ""
-    end
-  end
-  describe "class method multiple stacks" do
-    before(:each) do
-      @st=double("StackTranslation", :reverse_lookup => "p", :nil? => false)
-    end
-    it "should create an empty array for no input" do
-      rv  = QuantumStackModel::make_multiple_stacks("",@st)
-      rv.length.should == 0
-    end
-    it "should create a one element array for one" do
-      rv = QuantumStackModel::make_multiple_stacks(""+QSVAL5+"",@st)
-      rv.length.should == 1
-    end
-    it "should create an n element array for n copies" do
-      [2,3,4,5,6].each do |i|
-        rv = QuantumStackModel::make_multiple_stacks((""+QSVAL5+"")*i,@st)
-        rv.length.should == i
-      end
-    end
-  end
   describe "instance setup" do
     before(:each) do
       @qs=QuantumStackModel.new
@@ -76,7 +17,7 @@ describe QuantumStackModel do
     it "should give an invalid create error when created with incorrect data" do
       expect {
         @qs.quantum_stack = "err"
-      }.to raise_error ModelCreateError, /err/
+      }.to raise_error ParserError, /err/
     end
     it "should give an error when stackzero has substacks" do
       expect {

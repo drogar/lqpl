@@ -19,6 +19,20 @@ class LqplMenu
   def initialize(parent)
     mbar = JMenuBar.new
 
+    menu_file = init_file_menu
+
+    menu_view =  init_view_menu
+
+    mbar.add(menu_file);
+    mbar.add(menu_view);
+
+    init_help_menu mbar
+
+    parent.set_menu_bar(mbar);
+    mbar.visible = true;
+  end
+  
+  def init_file_menu
     menu_file = JMenu.new("File")
     @file_load = JMenuItem.new("Load");
     @file_compile =  JMenuItem.new("Compile");
@@ -32,8 +46,11 @@ class LqplMenu
       @file_exit = JMenuItem.new("Exit")
       menu_file.add(@file_exit)
     end
+    menu_file
+  end
 
-    menu_view =  JMenu.new("View");
+  def init_view_menu
+    menu_view = JMenu.new("View");
     @view_classical_stack =  JMenuItem.new("Hide Classical Stack");
     @view_dump =  JMenuItem.new("Hide Dump");
     @view_executing_code =  JMenuItem.new("Hide Executing Code");
@@ -48,21 +65,16 @@ class LqplMenu
     menu_view.add(@view_dump);
     menu_view.add(@view_executing_code);
     menu_view.add(@view_stack_translation);
-
-    mbar.add(menu_file);
-    mbar.add(menu_view);
-
-
+    menu_view
+  end
+  
+  def init_help_menu mbar
     not_on_mac do
       menu_help = JMenu.new("Help")
       @help_about = JMenuItem.new("About")
       menu_help.add(@help_about)
       mbar.add(menu_help)
     end
-
-    parent.set_menu_bar(mbar);
-    mbar.visible = true;
   end
-
 
 end

@@ -1,4 +1,4 @@
-class StackTranslationModel < XmlBasedModel
+class StackTranslationModel < ApplicationModel
   attr_accessor :stack_translation
   attr_accessor :text
 

@@ -1,7 +1,7 @@
 class ClassicalPatternParser < AbstractListPatternParser
   
-  def self.top_level_regexp
-    Regexp.new /^<Classical>(?<classical_values>((<cint>(-?\d+)<\/cint>)|(<cbool>(True|False)<\/cbool>))*)<\/Classical>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<Classical>(?<classical_values>((<cint>(-?\\d+)</cint>)|(<cbool>(True|False)</cbool>))*)</Classical>"
   end
   
   LIST_PATTERN = Regexp.new /^(<cint>(?<int_value>-?\d+)<\/cint>)|(<cbool>(?<bool_value>True|False)<\/cbool>)/

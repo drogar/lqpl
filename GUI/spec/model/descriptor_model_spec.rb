@@ -60,7 +60,7 @@ end
 describe ClassicalDescriptorModel do
   it  "should raise an error if constructed with something other than <Classical>list of ints or bools</Classical>" do
     expect {
-      sc = AbstractDescriptorModel.make_instance "<Classicalk>err</Classical>"
+      sc = AbstractDescriptorModel.make_instance "<Classical>err</Classical>"
     }.to raise_error(ParserError, /<Classical>err<\/Classical>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do

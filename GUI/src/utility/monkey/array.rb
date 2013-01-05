@@ -29,7 +29,8 @@ class Array
   
   private
   def _get_middle_element_as_array
-    self[self.size/2,-((-self.size/2).ceil+(self.size/2.floor))]
+    half_size = self.size/2
+    self[half_size,-((-half_size).ceil+(half_size.floor))]
   end
   
 end

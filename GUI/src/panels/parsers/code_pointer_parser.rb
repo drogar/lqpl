@@ -1,7 +1,7 @@
 class CodePointerParser < AbstractPatternParser
   
-  def self.top_level_regexp
-    Regexp.new /^<pair><string>(?<key>.*?)<\/string><int>(?<value>\d*)<\/int><\/pair>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<pair><string>(?<key>.*?)</string><int>(?<value>\\d*)</int></pair>"
   end
   
   def parsed_value

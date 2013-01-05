@@ -1,10 +1,11 @@
 class QubitPatternParser < AbstractListPatternParser
   
-  LIST_PATTERN = Regexp.new /^(<pair>(?<first_qubit>(<qz\/>)|(<qo\/>))(?<second_qubit>(<qz\/>)|(<qo\/>))<\/pair>)/
+  LIST_PATTERN = Regexp.new "<pair>(?<first_qubit>(<qz/>)|(<qo/>))(?<second_qubit>(<qz/>)|(<qo/>))</pair>"
   # match 2 and 5
   
-  def self.top_level_regexp
-    Regexp.new /^<Qubits>(?<qubits>(<pair>((<qz\/>)|(<qo\/>))((<qz\/>)|(<qo\/>))<\/pair>){1,4})<\/Qubits>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<Qubits>(?<qubits>("+
+        LIST_PATTERN.source+"){1,4})<\/Qubits>"
   end
     
   

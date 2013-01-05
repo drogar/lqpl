@@ -1,7 +1,7 @@
 class ZeroPatternParser < AbstractPatternParser
   
-  def self.top_level_regexp
-    Regexp.new /^<Zero\/>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<Zero/>"
   end
   
   def parsed_value

@@ -12,16 +12,22 @@ class CanvasSize
   end
   
   def self.new_from_subtree(subtree_array)
-    mid = subtree_array.get_middle_element
-    
-    left = CanvasSize::total_widths(subtree_array.get_left_partition)
-    left += mid.left_required_width if mid
-    
-    right = CanvasSize::total_widths(subtree_array.get_right_partition)
-    right += mid.right_required_width if mid
-    
+    left = CanvasSize::subtree_left_width(subtree_array)
+    right = CanvasSize::subtree_right_width(subtree_array)
     h = subtree_array.collect{|cs| cs.height_with_spacing}.max
     self.new_with_measures(left,right,h)
+  end
+  
+  def self.subtree_left_width(subtree_array)
+    mid = subtree_array.get_middle_element
+    
+    CanvasSize::total_widths(subtree_array.get_left_partition)+(mid ? mid.left_required_width : 0)
+  end
+  
+  def self.subtree_right_width(subtree_array)
+    mid = subtree_array.get_middle_element
+    
+    CanvasSize::total_widths(subtree_array.get_right_partition)+(mid ? mid.right_required_width : 0)
   end
   
   def self.total_widths(sizes)
@@ -45,13 +51,21 @@ class CanvasSize
   # handle having a midpoint = equals size 0
   def self.compute_offsets(sizes)
     return [] if !sizes or sizes.length == 0
+      
     mid = sizes.get_middle_element
+    CanvasSize::left_offsets(sizes,mid) + CanvasSize::right_offsets(sizes,mid)
+  end
+  
+  def self.left_offsets(sizes,mid)  
     lefts = sizes.get_left_partition.tails.collect {|la| -CanvasSize.width_to_right_of_head(la)}
     lefts.collect! {|b| b-mid.left_required_width} if mid
     lefts << 0 if mid
+    lefts
+  end
+  
+  def self.right_offsets(sizes,mid)
     rights = sizes.get_right_partition.heads.collect{|ra| CanvasSize.width_to_left_of_tail(ra)}
     rights.collect!{|r| r+mid.right_required_width} if mid
-    lefts + rights
   end
 
   def initialize_with_measures(left,right,height)

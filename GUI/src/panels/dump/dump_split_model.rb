@@ -1,18 +1,15 @@
-class DumpSplitModel <XmlBasedModel
+class DumpSplitModel <ApplicationModel
 
   def initialize(inx)
     self.dumpsplit=inx
   end
 
   def dumpsplit=(in_xml)
-    m = DS_PATTERN.match in_xml
-    raise ModelCreateError, "Invalid dump split: #{in_xml}" if !m
-    @ds_text= m[0]
+    dsp = DumpSplitParser.new in_xml
+    @ds_text= dsp.parsed_value
   end
 
   def text
     @ds_text
   end
-
-  DS_PATTERN= Regexp.new /<DumpSplit>(.*?)<\/DumpSplit>/
 end

@@ -89,7 +89,7 @@ java_import java.awt.Point
 end
 
 
-%w{translate_line_ends xml_decode drawing}.each do |f|
+%w{translate_line_ends xml_decode drawing duck_matcher}.each do |f|
   require "utility/"+f
 end
 
@@ -98,7 +98,7 @@ end
 end
 
 
-%w{stack_translation code_pointer executable_code}.each do |rf|
+%w{stack_translation code_pointer executable_code dump_call dump_split dump quantum_stack}.each do |rf|
   require "panels/parsers/"+rf+"_parser"
 end
 

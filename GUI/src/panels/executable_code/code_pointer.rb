@@ -1,4 +1,4 @@
-class CodePointer
+class CodePointer < ApplicationModel
   attr_accessor :qpo_method
   attr_accessor :line_number
   def initialize(xml_string)

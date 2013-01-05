@@ -1,7 +1,7 @@
 class StackTranslationParser < AbstractListPatternParser
   
-  def self.top_level_regexp
-    Regexp.new /^<MMap>(?<maps>(<map>(<kvpair><key><string>(.*?)<\/string><\/key><value><int>(\d*)<\/int><\/value><\/kvpair>)*<\/map>)*)<\/MMap>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<MMap>(?<maps>("+LIST_PATTERN.source+")*)</MMap>"
   end
   
   def parse_list
@@ -18,8 +18,8 @@ class StackTranslationParser < AbstractListPatternParser
     end
   end
   
+  KVPATTERN = Regexp.new "<kvpair><key><string>(?<key>.*?)</string></key><value><int>(?<value>\\d*)</int></value></kvpair>"
 
-  LIST_PATTERN = Regexp.new /^<map>(?<key_value_pairs>(<kvpair><key><string>(.*?)<\/string><\/key><value><int>(\d*)<\/int><\/value><\/kvpair>)*)<\/map>/
-  KVPATTERN = Regexp.new /^<kvpair><key><string>(?<key>.*?)<\/string><\/key><value><int>(?<value>\d*)<\/int><\/value><\/kvpair>/
+  LIST_PATTERN = Regexp.new "<map>(?<key_value_pairs>("+KVPATTERN.source+")*)</map>"
 
 end

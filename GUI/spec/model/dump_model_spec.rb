@@ -13,7 +13,7 @@ end
 describe DumpSplitModel do
   it "should just accept and display the text of the split" do
     ds = DumpSplitModel.new( "<DumpSplit>whatever</DumpSplit>")
-    ds.text.should == "<DumpSplit>whatever</DumpSplit>"
+    ds.text.should == "whatever"
   end
 end
 

@@ -14,4 +14,15 @@ describe AbstractPatternParser do
       AbstractPatternParser.new "whatever"
     }.to raise_error ParserError, /whatever/
   end
+  describe "class methods" do
+    describe "surround_with_start_end" do
+      it "when given the regexp 'ab' gives a regexp that only parses 'ab' " do
+        AbstractPatternParser::surround_with_start_end(/ab/).should =~ 'ab'
+      end
+      it "when given the regexp 'ab' gives a regexp that will not  parses 'xaby' " do
+        AbstractPatternParser::surround_with_start_end(/ab/).should_not =~ 'xaby'
+      end
+    end
+  end
+      
 end

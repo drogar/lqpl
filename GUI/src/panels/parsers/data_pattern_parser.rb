@@ -5,8 +5,9 @@ class DataPatternParser < AbstractListPatternParser
   LIST_PATTERN = Regexp.new /^(<int>(?<address>\d*)<\/int>)/
 
 
-  def self.top_level_regexp
-    Regexp.new /^<AlgebraicData>(?<constructors>(<string>([\w\d_]*)<\/string><StackAddresses>((<int>(\d*)<\/int>)*)<\/StackAddresses>)+)<\/AlgebraicData>$/
+  def self.embeddable_top_level_regexp
+    Regexp.new "<AlgebraicData>(?<constructors>(<string>([\\w\\d_]*)<\/string><StackAddresses>"+
+        "((<int>(\\d*)</int>)*)</StackAddresses>)+)</AlgebraicData>"
   end
 
   def parse_list

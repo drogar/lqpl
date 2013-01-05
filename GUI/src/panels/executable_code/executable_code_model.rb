@@ -1,6 +1,6 @@
 require 'panels/executable_code/code_pointer'
 
-class ExecutableCodeModel
+class ExecutableCodeModel < ApplicationModel
   attr_accessor :the_code
   attr_accessor :the_code_pointer
   attr_accessor :the_code_was_updated
