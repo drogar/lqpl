@@ -97,12 +97,8 @@ end
   require "utility/"+f
 end
 
-%w{abstract zero value abstract_list qubit data classical}.each do |rf|
-  require "panels/parsers/"+rf+"_pattern_parser"
-end
-
-
-%w{stack_translation code_pointer executable_code dump_call dump_split dump quantum_stack}.each do |rf|
+%w{abstract_pattern zero_pattern value_pattern abstract_list_pattern qubit_pattern data_pattern classical_pattern
+  stack_translation code_pointer executable_code dump_call dump_split dump quantum_stack}.each do |rf|
   require "panels/parsers/"+rf+"_parser"
 end
 
