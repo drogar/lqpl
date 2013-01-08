@@ -31,10 +31,10 @@ class ExecutableCodeView < ApplicationView
   end
   
   def reset_tabbed_panes_and_maps
-    code_tab_pane = codeTabbedPane
     codeTabbedPane.remove_all
     @qpo_method_to_tab_map = {}
     @qpo_method_and_line_to_selection_start_and_end_map = {}
+    codeTabbedPane
   end
   
   def add_to_selection_start_and_end_map(qpo_method,ins_line,index,text_len)
@@ -50,6 +50,7 @@ class ExecutableCodeView < ApplicationView
     instructions_text_area.editable = false
     instructions_text_area.selection_start = 0
     instructions_text_area.selection_end = 0
+    instructions_text_area
   end
   
   #todo - revise this and code_pointer to know when just the line changes, rather than the whole thing.

@@ -1,3 +1,7 @@
+require 'rbconfig'
+require 'java'
+require 'config/platform'
+
 Dir.glob(File.expand_path(File.dirname(__FILE__) + "/**/*").gsub('%20', ' ')).each do |directory|
   # File.directory? is broken in current JRuby for dirs inside jars
   # http://jira.codehaus.org/browse/JRUBY-2289
@@ -104,8 +108,6 @@ end
 
 require 'painting/canvas_size'
 require 'application_model'
-
-require 'xml_based_model'
 
 %w{server_process_not_found invalid_input}.each do |f|
   require "exceptions/"+f

@@ -42,25 +42,17 @@ class CompilerServerConnection < Connection
     read_warning = (line =~ /w='YES'/)
     reset_failure_status
     while line and line != "</qpo>\n"  and line !~ /<\/compilefail/  and !@failed do
-      #puts "lineno=#{lineno}; line='#{line}'"
-      line = process_input_line line
-      # @failed = line =~  /<compilefail/
-      # read_failure_message if @failed
-      # break if @failed
-      # accum += line if line !~ command_start_regex
-      # send_included_file(line) if line =~ /<getFirst>/
-      # line = @connection.readline
-      #lineno += 1
+      line = process_input_line(line) {|checked_line| accum += checked_line if checked_line !~ command_start_regex}
     end
     read_failure_message if read_warning
     return accum
   end
   
-  def process_input_line line
+  def process_input_line(line)
     @failed = line =~  /<compilefail/
     read_failure_message if @failed
     return nil if @failed
-    accum += line if line !~ command_start_regex
+    yield line
     send_included_file(line) if line =~ /<getFirst>/
     @connection.readline
   end

@@ -7,11 +7,12 @@ class DuckMatcher
     @recurss = 0
     current_position = 0
     md = @matchss.match input
+    return nil if !md
     return [md[0]] if md[:all_of_it]
     while md do
       return [input[0,current_position+md.end(0)]] if _matched_paired_start_stop?(md)
       current_position += md.end(0)
-      md = @matchss.match input[current_position, -1]
+      md = @matchss.match input[Range.new(current_position, -1)]
     end
     return nil
   end  

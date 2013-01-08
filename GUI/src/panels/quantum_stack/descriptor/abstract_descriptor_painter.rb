@@ -78,7 +78,7 @@ class AbstractDescriptorPainter
 
   def get_value_canvas_size(g)
     valsize = get_string_size(g," #{@model_element.value} ")
-    CanvasSize.new(valsize.width*0.5,valsize.width*0.5,valsize.height)
+    CanvasSize.new_with_measures(valsize.width*0.5,valsize.width*0.5,valsize.height)
   end
   
   def name_width g

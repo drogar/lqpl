@@ -1,5 +1,3 @@
-require 'exceptions/quantum_stack_model_invalid_create'
-
 
 class SimulateResultsModel
   include XmlDecode

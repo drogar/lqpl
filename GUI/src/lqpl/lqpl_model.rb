@@ -1,4 +1,4 @@
-JInteger = java_import java.lang.Integer
+JInteger = java.lang.Integer
 
 class LqplModel < ApplicationModel
   attr_accessor :spinner_panel_visible, :button_panel_visible
@@ -79,7 +79,7 @@ class LqplModel < ApplicationModel
   end
   
   def self.symbol_for_view_menu_item(current_command)
-    which_menu=current_command[1,-1].collect(&:downcase).join("_")
+    which_menu=current_command.drop(1).collect(&:downcase).join("_")
     "view_menu_#{which_menu}_text=".to_sym
   end
 end

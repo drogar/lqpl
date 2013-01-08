@@ -70,11 +70,12 @@ describe ZeroDescriptorPainter do
   it "should have the colour black" do
     @sd.my_colour.should == Color.black
   end
-  it "should have a total size of W=16, H > 15" do
+  it "should have a total size of W=55, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    @sd.model_paint_size(g).left_width.should == 8
-    @sd.model_paint_size(g).right_width.should == 8
-    @sd.model_paint_size(g).height.should > 15
+    ps = @sd.model_paint_size(g)
+    ps.left_width.should == 27.5
+    ps.right_width.should == 27.5
+    ps.height.should > 15
   end
   it "should have a left equal to 1/2 the total width" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics

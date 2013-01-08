@@ -65,7 +65,7 @@ class CanvasSize
   
   def self.right_offsets(sizes,mid)
     rights = sizes.get_right_partition.heads.collect{|ra| CanvasSize.width_to_left_of_tail(ra)}
-    rights.collect!{|r| r+mid.right_required_width} if mid
+    rights.collect{|r| r+(mid ? mid.right_required_width : 0)} 
   end
 
   def initialize_with_measures(left,right,height)

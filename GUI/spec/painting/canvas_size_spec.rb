@@ -77,6 +77,24 @@ describe CanvasSize do
         c1 = CanvasSize::new_with_measures(10,99,0)
         CanvasSize::compute_offsets([c1]).should == [0]
       end
+      describe "left_offsets" do
+        it "should be [-99] for a 2 elt list" do
+          c1 = CanvasSize::new_with_measures(10,99,0)
+          c2 = CanvasSize::new_with_measures(75,85,0)
+          sizes = [c1,c2]
+          mid = sizes.get_middle_element
+          CanvasSize::left_offsets(sizes,mid).should == [-99]
+        end
+      end
+      describe "right_offsets" do
+        it "should be [75] for a 2 elt list" do
+          c1 = CanvasSize::new_with_measures(10,99,0)
+          c2 = CanvasSize::new_with_measures(75,85,0)
+          sizes = [c1,c2]
+          mid = sizes.get_middle_element
+          CanvasSize::right_offsets(sizes,mid).should == [75]
+        end
+      end
       it "should be [-right,left] for a 2 elt list" do
         c1 = CanvasSize::new_with_measures(10,99,0)
         c2 = CanvasSize::new_with_measures(75,85,0)
