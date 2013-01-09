@@ -93,7 +93,7 @@ java_import java.awt.Point
 end
 
 
-%w{translate_line_ends xml_decode drawing duck_matcher}.each do |f|
+%w{translate_line_ends drawing duck_matcher}.each do |f|
   require "utility/"+f
 end
 
@@ -102,6 +102,7 @@ end
   require "panels/parsers/"+rf+"_parser"
 end
 
+require 'dialogs/parsers/simulate_results_parser'
 require 'painting/canvas_size'
 require 'application_model'
 
