@@ -9,6 +9,10 @@ class AbstractListPatternParser < AbstractPatternParser
     @parsed_list
   end
   
+  def parse_list # abstract kind of method
+    []
+  end
+  
   def self.values_to_list(input,pattern,return_value=[])
     #return [] if !input or "" == input
     match_vals = pattern.match input

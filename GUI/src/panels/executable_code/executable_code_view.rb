@@ -5,8 +5,8 @@ class ExecutableCodeView < ApplicationView
 
   raw_mapping :set_up_tabbed_views, nil
 
-  attr :qpo_method_to_tab_map
-  attr :qpo_method_and_line_to_selection_start_and_end_map
+  attr_accessor :qpo_method_to_tab_map
+  attr_accessor :qpo_method_and_line_to_selection_start_and_end_map
 
   def set_up_tabbed_views(model,transfer)
     if model.the_code_was_updated?
@@ -18,12 +18,15 @@ class ExecutableCodeView < ApplicationView
   def create_tabbed_views(code_map)
     code_tab_pane = reset_tabbed_panes_and_maps
     i = 0
+    cp = CodePointer.new ""
     code_map.each do |qpo_method, qpo_ins|
       code_tab_pane.add_tab(qpo_method.to_s, ExecutableCodeView::init_scroll_pane(qpo_ins))
       @qpo_method_to_tab_map[qpo_method] = i
       text_len=0
+      cp.qpo_method = qpo_method
       qpo_ins.each_with_index do |ins_line, ind|
-        add_to_selection_start_and_end_map(qpo_method, ins_line, ind, text_len)
+        cp.line_number = ind
+        add_to_selection_start_and_end_map(cp, ins_line, text_len)
         text_len += 1+ins_line.length
       end
       i += 1
@@ -37,8 +40,8 @@ class ExecutableCodeView < ApplicationView
     codeTabbedPane
   end
   
-  def add_to_selection_start_and_end_map(qpo_method,ins_line,index,text_len)
-    @qpo_method_and_line_to_selection_start_and_end_map[ExecutableCodeView::make_selection_key(qpo_method,index)] = [text_len, text_len+1+ins_line.length]    
+  def add_to_selection_start_and_end_map(cp,ins_line,text_len)
+    @qpo_method_and_line_to_selection_start_and_end_map[cp.mangle_to_selection_key] = [text_len, text_len+1+ins_line.length]    
   end
   
   def self.init_scroll_pane qpo_ins
@@ -57,25 +60,17 @@ class ExecutableCodeView < ApplicationView
   def set_highlight_for_code_pointer(code_pointer)
     return if !@qpo_method_to_tab_map[code_pointer.qpo_method]
     codeTabbedPane.selected_index = @qpo_method_to_tab_map[code_pointer.qpo_method]
-    selection_key = ExecutableCodeView::mangle_code_pointer_to_selection_key(code_pointer)
-    return if !@qpo_method_and_line_to_selection_start_and_end_map[selection_key]
-    selection_bounds = @qpo_method_and_line_to_selection_start_and_end_map[selection_key]
-    set_selection_bounds_in_view(codeTabbedPane, selection_bounds)
+    selection_key = code_pointer.mangle_to_selection_key
+    set_selection_bounds_in_view(@qpo_method_and_line_to_selection_start_and_end_map[selection_key])
   end
   
-  def set_selection_bounds_in_view(codeTabbedPane,selection_bounds)
+  def set_selection_bounds_in_view(selection_bounds)
     jt = codeTabbedPane.selected_component.viewport.view
     jt.request_focus(true) # deprecated method, but otherwise the highlight does not show when switching qpo_methods
     jt.selection_start = 0  # reset to handle "use" case where we go back (loop) in the code
-    jt.selection_end = selection_bounds[1]
-    jt.selection_start = selection_bounds[0]
+    jt.selection_end = 0
+    jt.selection_end = selection_bounds[1] if selection_bounds
+    jt.selection_start = selection_bounds[0] if selection_bounds
   end
 
-  def self.mangle_code_pointer_to_selection_key(cp)
-    self.make_selection_key(cp.qpo_method, cp.line_number)
-  end
-
-  def self.make_selection_key(m,l)
-    "#{m}--#{l}"
-  end
 end

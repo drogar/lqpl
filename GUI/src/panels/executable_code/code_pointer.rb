@@ -2,9 +2,15 @@ class CodePointer < ApplicationModel
   attr_accessor :qpo_method
   attr_accessor :line_number
   def initialize(xml_string)
-    cp_match = CodePointerParser.new xml_string
-    @qpo_method = cp_match.parsed_value[0]
-    @line_number = cp_match.parsed_value[1]
+    begin
+      cp_match = CodePointerParser.new xml_string
+      @qpo_method = cp_match.parsed_value[0]
+      @line_number = cp_match.parsed_value[1]
+    rescue ParserError => e
+      raise e unless xml_string == ""
+      @qpo_method = ""
+      @line_number = 0
+    end
   end
 
   def normalize(max_plus_one)
@@ -14,5 +20,8 @@ class CodePointer < ApplicationModel
       @line_number = 0
     end
   end
-
+  
+  def mangle_to_selection_key
+    "#{@qpo_method}--#{@line_number}"
+  end
 end

@@ -1,4 +1,6 @@
 class DuckMatcher
+  attr_reader :matchss
+  attr_accessor :recurss
   def initialize(start,stop, entire_string)
     @matchss = Regexp.new "(?<strt>"+start+")|(?<stop>"+stop+")|(?<all_of_it>"+entire_string+")"
   end

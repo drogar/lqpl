@@ -95,8 +95,10 @@ describe CodePointer do
     it "should throw an exception with nil input" do
       expect {CodePointer.new(nil)}.to raise_error ParserError, /No match/
     end
-    it "should throw an exception with blank input" do
-      expect {CodePointer.new("")}.to raise_error ParserError, /No match/
+    it "should create a bare pointer with input ''" do
+      cp=CodePointer.new("")
+      cp.qpo_method.should == ""
+      cp.line_number.should == 0
     end
     it "should create a CodePointer instance with correct input " do
       @cp = CodePointer.new("<pair><string>main</string><int>0</int></pair>")
@@ -135,6 +137,12 @@ describe CodePointer do
     it "should change the line_number to 0 when input zero" do
       @cp.normalize(0)
       @cp.line_number.should == 0
+    end
+  end
+  describe "mangle_to_selection_key" do
+    it "should return method--linenumber" do
+      @cp = CodePointer.new("<pair><string>main</string><int>17</int></pair>")
+      @cp.mangle_to_selection_key.should == "main--17"
     end
   end
 end
