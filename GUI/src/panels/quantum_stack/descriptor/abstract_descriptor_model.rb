@@ -1,4 +1,4 @@
-class AbstractDescriptorModel <XmlBasedModel
+class AbstractDescriptorModel <ApplicationModel
   attr_accessor :value
   attr_accessor :name
 
@@ -15,12 +15,6 @@ class AbstractDescriptorModel <XmlBasedModel
 
   def initialize
     raise ModelCreateError
-  end
-
-
-  
-  def length
-    return @value.length
   end
 
   def substack_labels

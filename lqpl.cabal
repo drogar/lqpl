@@ -42,11 +42,12 @@ Test-Suite type-unification-spec
    hs-source-dirs:   Compiler/src,Common/src
    extensions:       CPP
 Test-Suite utility-fileprovider-spec
-    type:             exitcode-stdio-1.0
-    main-is:          Spec/Utility/FileProviderSpec.lhs
-    build-depends:    HUnit,hspec,QuickCheck,base,directory,filepath,network,parsec,process,unix
-    hs-source-dirs:   Compiler/src,Common/src
-    extensions:       FlexibleInstances,CPP
+   type:             exitcode-stdio-1.0
+   main-is:          Spec/Utility/FileProviderSpec.lhs
+   build-depends:    HUnit,hspec,QuickCheck,base,directory,filepath,network,parsec,process,unix
+   hs-source-dirs:   Compiler/src,Common/src
+   extensions:       FlexibleInstances,CPP
+   ghc-options:      -fhpc
 Executable lqpl
   Main-is:           Compiler/Main.lhs
   Build-Depends:     containers,mtl,array,directory,filepath,base,transformers,parsec,hspec

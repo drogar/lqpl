@@ -1,5 +1,4 @@
-class ModelCreateError < RuntimeError 
-end
+class ModelCreateError < RuntimeError ; end
 
 class ApplicationModel
 end

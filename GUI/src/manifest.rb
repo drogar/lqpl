@@ -1,3 +1,7 @@
+require 'rbconfig'
+require 'java'
+require 'config/platform'
+
 Dir.glob(File.expand_path(File.dirname(__FILE__) + "/**/*").gsub('%20', ' ')).each do |directory|
   # File.directory? is broken in current JRuby for dirs inside jars
   # http://jira.codehaus.org/browse/JRUBY-2289
@@ -21,7 +25,7 @@ end
 # Monkeybars to operate.
 
 require 'resolver'
-
+#:nocov:
 def monkeybars_jar path
   Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/}.first
 end
@@ -40,6 +44,7 @@ case Monkeybars::Resolver.run_location
     end
     add_to_classpath mbj
 end
+#:nocov:
 
 
 require 'monkeybars'
@@ -73,30 +78,64 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 
-require 'application_model'
-require 'utility/xml_decode'
-require 'xml_based_model'
-["server_process_not_found", "invalid_input"].each do |f|
-  require "exceptions/"+f
+
+%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter JTextArea JScrollPane}.each do |cfile|
+  java_import "javax.swing."+cfile
 end
 
-["translate_line_ends","xml_decode"].each do |f|
+java_import com.drogar.lqpl.qstack.Painter
+
+java_import java.lang.System
+
+java_import java.awt.Point
+
+%w{point jfile_chooser array}.each do |rfile|
+  require 'utility/monkey/'+rfile
+end
+
+
+%w{translate_line_ends drawing duck_matcher}.each do |f|
   require "utility/"+f
 end
 
-["lqpl_emulator_server_connection","compiler_server_connection"].each do |f|
-  require "communications/"+f
+%w{abstract_pattern zero_pattern value_pattern abstract_list_pattern qubit_pattern data_pattern classical_pattern
+  stack_translation code_pointer executable_code dump_call dump_split dump quantum_stack}.each do |rf|
+  require "panels/parsers/"+rf+"_parser"
 end
 
-{ ""=>["lqpl"], 
-  "panels/" => ["quantum_stack", "classical_stack","dump","executable_code", "stack_translation"],
-  "dialogs/" =>["simulate_results", "about"]}.each do |k,v|
-    v.each {|f|   require k+f+"/"+f+"_controller" }
+require 'dialogs/parsers/simulate_results_parser'
+require 'painting/canvas_size'
+require 'application_model'
+require 'panels/panel_controller'
+
+%w{server_process_not_found invalid_input}.each do |f|
+  require "exceptions/"+f
+end
+
+
+%w{lqpl_emulator_server_connection compiler_server_connection}.each do |f|
+  require "communications/"+f
+end
+%w{abstract classical data qubit value zero}.each do |rf|
+  require "panels/quantum_stack/descriptor/#{rf}_descriptor_model"
+  require "panels/quantum_stack/descriptor/#{rf}_descriptor_painter"
+end
+
+require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
+require 'panels/quantum_stack/quantum_stack_painter'
+
+{ ""=>%w{lqpl}, 
+  "panels/" => %w{quantum_stack classical_stack dump executable_code stack_translation},
+  "dialogs/" =>%w{simulate_results about}}.each do |k,v|
+    v.each do |f|   
+      require k+f+"/"+f+"_view" 
+      require k+f+"/"+f+"_model" 
+      require k+f+"/"+f+"_controller" 
+    end
 end
 
 require "exit_handler"
 
-java_import javax.swing.JOptionPane
-java_import java.lang.System
+
 
 
