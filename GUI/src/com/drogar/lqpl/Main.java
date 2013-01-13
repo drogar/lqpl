@@ -58,7 +58,6 @@ public class Main
             mainRubyFile = parts[1].replaceAll(" ", "");
         }
     }
-
       runtime.evalScriptlet("require '" + mainRubyFile + "'");
   }
 

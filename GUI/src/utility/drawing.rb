@@ -16,17 +16,16 @@ end
 
 java_import javax.swing.ImageIcon
 
-VERTICAL_NODE_SEPARATION=50.0
-HORIZONTAL_NODE_SEPARATION=55.0
+
 
 module Drawing
   def draw_text_centered_at_point(g,text, point)
       text_bounds = get_string_size(g,text)
-      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y+(text_bounds.height * 0.5))
+      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y)
   end
 
   def draw_text_centered_between(g,text, point1, point2)
-      draw_centered_text(g,text,mid_point(point1, point2))
+      draw_text_centered_at_point(g,text,mid_point(point1, point2))
   end
   
   def mid_point(point1, point2)
@@ -74,17 +73,5 @@ module Drawing
     g.color = Color.black
     g.draw shape
   end
-
-
-  def node_separation(direction)
-    case direction
-    when :vertical then VERTICAL_NODE_SEPARATION
-    when :horizontal then HORIZONTAL_NODE_SEPARATION
-    else VERTICAL_NODE_SEPARATION
-    end
-  end
-
-
-
 
 end

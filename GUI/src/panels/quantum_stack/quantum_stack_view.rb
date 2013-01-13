@@ -1,4 +1,3 @@
-require 'panels/quantum_stack/quantum_stack_painter'
 
 class QuantumStackView < ApplicationView
   set_java_class com.drogar.lqpl.screens.QuantumStackFrame

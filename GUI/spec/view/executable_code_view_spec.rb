@@ -3,18 +3,127 @@ require 'spec/spec_helper'
 require 'src/panels/executable_code/executable_code_view'
 require 'src/panels/executable_code/code_pointer'
 
+QPOLINES=["1   someline","2 another line"]
+CP = CodePointer.new("<pair><string>m</string><int>1</int></pair>")
+QPOLINES2 = ["1 entry 1", "2 entry 2", "3 entry 3"]
 
-CP = CodePointer.new("<pair><string>main</string><int>17</int></pair>")
+CM = {:m => QPOLINES, :s => QPOLINES2}
 
 describe ExecutableCodeView do
-  describe 'class method make_selection_key' do
-    it "should combine the qpo method and a line number to make a key" do
-      ExecutableCodeView::make_selection_key(:a,1).should == "a--1"
+  describe "init_instructions_text_area" do
+    before :each do
+      @ta = ExecutableCodeView::init_instructions_text_area QPOLINES
+    end
+    it "should create a text area with the text passed in" do
+      @ta.text.should =~ /someline/
+    end
+    it "should not be an editable text area" do
+      @ta.editable.should be_false
+    end
+    it "should have selection start and end of 0" do
+      @ta.selection_start.should == 0
+      @ta.selection_end.should == 0
     end
   end
-  describe 'class method mangle_code_pointer_to_selection_key' do
-    it "should combine the code pointer method and line number" do
-      ExecutableCodeView::mangle_code_pointer_to_selection_key(CP).should == "main--17"
+  describe "init_scroll_pane" do
+    it "should return a JScrollPane" do
+      jsp = ExecutableCodeView::init_scroll_pane QPOLINES
+      jsp.class.should == JScrollPane
+    end
+    it "should contain a text area with the text passed in." do      
+      jsp = ExecutableCodeView::init_scroll_pane QPOLINES
+      jsp.viewport.view.text.should =~ /someline/
+    end
+  end
+  describe "reset_tabbed_panes_and_maps" do
+    before :each do
+      @ecv = ExecutableCodeView.new
+    end
+    it "should reset the codeTabbedPane to have no tabs" do
+      @ecv.reset_tabbed_panes_and_maps
+      @ecv.codeTabbedPane.tab_count.should == 0
+    end
+    it "should reset the map method_to_tab to be empty" do
+      @ecv.qpo_method_to_tab_map = {:a => "b"}
+      @ecv.reset_tabbed_panes_and_maps
+      @ecv.qpo_method_to_tab_map.should == {}
+    end
+  end
+  describe "add_to_selection_start_and_end_map" do
+    before :each do
+      @ecv = ExecutableCodeView.new
+      @ecv.qpo_method_and_line_to_selection_start_and_end_map = {}
+    end
+    it "adds 'm--1 =>[5,10]' for input cp('m',1),'1234',5" do
+      @ecv.add_to_selection_start_and_end_map(CP,'1234',5)
+      @ecv.qpo_method_and_line_to_selection_start_and_end_map["m--1"].should == [5,10]
+    end
+  end
+  describe "set_selection_bounds_in_view" do
+    before :each do
+      @ecv = ExecutableCodeView.new
+      @ecv.reset_tabbed_panes_and_maps
+      @ecv.codeTabbedPane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+      @ecv.codeTabbedPane.selected_index = 0
+    end
+    it "should set the selection bounds to 2,5 on input of [2,5]" do
+      @ecv.set_selection_bounds_in_view [2,5]
+      jt = @ecv.codeTabbedPane.selected_component.viewport.view
+      jt.selection_start.should == 2
+      jt.selection_end.should == 5
+    end
+  end
+  describe "set_highlight_for_code_pointer" do
+    before :each do
+      @ecv = ExecutableCodeView.new
+      @ecv.reset_tabbed_panes_and_maps
+      @ecv.codeTabbedPane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+      @ecv.add_to_selection_start_and_end_map(CP,'1234',5)
+      @ecv.qpo_method_to_tab_map[CP.qpo_method] = 0
+    end
+    it "should set the bounds to 5,10 for input CP" do
+      @ecv.set_highlight_for_code_pointer(CP)
+      jt = @ecv.codeTabbedPane.selected_component.viewport.view
+      jt.selection_start.should == 5
+      jt.selection_end.should == 10
+    end
+  end
+  describe "create_tabbed_view" do
+    before :each do
+      @ecv = ExecutableCodeView.new
+      @ecv.create_tabbed_views(CM)
+    end
+    it "should have two panes" do
+      @ecv.codeTabbedPane.tab_count.should == 2
+    end
+    it "should have /someline/ in the first tab" do
+      @ecv.codeTabbedPane.selected_index = 0
+      @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /someline/
+    end
+    it "should have /entry/ in the second tab" do
+      @ecv.codeTabbedPane.selected_index = 1
+      @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /entry/
+    end
+  end
+  describe "set_up_tabbed_views" do
+    before :each do
+      md = double("ApplicationModel", :nil? => false)
+      md.stub(:the_code).and_return(CM)
+      md.stub(:the_code_pointer).and_return(CP)
+      md.stub(:the_code_was_updated?).and_return(true)
+      @ecv = ExecutableCodeView.new
+      @ecv.set_up_tabbed_views(md,nil)
+    end
+    it "should have two panes" do
+      @ecv.codeTabbedPane.tab_count.should == 2
+    end
+    it "should have /someline/ in the first tab" do
+      @ecv.codeTabbedPane.selected_index = 0
+      @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /someline/
+    end
+    it "should have /entry/ in the second tab" do
+      @ecv.codeTabbedPane.selected_index = 1
+      @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /entry/
     end
   end
 end

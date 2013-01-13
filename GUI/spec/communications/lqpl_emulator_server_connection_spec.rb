@@ -93,7 +93,7 @@ describe LqplEmulatorServerConnection do
       @sc.get_qstack.should =~ /<Qstack/
     end
     it "returns the classical_stack" do
-      @sc.get_classical_stack.should =~ /<Cstack/
+      @sc.get_classical_stack.should =~ /<Classical/
     end
     it "returns the dump" do
       @sc.get_dump.should =~ /<Dump/
