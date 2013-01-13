@@ -6,6 +6,7 @@ def on_mac
  yield if RbConfig::CONFIG["host_os"] =~ /darwin/i
 end
 
+#:nocov:
 def on_win
   yield if  RbConfig::CONFIG["host_os"] =~ /^win|mswin/i 
 end
@@ -18,7 +19,7 @@ end
 def not_on_mac
   yield if  !(RbConfig::CONFIG["host_os"] =~ /darwin/i)
 end
-  
+#:nocov: 
 on_mac do
   testing = java.lang.System.get_property("com.drogar.testing.fest")
   if !testing or testing != "true"

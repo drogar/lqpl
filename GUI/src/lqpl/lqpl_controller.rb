@@ -8,6 +8,11 @@ class LqplController < ApplicationController
   set_view 'LqplView'
   set_close_action :close
   
+  attr_accessor :cmp
+  attr_accessor :sub_controllers
+  attr_accessor :dialogs
+  attr_accessor :qpl_dialog
+  
   def self.set_file_menu_actions
     { "the_menu.file_compile" => "file_compile", 
       "the_menu.file_load" => "file_load",
@@ -32,12 +37,14 @@ class LqplController < ApplicationController
       Application.application.quit_handler = ExitHandler.instance
     end
   
+  #:nocov:
     not_on_mac do
       { "the_menu.file_exit" => "file_exit",
         "the_menu.help_about" => "help_about"}.each do |k,v|
           add_listener :type => :action, :components => {k => v}
       end
     end
+    #:nocov:
   end
       
   set_file_menu_actions
@@ -72,6 +79,7 @@ class LqplController < ApplicationController
 
   def file_compile_action_performed
     chooser = JFileChooser.lqpl_source_file_opener
+    puts "running compile chooser"
     if chooser.show_open_dialog(self.my_frame) == JFileChooser::APPROVE_OPTION
       @cmp.compile_and_write_qpo chooser.get_selected_file.get_absolute_path
       model.messages_text = @cmp.success_or_fail_message(chooser.get_selected_file.name)
@@ -82,10 +90,10 @@ class LqplController < ApplicationController
   end
 
   def file_load_action_performed
-    chooser = JFileChooser.lqpl_assembled_file_opener
-    if chooser.show_open_dialog(nil) == JFileChooser::APPROVE_OPTION
-      load_file chooser.selected_file.absolute_path
-      model.set_title_and_enable chooser.selected_file.name
+    @qpl_dialog = JFileChooser.lqpl_assembled_file_opener
+    if @qpl_dialog.show_open_dialog(nil) == JFileChooser::APPROVE_OPTION
+      load_file @qpl_dialog.selected_file.absolute_path
+      model.set_title_and_enable @qpl_dialog.selected_file.name
       initialize_sub_controllers
     else
       model.messages_text =  "QPO file load cancelled."
@@ -111,7 +119,7 @@ class LqplController < ApplicationController
 
   def view_sub_panel_action_performed(e)
     command_and_sub_panel = e.action_command.scan(/\w+/)
-    ApplicationController.controller_from_name(command_and_sub_panel).instance.toggle_visibility
+    PanelController::controller_from_name(command_and_sub_panel).instance.toggle_visibility
     model.toggle_view_menu(command_and_sub_panel)
     update_view
   end
@@ -161,8 +169,7 @@ class LqplController < ApplicationController
   end
 
   def step_button_action_performed
-    sc = LqplEmulatorServerConnection.instance
-    res = sc.do_step(model.step_spinner,model.recursion_spinner)
+    res = self.lqpl_emulator_server_connection.do_step(model.step_spinner,model.recursion_spinner)
     enable_and_update !(res =~ /executed/)
   end
 
@@ -173,8 +180,7 @@ class LqplController < ApplicationController
 
   def trim_button_action_performed
     model.messages_text = self.lqpl_emulator_server_connection.do_trim
-    QuantumStackController.instance.set_data_from_lqpl_model(model)
-    DumpController.instance.set_data_from_lqpl_model(model)
+    @sub_controllers.each {|sc| sc.set_data_from_lqpl_model(model) if sc.update_on_lqpl_model_trim}
     update_view
   end
 end

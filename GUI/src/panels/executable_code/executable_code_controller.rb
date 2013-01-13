@@ -1,4 +1,4 @@
-class ExecutableCodeController < ApplicationController
+class ExecutableCodeController < PanelController
   set_model 'ExecutableCodeModel'
   set_view 'ExecutableCodeView'
   set_close_action :hide

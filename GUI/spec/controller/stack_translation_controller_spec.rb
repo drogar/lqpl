@@ -12,7 +12,10 @@ describe StackTranslationController do
     @d.set_stack_translation_data(P1)
     @d.get_stack_translation_text.should == "<html><ol><li>p=>1</li></ol></html>"
   end
-
+  
+  it "should return false for update_on_lqpl_model_trim" do
+    @d.update_on_lqpl_model_trim.should be_false
+  end
   # it "should set the server_connection when given an sc" do
   # 
   #     sc = double('server_connection')

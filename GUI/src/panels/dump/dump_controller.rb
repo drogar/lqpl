@@ -1,4 +1,4 @@
-class DumpController < ApplicationController
+class DumpController < PanelController
   set_model 'DumpModel'
   set_view 'DumpView'
   set_close_action :hide
@@ -18,5 +18,9 @@ class DumpController < ApplicationController
 
   def get_dump_data
     model.text
+  end
+  
+  def update_on_lqpl_model_trim
+    true
   end
 end

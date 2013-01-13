@@ -1,0 +1,24 @@
+One of the goals of this project is to have a full suite of automated tests.
+
+In the JRuby portion of this, we use FEST for testing of the swing components, Cucumber
+to run "acceptance" tests and rspec to run unit tests. In each of those, we use ruby's
+'simplecov' gem to determine test coverage. However, there are a few issues with these
+combinations:
+
+ - With Cucumber, FEST and simplecov, the coverage analysis is incomplete. Only the static
+   portions of the code are recorded. Accordingly, even though many items are actually exercised
+   (e.g., the opening of file dialogs in lqpl_controller), they are not recorded.
+
+ - With rspec, FEST and simplecov, the coverage analysis is complete, but FEST will not drive
+   any items that are opened. Hence, we can not add unit tests for methods such as the opening
+   of the file dialogs in lqpl_controller.
+
+ - Some items are only run on Windows or Linux computers - testing is intended to be run on 
+   a Mac, therefore these are surrounded with :nocov: tags to remove them from the stats.
+
+Due to the first two points here, the coverage goal for the project GUI will only be 90%.
+
+
+In the Haskell portions, the system was completely written prior to embracing a test driven
+development strategy. Test will be retrofitted as time permits or as code changes are made.
+Hspec is used in testing the Haskell code. We intend to add in hpc for coverage in the future.

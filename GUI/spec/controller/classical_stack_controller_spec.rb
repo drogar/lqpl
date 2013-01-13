@@ -11,7 +11,10 @@ describe ClassicalStackController do
   it "should raise an error when created with junk" do
     expect { @c.set_classical_stack_data("junk")}. to raise_error   ParserError, /junk/
   end
-
+  
+  it "should return false for update_on_lqpl_model_trim" do
+    @c.update_on_lqpl_model_trim.should be_false
+  end
   it "should create a classical stack when given the correct input" do
     @c.set_classical_stack_data("<Classical>"+cint(-27)+CIBT+cint(40)+CIBF+"</Classical>")
     @c.get_classical_stack_data.should == "<html>-27<br />true<br />40<br />false</html>"

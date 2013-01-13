@@ -2,7 +2,60 @@ require 'spec/spec_helper'
 require 'src/panels/quantum_stack/quantum_stack_model'
 require 'src/panels/quantum_stack/quantum_stack_painter'
 
+
+
+
 describe AbstractDescriptorPainter do
+  before(:each) do
+    m=double("model_elelment")
+    m.stub(:name).and_return("Z")
+    m.stub(:value).and_return("Z")
+    m.stub(:length).and_return(0)
+    @adp=AbstractDescriptorPainter.new(m)
+  end
+  describe "model element" do
+    it "should assign the model element to whatever object is passed in" do
+      @adp.model_element= 5
+      @adp.model_element.should == 5
+    end
+  end
+  it "should return an ellipse as its shape" do
+    @adp.my_shape(Point.new(10,10)).class.should == Ellipse2D::Double
+  end
+  it "should raise a runtime exception for colour" do
+    expect {
+      @adp.my_colour
+    }.to raise_error RuntimeError,/abstract/
+  end
+  it "should have a nil image of the model" do
+    @adp.image_of_model.should be_nil
+  end
+  describe "drawing items" do
+    before :each do
+      @d=DoDrawing.new
+    end
+    it "should draw the name to the left of the point with paint_name" do
+      @adp.paint_name(@d.gc,Point.new(30,20)) # subtracts node size from x rl point is 20,20
+      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
+      check_raster_point_is_grey(rstr,19,19)
+    end
+    it "should draw the Value centered on the point with paint_value" do
+      @adp.paint_value(@d.gc,Point.new(20,10)) # adds node size to y real point is 20,20
+      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
+      check_raster_point_is_grey(rstr,19,19)
+      check_raster_point_is_grey(rstr,21,19)
+    end
+    it "show throw an exception for paintModelAtPoint" do
+      expect {
+        @adp.paintModelAtPoint(@d.gc,Point.new(20,20))
+      }.to raise_error RuntimeError,/abstract/
+    end
+    it "show throw an exception for paintModel" do
+      expect {
+        @adp.paintModel(@d.gc)
+      }.to raise_error RuntimeError,/paintModel/
+    end
+  end
 end
 
 describe ClassicalDescriptorPainter do
@@ -15,6 +68,36 @@ describe ClassicalDescriptorPainter do
   it "should have the colour green" do
     @sd.my_colour.should == Color.green
   end
+  describe "painting" do
+    before (:each) do
+      m=double("model_elelment")
+      m.stub(:name).and_return("Z")
+      m.stub(:value).and_return("Z")
+      m.stub(:length).and_return(0)
+      @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>")
+      @sd.model_element= m
+      
+      @d=DoDrawing.new
+    end
+    
+    it "should draw the name to the left of the point with paint_model_at_point" do
+      @sd.paint_model_at_point(@d.gc,Point.new(30,20)) # subtracts node size from x rl point is 20,20
+      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
+      check_raster_point_is_grey(rstr,19,19)
+    end
+    it "should draw the Value centered on the point with paint_value" do
+      @sd.paint_model_at_point(@d.gc,Point.new(20,10)) # adds node size to y real point is 20,20
+      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
+      check_raster_point_is_grey(rstr,19,19)
+      check_raster_point_is_grey(rstr,21,19)
+    end
+    
+    it "should draw a green circle centered on the point with paint_value" do
+      @sd.paint_model_at_point(@d.gc,Point.new(20,20)) # adds node size to y real point is 20,20
+      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
+      check_raster_point_is_green(rstr,20,20)
+    end
+  end
 end
 
 describe DataDescriptorPainter do
@@ -23,6 +106,10 @@ describe DataDescriptorPainter do
   end
   it "should have the colour magenta" do
     @sd.my_colour.should == Color.magenta
+  end
+  
+  it "should return a Rectangle as its shape" do
+    @sd.my_shape(Point.new(10,10)).class.should == Rectangle2D::Double
   end
 end
 

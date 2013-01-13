@@ -41,11 +41,12 @@ class LqplMenu
     menu_file.add(@file_load);
     menu_file.add(@file_compile);
     menu_file.add(@file_simulate);
-
+    #:nocov:
     not_on_mac do
       @file_exit = JMenuItem.new("Exit")
       menu_file.add(@file_exit)
     end
+    #:nocov:
     menu_file
   end
 
@@ -68,6 +69,7 @@ class LqplMenu
     menu_view
   end
   
+    #:nocov:
   def init_help_menu mbar
     not_on_mac do
       menu_help = JMenu.new("Help")
@@ -76,5 +78,6 @@ class LqplMenu
       mbar.add(menu_help)
     end
   end
+    #:nocov:
 
 end

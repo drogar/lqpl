@@ -1,4 +1,4 @@
-class QuantumStackController < ApplicationController
+class QuantumStackController < PanelController
   set_model 'QuantumStackModel'
   set_view 'QuantumStackView'
 
@@ -10,5 +10,9 @@ class QuantumStackController < ApplicationController
     model.stack_translation = stack_trans
     model.quantum_stack =  lqpl_emulator_server_connection.get_qstack tree_depth,recursion_depth
     update_view
+  end
+    
+  def update_on_lqpl_model_trim
+    true
   end
 end

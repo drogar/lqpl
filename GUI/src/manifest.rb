@@ -25,7 +25,7 @@ end
 # Monkeybars to operate.
 
 require 'resolver'
-
+#:nocov:
 def monkeybars_jar path
   Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/}.first
 end
@@ -44,6 +44,7 @@ case Monkeybars::Resolver.run_location
     end
     add_to_classpath mbj
 end
+#:nocov:
 
 
 require 'monkeybars'
@@ -105,6 +106,7 @@ end
 require 'dialogs/parsers/simulate_results_parser'
 require 'painting/canvas_size'
 require 'application_model'
+require 'panels/panel_controller'
 
 %w{server_process_not_found invalid_input}.each do |f|
   require "exceptions/"+f

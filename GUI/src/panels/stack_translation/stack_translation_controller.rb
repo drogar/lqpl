@@ -1,4 +1,4 @@
-class StackTranslationController < ApplicationController
+class StackTranslationController < PanelController
   set_model 'StackTranslationModel'
   set_view 'StackTranslationView'
   set_close_action :hide

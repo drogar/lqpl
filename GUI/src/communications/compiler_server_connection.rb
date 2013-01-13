@@ -135,4 +135,8 @@ class CompilerServerConnection < Connection
     nums = vstring[/(\d+,)+\d+/].gsub(/,/,'.')
     return nums
   end
+  
+  def failed?
+    @failed
+  end
 end

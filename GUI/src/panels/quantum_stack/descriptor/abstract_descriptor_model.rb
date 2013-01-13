@@ -17,12 +17,6 @@ class AbstractDescriptorModel <ApplicationModel
     raise ModelCreateError
   end
 
-
-  
-  def length
-    return @value.length
-  end
-
   def substack_labels
     nil
   end

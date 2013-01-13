@@ -30,4 +30,57 @@ describe LqplModel do
       LqplModel::symbol_for_view_menu_item(['whatever','X', 'Y']).should == :view_menu_x_y_text=
     end
   end
+  describe "instance methods" do
+    before :each do
+      @lm = LqplModel.new
+    end
+    describe "enable_view_menu_items" do
+      before :each do
+        @lm.enable_view_menu_items
+      end
+      it "sets view_menu_stack_translation_enabled to true" do
+        @lm.view_menu_stack_translation_enabled.should be_true
+      end
+      it "sets view_menu_dump_enabled to true" do
+        @lm.view_menu_dump_enabled.should be_true
+      end
+      it "sets view_menu_executing_code_enabled to true" do
+        @lm.view_menu_executing_code_enabled.should be_true
+      end
+      it "sets view_menu_classical_stack_enabled to true" do
+        @lm.view_menu_classical_stack_enabled.should be_true
+      end
+    end
+    describe "set_title_and_enable" do
+      before :each do
+        @lm.set_title_and_enable("test")
+      end
+      it "should set the title to 'Quantum Emulator - <arg>" do
+        @lm.frame_title.should == 'Quantum Emulator - test'
+      end
+      it "should set the go button to enabled" do
+        @lm.go_enabled.should be_true
+      end
+      it "should set the step button to enabled" do
+        @lm.step_enabled.should be_true
+      end
+      it "should set the spinner panel to visible" do
+        @lm.spinner_panel_visible.should be_true
+      end
+      it "should set the button panel to visible" do
+        @lm.button_panel_visible.should be_true
+      end
+      it "should set the message to '<arg> was loaded.'" do
+        @lm.messages_text.should == 'test was loaded.'
+      end
+    end
+    describe "toggle_view_menu" do
+      it "should switch 'hide' to 'show' and back" do
+        @lm.toggle_view_menu(["Hide","Dump"])
+        @lm.view_menu_dump_text.should == "Show Dump"
+        @lm.toggle_view_menu(["Show","Dump"])
+        @lm.view_menu_dump_text.should == "Hide Dump"
+      end
+    end
+  end
 end

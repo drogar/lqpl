@@ -4,6 +4,13 @@ require 'spec/specdata/quantum_stack_data'
 
 
 describe QuantumStackParser do
+  describe "class method" do
+    describe "initial_qstack_regexp" do
+      it "should equal the embeddable with a ^ at the start" do
+        QuantumStackParser.initial_qstack_regexp.source.should == "^" + QuantumStackParser.embeddable_top_level_regexp.source
+      end
+    end
+  end
   describe "multiple substack layers" do
     it "should correctly parse an item with no substacks" do
       q = QuantumStackParser.new QSVAL5

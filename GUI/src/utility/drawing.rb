@@ -21,11 +21,11 @@ java_import javax.swing.ImageIcon
 module Drawing
   def draw_text_centered_at_point(g,text, point)
       text_bounds = get_string_size(g,text)
-      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y+(text_bounds.height * 0.5))
+      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y)
   end
 
   def draw_text_centered_between(g,text, point1, point2)
-      draw_centered_text(g,text,mid_point(point1, point2))
+      draw_text_centered_at_point(g,text,mid_point(point1, point2))
   end
   
   def mid_point(point1, point2)

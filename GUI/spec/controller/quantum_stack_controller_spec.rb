@@ -8,7 +8,10 @@ describe QuantumStackController do
   before(:each) do
     @d = QuantumStackController.instance
   end
-
+  
+  it "should return true for update_on_lqpl_model_trim" do
+    @d.update_on_lqpl_model_trim.should be_true
+  end
   # it "should set the server_connection when given an sc" do
   # 
   #     sc = double('server_connection')

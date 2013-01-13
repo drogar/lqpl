@@ -12,7 +12,10 @@ describe DumpController do
     @c.set_dump_data("<Dump>"+DCALL+"</Dump>")
     @c.get_dump_data.should == "<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>"
   end
-
+  
+  it "should return true for update_on_lqpl_model_trim" do
+    @c.update_on_lqpl_model_trim.should be_true
+  end
   # it "should ask the sc for the dump when given a depth and recursion" do
   #     sc = double('server_connection')
   #     sc.should_receive(:connected?).and_return(true)

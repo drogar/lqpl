@@ -13,6 +13,15 @@ describe CanvasSize do
       it "should have a default vertical node sep of 50.0" do
         CanvasSize.node_separation(:vertical).should == 50.0
       end
+      
+      it "should return vertical node sep of 50.0 for unknown args" do
+        CanvasSize.node_separation(:whatever).should == 50.0
+      end
+    end
+    describe "vertical_node_separation" do
+      it "should return node_separation(:vertical)" do
+        CanvasSize.vertical_node_separation.should == CanvasSize.node_separation(:vertical)
+      end
     end
     describe "total_widths" do
       it "should give 0 for []" do

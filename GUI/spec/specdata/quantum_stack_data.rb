@@ -39,5 +39,5 @@ ADDRESSES=[[1,QSQBZero],[-1,QSVAL5], [2,QB2WITHBOTTOM]]
 DIAGS=[[true,QSQBZero], [true,QSVAL5], [false,AL1WITHBOTTOM]]
 
 QS3LEVEL = make_multi_sstacks("<Qstack><int>3</int><bool>True</bool>",
-  "<Classical><cint>27</cint><cint>5</cint></Classical></Qstack>",
+  "<Classical><cint>27</cint><cint>5</cint><cint>7</cint></Classical></Qstack>",
   QSQBZero,3)

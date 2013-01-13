@@ -38,6 +38,13 @@ describe ExecutableCodeModel do
       it "should return the nil by default" do
         @ecm.the_code.should be_nil
       end
+      it "should return the value set into the_code_was_updated" do
+        @ecm.the_code_was_updated = false
+        @ecm.the_code_was_updated?.should be_false
+        @ecm.the_code_was_updated = true
+        @ecm.the_code_was_updated?.should be_true
+      end
+      
     end
     describe "the_code_pointer" do
       before(:each) do

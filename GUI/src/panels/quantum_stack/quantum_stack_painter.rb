@@ -76,7 +76,7 @@ class QuantumStackPainter
   end
 
   def substack_label(index)
-    d = @model_element.descriptor.substack_labels
+    d = @model_element.descriptor.substack_labels if @model_element.descriptor
     return d[index].to_s if d
     "Nil for model descriptor"
     #"#{@model_element.descriptor.substack_labels[index]}"

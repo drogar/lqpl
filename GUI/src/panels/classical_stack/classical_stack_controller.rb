@@ -1,4 +1,4 @@
-class ClassicalStackController < ApplicationController
+class ClassicalStackController < PanelController
   set_model 'ClassicalStackModel'
   set_view 'ClassicalStackView'
   set_close_action :hide
