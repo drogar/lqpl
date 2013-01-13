@@ -1,13 +1,12 @@
 class QubitDescriptorModel < AbstractDescriptorModel
 
-  PATTERN=Regexp.new /^<Qubits>((<pair>((<qz\/>)|(<qo\/>))((<qz\/>)|(<qo\/>))<\/pair>){1,4})<\/Qubits>$/
-
-  LIST_PATTERN = Regexp.new /^(<pair>((<qz\/>)|(<qo\/>))((<qz\/>)|(<qo\/>))<\/pair>)/
-  # match 2 and 5
-
+  def self.validate_substacks_count(substacks)
+    raise ModelCreateError, "Qubit on stack should have 1 - 4 substacks, not #{!substacks ? "be nil" : substacks.size}" if !substacks || substacks.size == 0 or substacks.size > 4
+  end
+ 
   def initialize(in_string)
-    @value = check_and_return_value(PATTERN,in_string,
-      lambda { |m| QubitDescriptorModel::parse_list m})
+    qpp = QubitPatternParser.new in_string
+    @value = qpp.parsed_value
   end
 
   def length
@@ -17,27 +16,4 @@ class QubitDescriptorModel < AbstractDescriptorModel
   def substack_labels
     @value.collect {|v| "#{v[0]}#{v[1]}"}
   end
-
-
-  def self.parse_list(qubit_string)
-    raise InvalidInput, "Must have qubit indicators" if !qubit_string or qubit_string.length == 0
-    r = values_to_list qubit_string, LIST_PATTERN  do |rval,md|
-      elem = [self.translate_qubit(md[2]), self.translate_qubit(md[5])]
-      raise InvalidInput, "#{elem} duplicated in qubit" if rval.include? elem
-      rval << elem
-    end
-
-    raise InvalidInput, qubit_string if r.length > 4
-
-    raise InvalidInput, qubit_string if r.length == 0 and qubit_string and qubit_string.length > 0
-    r
-  end
-
-  def self.translate_qubit(single_qubit)
-   case single_qubit
-   when "<qz/>" then 0
-   when "<qo/>" then 1
-   else raise InvalidInput, "Got #{single_qubit}, expecting one of '<qz/>' or '<qo/>'"
-   end
- end
 end
