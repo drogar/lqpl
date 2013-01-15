@@ -37,14 +37,12 @@ class LqplController < ApplicationController
       Application.application.quit_handler = ExitHandler.instance
     end
   
-  #:nocov:
     not_on_mac do
       { "the_menu.file_exit" => "file_exit",
         "the_menu.help_about" => "help_about"}.each do |k,v|
           add_listener :type => :action, :components => {k => v}
       end
     end
-    #:nocov:
   end
       
   set_file_menu_actions
@@ -74,7 +72,7 @@ class LqplController < ApplicationController
   end
 
   def help_about_action_performed
-    AboutController.instance.open
+    AboutController.instance.handle_about
   end
 
   def file_compile_action_performed
@@ -112,7 +110,6 @@ class LqplController < ApplicationController
   end
   
   def file_simulate_action_performed
-
     SimulateResultsController.instance.set_simulate_results(model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
     SimulateResultsController.instance.open
   end

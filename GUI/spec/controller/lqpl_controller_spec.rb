@@ -180,7 +180,7 @@ describe LqplController do
     it "should send 'set_data_from_lqpl_model' to sub1 and not to sub2" do
       @l.trim_button_action_performed
     end
-  end
+  end 
   
   # describe "file_compile_action_performed" do
   #     it "should setup the model messages" do

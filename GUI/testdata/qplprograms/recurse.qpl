@@ -1,0 +1,11 @@
+
+one_to_2::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = 1}
+     |1> => {c = one_to_2()}
+}
+
+main::() =
+{  a = one_to_2()}
