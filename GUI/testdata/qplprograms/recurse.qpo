@@ -1,0 +1,25 @@
+Compiler: Version=0.9.0
+main   Start
+EnScope
+    Call 0 one_to_2_fcdlbl0
+    Rename @c @a
+DeScope
+   EndProc
+one_to_2_fcdlbl0   Start
+EnScope
+    QLoad @q |0>
+    QApply 0 !Had @q
+    QPullup @q
+EnScope
+    Measure @q lbl2 lbl0 lbl1
+lbl0     QDiscard @q
+    CLoad 1
+    QMove @c
+    SwapD   
+lbl1     QDiscard @q
+    Call 0 one_to_2_fcdlbl0
+    SwapD   
+lbl2 DeScope
+DeScope
+    Return 0
+   EndProc

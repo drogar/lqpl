@@ -99,7 +99,7 @@ class AppStarter < GuiQuery
   # FEST will call this method for us before the test.
   #
   def executeInEDT
-    com.drogar.lqpl.Main.main([])
+    LqplController.instance.open #com.drogar.lqpl.Main.main([])
   end
 end
 

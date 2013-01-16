@@ -37,14 +37,12 @@ class LqplController < ApplicationController
       Application.application.quit_handler = ExitHandler.instance
     end
   
-  #:nocov:
     not_on_mac do
       { "the_menu.file_exit" => "file_exit",
         "the_menu.help_about" => "help_about"}.each do |k,v|
           add_listener :type => :action, :components => {k => v}
       end
     end
-    #:nocov:
   end
       
   set_file_menu_actions
@@ -74,7 +72,7 @@ class LqplController < ApplicationController
   end
 
   def help_about_action_performed
-    AboutController.instance.open
+    AboutController.instance.handleAbout(nil)
   end
 
   def file_compile_action_performed
@@ -112,7 +110,6 @@ class LqplController < ApplicationController
   end
   
   def file_simulate_action_performed
-
     SimulateResultsController.instance.set_simulate_results(model.recursion_spinner,StackTranslationController.instance.get_stack_translation)
     SimulateResultsController.instance.open
   end
@@ -146,12 +143,14 @@ class LqplController < ApplicationController
 
   def recursion_spinner_state_changed
     model.recursion_spinner = java.lang.Integer.new(view_model.recursion_spinner)
+    model.messages_text =  "Recursion Depth set to #{model.recursion_spinner}"
     enable_and_update true
   end
 
   def recursion_multiplier_spinner_state_changed
     model.recursion_multiplier_spinner = java.lang.Integer.new("#{view_model.recursion_multiplier_spinner}")
     lqpl_emulator_server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+    model.messages_text =  "Recursion Multiplier set to #{model.recursion_multiplier_spinner}"
     enable_and_update true
   end
   
@@ -165,6 +164,8 @@ class LqplController < ApplicationController
 
   def tree_depth_spinner_state_changed
     model.tree_depth_spinner = java.lang.Integer.new(view_model.tree_depth_spinner)
+    model.messages_text =  "Tree Depth set to #{model.tree_depth_spinner}"
+    update_view
     update_sub_model_data
   end
 

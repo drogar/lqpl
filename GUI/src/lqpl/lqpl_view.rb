@@ -9,6 +9,7 @@ class LqplView < ApplicationView
 
   map :view => "stepSpinner.model.value", :model => :step_spinner
   map :view => "recursionSpinner.model.value", :model => :recursion_spinner
+  map :view => "recursionMultiplierSpinner.model.value", :model => :recursion_multiplier_spinner
   map :view => "treeDepthSpinner.model.value", :model => :tree_depth_spinner
 
   map :view => "messagesTextArea.text", :model => :messages_text

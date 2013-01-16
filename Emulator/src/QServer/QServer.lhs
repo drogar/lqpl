@@ -44,7 +44,7 @@ defaultPort = "9502"
 
 
 defaultCallDepth :: Int
-defaultCallDepth = 1000
+defaultCallDepth = 1
 
 
 
