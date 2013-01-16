@@ -58,7 +58,7 @@ class AbstractDescriptorPainter
   end
   
   def paint_value(g,center)
-    draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+node_size)) 
+    draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+2*node_size)) 
   end
   
   alias :paint_model_at_point :paintModelAtPoint

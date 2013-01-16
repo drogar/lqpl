@@ -17,7 +17,8 @@ end
 
 
 def not_on_mac
-  yield if  !(RbConfig::CONFIG["host_os"] =~ /darwin/i)
+  testing = java.lang.System.get_property("com.drogar.testing.fest")
+  yield if  (!(RbConfig::CONFIG["host_os"] =~ /darwin/i)) || (testing && testing == "true")
 end
 #:nocov: 
 on_mac do

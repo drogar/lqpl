@@ -15,6 +15,7 @@ public class AboutDialog extends JDialog {
     private JLabel aboutDataLabel;
 
     public AboutDialog() {
+        setTitle("About LQPL");
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
