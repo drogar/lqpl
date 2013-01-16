@@ -14,10 +14,17 @@ Then /^the button "([\w\s]*)" should appear$/ do |button_text|
 end
 
 Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ do |spinner_label, spin_value|
-  theSpinner = spinner_for_label(spinner_label)
-  theSpinner.should_not == nil
-  theSpinner.should be_edt_visible
-  theSpinner.text.should == "#{spin_value}"
+  spinner = spinner_for_label(spinner_label)
+  spinner.should_not == nil
+  spinner.should be_edt_visible
+  spinner.text.should == "#{spin_value}"
+end
+
+
+Then /^the number spinner "([\w\s]*)" should appear$/ do |spinner_label|
+  spinner = spinner_for_label(spinner_label)
+  spinner.should_not == nil
+  spinner.should be_edt_visible
 end
 
 Then /^the frame "([\w\s]*)" should (be|not be) visible$/ do |frame_title,visible|
@@ -27,9 +34,9 @@ end
 
 Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frame_title|
   frame_ref=set_and_return_frame_fixture(frame_title)
-  theSpinner = spinner_for_label(spinner_label,frame_ref)
-  theSpinner.increment(count.to_i) if direction == "up"
-  theSpinner.decrement(count.to_i) if direction == "down"
+  spinner = spinner_for_label(spinner_label,frame_ref)
+  spinner.increment(count.to_i) if direction == "up"
+  spinner.decrement(count.to_i) if direction == "down"
   
 end
 

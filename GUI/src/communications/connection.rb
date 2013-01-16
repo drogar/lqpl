@@ -68,7 +68,7 @@ class Connection
     @my_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
     if @my_path
       #:nocov:
-      @my_path=@my_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
+      @my_path=@my_path[5,@my_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
       #:nocov:
     else
       @my_path = File.expand_path(File.dirname(__FILE__))+"/../../"

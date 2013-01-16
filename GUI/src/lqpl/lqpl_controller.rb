@@ -72,7 +72,7 @@ class LqplController < ApplicationController
   end
 
   def help_about_action_performed
-    AboutController.instance.handle_about
+    AboutController.instance.handleAbout(nil)
   end
 
   def file_compile_action_performed
@@ -143,12 +143,14 @@ class LqplController < ApplicationController
 
   def recursion_spinner_state_changed
     model.recursion_spinner = java.lang.Integer.new(view_model.recursion_spinner)
+    model.messages_text =  "Recursion Depth set to #{model.recursion_spinner}"
     enable_and_update true
   end
 
   def recursion_multiplier_spinner_state_changed
     model.recursion_multiplier_spinner = java.lang.Integer.new("#{view_model.recursion_multiplier_spinner}")
     lqpl_emulator_server_connection.send_set_depth_multiplier(model.recursion_multiplier_spinner)
+    model.messages_text =  "Recursion Multiplier set to #{model.recursion_multiplier_spinner}"
     enable_and_update true
   end
   
@@ -162,6 +164,8 @@ class LqplController < ApplicationController
 
   def tree_depth_spinner_state_changed
     model.tree_depth_spinner = java.lang.Integer.new(view_model.tree_depth_spinner)
+    model.messages_text =  "Tree Depth set to #{model.tree_depth_spinner}"
+    update_view
     update_sub_model_data
   end
 
