@@ -22,3 +22,4 @@ Manifest
 lqplcode/**/*.qpo
 lqplcode/*.qpo
 coverage
+no_dist
