@@ -1,33 +1,30 @@
-# 
-# Before do
-# 
-# end
-# 
-# After do
-# end
 
-# TODO - reconsider trying this (Around) again if there is a way to cleanly stop / start the 
-# system while testing.
-#
-# java_import java.awt.event.InputEvent
-# java_import java.awt.event.KeyEvent
+Before('@startit')do
+  start_up_lqpl
+end
 
-# Around do |sc, blk|
-# 
-#   runner = GuiActionRunner.execute(AppStarter.new)
-#   $robot = BasicRobot.robot_with_current_awt_hierarchy
-#   $qe_frame = FrameFixture.new($robot, "Quantum Emulator")
-#   blk.call
-#   $robot.press_modifiers(InputEvent::META_MASK)
-#   $robot.press_key(KeyEvent::VK_Q)
-#   $robot.release_key(KeyEvent::VK_Q)
-# #  $qe_frame.close
-#   
-#   $robot.clean_up
-#   $robot = nil
-# 
-#   $qe_frame = nil
-#   #LqplController.instance.close
-#   runner = nil
-#   sleep 2
-# end
+Before('@compile')do
+  start_up_lqpl
+  click_menu_item(['File', 'Compile'])
+end
+
+Before('@load_coin')do
+  start_up_lqpl
+  click_menu_item(['File', 'Load'])
+  approve_file('GUI/testdata/qplprograms','coin.reference.qpo')
+end
+
+Before('@load_recurse')do
+  start_up_lqpl
+  click_menu_item(['File', 'Load'])
+  approve_file('GUI/testdata/qplprograms','recurse.qpo')
+end
+
+After do
+  $qe_frame.close
+  $qe_frame = nil
+  $robot.clean_up
+  $robot = nil
+end
+
+

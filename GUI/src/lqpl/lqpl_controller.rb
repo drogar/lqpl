@@ -52,7 +52,7 @@ class LqplController < ApplicationController
 
   def close
     all_controllers_dispose
-    file_exit_action_performed
+    ExitHandler.instance.close_servers
     super
   end
   
@@ -68,7 +68,7 @@ class LqplController < ApplicationController
   end
 
   def file_exit_action_performed
-    ExitHandler.instance.close_servers
+    close
   end
 
   def help_about_action_performed
@@ -77,7 +77,6 @@ class LqplController < ApplicationController
 
   def file_compile_action_performed
     chooser = JFileChooser.lqpl_source_file_opener
-    puts "running compile chooser"
     if chooser.show_open_dialog(self.my_frame) == JFileChooser::APPROVE_OPTION
       @cmp.compile_and_write_qpo chooser.get_selected_file.get_absolute_path
       model.messages_text = @cmp.success_or_fail_message(chooser.get_selected_file.name)

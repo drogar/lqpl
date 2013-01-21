@@ -1,21 +1,20 @@
+@load_coin
+
 Feature: We can load and run an assembled file at the server
 
   As a researcher
   I want the program allow me to choose a "*.qpo" program and load it to the server so I can execute it.
 
-	Background:
-	  When I select "Load" from the "File" menu
-    And I load "coin.reference.qpo" from the project directory "GUI/testdata/qplprograms"
     
   Scenario:
     Then the main frame's title should be "Quantum Emulator - coin.reference.qpo"
     Then the button "Step" should appear
     Then the button "Go" should appear
     Then the button "Trim" should appear
-    Then the number spinner "Step Size" should appear
-    Then the number spinner "Recursion Depth" should appear
-    Then the number spinner "Recursion Multiplier" should appear
-    Then the number spinner "Tree Depth" should appear
+    Then the number spinner "Step Size" should appear and have value "1"
+    Then the number spinner "Recursion Depth" should appear and have value "1"
+    Then the number spinner "Recursion Multiplier" should appear and have value "10"
+    Then the number spinner "Tree Depth" should appear and have value "4"
     Then the frame "Quantum Stack" should be visible
 
   Scenario:

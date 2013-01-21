@@ -1,3 +1,4 @@
+@startit
 Feature: we can cancel the compile and open dialogs
   As we may have selected the wrong dialog, we need to be able to cancel them.
 

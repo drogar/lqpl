@@ -1,3 +1,4 @@
+@startit
 Feature: We can see a dialog with the version and a link to the website
   As a researcher
   I want the program to identify itself
