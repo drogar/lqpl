@@ -46,22 +46,7 @@ case Monkeybars::Resolver.run_location
 end
 #:nocov:
 
-class Runnable
-  def initialize(explicit_block=nil, &block)
-    @block = explicit_block || block
-  end
-  def run
-    @block.call
-  end
-end
 
-def on_edt(&task)
-  if javax.swing.SwingUtilities.event_dispatch_thread?
-    javax.swing.SwingUtilities.invoke_later Runnable.new(task)
-  else
-    javax.swing.SwingUtilities.invoke_and_wait Runnable.new(task)
-  end
-end
 
 require 'monkeybars'
 
@@ -111,7 +96,7 @@ java_import java.awt.Point
 end
 
 
-%w{translate_line_ends drawing duck_matcher}.each do |f|
+%w{translate_line_ends drawing duck_matcher swing_runner}.each do |f|
   require "utility/"+f
 end
 
@@ -141,7 +126,9 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
-on_edt do 
+
+
+SwingRunner::on_edt do 
   { ""=>%w{lqpl}, 
   "panels/" => %w{quantum_stack classical_stack dump executable_code stack_translation},
   "dialogs/" =>%w{simulate_results about}}.each do |k,v|

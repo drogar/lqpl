@@ -10,8 +10,8 @@ module ComponentMethods
   
   def change_spinner_for_label(label_text,count,dir,frm=$qe_frame)
     spinner = spinner_for_label(label_text,frm)
-    spinner.increment(count.to_i) if dir == "up"
-    spinner.decrement(count.to_i) if dir == "down"
+    spinner.increment(count) if dir == "up"
+    spinner.decrement(count) if dir == "down"
     spinner
   end
   

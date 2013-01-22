@@ -6,7 +6,9 @@ require 'src/panels/classical_stack/classical_stack_model'
 
 describe ClassicalStackController do
   before(:each) do
-    @c = ClassicalStackController.instance
+    SwingRunner::on_edt do
+      @c = ClassicalStackController.instance
+    end
   end
   it "should raise an error when created with junk" do
     expect { @c.set_classical_stack_data("junk")}. to raise_error   ParserError, /junk/
@@ -16,8 +18,10 @@ describe ClassicalStackController do
     @c.update_on_lqpl_model_trim.should be_false
   end
   it "should create a classical stack when given the correct input" do
-    @c.set_classical_stack_data("<Classical>"+cint(-27)+CIBT+cint(40)+CIBF+"</Classical>")
-    @c.get_classical_stack_data.should == "<html>-27<br />true<br />40<br />false</html>"
+    SwingRunner::on_edt do
+      @c.set_classical_stack_data("<Classical>"+cint(-27)+CIBT+cint(40)+CIBF+"</Classical>")
+      @c.get_classical_stack_data.should == "<html>-27<br />true<br />40<br />false</html>"
+    end
   end
   # it "should ask the sc for the classical stack when given a depth and recursion" do
   #     sc = double('server_connection')

@@ -32,7 +32,7 @@ describe AbstractDescriptorPainter do
   end
   describe "drawing items" do
     before :each do
-      @d=DoDrawing.new
+      @d=DrawingExtensions.new
     end
     it "should draw the name to the left of the point with paint_name" do
       @adp.paint_name(@d.gc,Point.new(30,20)) # subtracts node size from x rl point is 20,20
@@ -77,7 +77,7 @@ describe ClassicalDescriptorPainter do
       @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>")
       @sd.model_element= m
       
-      @d=DoDrawing.new
+      @d=DrawingExtensions.new
     end
     
     it "should draw the name to the left of the point with paint_model_at_point" do

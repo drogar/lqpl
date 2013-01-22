@@ -6,7 +6,9 @@ require 'src/dialogs/simulate_results/simulate_results_model'
 
 describe SimulateResultsController do
   before(:each) do
-    @c = SimulateResultsController.instance
+    SwingRunner::on_edt do
+      @c = SimulateResultsController.instance
+    end
     @st = double("StackTranslation")
     @st.stub(:reverse_lookup, :nil? => false) do |val|
         case val
@@ -22,8 +24,10 @@ describe SimulateResultsController do
   end
 
   it "should create a results set when given the correct input" do
-    @c.set_simulate_data(TWOELTS,@st)
-    @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
+    SwingRunner::on_edt do
+      @c.set_simulate_data(TWOELTS,@st)
+      @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
+    end
   end
 
 end

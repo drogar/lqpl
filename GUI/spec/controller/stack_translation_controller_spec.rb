@@ -6,11 +6,15 @@ require 'src/panels/stack_translation/stack_translation_model'
 
 describe StackTranslationController do
   before(:each) do
-    @d = StackTranslationController.instance
+    SwingRunner::on_edt do
+      @d = StackTranslationController.instance
+    end
   end
   it "should accessibly store the dump text in the model" do
-    @d.set_stack_translation_data(P1)
-    @d.get_stack_translation_text.should == "<html><ol><li>p=>1</li></ol></html>"
+    SwingRunner::on_edt do
+      @d.set_stack_translation_data(P1)
+      @d.get_stack_translation_text.should == "<html><ol><li>p=>1</li></ol></html>"
+    end
   end
   
   it "should return false for update_on_lqpl_model_trim" do

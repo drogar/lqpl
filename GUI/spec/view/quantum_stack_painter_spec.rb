@@ -16,7 +16,7 @@ describe QuantumStackPainter do
       end
     end
     
-    @d=DoDrawing.new
+    @d=DrawingExtensions.new
     qh = QuantumStackModel.new
     qh.stack_translation = st
     qh.quantum_stack = QSQBHAD

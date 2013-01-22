@@ -1,28 +1,6 @@
 require 'spec/spec_helper'
 
-class AppStarter < GuiQuery
-  # Launch the app in the Event Dispatch Thread (EDT),
-  # which is the thread reserved for user interfaces.
-  # FEST will call this method for us before the test.
-  #
-  def executeInEDT
-    LqplController.instance
-  end
-end
 
-class Loader < GuiQuery
-  # Launch the app in the Event Dispatch Thread (EDT),
-  # which is the thread reserved for user interfaces.
-  # FEST will call this method for us before the test.
-  #
-  def initialize(lqplinst)
-    super()
-    @l = lqplinst
-  end
-  def executeInEDT
-    @l.load()
-  end
-end
 
 class Drunner < GuiQuery
   # Launch the app in the Event Dispatch Thread (EDT),
@@ -39,17 +17,17 @@ class Drunner < GuiQuery
   end
 end
 
-# FailOnThreadViolationRepaintManager.install()
-# 
-# robot = BasicRobot.robot_with_current_awt_hierarchy
-      
 describe LqplController do
   before :each do
-    @l = GuiActionRunner.execute(AppStarter.new) #LqplController.instance
+    SwingRunner::on_edt do
+      @l = LqplController.instance
+    end
   end
   describe "load" do
     before (:each) do
-      GuiActionRunner.execute(Loader.new(@l)) 
+      SwingRunner::on_edt do
+        @l.load()
+      end
     end
     it "sets up the cmp and ensures it is connected" do
       @l.cmp.should_not be_nil
@@ -73,15 +51,19 @@ describe LqplController do
   end
   describe "file_exit" do
     it "closes the server connection" do
-      GuiActionRunner.execute(Loader.new(@l)) 
-      @l.file_exit_action_performed()
+      SwingRunner::on_edt do
+        @l.load
+        @l.file_exit_action_performed()
+      end
       @l.cmp.should_not be_connected
       @l.lqpl_emulator_server_connection(false).should_not be_connected
     end
   end
   describe "all_controllers_dispose" do
     before :each do
-      GuiActionRunner.execute(Loader.new(@l)) 
+      SwingRunner::on_edt do
+        @l.load()
+      end 
       d1=double("dialog1")
       d1.should_receive(:dispose)
       d2=double("dialog2")
@@ -103,7 +85,9 @@ describe LqplController do
   end
   describe "close" do
     before :each do
-      GuiActionRunner.execute(Loader.new(@l)) 
+      SwingRunner::on_edt do
+        @l.load()
+      end 
       d1=double("dialog1")
       d1.should_receive(:dispose)
       d2=double("dialog2")
@@ -178,21 +162,10 @@ describe LqplController do
       @l.sub_controllers = []
     end
     it "should send 'set_data_from_lqpl_model' to sub1 and not to sub2" do
-      @l.trim_button_action_performed
+      SwingRunner::on_edt do
+        @l.trim_button_action_performed
+      end
     end
   end 
   
-  # describe "file_compile_action_performed" do
-  #     it "should setup the model messages" do
-  #       GuiActionRunner.execute(Drunner.new(@l)) 
-  #       #fc = WindowFinder.findDialog("dialog1").with_timeout(200).using(robot)
-  #       fc =JFileChooserFixture.new(robot)#, @l.qpl_dialog) #   $qe_frame.file_chooser()
-  # 
-  #       #fc.select_file_in_project_directory("",file)
-  # 
-  #       fc.cancel()
-  #       #fc.button(JButtonMatcher.with_text("Cancel")).click
-  #       @l.model.messages_text.should_not be_nil
-  #     end
-  #   end
 end

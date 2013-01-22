@@ -5,7 +5,6 @@ Feature: We can load and run an assembled file at the server
   As a researcher
   I want the program allow me to choose a "*.qpo" program and load it to the server so I can execute it.
 
-    
   Scenario:
     Then the main frame's title should be "Quantum Emulator - coin.reference.qpo"
     Then the button "Step" should appear

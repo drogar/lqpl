@@ -21,10 +21,10 @@ Then /^the frame "([\w\s]*)" should (be|not be) visible$/ do |frame_title,visibl
 end
 
 
-When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frame_title|
+When /^I click the button "([\w\s]*)" (\d+) times? on the frame "([\w\s]*)"$/ do |button_text, count, frame_title|
   frame_ref=set_and_return_frame_fixture(frame_title)
   theButton = frame_ref.button(JButtonMatcher.with_text button_text)
-  count.to_i.times {|i| theButton.click}
+  count.times {|i| theButton.click}
 
 end
 

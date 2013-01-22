@@ -1,20 +1,8 @@
 require 'spec/spec_helper'
 
-class DoDrawing
-  include Drawing
-  attr_accessor :gc
-  attr_accessor :bi
-  def initialize
-    @bi = BufferedImage.new(500,500,BufferedImage::TYPE_4BYTE_ABGR)
-    @gc = @bi.create_graphics
-  end
-end
-
-
-
 describe Drawing do
   before :each do
-    @d = DoDrawing.new
+    @d = DrawingExtensions.new
   end
   describe "mid_point" do
     it "returns (10,10) for points (0,0) and 20,20" do

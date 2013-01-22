@@ -53,5 +53,5 @@ java_import java.util.regex.Pattern
 
 java_import java.awt.Component
 
-require 'support/component_query'
+require 'component_query'
 
