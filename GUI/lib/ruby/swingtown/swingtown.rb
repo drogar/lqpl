@@ -214,17 +214,6 @@ module Swingtown
       end
 
 
-      def add_ordered_components *components
-        components.each do |c|
-          self.add c
-        end
-
-        components.each do |c|
-          self.moveToFront c
-        end
-
-
-      end
     end
     # A panel  wrapper
     # See http://xxxxxxxx to understand Swing panels
@@ -247,7 +236,7 @@ module Swingtown
 
     # A frame  wrapper
     # See http://xxxxxxxx to understand Swing frames
-    class Frame  < Java::javax::swing::JFrame
+    class STFrame  < Java::javax::swing::JFrame
       attr_accessor :minimum_height, :minimum_width
       
       def initialize(title)
