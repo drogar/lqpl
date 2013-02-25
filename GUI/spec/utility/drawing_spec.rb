@@ -1,23 +1,11 @@
 require 'spec/spec_helper'
 
-class DoDrawing
-  include Drawing
-  attr_accessor :gc
-  attr_accessor :bi
-  def initialize
-    @bi = BufferedImage.new(500,500,BufferedImage::TYPE_4BYTE_ABGR)
-    @gc = @bi.create_graphics
-  end
-end
-
-
-
 describe Drawing do
   before :each do
-    @d = DoDrawing.new
+    @d = DrawingExtensions.new
   end
   describe "mid_point" do
-    it "returns (10,10) for points (0,0) and 20,20" do
+    it "returns (10,10) for input points (0,0) and 20,20" do
       @d.mid_point(Point.new(0,0),Point.new(20,20)).should == Point.new(10,10)
     end
   end
@@ -27,7 +15,7 @@ describe Drawing do
       s.width.should == 15.0
       s.height.should > 15.0
     end
-    it "returns a size for an attributed string of w=9, h>9" do
+    it "returns a size for an attributed string 'ab' of w=9, h>9" do
       ab = java.text.AttributedString.new("ab");
       ab.add_attribute(java.text.AttributedCharacterIterator::Attribute::LANGUAGE, 
           java.util.Locale.new("en"))

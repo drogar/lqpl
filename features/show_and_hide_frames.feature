@@ -1,11 +1,9 @@
+@load_coin
+
 Feature: We can show and hide the various frames
 
   As a researcher
   I want the program allow me to show only what i want.
-
-	Background:
-	  When I select "Load" from the "File" menu
-    And I load "coin.reference.qpo" from the project directory "GUI/testdata/qplprograms"
 
   Scenario:
     Then the frame "Executing Code" should be visible

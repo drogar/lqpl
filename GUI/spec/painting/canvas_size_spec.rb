@@ -243,9 +243,9 @@ describe CanvasSize do
       end
       it "updates the measures if the other has bigger ones" do
         @smaller.max_of_each_dimension!(@bigger)
-        @smaller.left_width.should == 30
-        @smaller.right_width.should == 30
-        @smaller.height.should == 30
+        @smaller.left_width.should == @bigger.left_width
+        @smaller.right_width.should == @bigger.right_width
+        @smaller.height.should == @bigger.height
       end
       it "stays the same if the other has smaller ones" do
         l = @bigger.left_width

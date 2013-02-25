@@ -84,9 +84,9 @@ describe QuantumStackModel do
     end
     it "should have the same number of substacks as the length of the descriptor" do
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-      @qs.substacks.length.should == 1
+      @qs.should have(1).substacks
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/><bottom/><bottom/></substacks><Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical></Qstack>"
-      @qs.substacks.length.should == 3
+      @qs.should have(3).substacks
     end
   end
   it "should raise an exception if the stack is assigned before the translation" do

@@ -1,3 +1,5 @@
+@load_recurse
+
 Feature: We can change the call depth and multiplier
   The call depth controls how many calls the emulator will do before specifying the 
   result as undefined. The deeper the call depth, the better the approximation of
@@ -8,9 +10,6 @@ Feature: We can change the call depth and multiplier
   just displaying the 20th level where each one is a single call allowed.
   The GUI allows complete control over both these settings
 
-  Background:
-	  When I select "Load" from the "File" menu
-    And I load "recurse.qpo" from the project directory "GUI/testdata/qplprograms"
 
   Scenario: I can set the multiplier to 1 by typing in the field
     Given I type "1" in the "Recursion Multiplier" field

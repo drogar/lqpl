@@ -47,7 +47,9 @@ end
 #:nocov:
 
 
+
 require 'monkeybars'
+
 require 'application_controller'
 require 'application_view'
 
@@ -94,7 +96,7 @@ java_import java.awt.Point
 end
 
 
-%w{translate_line_ends drawing duck_matcher}.each do |f|
+%w{translate_line_ends drawing duck_matcher swing_runner}.each do |f|
   require "utility/"+f
 end
 
@@ -124,14 +126,18 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
-{ ""=>%w{lqpl}, 
+
+
+SwingRunner::on_edt do 
+  { ""=>%w{lqpl}, 
   "panels/" => %w{quantum_stack classical_stack dump executable_code stack_translation},
   "dialogs/" =>%w{simulate_results about}}.each do |k,v|
     v.each do |f|   
       require k+f+"/"+f+"_view" 
       require k+f+"/"+f+"_model" 
-      require k+f+"/"+f+"_controller" 
+      require k+f+"/"+f+"_controller"
     end
+  end
 end
 
 require "exit_handler"

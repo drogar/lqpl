@@ -18,21 +18,15 @@ class LqplMenu
 
   def initialize(parent)
     mbar = JMenuBar.new
-
-    menu_file = init_file_menu
-
-    menu_view =  init_view_menu
-
-    mbar.add(menu_file);
-    mbar.add(menu_view);
-
+    init_file_menu mbar
+    init_view_menu mbar
     init_help_menu mbar
 
     parent.set_menu_bar(mbar);
     mbar.visible = true;
   end
   
-  def init_file_menu
+  def init_file_menu(mbar)
     menu_file = JMenu.new("File")
     @file_load = JMenuItem.new("Load");
     @file_compile =  JMenuItem.new("Compile");
@@ -47,10 +41,10 @@ class LqplMenu
       menu_file.add(@file_exit)
     end
     #:nocov:
-    menu_file
+    mbar.add(menu_file)
   end
 
-  def init_view_menu
+  def init_view_menu(mbar)
     menu_view = JMenu.new("View");
     @view_classical_stack =  JMenuItem.new("Hide Classical Stack");
     @view_dump =  JMenuItem.new("Hide Dump");
@@ -66,7 +60,7 @@ class LqplMenu
     menu_view.add(@view_dump);
     menu_view.add(@view_executing_code);
     menu_view.add(@view_stack_translation);
-    menu_view
+    mbar.add(menu_view)
   end
   
     #:nocov:

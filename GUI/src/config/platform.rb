@@ -20,10 +20,11 @@ def not_on_mac
   testing = java.lang.System.get_property("com.drogar.testing.fest")
   yield if  (!(RbConfig::CONFIG["host_os"] =~ /darwin/i)) || (testing && testing == "true")
 end
-#:nocov: 
+
 on_mac do
   testing = java.lang.System.get_property("com.drogar.testing.fest")
   if !testing or testing != "true"
     java.lang.System.set_property("apple.laf.useScreenMenuBar", "true")
   end
 end
+#:nocov: 

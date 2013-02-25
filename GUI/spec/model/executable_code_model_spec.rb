@@ -147,7 +147,7 @@ describe CodePointer do
     end
   end
   describe "mangle_to_selection_key" do
-    it "should return method--linenumber" do
+    it "should return <methodname>--<linenumber>" do
       @cp = CodePointer.new("<pair><string>main</string><int>17</int></pair>")
       @cp.mangle_to_selection_key.should == "main--17"
     end

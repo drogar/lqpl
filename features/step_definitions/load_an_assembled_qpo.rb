@@ -13,37 +13,18 @@ Then /^the button "([\w\s]*)" should appear$/ do |button_text|
   theButton.should be_edt_visible
 end
 
-Then /^the number spinner "([\w\s]*)" should appear and have value "([\d]*)"$/ do |spinner_label, spin_value|
-  spinner = spinner_for_label(spinner_label)
-  spinner.should_not == nil
-  spinner.should be_edt_visible
-  spinner.text.should == "#{spin_value}"
-end
 
-
-Then /^the number spinner "([\w\s]*)" should appear$/ do |spinner_label|
-  spinner = spinner_for_label(spinner_label)
-  spinner.should_not == nil
-  spinner.should be_edt_visible
-end
 
 Then /^the frame "([\w\s]*)" should (be|not be) visible$/ do |frame_title,visible|
   frame_fixture = set_and_return_frame_fixture(frame_title)
   sleep_until_visibility(5,frame_fixture,visible).should be_true
 end
 
-Then /^I click the spinner "([\w\s]*)" (up|down) (\d)* times? on the frame "([\w\s]*)"$/ do |spinner_label, direction, count, frame_title|
-  frame_ref=set_and_return_frame_fixture(frame_title)
-  spinner = spinner_for_label(spinner_label,frame_ref)
-  spinner.increment(count.to_i) if direction == "up"
-  spinner.decrement(count.to_i) if direction == "down"
-  
-end
 
-When /^I click the button "([\w\s]*)" (\d)* times? on the frame "([\w\s]*)"$/ do |button_text, count, frame_title|
+When /^I click the button "([\w\s]*)" (\d+) times? on the frame "([\w\s]*)"$/ do |button_text, count, frame_title|
   frame_ref=set_and_return_frame_fixture(frame_title)
   theButton = frame_ref.button(JButtonMatcher.with_text button_text)
-  count.to_i.times {|i| theButton.click}
+  count.times {|i| theButton.click}
 
 end
 

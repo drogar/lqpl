@@ -8,21 +8,13 @@ end
 
 Given /^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/ do |mitem, menu|
 
-  menu_item =  $qe_frame.menu_item_with_path [menu, mitem].to_java(:string)
-  menu_item.should_not be_nil
-  menu_item.click()
+  click_menu_item([menu, mitem])
   sleep 0.25
 end
 
 
 And /^I load "([\w\.]*?\....)" from the project directory "([\w\s\/]*)"$/ do |file, dir|
-
-  fc = JFileChooserFixture.new($robot) #   $qe_frame.file_chooser()
-
-  fc.select_file_in_project_directory(dir,file)
-
-  fc.approve
-
+  approve_file(dir,file)
 end
 
 

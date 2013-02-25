@@ -17,15 +17,13 @@ describe Connection do
       @c._make_connection.should be_false
     end
   end
-  describe "_start_up_the_executable_in_a_process" do
+  describe "connect" do
     it "should raise an error if the executable is not found" do
       @c.port = 768
       expect {
         @c.connect
       }.to raise_error ServerProcessNotFound, /no process/
     end
-  end
-  describe "connect" do
     it "should successfully connect to the compiler server on 7683" do
       @c.port = 7683
       @c.connect_to = "lqpl-compiler-server"

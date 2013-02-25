@@ -6,22 +6,16 @@ require 'src/panels/dump/dump_model'
 
 describe DumpController do
   before(:each) do
-    @c = DumpController.instance
+    SwingRunner::on_edt do
+      @c = DumpController.instance
+    end
   end
   it "should accessibly store the dump text in the model" do
-    @c.set_dump_data("<Dump>"+DCALL+"</Dump>")
-    @c.get_dump_data.should == "<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>"
+    SwingRunner::on_edt do
+      @c.set_dump_data("<Dump>"+DCALL+"</Dump>")
+      @c.get_dump_data.should == "<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>"
+    end
   end
   
-  it "should return true for update_on_lqpl_model_trim" do
-    @c.update_on_lqpl_model_trim.should be_true
-  end
-  # it "should ask the sc for the dump when given a depth and recursion" do
-  #     sc = double('server_connection')
-  #     sc.should_receive(:connected?).and_return(true)
-  #     sc.should_receive(:get_dump).and_return("<Dump></Dump>")
-  # 
-  #     @c.lqpl_emulator_server_connection=sc
-  #     @c.set_dump("5","4")
-  #   end
+  specify {@c.update_on_lqpl_model_trim.should be_true}
 end
