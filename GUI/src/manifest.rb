@@ -81,9 +81,17 @@ when Monkeybars::Resolver::IN_JAR_FILE
 end
 
 
-%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter JTextArea JScrollPane}.each do |cfile|
+%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter JTextArea JScrollPane BoxLayout}.each do |cfile|
   java_import "javax.swing."+cfile
 end
+
+# for swinging
+add_to_load_path "../lib/ruby/swingtown"
+require 'swingtown'
+include  Swingtown::Core
+
+
+# end for swinging
 
 java_import com.drogar.lqpl.qstack.Painter
 
@@ -118,6 +126,10 @@ end
 %w{lqpl_emulator_server_connection compiler_server_connection}.each do |f|
   require "communications/"+f
 end
+%w{stack_translation}.each do |a_form|
+  require "forms/#{a_form}_form"
+end
+
 %w{abstract classical data qubit value zero}.each do |rf|
   require "panels/quantum_stack/descriptor/#{rf}_descriptor_model"
   require "panels/quantum_stack/descriptor/#{rf}_descriptor_painter"
