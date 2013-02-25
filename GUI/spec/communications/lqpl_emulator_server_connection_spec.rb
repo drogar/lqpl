@@ -58,10 +58,10 @@ describe LqplEmulatorServerConnection do
     specify {@sc.send_set_depth_multiplier.should =~ /reset/}
     specify {@sc.do_step.should =~ /Stepped/}
     specify {@sc.do_step(5).should =~ /Stepped/}
-    specify {sc.do_run.should =~ /executed/}
+    specify {@sc.do_run.should =~ /executed/}
     specify {@sc.do_trim.should =~ /trimmed/}
     it "steps through a program and gives a different status when at the end" do
-      @sc.do_step(40).should =~ /executed/}
+      @sc.do_step(40).should =~ /executed/
     end
     it "should allow a step or another run after a run and stil return executed" do
       @sc.do_run
