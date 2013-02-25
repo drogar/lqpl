@@ -1,23 +1,18 @@
   
-class StackTranslationForm < STFrame
+class StackTranslationForm < ScrollableLabel
    
   attr_accessor :stack_translation_text
   
   def initialize()
-    super()
-    self.title = "Stack Translation"
-    self.bounds = Rectangle.new(10, 740, 400, 150)
-    @stack_translation = Label.new("")
-    scrollpane = ScrollPane.new(@stack_translation)
-    self.content_pane = scrollpane
+    super("Stack Translation",Rectangle.new(10, 740, 400, 150))
   end
     
   def stack_translation_text=(new_text)
-    @stack_translation.text = new_text
+    self.the_scrolling_label.text = new_text
   end
   
   def stack_translation_text
-    @stack_translation.text
+    self.the_scrolling_label.text
   end
   
 end

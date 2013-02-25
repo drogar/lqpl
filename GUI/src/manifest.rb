@@ -126,6 +126,11 @@ end
 %w{lqpl_emulator_server_connection compiler_server_connection}.each do |f|
   require "communications/"+f
 end
+
+%w{scrollable_label}.each do |generic_form|
+  require "forms/generic/#{generic_form}"
+end
+
 %w{stack_translation}.each do |a_form|
   require "forms/#{a_form}_form"
 end
