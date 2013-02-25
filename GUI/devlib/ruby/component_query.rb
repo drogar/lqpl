@@ -46,8 +46,6 @@ end
 
 module EDTQuery
   
-
-  
   define_edt_query :visible?
   define_edt_query :enabled?
   define_edt_query :title

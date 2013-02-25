@@ -55,22 +55,13 @@ describe LqplEmulatorServerConnection do
     after :all do
       @sc.close_down if @sc
     end
-    it "allows depth multiples to be set" do
-      @sc.send_set_depth_multiplier.should =~ /reset/
-    end
-    it "steps through a program" do
-      @sc.do_step.should =~ /Stepped/
-      @sc.do_step(5).should =~ /Stepped/
-    end
+    specify {@sc.send_set_depth_multiplier.should =~ /reset/}
+    specify {@sc.do_step.should =~ /Stepped/}
+    specify {@sc.do_step(5).should =~ /Stepped/}
+    specify {sc.do_run.should =~ /executed/}
+    specify {@sc.do_trim.should =~ /trimmed/}
     it "steps through a program and gives a different status when at the end" do
-      @sc.do_step(40).should =~ /executed/
-    end
-    it "runs a program and gets the status 'executed'" do
-      @sc.do_run.should =~ /executed/
-    end
-
-    it "trims a stack and gets the status 'trimmed'" do
-      @sc.do_trim.should =~ /trimmed/
+      @sc.do_step(40).should =~ /executed/}
     end
     it "should allow a step or another run after a run and stil return executed" do
       @sc.do_run
@@ -89,27 +80,12 @@ describe LqplEmulatorServerConnection do
     after :all do
       @sc.close_down if @sc
     end
-    it "returns the qstack" do
-      @sc.get_qstack.should =~ /<Qstack/
-    end
-    it "returns the classical_stack" do
-      @sc.get_classical_stack.should =~ /<Classical/
-    end
-    it "returns the dump" do
-      @sc.get_dump.should =~ /<Dump/
-    end
-    it "returns the code pointer" do
-      @sc.code_pointer.should =~ /<pair/
-    end
-    it "returns the code" do
-      @sc.loaded_code.should =~ /<Code/
-    end
-    it "returns the stack translation" do
-      @sc.get_stack_translation.should =~ /<MMap/
-    end
-    it "returns a simulation" do
-      @sc.get_simulate_results.should =~ /<Simulated><double/
-    end
-
+    specify {@sc.get_qstack.should =~ /<Qstack/}
+    specify {@sc.get_classical_stack.should =~ /<Classical/}
+    specify {@sc.get_dump.should =~ /<Dump/}
+    specify {@sc.code_pointer.should =~ /<pair/}
+    specify {@sc.loaded_code.should =~ /<Code/}
+    specify {@sc.get_stack_translation.should =~ /<MMap/}
+    specify {@sc.get_simulate_results.should =~ /<Simulated><double/}
   end
 end

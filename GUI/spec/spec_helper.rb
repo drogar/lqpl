@@ -14,7 +14,9 @@ SimpleCov.at_exit do
   status= $!.is_a?(::SystemExit) ? $!.status : 0
   SimpleCov.result.format!
   java.lang.System.err.println "SimpleCov report generated, covered #{SimpleCov.result.covered_lines} lines of #{SimpleCov.result.total_lines} for a coverage of %#{SimpleCov.result.covered_percent}."
-  LqplController.instance.close
+  SwingRunner::on_edt do
+    LqplController.instance.close
+  end
   java.lang.System.exit(status)
 end
 

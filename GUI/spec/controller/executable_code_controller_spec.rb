@@ -7,7 +7,5 @@ describe ExecutableCodeController do
       @c = ExecutableCodeController.instance
     end
   end
-  it "should return false for update_on_lqpl_model_trim" do
-    @c.update_on_lqpl_model_trim.should be_false
-  end
+  specify {@c.update_on_lqpl_model_trim.should be_false}
 end

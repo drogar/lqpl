@@ -23,30 +23,28 @@ describe LqplController do
       @l = LqplController.instance
     end
   end
-  describe "load" do
+  describe "once loaded" do
     before (:each) do
       SwingRunner::on_edt do
         @l.load()
       end
     end
-    it "sets up the cmp and ensures it is connected" do
-      @l.cmp.should_not be_nil
-      @l.cmp.should be_connected
+    
+    specify {@l.should have(5).sub_controllers}
+    specify {@l.should have(2).dialogs}
+    context "sub_controllers" do
+      specify {@l.sub_controllers.compact.should have(5).non_nil_items}
     end
-    it "ensures the server connection is connected" do
-      @l.lqpl_emulator_server_connection.should be_connected
+    context "dialogs" do
+      specify {@l.dialogs.compact.should have(2).items}
     end
-    it "sets up the subcontrollers" do
-      @l.sub_controllers.size.should == 5
+    
+    context "the compiler server" do
+      specify {@l.cmp.should_not be_nil}
+      specify {@l.cmp.should be_connected}
     end
-    it "sets each sub controller to a non-nil value" do
-        @l.sub_controllers.each { |c|   c.should_not be_nil }
-    end
-    it "sets up the dialogs" do
-      @l.dialogs.size.should == 2
-    end
-    it "sets each dialog to a non-nil value" do
-      @l.dialogs.each { |d|  d.should_not be_nil }
+    context "the emulator server" do
+      specify {@l.lqpl_emulator_server_connection.should be_connected}
     end
   end
   describe "file_exit" do
