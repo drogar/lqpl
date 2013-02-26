@@ -19,7 +19,7 @@ module Swingtown
       base.extend(MiG::ClassMethods)
     end
 
-    def mig_layout layout_spec
+    def mig_layout(layout_spec)
      Java::net::miginfocom::swing::MigLayout.new layout_spec
     end
 
@@ -58,14 +58,14 @@ module Swingtown
     end
 
     class ImageIcon
-      def self.load  image_path 
+      def self.load(image_path) 
         javax.swing.ImageIcon.new load_resource image_path
       end
     end
 
 
     class GroupLayout
-      def self.get content_pane
+      def self.get(content_pane)
         org.jdesktop.layout.GroupLayout.new content_pane 
       end
     end
@@ -111,7 +111,7 @@ module Swingtown
 
       @@default_font = java::awt.Font.new "Lucida Grande", 0, 12
 
-      def self.default_font= default_font
+      def self.default_font=(default_font)
         @@default_font = default_font
       end
 
@@ -140,7 +140,7 @@ module Swingtown
 
       @@default_font = java::awt.Font.new "Lucida Grande", 0, 12
 
-      def self.default_font= default_font
+      def self.default_font=(default_font)
         @@default_font = default_font
       end
 
@@ -156,11 +156,11 @@ module Swingtown
         yield self if block_given?
       end
 
-      def minimum_dimensions width, height
+      def minimum_dimensions(width, height)
         self.minimum_size = java::awt::Dimension.new( width, height)
       end
 
-      def prefered_dimensions width, height
+      def prefered_dimensions(width, height)
         self.preferred_size =  java::awt::Dimension.new( width, height)
         self.setPreferredSize  java::awt::Dimension.new( width, height)
       end
@@ -176,16 +176,16 @@ module Swingtown
         yield self if block_given?
       end
       
-      def background_color red, blue, green
+      def background_color(red, blue, green)
         self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
       end
 
-      def size width, height
+      def size(width, height)
         self.preferred_size =  java::awt::Dimension.new width, height
       end
 
 
-      def add_ordered_components *components
+      def add_ordered_components(*components)
         components.each do |c|
           self.add c
         end
@@ -197,6 +197,13 @@ module Swingtown
 
       end
     end
+    
+    class TabbedPane < javax::swing.JTabbedPane
+      def initialize(*args) 
+        super(*args)
+        yield self if block_given?
+      end
+    end
 
     class ScrollPane < javax::swing.JScrollPane
 
@@ -205,11 +212,11 @@ module Swingtown
         yield self if block_given?
       end
       
-      def background_color red, blue, green
+      def background_color(red, blue, green)
         self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
       end
 
-      def size width, height
+      def size(width, height)
         self.preferred_size =  java::awt::Dimension.new width, height
       end
 
@@ -224,11 +231,11 @@ module Swingtown
         yield self if block_given?
       end
       
-      def background_color red, blue, green
+      def background_color(red, blue, green)
         self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
       end
 
-      def size width, height
+      def size(width, height)
         self.preferred_size =  java::awt::Dimension.new  width, height
       end
     end
@@ -244,20 +251,20 @@ module Swingtown
         yield self if block_given?
       end
       
-      def initialize *args
+      def initialize(*args)
         super
         
       end
 
-      def define_minimum_size width, height
+      def define_minimum_size(width, height)
         self.minimum_size = java::awt::Dimension.new width, height 
       end
 
-      def minimum_height= height
+      def minimum_height=(height)
         define_minimum_size  @minimum_width.to_i, @minimum_height = height.to_i
       end
 
-      def minimum_width= width
+      def minimum_width=(width)
         define_minimum_size  @minimum_width = width.to_i, @minimum_height.to_i
       end
     end
