@@ -131,7 +131,7 @@ end
   require "forms/generic/#{generic_form}"
 end
 
-%w{classical_stack dump stack_translation}.each do |a_form|
+%w{classical_stack dump executable_code stack_translation}.each do |a_form|
   require "forms/#{a_form}_form"
 end
 
