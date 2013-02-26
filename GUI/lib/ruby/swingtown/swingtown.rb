@@ -135,7 +135,31 @@ module Swingtown
       end
     end
 
-
+    class Spinner < Java::javax.swing.JSpinner
+      def initialize
+        super
+      end
+      def self.spinner_with_label(text_for_label, container=nil)
+        spinner = Spinner.new
+        spinlab = spinner.make_my_label(text_for_label)
+        container.add(spinlab) if container
+        container.add(spinner) if container
+      end
+      def self.spinner_with_label_and_model(text_for_label,val, min, max, step,container=nil)
+        spinner = Spinner.new
+        spinner.model=SpinnerNumberModel.new(val,min,max,step)
+        
+        spinlab = spinner.make_my_label(text_for_label)
+        container.add(spinlab) if container
+        container.add(spinner) if container
+      end
+      def make_my_label(text_for_label)
+        spinlab = Label.new(text_for_label)
+        spinlab.label_for = spinner
+        spinlab
+      end
+    end
+    
     class TextField < Java::javax.swing.JTextField
 
       @@default_font = java::awt.Font.new "Lucida Grande", 0, 12
