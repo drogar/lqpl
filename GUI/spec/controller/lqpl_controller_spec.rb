@@ -23,7 +23,7 @@ describe LqplController do
       @l = LqplController.instance
     end
   end
-  describe "once loaded" do
+  describe "after load" do
     before (:each) do
       SwingRunner::on_edt do
         @l.load()

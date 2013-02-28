@@ -47,7 +47,7 @@ module Swingtown
       TRAILING
       VERTICAL
       WEST}.each do  |konst|
-       class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}"
+        class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}"
       end
     end
 
@@ -57,24 +57,18 @@ module Swingtown
       end
     end
 
-    class ImageIcon
-      def self.load(image_path) 
-        javax.swing.ImageIcon.new load_resource image_path
-      end
-    end
+    # class ImageIcon
+    #    def self.load(image_path) 
+    #      javax.swing.ImageIcon.new load_resource image_path
+    #    end
+    #  end
 
-
-    class GroupLayout
-      def self.get(content_pane)
-        org.jdesktop.layout.GroupLayout.new content_pane 
-      end
-    end
 
     # A button wrapper
     # See http://xxxxxxxx to understand Swing buttons
     class Button < Java::javax::swing::JButton
-      def initialize
-        super
+      def initialize(*args)
+        super(*args)
         yield self if block_given?
       end
     end
@@ -121,7 +115,7 @@ module Swingtown
 
       def initialize(text=nil)
         super
-        self.text = text.to_s
+        self.text = text.to_s if text
         self.font = Label.default_font
         yield self if block_given?
       end
@@ -139,6 +133,7 @@ module Swingtown
       def initialize
         super
       end
+      
       def self.spinner_with_label(text_for_label, container=nil)
         spinner = Spinner.new
         spinlab = spinner.make_my_label(text_for_label)
@@ -155,7 +150,7 @@ module Swingtown
       end
       def make_my_label(text_for_label)
         spinlab = Label.new(text_for_label)
-        spinlab.label_for = spinner
+        spinlab.label_for = self
         spinlab
       end
     end
@@ -181,12 +176,13 @@ module Swingtown
       end
 
       def minimum_dimensions(width, height)
-        self.minimum_size = java::awt::Dimension.new( width, height)
+        self.minimum_size = java::awt::Dimension.new(width, 
+                                                     height)
       end
 
       def prefered_dimensions(width, height)
-        self.preferred_size =  java::awt::Dimension.new( width, height)
-        self.setPreferredSize  java::awt::Dimension.new( width, height)
+        self.preferred_size =  java::awt::Dimension.new(width, 
+                                                        height)
       end
 
     end
@@ -201,11 +197,13 @@ module Swingtown
       end
       
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
+        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+                                               green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new width, height
+        self.preferred_size =  java::awt::Dimension.new(width, 
+                                                        height)
       end
 
 
@@ -237,11 +235,13 @@ module Swingtown
       end
       
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
+        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+                                               green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new width, height
+        self.preferred_size =  java::awt::Dimension.new(width, 
+                                                        height)
       end
 
 
@@ -250,17 +250,19 @@ module Swingtown
     # See http://xxxxxxxx to understand Swing panels
     class Panel < javax::swing.JPanel
 
-      def initialize(title)
-        super(title)
+      def initialize()
+        super()
         yield self if block_given?
       end
       
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new red.to_i, blue.to_i, green.to_i
+        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+                                               green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new  width, height
+        self.preferred_size =  java::awt::Dimension.new(width, 
+                                                        height)
       end
     end
 
@@ -281,15 +283,17 @@ module Swingtown
       end
 
       def define_minimum_size(width, height)
-        self.minimum_size = java::awt::Dimension.new width, height 
+        self.minimum_size = java::awt::Dimension.new(width, height)
       end
 
       def minimum_height=(height)
-        define_minimum_size  @minimum_width.to_i, @minimum_height = height.to_i
+        define_minimum_size(@minimum_width.to_i, 
+                            @minimum_height = height.to_i)
       end
 
       def minimum_width=(width)
-        define_minimum_size  @minimum_width = width.to_i, @minimum_height.to_i
+        define_minimum_size(@minimum_width = width.to_i, 
+                            @minimum_height.to_i)
       end
     end
   end

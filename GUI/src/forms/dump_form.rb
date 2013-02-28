@@ -3,7 +3,7 @@ class DumpForm < ScrollableLabel
   attr_accessor :dump_text
   
   def initialize()
-    super("Dump",Rectangle.new(430, 660, 600, 200))
+    super("Dump",Rectangle.new(430, 670, 600, 215))
   end
     
   def dump_text=(new_text)

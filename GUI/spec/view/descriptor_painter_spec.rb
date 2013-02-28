@@ -45,15 +45,15 @@ describe AbstractDescriptorPainter do
       check_raster_point_is_grey(rstr,19,19)
       check_raster_point_is_grey(rstr,21,19)
     end
-    it "show throw an exception for paintModelAtPoint" do
+    it "show throw an exception for paint_model_at_point" do
       expect {
-        @adp.paintModelAtPoint(@d.gc,Point.new(20,20))
+        @adp.paint_model_at_point(@d.gc,Point.new(20,20))
       }.to raise_error RuntimeError,/abstract/
     end
-    it "show throw an exception for paintModel" do
+    it "show throw an exception for paint_model" do
       expect {
-        @adp.paintModel(@d.gc)
-      }.to raise_error RuntimeError,/paintModel/
+        @adp.paint_model(@d.gc)
+      }.to raise_error RuntimeError,/paint_model/
     end
   end
 end

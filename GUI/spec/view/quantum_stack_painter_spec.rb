@@ -121,20 +121,20 @@ describe QuantumStackPainter do
       check_raster_point_is_black(rstr,10,29)
     end
   end
-  describe "paintModel" do
-    it "should set some item to black with paintModelAtPoint" do
-      @qsval.paintModelAtPoint(@d.gc,Point.new(10,10))
+  describe "paint_model" do
+    it "should set some item to black with paint_model_at_point" do
+      @qsval.paint_model_at_point(@d.gc,Point.new(10,10))
       check_some_point_is_black(@d.bi,0,0,20,20)
     end
     
-    it "should set some item to black with paintModel" do
-      @qsval.paintModel(@d.gc)
+    it "should set some item to black with paint_model" do
+      @qsval.paint_model(@d.gc)
       check_some_point_is_black(@d.bi,0,0,40,40)
     end
   end
   describe "imageOfModel" do
     it "should return an imageicon of the paint" do
-      @qsval.imageOfModel.class.should == ImageIcon
+      @qsval.image_of_model.class.should == ImageIcon
     end
   end
   describe "sizing" do
