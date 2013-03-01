@@ -49,9 +49,9 @@ describe ExecutableCodeView do
         @ecv = ExecutableCodeView.new
       end
     end
-    it "should reset the codeTabbedPane to have no tabs" do
+    it "should reset the code_tabbed_pane to have no tabs" do
       @ecv.reset_tabbed_panes_and_maps
-      @ecv.codeTabbedPane.tab_count.should == 0
+      @ecv.code_tabbed_pane.tab_count.should == 0
     end
     it "should reset the map method_to_tab to be empty" do
       @ecv.qpo_method_to_tab_map = {:a => "b"}
@@ -76,14 +76,14 @@ describe ExecutableCodeView do
       SwingRunner::on_edt do
         @ecv = ExecutableCodeView.new
         @ecv.reset_tabbed_panes_and_maps
-        @ecv.codeTabbedPane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
-        @ecv.codeTabbedPane.selected_index = 0
+        @ecv.code_tabbed_pane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+        @ecv.code_tabbed_pane.selected_index = 0
       end
     end
     it "should set the selection bounds to 2,5 on input of [2,5]" do
       SwingRunner::on_edt do
         @ecv.set_selection_bounds_in_view [2,5]
-        jt = @ecv.codeTabbedPane.selected_component.viewport.view
+        jt = @ecv.code_tabbed_pane.selected_component.viewport.view
         jt.selection_start.should == 2
         jt.selection_end.should == 5
       end
@@ -94,7 +94,7 @@ describe ExecutableCodeView do
       SwingRunner::on_edt do
         @ecv = ExecutableCodeView.new
         @ecv.reset_tabbed_panes_and_maps
-        @ecv.codeTabbedPane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+        @ecv.code_tabbed_pane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
         @ecv.add_to_selection_start_and_end_map(CP,'1234',5)
         @ecv.qpo_method_to_tab_map[CP.qpo_method] = 0
       end
@@ -102,7 +102,7 @@ describe ExecutableCodeView do
     it "should set the bounds to 5,10 for input CP" do
       SwingRunner::on_edt do
         @ecv.set_highlight_for_code_pointer(CP)
-        jt = @ecv.codeTabbedPane.selected_component.viewport.view
+        jt = @ecv.code_tabbed_pane.selected_component.viewport.view
         jt.selection_start.should == 5
         jt.selection_end.should == 10
       end
@@ -117,19 +117,19 @@ describe ExecutableCodeView do
     end
     it "should have two panes" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.tab_count.should == 2
+        @ecv.code_tabbed_pane.tab_count.should == 2
       end
     end
     it "should have /someline/ in the first tab" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.selected_index = 0
-        @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /someline/
+        @ecv.code_tabbed_pane.selected_index = 0
+        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /someline/
       end
     end
     it "should have /entry/ in the second tab" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.selected_index = 1
-        @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /entry/
+        @ecv.code_tabbed_pane.selected_index = 1
+        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /entry/
       end
     end
   end
@@ -146,19 +146,19 @@ describe ExecutableCodeView do
     end
     it "should have two panes" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.tab_count.should == 2
+        @ecv.code_tabbed_pane.tab_count.should == 2
       end
     end
     it "should have /someline/ in the first tab" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.selected_index = 0
-        @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /someline/
+        @ecv.code_tabbed_pane.selected_index = 0
+        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /someline/
       end
     end
     it "should have /entry/ in the second tab" do
       SwingRunner::on_edt do
-        @ecv.codeTabbedPane.selected_index = 1
-        @ecv.codeTabbedPane.selected_component.viewport.view.text.should =~ /entry/
+        @ecv.code_tabbed_pane.selected_index = 1
+        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /entry/
       end
     end
   end

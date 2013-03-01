@@ -1,9 +1,9 @@
 
 class AboutView < ApplicationView
-  set_java_class com.drogar.lqpl.about.AboutDialog
+  set_java_class AboutDialog
 
 
-  map :view => "aboutDataLabel.text", :model => :about_text
+  map :view => "about_data_label.text", :model => :about_text
 
   def on_first_update(model,transfer)
     super(model,transfer)

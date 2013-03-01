@@ -11,7 +11,7 @@ def log_the_error(exception, thread=nil)
          Please download or compile these and add them to your path, e.g., in /usr/local/bin.
          See further details at http://pll.cpsc.ucalgary.ca/lqpl") if rexcep.class == ServerProcessNotFound
   
-  write_log_file exception.backtrace.join("\n")
+  write_log_file exception.to_s+"\n"+exception.backtrace.join("\n")
   
   show_error_dialog("Application Error","The application has encountered an error and must shut down.")
 end

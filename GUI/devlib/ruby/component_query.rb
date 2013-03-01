@@ -6,7 +6,7 @@ class ComponentQuery < GuiQuery
     # if a fixture, component is component's target. Otherwise, it is the component.
     super()
     @component = component.target if component.class.to_s =~ /Fixture$/
-    @component = component if component.class.to_s =~/Javax|JavaAwt/
+    @component = component if component.class.ancestors.any? {|c| c.to_s =~/Javax|JavaAwt/}
   end
   
   def self.execute_query(component)

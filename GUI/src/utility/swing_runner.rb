@@ -2,6 +2,7 @@ class SwingRunner
   def initialize(explicit_block=nil, &block)
     @block = explicit_block || block
   end
+  
   def run
     @block.call
   end

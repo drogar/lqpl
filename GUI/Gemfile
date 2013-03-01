@@ -10,5 +10,6 @@ group :test, :development do
   gem 'simplecov'
   gem 'flog'
   gem 'flay'
+  gem 'syntax'
 end
 

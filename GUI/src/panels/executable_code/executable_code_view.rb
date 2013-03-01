@@ -1,7 +1,7 @@
 WIDTH_OF_TEXT_PANE = 60
 
 class ExecutableCodeView < ApplicationView
-  set_java_class com.drogar.lqpl.screens.ExecutingCode
+  set_java_class ExecutableCodeForm
 
   raw_mapping :set_up_tabbed_views, nil
 
@@ -34,21 +34,21 @@ class ExecutableCodeView < ApplicationView
   end
   
   def reset_tabbed_panes_and_maps
-    codeTabbedPane.remove_all
+    code_tabbed_pane.remove_all
     @qpo_method_to_tab_map = {}
     @qpo_method_and_line_to_selection_start_and_end_map = {}
-    codeTabbedPane
+    code_tabbed_pane
   end
   
   def add_to_selection_start_and_end_map(cp,ins_line,text_len)
     @qpo_method_and_line_to_selection_start_and_end_map[cp.mangle_to_selection_key] = [text_len, text_len+1+ins_line.length]    
   end
   
-  def self.init_scroll_pane qpo_ins
+  def self.init_scroll_pane(qpo_ins)
     JScrollPane.new(ExecutableCodeView::init_instructions_text_area qpo_ins)
   end
   
-  def self.init_instructions_text_area qpo_ins
+  def self.init_instructions_text_area(qpo_ins)
     instructions_text_area = JTextArea.new(qpo_ins.join("\n"), qpo_ins.length, WIDTH_OF_TEXT_PANE)
     instructions_text_area.editable = false
     instructions_text_area.selection_start = 0
@@ -59,13 +59,13 @@ class ExecutableCodeView < ApplicationView
   #todo - revise this and code_pointer to know when just the line changes, rather than the whole thing.
   def set_highlight_for_code_pointer(code_pointer)
     return if !@qpo_method_to_tab_map[code_pointer.qpo_method]
-    codeTabbedPane.selected_index = @qpo_method_to_tab_map[code_pointer.qpo_method]
+    code_tabbed_pane.selected_index = @qpo_method_to_tab_map[code_pointer.qpo_method]
     selection_key = code_pointer.mangle_to_selection_key
     set_selection_bounds_in_view(@qpo_method_and_line_to_selection_start_and_end_map[selection_key])
   end
   
   def set_selection_bounds_in_view(selection_bounds)
-    jt = codeTabbedPane.selected_component.viewport.view
+    jt = code_tabbed_pane.selected_component.viewport.view
     jt.request_focus(true) # deprecated method, but otherwise the highlight does not show when switching qpo_methods
     jt.selection_start = 0  # reset to handle "use" case where we go back (loop) in the code
     jt.selection_end = 0

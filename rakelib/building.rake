@@ -50,6 +50,7 @@ build = namespace :build do
   task :copy_jruby => "out/lqpl_gui" do
     ant.copy :todir => "out/lqpl_gui" do
       fileset :dir => "GUI/src", :excludes => "**/*.java"
+      fileset :dir => "GUI/lib/ruby"
     end
   end
   desc 'Compile java files in preparation for JAR'
