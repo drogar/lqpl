@@ -16,4 +16,8 @@ class SimulateResultsController < ApplicationController
   def set_simulate_results(recursion_depth, stack_translation)
     set_simulate_data(lqpl_emulator_server_connection.get_simulate_results(recursion_depth), stack_translation)
   end
+  
+  def ok_button_action_performed
+    dispose
+  end
 end

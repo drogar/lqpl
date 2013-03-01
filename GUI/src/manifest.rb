@@ -137,7 +137,7 @@ end
   require "communications/"+f
 end
 
-%w{about}.each do |dialog|
+%w{about simulate_results}.each do |dialog|
   require "forms/dialogs/#{dialog}_dialog"
 end
 
