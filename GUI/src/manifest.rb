@@ -137,6 +137,10 @@ end
   require "communications/"+f
 end
 
+%w{about}.each do |dialog|
+  require "forms/dialogs/#{dialog}_dialog"
+end
+
 %w{quantum_stack_panel}.each do |component|
   require "forms/components/#{component}"
 end
