@@ -1,14 +1,11 @@
-java_import javax.swing.JDialog
-
-class SimulateResultsDialog < JDialog
+class SimulateResultsDialog < STDialogWithOK
 
   attr_accessor :random_value_label
   attr_accessor :simulate_results_label
-  attr_accessor :ok_button
   
   def initialize()
-    super
-    self.title = "Simulate Results"
+    super("Simulate Results")
+    current_components = self.content_pane.components
     self.content_pane = Panel.new do |cp|
       cp.layout = BoxLayout.new(cp,BoxLayout::Y_AXIS)
     end
@@ -24,13 +21,8 @@ class SimulateResultsDialog < JDialog
       self.content_pane.add(sp)
     end
     
-    Panel.new do |p|
-      @ok_button = Button.new("OK") do |okb|
-        self.root_pane.default_button = okb
-        p.add(okb)
-      end
-      self.content_pane.add(p)
-    end 
+    
+    current_components.each {|c| self.content_pane.add(c)}
     bounds = Rectangle.new(50, 110, 200, 100)
   end
   
