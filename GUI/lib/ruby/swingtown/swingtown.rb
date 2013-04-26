@@ -5,12 +5,12 @@ module Swingtown
 
       def mig_jar glob_path = "#{HERE}/../../java/*.jar"
         warn "mig_jar #{glob_path} "
-        Dir.glob(glob_path).select { |f| 
+        Dir.glob(glob_path).select { |f|
         f =~ /(miglayout-)(.+).jar$/}.first
       end
 
       def mig_layout
-        require mig_jar  
+        require mig_jar
       end
 
     end
@@ -58,7 +58,7 @@ module Swingtown
     end
 
     # class ImageIcon
-    #    def self.load(image_path) 
+    #    def self.load(image_path)
     #      javax.swing.ImageIcon.new load_resource image_path
     #    end
     #  end
@@ -70,6 +70,9 @@ module Swingtown
       def initialize(*args)
         super(*args)
         yield self if block_given?
+      end
+      def self.make_button_in_container(container, *args)
+        self.new(*args) {|btn| container.add(btn)}
       end
     end
 
@@ -96,21 +99,21 @@ module Swingtown
       end
     end
 
-    class Font < Java::java.awt.Font
+    class SFont < Java::java.awt.Font
     end
 
     # A label  wrapper
     # See http://xxxxxxxx to understand Swing labels
     class Label < Java::javax::swing::JLabel
 
-      @@default_font = java::awt.Font.new "Lucida Grande", 0, 12
+      @@default_font = SFont.new("Lucida Grande", 0, 12)
 
       def self.default_font=(default_font)
         @@default_font = default_font
       end
 
       def self.default_font
-        @@default_font 
+        @@default_font
       end
 
       def initialize(text=nil)
@@ -130,23 +133,36 @@ module Swingtown
     end
 
     class Spinner < Java::javax.swing.JSpinner
+      JINT = Java::int
+      @@spinner_cons = SpinnerNumberModel.java_class.constructor(JINT,JINT,
+                                                                 JINT,JINT)
+      def self.make_new_spinner_number_model(args)
+        @@spinner_cons.new_instance(args[0],args[1],args[2],args[3])
+      end
       def initialize
         super
       end
-      
-      def self.spinner_with_label(text_for_label, container=nil)
+
+      def self.make_spinner(*args)
+        return Spinner.new unless args and args.length == 4
         spinner = Spinner.new
-        spinlab = spinner.make_my_label(text_for_label)
+
+        spinner.model=make_new_spinner_number_model(args)
+        spinner
+      end
+      def labelize_and_add_to_container(text_for_label, container)
+        spinlab = make_my_label(text_for_label)
         container.add(spinlab) if container
-        container.add(spinner) if container
+        container.add(self) if container
+      end
+      def self.spinner_with_label(text_for_label, container=nil)
+        spinner = make_spinner
+        spinner.labelize_and_add_to_container(text_for_label, container)
       end
       def self.spinner_with_label_and_model(text_for_label,val, min, max, step,container=nil)
-        spinner = Spinner.new
-        spinner.model=SpinnerNumberModel.new(val,min,max,step)
-        
-        spinlab = spinner.make_my_label(text_for_label)
-        container.add(spinlab) if container
-        container.add(spinner) if container
+        spinner = make_spinner(val,min,max,step)
+
+        spinner.labelize_and_add_to_container(text_for_label, container)
       end
       def make_my_label(text_for_label)
         spinlab = Label.new(text_for_label)
@@ -154,17 +170,17 @@ module Swingtown
         spinlab
       end
     end
-    
+
     class TextField < Java::javax.swing.JTextField
 
-      @@default_font = java::awt.Font.new "Lucida Grande", 0, 12
+      @@default_font = SFont.new("Lucida Grande", 0, 12)
 
       def self.default_font=(default_font)
         @@default_font = default_font
       end
 
       def self.default_font
-        @@default_font 
+        @@default_font
       end
 
       def initialize(text = nil)
@@ -176,33 +192,33 @@ module Swingtown
       end
 
       def minimum_dimensions(width, height)
-        self.minimum_size = java::awt::Dimension.new(width, 
+        self.minimum_size = java::awt::Dimension.new(width,
                                                      height)
       end
 
       def prefered_dimensions(width, height)
-        self.preferred_size =  java::awt::Dimension.new(width, 
+        self.preferred_size =  java::awt::Dimension.new(width,
                                                         height)
       end
 
     end
 
     # A LayeredPane wrapper
-    # See http://xxxx xxxx to understand Swing LayeredPanes 
+    # See http://xxxx xxxx to understand Swing LayeredPanes
     class LayeredPane < javax::swing.JLayeredPane
 
       def initialize(*args)
         super
         yield self if block_given?
       end
-      
+
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+        self.background = java::awt::Color.new(red.to_i, blue.to_i,
                                                green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new(width, 
+        self.preferred_size =  java::awt::Dimension.new(width,
                                                         height)
       end
 
@@ -219,9 +235,9 @@ module Swingtown
 
       end
     end
-    
+
     class TabbedPane < javax::swing.JTabbedPane
-      def initialize(*args) 
+      def initialize(*args)
         super(*args)
         yield self if block_given?
       end
@@ -229,18 +245,18 @@ module Swingtown
 
     class ScrollPane < javax::swing.JScrollPane
 
-      def initialize(*args) 
+      def initialize(*args)
         super(*args)
         yield self if block_given?
       end
-      
+
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+        self.background = java::awt::Color.new(red.to_i, blue.to_i,
                                                green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new(width, 
+        self.preferred_size =  java::awt::Dimension.new(width,
                                                         height)
       end
 
@@ -254,14 +270,14 @@ module Swingtown
         super()
         yield self if block_given?
       end
-      
+
       def background_color(red, blue, green)
-        self.background = java::awt::Color.new(red.to_i, blue.to_i, 
+        self.background = java::awt::Color.new(red.to_i, blue.to_i,
                                                green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java::awt::Dimension.new(width, 
+        self.preferred_size =  java::awt::Dimension.new(width,
                                                         height)
       end
     end
@@ -271,15 +287,15 @@ module Swingtown
     # See http://xxxxxxxx to understand Swing frames
     class STFrame  < Java::javax::swing::JFrame
       attr_accessor :minimum_height, :minimum_width
-      
+
       def initialize(title)
         super(title)
         yield self if block_given?
       end
-      
+
       def initialize(*args)
         super
-        
+
       end
 
       def define_minimum_size(width, height)
@@ -287,12 +303,12 @@ module Swingtown
       end
 
       def minimum_height=(height)
-        define_minimum_size(@minimum_width.to_i, 
+        define_minimum_size(@minimum_width.to_i,
                             @minimum_height = height.to_i)
       end
 
       def minimum_width=(width)
-        define_minimum_size(@minimum_width = width.to_i, 
+        define_minimum_size(@minimum_width = width.to_i,
                             @minimum_height.to_i)
       end
     end

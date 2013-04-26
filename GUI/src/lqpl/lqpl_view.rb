@@ -27,7 +27,7 @@ class LqplView < ApplicationView
   map :view => "the_menu.view_executing_code.text", :model => :view_menu_executing_code_text
   map :view => "the_menu.view_stack_translation.text", :model => :view_menu_stack_translation_text
 
-  #raw_mapping :set_title,nil
+  raw_mapping :set_title,nil
 
 
   def load(*args)
@@ -38,9 +38,9 @@ class LqplView < ApplicationView
     @main_view_component.setJMenuBar(mbar)
   end
 
-  # def set_title(model,trans)
-  #     @main_view_component.title = model.frame_title
-  #   end
+  def set_title(model,trans)
+      @main_view_component.title = model.frame_title
+  end
 
   def the_frame
     @main_view_component
