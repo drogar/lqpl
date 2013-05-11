@@ -288,14 +288,10 @@ module Swingtown
     class STFrame  < Java::javax::swing::JFrame
       attr_accessor :minimum_height, :minimum_width
 
-      def initialize(title)
+      def initialize(title, options={})
         super(title)
+        options.each {|k,v| self.send(k,v)}
         yield self if block_given?
-      end
-
-      def initialize(*args)
-        super
-
       end
 
       def define_minimum_size(width, height)
