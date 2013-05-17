@@ -19,11 +19,11 @@ class CanvasSize
   end
 
   def self.subtree_left_width(subtree_array)
-    self.subtree_array.subtree_side_width(subtree_array, :left)
+    self.subtree_side_width(subtree_array, :left)
   end
 
   def self.subtree_right_width(subtree_array)
-    self.subtree_array.subtree_side_width(subtree_array, :right)
+    self.subtree_side_width(subtree_array, :right)
   end
 
   def self.subtree_side_width(subtree_array, side)
