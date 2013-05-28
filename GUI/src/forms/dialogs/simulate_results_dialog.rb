@@ -2,29 +2,34 @@ class SimulateResultsDialog < STDialogWithOK
 
   attr_accessor :random_value_label
   attr_accessor :simulate_results_label
-  
+
   def initialize()
     super("Simulate Results")
-    current_components = self.content_pane.components
-    self.content_pane = Panel.new do |cp|
+    self.content_pane = make_content_panel
+    self.bounds = Rectangle.new(50, 110, 200, 100)
+  end
+
+  def make_content_panel
+    Panel.new do |cp|
       cp.layout = BoxLayout.new(cp,BoxLayout::Y_AXIS)
+      @random_value_label = make_rv_label(cp)
+      make_scroll_panel(cp)
     end
-    
-    @random_value_label = Label.new("") do |rvt|
-      self.content_pane.add(rvt)
+  end
+  def make_rv_label(cpanel)
+    Label.new("") do |rvt|
+      cpanel.add(rvt)
     end
-    
+  end
+  def make_scroll_panel(cpanel)
     ScrollPane.new do |sp|
       @simulate_results_label = Label.new("") do |lbl|
         sp.viewport_view=lbl
       end
-      self.content_pane.add(sp)
+      cpanel.add(sp)
     end
-    
-    
-    current_components.each {|c| self.content_pane.add(c)}
-    bounds = Rectangle.new(50, 110, 200, 100)
   end
-  
-  
+  end
+
+
 end

@@ -10,9 +10,9 @@ def log_the_error(exception, thread=nil)
          "LQPL requires the compiler server and emulator server to be installed on your path.
          Please download or compile these and add them to your path, e.g., in /usr/local/bin.
          See further details at http://pll.cpsc.ucalgary.ca/lqpl") if rexcep.class == ServerProcessNotFound
-  
+
   write_log_file exception.to_s+"\n"+exception.backtrace.join("\n")
-  
+
   show_error_dialog("Application Error","The application has encountered an error and must shut down.")
 end
 
@@ -31,9 +31,9 @@ end
 GlobalErrorHandler.on_error {|exception, thread| log_the_error(exception, thread) }
 
 begin
-  SwingRunner.on_edt do
+  #SwingRunner.on_edt do
     LqplController.instance.open
-  end
+  #end
 rescue => e
   log_the_error(e)
 end
