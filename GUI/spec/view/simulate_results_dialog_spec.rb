@@ -2,7 +2,9 @@ require 'spec/spec_helper'
 
 describe SimulateResultsDialog do
   before (:each) do
-    @sr = SimulateResultsDialog.new
+    SwingRunner::on_edt do
+      @sr = SimulateResultsDialog.new
+    end
   end
 
   it "should not be nil" do

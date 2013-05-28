@@ -308,6 +308,30 @@ module Swingtown
                             @minimum_height.to_i)
       end
     end
+    
+    class STDialog < Java::javax::swing::JDialog
+      
+      def initialize(title=nil)
+        super()
+        self.title = title if title
+        yield self if block_given?
+      end
+    end
+    
+    class STDialogWithOK < STDialog
+      attr_accessor :button_pane
+      attr_accessor :ok_button
+      def initialize(title=nil)
+        super
+        @button_pane = Panel.new do |bp|
+          @ok_button = Button.new("OK") do |b|
+            bp.add(b)
+            self.root_pane.default_button = b
+          end
+          self.content_pane.add(bp)
+        end
+      end
+    end
   end
 end
 

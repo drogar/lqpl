@@ -3,9 +3,9 @@ require 'spec/spec_helper'
 describe QuantumEmulatorMainForm do
   before (:each) do
     
-    #SwingRunner::on_edt do
+    SwingRunner::on_edt do
       @qemf = QuantumEmulatorMainForm.new
-    #end
+    end
   end
   it "should not be nil" do
     @qemf.should_not be_nil

@@ -59,4 +59,8 @@ require 'component_query'
 require 'drawing_extensions'
 require 'raster_queries'
 
+def last(arr)
+  arr[arr.size - 1]
+end
+
 

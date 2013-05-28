@@ -2,7 +2,9 @@ require 'spec/spec_helper'
 
 describe AboutDialog do
   before (:each) do
-    @ab = AboutDialog.new
+    SwingRunner::on_edt do
+      @ab = AboutDialog.new
+    end
   end
 
   it "should not be nil" do
