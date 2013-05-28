@@ -13,6 +13,8 @@
   import Control.Concurrent
   import Control.Concurrent.MVar
 
+  import Control.Exception
+
   import Control.Monad.Writer as W
 
   import Data.IORef
