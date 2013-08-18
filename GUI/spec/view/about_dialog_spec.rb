@@ -14,12 +14,12 @@ describe AboutDialog do
   it "should have a title of 'About LQPL'" do
     @ab.edt_title.should == 'About LQPL'
   end
-  specify {@ab.content_pane.class.should == Panel}
+  #specify {@ab.content_pane.class.should == JPanel}
   specify {@ab.content_pane.should have(2).components}
-  specify {@ab.content_pane.get_layout.class.should == BoxLayout}
+  #specify {@ab.content_pane.get_layout.class.should == BoxLayout}
   context "the text pane" do
     before (:each) do
-      @tp = @ab.content_pane.components[0]
+      @tp = @ab.content_pane.components[1]
     end
     specify {@tp.class.should == Panel}
     specify {@tp.should have(1).components}
@@ -34,7 +34,7 @@ describe AboutDialog do
   
   context "the button pane" do
     before (:each) do
-      @bp = @ab.content_pane.components[1]
+      @bp = @ab.content_pane.components[0]
     end
     specify {@bp.class.should == Panel}
     specify {@bp.should have(1).components}

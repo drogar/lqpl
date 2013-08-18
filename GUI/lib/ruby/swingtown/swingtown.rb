@@ -322,7 +322,7 @@ module Swingtown
       attr_accessor :button_pane
       attr_accessor :ok_button
       def initialize(title=nil)
-        super
+        super(title)
         @button_pane = Panel.new do |bp|
           @ok_button = Button.new("OK") do |b|
             bp.add(b)

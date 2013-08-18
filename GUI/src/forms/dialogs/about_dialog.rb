@@ -5,16 +5,8 @@ class AboutDialog < STDialogWithOK
 
   def initialize()
     super("About LQPL")
-    self.content_pane = make_content_pane
+    make_data_panel(content_pane)
 
-  end
-
-  def make_content_pane
-    Panel.new do |cp|
-      cp.layout = BoxLayout.new(cp,BoxLayout::Y_AXIS)
-      make_data_panel(cp)
-      make_button_panel(cp)
-    end
   end
 
   def make_data_panel(cpanel)
