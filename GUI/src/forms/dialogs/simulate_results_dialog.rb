@@ -5,16 +5,9 @@ class SimulateResultsDialog < STDialogWithOK
 
   def initialize()
     super("Simulate Results")
-    self.content_pane = make_content_panel
     self.bounds = Rectangle.new(50, 110, 200, 100)
-  end
-
-  def make_content_panel
-    Panel.new do |cp|
-      cp.layout = BoxLayout.new(cp,BoxLayout::Y_AXIS)
-      @random_value_label = make_rv_label(cp)
-      make_scroll_panel(cp)
-    end
+    @random_value_label = make_rv_label(content_pane)
+    make_scroll_panel(content_pane)
   end
   def make_rv_label(cpanel)
     Label.new("") do |rvt|
@@ -29,7 +22,4 @@ class SimulateResultsDialog < STDialogWithOK
       cpanel.add(sp)
     end
   end
-  end
-
-
 end
