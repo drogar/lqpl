@@ -16,7 +16,8 @@
 
   splitFilePath :: FilePath -> (String,String,String)
   splitFilePath fp = let (path,name) = splitFileName fp
-                         (bname,_:ext) = splitExtension name
+                         (bname,fext) = splitExtension name
+                         ext = if fext == "" then fext else drop 1 fext
                      in  (path,bname,ext)
 
   filterNonPrintable :: String -> String
