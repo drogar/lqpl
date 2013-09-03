@@ -41,13 +41,13 @@
     return fname
 
   instance Example (IO Bool) where
-    evaluateExample f =
+    evaluateExample _ f =
       do
         r <- f
         return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
 
   instance Example (IO Test.Hspec.Core.Result) where
-    evaluateExample f =
+    evaluateExample _ f =
       do
         r <- f
         return r

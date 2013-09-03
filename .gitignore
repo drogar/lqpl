@@ -10,6 +10,7 @@
 dist
 .bundle
 .idea
+.hpc
 *.iml
 *.lock
 tmp
