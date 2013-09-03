@@ -13,7 +13,7 @@ end
 describe DumpSplitModel do
   it "should just accept and display the text of the split" do
     ds = DumpSplitModel.new( "<DumpSplit>whatever</DumpSplit>")
-    ds.text.should == "<DumpSplit>whatever</DumpSplit>"
+    ds.text.should == "whatever"
   end
 end
 
@@ -27,7 +27,7 @@ describe DumpModel do
   it "should create a list of dumpcall and dumpsplit items" do
     dc=DumpModel.new
     dc.dump="<Dump>"+DCALL+DSPLIT+DCALL2+"</Dump>"
-    dc.dump.length.should == 3
+    dc.should have(3).dump
     dc.dump[0].class.should == DumpCallModel
     dc.dump[1].class.should == DumpSplitModel
   end

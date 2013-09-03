@@ -10,6 +10,7 @@
 dist
 .bundle
 .idea
+.hpc
 *.iml
 *.lock
 tmp
@@ -21,3 +22,5 @@ Manifest
 *eps-converted-to.pdf
 lqplcode/**/*.qpo
 lqplcode/*.qpo
+coverage
+no_dist

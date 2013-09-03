@@ -1,7 +1,7 @@
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/lib/java"
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/lib/ruby"
+$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/devlib/ruby"
 #$LOAD_PATH << "./lqpl/lib/java"
 
 
@@ -9,27 +9,37 @@ $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/lib/ruby"
 
 require 'java'
 
-$CLASSPATH << "./out/production/lqpl"
-$CLASSPATH << "./lqpl/lib/java"
+$CLASSPATH << "../out/lqpl_gui/"
+
 
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/src"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/jruby-complete.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/forms_rt.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/monkeybars-1.1.1.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
+#$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 
+# test to see if running gives edt violations
+# uncomment down to 'end testing of edt violations'
+# %w{fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2 fest-util-1.1.2 jcip-annotations-1.0}.each do |jar|
+#   $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/devlib/java/" + jar+".jar"
+# end
+# puts $CLASSPATH
+# 
+# require "devlib/java/fest-swing-1.2.jar"
+# 
+# 
+# require '/Users/gilesb/programming/mixed/lqpl/GUI/devlib/ruby/fest_testing_imports'
+#end testing of edt violations
 
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
-
+require 'utility/swing_runner'
 
 ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
-QUFACE = java_import com.drogar.lqpl.Main
-#args = [""].to_java(:string)
 begin
-  QUFACE.main([])
-rescue
-  puts "Had a problem"
+  com.drogar.lqpl.Main::main([""].to_java(:string))
+rescue  => e
+  puts "Had a problem: #{e}"
 end

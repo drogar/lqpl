@@ -42,8 +42,8 @@ class LqplEmulatorServerConnection < Connection
     send_and_receive_command("get dump #{recursion_depth}  #{tree_depth}\n")
   end
 
-  def do_step(step_size=1, depth=1)
-    send_and_receive_command "step #{step_size} #{depth}\n"
+  def do_step(step_size=1, recursion_depth=1)
+    send_and_receive_command "step #{step_size} #{recursion_depth}\n"
   end
 
   def do_run(recursion_depth=1)

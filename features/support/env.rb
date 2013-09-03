@@ -1,86 +1,57 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter "features"
+  nocov_token = ":nocov:"
+end
 
 if not (defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby')
   abort 'Sorry - Feature tests of LQPL requires JRuby. You appear to be running or defaulted to some other ruby engine.'
 end
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/src"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java"
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/ruby"
+project_dir_array = File.expand_path(File.dirname(__FILE__)).split(File::SEPARATOR)
+
+project_dir = project_dir_array.reverse.drop(2).reverse.join(File::SEPARATOR)
+
+
+%w{src lqpl_gui lib/java lib/ruby devlib/java devlib/ruby}.each do |dir|
+  $LOAD_PATH << project_dir+"/GUI/"+ dir
+end
+$LOAD_PATH << project_dir+"/out/lqpl_gui"
+
 
 require 'java'
 
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../out/lqpl_gui"
+$CLASSPATH << project_dir+"/out/lqpl_gui"
+
+#runtime jars
+%w{jruby-complete forms_rt monkeybars-1.1.1}.each do |jar|
+  $CLASSPATH << project_dir+"/GUI/lib/java/"+jar+".jar"
+end
+
+#testing jars
+%w{fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2 fest-util-1.1.2 jcip-annotations-1.0}.each do |jar|
+  $CLASSPATH << project_dir+"/GUI/devlib/java/" + jar+".jar"
+end
 
 
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/devlib/java/jemmy-2.3.0.0.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/forms_rt.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/../../GUI/lib/java/monkeybars-1.1.1.jar"
+require "fest-swing-1.2.jar"
 
-
-require "jemmy-2.3.0.0.jar"
 
 require "monkeybars-1.1.1.jar"
 require "forms_rt.jar"
 
-ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/../../out/bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
+ENV['PATH'] = "#{project_dir + '/out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
-java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
-java.lang.System.set_property("com.drogar.testing.jemmy","true")
+
+
+require 'fest_testing_imports'
+
 
 require 'manifest'
 
-java_import org.netbeans.jemmy.JemmyProperties
-java_import org.netbeans.jemmy.TestOut
+java_import java.util.regex.Pattern
 
-java_import org.netbeans.jemmy.operators.JFileChooserOperator
-java_import org.netbeans.jemmy.operators.Operator
+java_import java.awt.Component
 
-java_import org.netbeans.jemmy.operators.JButtonOperator
-java_import org.netbeans.jemmy.operators.JLabelOperator
-java_import org.netbeans.jemmy.operators.ContainerOperator
-java_import org.netbeans.jemmy.operators.JSpinnerOperator
-java_import org.netbeans.jemmy.operators.JTabbedPaneOperator
-java_import org.netbeans.jemmy.operators.JTextAreaOperator
-java_import org.netbeans.jemmy.operators.JFrameOperator
-java_import org.netbeans.jemmy.operators.JDialogOperator
-java_import org.netbeans.jemmy.operators.JMenuBarOperator
-java_import org.netbeans.jemmy.operators.JMenuOperator
-java_import org.netbeans.jemmy.operators.JMenuItemOperator
-java_import org.netbeans.jemmy.drivers.menus.AppleMenuDriver
+require 'component_query'
 
-
-
-#  java_import org.netbeans.jemmy.Timeouts
-#  btn_timeout = Timeouts.new
-#  btn_timeout.setTimeout("ComponentOperator.WaitComponentTimeout", 100)
-
-java_import javax.swing.JButton
-
-
-# props = JemmyProperties.properties
-# JemmyProperties.current_keys.each {|k| puts "Prop: #{k}    =  #{JemmyProperties.get_current_property(k)}"}
-
-# testout - (in, trace out, error out, notes out)
-JemmyProperties.set_current_output(TestOut.new(java.lang.System.in, nil, java.lang.System.err, nil))
-
-# amd = AppleMenuDriver.new
-#
-# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuOperator",amd)
-# JemmyProperties.set_current_property("drivers.menu.org.netbeans.jemmy.operators.JMenuBarOperator",amd)
-
-begin
-  puts "Starting up!!!!"
-  com.drogar.lqpl.Main.main([])
-rescue Exception => e
-  puts "Exception from main: #{e}"
-end
-
-java_import org.netbeans.jemmy.operators.JFrameOperator
-$qe_frame = JFrameOperator.new "Quantum Emulator"
-
-at_exit {
-  $qe_frame.close
-  LqplController.instance.close}

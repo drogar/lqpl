@@ -6,7 +6,7 @@ describe AbstractDescriptorModel do
   it "should only be created by the factory" do
     expect {
       sd = AbstractDescriptorModel.new
-    }.to raise_error(StackDescriptorModelInvalidCreate)
+    }.to raise_error(ModelCreateError)
   end
   it "should create an instance of ZeroDescriptorModel when created with  <Zero/>" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"
@@ -17,8 +17,8 @@ describe AbstractDescriptorModel do
     sd.class.should == ValueDescriptorModel
   end
 
-  it "should create an instance of ClassicalDescriptorModel when created with  <ClassicalStack><cint>5</cint><cbool>True</cbool></ClassicalStack>" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>5</cint><cbool>True</cbool></ClassicalStack>"
+  it "should create an instance of ClassicalDescriptorModel when created with  <Classical><cint>5</cint><cbool>True</cbool></Classical>" do
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>5</cint><cbool>True</cbool></Classical>"
     sd.class.should == ClassicalDescriptorModel
   end
   it "should create an instance of QubitDescriptorModel when created with  <Qubits><pair><qz/><qz/></pair></Qubits>" do
@@ -29,25 +29,28 @@ describe AbstractDescriptorModel do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
     sd.class.should == DataDescriptorModel
   end
-  it "should raise an error when the input string to the factory doesn't start with one of <Zero, <Value, <Class, <Qubi, or <Alge" do
-    expect {
-      sd = AbstractDescriptorModel.make_instance "somethng"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
-    expect {
-      sd = AbstractDescriptorModel.make_instance "ab<Zero/>"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
-    expect {
-      sd = AbstractDescriptorModel.make_instance "<Alg<Qubit>"
-    }.to  raise_error(StackDescriptorModelInvalidCreate)
+  context "input string doesn't start with one of <Zero, <Value, <Class, <Qubi, or <Alge" do
+    example "input 'something'" do expect {
+        sd = AbstractDescriptorModel.make_instance "somethng"
+      }.to  raise_error(ModelCreateError)
+    end
+    example "input 'ab<Zero/>'" do expect {
+        sd = AbstractDescriptorModel.make_instance "ab<Zero/>"
+      }.to  raise_error(ModelCreateError)
+    end
+    example "input '<Alg<Qubit>'" do expect {
+        sd = AbstractDescriptorModel.make_instance "<Alg<Qubit>"
+      }.to  raise_error(ModelCreateError)
+    end
   end
   it "should embed the incorrect value when raising a create exception" do
     expect {
       sd = AbstractDescriptorModel.make_instance "somethng"
-    }.to  raise_error(StackDescriptorModelInvalidCreate, /somethng/)
+    }.to  raise_error(ModelCreateError, /somethng/)
   end
 
 
-  it "should return 'nil' when asked for substack labels" do
+  it "should return 'nil' when asked for substack labels of Zero" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"
     sd.substack_labels.should be_nil
   end
@@ -58,51 +61,46 @@ end
 
 
 describe ClassicalDescriptorModel do
-  it  "should raise an error if constructed with something other than <ClassicalStack>list of ints or bools</ClassicalStack>" do
+  it  "should raise an error if constructed with something other than <Classical>list of ints or bools</Classical>" do
     expect {
-      sc = AbstractDescriptorModel.make_instance "<ClassicalStack>err</ClassicalStack>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<ClassicalStack>err</ClassicalStack>")
+      sc = AbstractDescriptorModel.make_instance "<Classical>err</Classical>"
+    }.to raise_error(ParserError, /<Classical>err<\/Classical>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
-    sd.length.should == 1
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
-    sd.length.should == 3
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
+    sd.should have(1).item
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
+    sd.should have(3).items
   end
   it "should have the value being the list of classicalvalues in the construction string" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.value.should == [1,true,14]
   end
   it "should return a list of length 'length' when asked for substack labels" do
-     sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>14</cint></ClassicalStack>"
-    sd.substack_labels.length.should == 1
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
-    sd.substack_labels.length.should == 3
+     sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
+    sd.should have(1).substack_labels
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
+    sd.should have(3).substack_labels
   end
   it "should have the substack_labels being the list of classicalvalues in the construction string" do
-    sd = AbstractDescriptorModel.make_instance "<ClassicalStack><cint>1</cint><cbool>True</cbool><cint>14</cint></ClassicalStack>"
+    sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
     sd.substack_labels.should == ["1","true","14"]
   end
-
-  context "list matching" do
-    it "should raise an error when the list is invalid" do
-      expect {
-        ClassicalDescriptorModel::parse_list("invalid")
-      }.to raise_error(StackDescriptorModelInvalidCreate, "invalid")
-    end
-    it "should prepare a list of length 0 when there is no list" do
-      ClassicalDescriptorModel::parse_list("").should == []
-    end
-    it "should result in a one element int list when that is the only input" do
-      ClassicalDescriptorModel::parse_list("<cint>1</cint>").should == [1]
-      ClassicalDescriptorModel::parse_list("<cint>-3491</cint>").should == [-3491]
-    end
-    it "should result in a one element bool list when that is the only input" do
-      ClassicalDescriptorModel::parse_list("<cbool>True</cbool>").should == [true]
-      ClassicalDescriptorModel::parse_list("<cbool>False</cbool>").should == [false]
-    end
-    it "should result in a mixed list when that is the same input" do
-      ClassicalDescriptorModel::parse_list("<cint>1</cint><cbool>True</cbool><cint>14</cint>").should == [1,true,14]
+  context "class methods" do
+    context "validation" do
+      it "should not raise an error if passed an array with elements" do
+         ClassicalDescriptorModel.validate_substacks_count([1,2]).should be_nil
+      end
+      it "should raise an error if passed an empty array" do
+        expect {
+          ClassicalDescriptorModel.validate_substacks_count([])
+        }.to raise_error ModelCreateError, /Classical.*should have/
+      end
+      it "should raise an error if passed a nil array" do
+        expect {
+          ClassicalDescriptorModel.validate_substacks_count(nil)
+        }.to raise_error ModelCreateError, /Classical.*should have/
+      end
     end
   end
 end
@@ -110,16 +108,17 @@ end
 
 
 describe DataDescriptorModel do
-  it  "should raise an error if constructed with something other than <AlgebraicData>list of z,o pairs</AlgebraicData>" do
+  it  "should raise an error if constructed with something other than <AlgebraicData>list of pairs</AlgebraicData>" do
     expect {
       sc = AbstractDescriptorModel.make_instance "<AlgebraicData>err</AlgebraicData>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<AlgebraicData>err</AlgebraicData>")
+    }.to raise_error(ParserError, /<AlgebraicData>err<\/AlgebraicData>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.length.should == 1
+    sd.should have(1).item
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.length.should == 2
+    sd.should have(2).items
+    
   end
   it "should have the value being the map of constructor/address pairs in the string" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
@@ -127,9 +126,9 @@ describe DataDescriptorModel do
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.substack_labels.length.should == 1
+    sd.should have(1).substack_labels
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.substack_labels.length.should == 2
+    sd.should have(2).substack_labels
   end
 
   it "should have constructer names only when there are no stack addresses" do
@@ -143,51 +142,26 @@ describe DataDescriptorModel do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
     sd.substack_labels.should == ["Nil", "C[3, 4]"]
   end
-  context "constructor matching" do
-    it "should raise an error when the constructor map is invalid" do
-      expect {
-        DataDescriptorModel::parse_pairs("invalid")
-      }.to raise_error(InvalidInput, "invalid")
-    end
-    it "should raise an error when there is no constructor" do
-      expect {
-        DataDescriptorModel::parse_pairs("")
-      }.to raise_error(InvalidInput, "Must have at least one constructor")
-    end
-    it "should result in a one element array of pairs when that is the only input" do
-      DataDescriptorModel::parse_pairs("<string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should == [["C",[3,4]]]
-    end
-    it "should result in a mixed map when that is the input" do
-      DataDescriptorModel::parse_pairs("<string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses>").should ==
-       [["Nil",[]], ["C" , [3,4]]]
-    end
-    it "should raise an error when the map has duplicated constructors" do
-      expect {
-        DataDescriptorModel::parse_pairs("<string>Nil</string><StackAddresses></StackAddresses><string>Nil</string><StackAddresses></StackAddresses>")
-      }.to raise_error(InvalidInput, "Constructor 'Nil' duplicated in algebraic data")
+  
+  context "class methods" do
+    context "validation" do
+      it "should not raise an error if passed an array with elements" do
+          DataDescriptorModel.validate_substacks_count([1,2]).should be_nil
+      end
+      it "should raise an error if passed an empty array" do
+        expect {
+          DataDescriptorModel.validate_substacks_count([])
+        }.to raise_error ModelCreateError, /Data.*should have/
+      end
+      it "should raise an error if passed a nil array" do
+        expect {
+          DataDescriptorModel.validate_substacks_count(nil)
+        }.to raise_error ModelCreateError, /Data.*should have/
+      end
     end
   end
-  context "address list matching" do
-    it "should raise an error when the list is invalid" do
-      expect {
-        DataDescriptorModel::parse_address_list("invalid")
-      }.to raise_error(InvalidInput, "invalid")
-    end
-    it "should result in an empty list when there is no input" do
-      DataDescriptorModel::parse_address_list("").should ==  []
-    end
-    it "should result in a one element list when that is the only input" do
-      DataDescriptorModel::parse_address_list("<int>3</int>").should ==  [3]
-    end
-    it "should result in a many element list when that is the input" do
-      DataDescriptorModel::parse_address_list("<int>3</int><int>4</int><int>5</int><int>6</int><int>7</int>").should ==  [3,4,5,6,7]
-    end
-    it "should raise an error when the list has duplicated elements" do
-      expect {
-        DataDescriptorModel::parse_address_list("<int>3</int><int>3</int>")
-      }.to raise_error(InvalidInput, "StackAddress '3' duplicated for single constructor")
-    end
-  end
+  
+  
 end
 
 
@@ -195,13 +169,13 @@ describe QubitDescriptorModel do
   it  "should raise an error if constructed with something other than <Qubits>list of z,o pairs</Qubits>" do
     expect {
       sc = AbstractDescriptorModel.make_instance "<Qubits>err</Qubits>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<Qubits>err</Qubits>")
+    }.to raise_error(ParserError, /<Qubits>err<\/Qubits>/)
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    sd.length.should == 1
+    sd.should have(1).item
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.length.should == 2
+    sd.should have(2).items
   end
   it "should have the value being the list of qubit indicators in the string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
@@ -209,48 +183,43 @@ describe QubitDescriptorModel do
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    sd.substack_labels.length.should == 1
+    sd.should have(1).substack_labels
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.substack_labels.length.should == 2
+    sd.should have(2).substack_labels
   end
   it "should have the substack_labels being the list of 01 pairs in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
     sd.substack_labels.should == ["00","01","10","11"]
   end
-  context "list matching" do
-    it "should raise an error when the list is invalid" do
-      expect {
-        QubitDescriptorModel::parse_list("invalid")
-      }.to raise_error(InvalidInput, "invalid")
-    end
-    it "should raise and error when there is no list" do
-      expect {
-        QubitDescriptorModel::parse_list("")
-      }.to raise_error(InvalidInput, "Must have qubit indicators")
-    end
-    it "should result in a one element pair list when that is the only input" do
-      QubitDescriptorModel::parse_list("<pair><qz/><qz/></pair>").should == [[0,0]]
-    end
-    it "should result in a mixed list when that is the same input" do
-      QubitDescriptorModel::parse_list("<pair><qz/><qz/></pair><pair><qz/><qo/></pair>").should == [[0,0],[0,1]]
-    end
-    it "should raise an error when the list has duplicated pairs" do
-      expect {
-        QubitDescriptorModel::parse_list("<pair><qz/><qz/></pair><pair><qz/><qz/></pair>")
-      }.to raise_error(InvalidInput, "[0, 0] duplicated in qubit")
-    end
-  end
-  context "translate qubit" do
-    it "should return 1 for <qo/>" do
-      QubitDescriptorModel::translate_qubit("<qo/>").should == 1
-    end
-    it "should return 0 for <qz/>" do
-      QubitDescriptorModel::translate_qubit("<qz/>").should == 0
-    end
-    it "should raise an exception for any other input" do
-      expect {
-        QubitDescriptorModel::translate_qubit("err")
-      }.to raise_error InvalidInput, /err/
+  context "class methods" do
+    context "validation" do
+      it "should not raise an error if passed an array with 1 element" do
+          QubitDescriptorModel.validate_substacks_count([1]).should be_nil
+      end
+      it "should not raise an error if passed an array with 2 elements" do
+          QubitDescriptorModel.validate_substacks_count([1,2]).should be_nil
+      end
+      it "should not raise an error if passed an array with 3 elements" do
+          QubitDescriptorModel.validate_substacks_count([1,2,3]).should be_nil
+      end
+      it "should not raise an error if passed an array with 4 elements" do
+          QubitDescriptorModel.validate_substacks_count([1,2,3,4]).should be_nil
+      end
+      it "should raise an error if passed an empty array" do
+        expect {
+          QubitDescriptorModel.validate_substacks_count([])
+        }.to raise_error ModelCreateError, /Qubit.*should have/
+      end
+      it "should raise an error if passed a nil array" do
+        expect {
+          QubitDescriptorModel.validate_substacks_count(nil)
+        }.to raise_error ModelCreateError, /Qubit.*should have/
+      end
+      it "should raise an error if passed an array with > 4 elements" do
+        expect {
+          QubitDescriptorModel.validate_substacks_count([1,2,3,4,5])
+        }.to raise_error ModelCreateError, /Qubit.*should have/
+      end
     end
   end
 end
@@ -258,54 +227,106 @@ end
 
 
 describe ValueDescriptorModel do
-  it "should always have a length of 0" do
-    sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-    sd.length.should == 0
+  it "should successfully be created with input '<Value>0.5</Value>'" do
+    z = ValueDescriptorModel.new '<Value>0.5</Value>'
+    z.should_not be_nil
   end
-
-  it "should have the value in the construction string" do
-    sd = AbstractDescriptorModel.make_instance "<Value>6.25e-2</Value>"
-    sd.value.should == "6.25e-2"
+  it "should raise an error on other input" do
+    expect {
+      ValueDescriptorModel.new "<Value><Cint>4</Cint></Value>"
+    }.to raise_error ParserError, /Value/
+    expect {
+      ValueDescriptorModel.new "whatever"
+    }.to raise_error ParserError, /whatever/
   end
-  it "should allow a number tag to surround the data" do
-    sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
-    sd.value.should == "0.32"
+  context "class methods" do
+    context "validation" do
+      it "should raise an error if passed an array with elements" do
+        expect {
+          ValueDescriptorModel.validate_substacks_count([1,2])
+        }.to raise_error ModelCreateError, /Value.*should not have/
+      end
+      it "should not raise an error if passed an empty array" do
+          ValueDescriptorModel.validate_substacks_count([]).should be_nil
+      end
+      it "should not raise an error if passed an array with no elements" do
+          ValueDescriptorModel.validate_substacks_count(nil).should be_nil
+      end
+    end
   end
-  it "should have no name" do
-    sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-    sd.name.should be_nil
-  end
-
-
-  it "should return 'nil' when asked for substack labels" do
-    sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
-    sd.substack_labels.should be_nil
+  context 'attributes' do
+    it "should always have a length of 0" do
+      sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
+      sd.should have(0).items
+    end
+    it "should have the value in the construction string" do
+      sd = AbstractDescriptorModel.make_instance "<Value>6.25e-2</Value>"
+      sd.value.should == 6.25e-2
+    end
+    it "should allow a number tag to surround the data" do
+      sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
+      sd.value.should == 0.32
+    end
+    it "should have no name" do
+      sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
+      sd.name.should be_nil
+    end
+    it "should return 'nil' when asked for substack labels" do
+      sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
+      sd.substack_labels.should be_nil
+    end
   end
 end
 
 
 describe ZeroDescriptorModel do
-  it "should always have a length of 0" do
-    sd = AbstractDescriptorModel.make_instance "<Zero/>"
-    sd.length.should == 0
+  it "Should create when given no input" do
+    z = ZeroDescriptorModel.new
+    z.should_not be_nil
   end
-  it "should raise an error if constructed with something other than <Zero/>" do
+  it "should successfully be created with input '<Zero/>'" do
+    z = ZeroDescriptorModel.new '<Zero/>'
+    z.should_not be_nil
+  end
+  it "should raise an error on other input" do
     expect {
-      sd = AbstractDescriptorModel.make_instance "<Zero>"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "<Zero>")
+      ZeroDescriptorModel.new "<Value><Cint>4</Cint></Value>"
+    }.to raise_error ParserError, /Value/
     expect {
-      sd = ZeroDescriptorModel.new "wrong"
-    }.to raise_error(StackDescriptorModelInvalidCreate, "wrong")
+      ZeroDescriptorModel.new "whatever"
+    }.to raise_error ParserError, /whatever/
   end
-  it "should have no name" do
-    sd = AbstractDescriptorModel.make_instance "<Zero/>"
-    sd.name.should be_nil
+  context "class methods" do
+    context "validation" do
+      it "should raise an error if passed an array with elements" do
+        expect {
+          ZeroDescriptorModel.validate_substacks_count([1,2])
+        }.to raise_error ModelCreateError, /Zero.*should not have/
+      end
+      it "should not raise an error if passed an empty array" do
+          ZeroDescriptorModel.validate_substacks_count([]).should be_nil
+      end
+      it "should not raise an error if passed an array with no elements" do
+          ZeroDescriptorModel.validate_substacks_count(nil).should be_nil
+      end
+    end
   end
-
-  it "should return 'nil' when asked for substack labels" do
-    sd = AbstractDescriptorModel.make_instance "<Zero/>"
-    sd.substack_labels.should be_nil
-  end
-
+  context "attributes" do
+    before(:each) do
+      @z = ZeroDescriptorModel.new
+    end
+    it "should have a value of '0'" do
+      @z.value.should == "0"
+    end
+    it "should have a length of 0" do
+      @z.length.should == 0
+    end
+    it "should have no name" do
+      @z.name.should be_nil
+    end
+    it "should return 'nil' when asked for substack labels" do
+      @z.substack_labels.should be_nil
+    end
+ end
 end
 

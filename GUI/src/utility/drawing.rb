@@ -16,28 +16,30 @@ end
 
 java_import javax.swing.ImageIcon
 
-VERTICAL_NODE_SEPARATION=50.0
-HORIZONTAL_NODE_SEPARATION=55.0
+
 
 module Drawing
   def draw_text_centered_at_point(g,text, point)
       text_bounds = get_string_size(g,text)
-      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y+(text_bounds.height * 0.5))
+      g.draw_string(text, point.x-(text_bounds.width*0.5), point.y)
   end
 
   def draw_text_centered_between(g,text, point1, point2)
-      point = Point.new((point1.x + point2.x) / 2, (point1.y + point2.y) / 2)
-      draw_centered_text(g,text,point)
+      draw_text_centered_at_point(g,text,mid_point(point1, point2))
+  end
+  
+  def mid_point(point1, point2)
+    Point.new((point1.x + point2.x) / 2, (point1.y + point2.y) / 2)
   end
 
   def draw_sized_text(g,size,text, point1, point2,reference)
-    point = Point.new((point1.x + point2.x) / 2, (point1.y + point2.y) / 2)
+    point = mid_point(point1, point2)
     atext = AttributedString.new(text)
     atext.add_attribute(TextAttribute::SIZE, size, 0, text.length)
     case reference
     when :left then draw_text_to_left_of_point(g,atext.iterator,Point.new(point.x,point.y))
     when :right then draw_text_to_right_of_point(g,atext.iterator,point)
-    else draw_text_centered_between(g,atext.iterator,point1,point2)
+    else draw_text_centered_at_point(g,atext.iterator,point)
     end
   end
 
@@ -53,7 +55,7 @@ module Drawing
   def get_string_size(g,text)
     case text
     when AttributedCharacterIterator then
-      this_font = g.font.derive_font(8.0)
+      this_font = g.font.java_send :deriveFont, [Java::float], 8.0
       this_font.get_string_bounds(text,0, text.end_index, g.font_render_context)
     else g.font.get_string_bounds(text,g.font_render_context)
     end
@@ -71,17 +73,5 @@ module Drawing
     g.color = Color.black
     g.draw shape
   end
-
-
-  def node_separation(direction)
-    case direction
-    when :vertical then VERTICAL_NODE_SEPARATION
-    when :horizontal then HORIZONTAL_NODE_SEPARATION
-    else VERTICAL_NODE_SEPARATION
-    end
-  end
-
-
-
 
 end

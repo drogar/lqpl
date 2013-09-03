@@ -36,7 +36,7 @@ describe CompilerServerConnection do
       before :each do
         @cmp = CompilerServerConnection.get_instance
       end
-      after(:each) do
+      after(:all) do
         @cmp.close_down if @cmp
       end
       it "connects to the lqpl-compiler process when created" do
@@ -47,9 +47,12 @@ describe CompilerServerConnection do
   end
   context "interfaces with the lqpl-compiler-server" do
     before :each do
-        @cmp = CompilerServerConnection.get_instance
-        @cmp.connect
-      end
+      @cmp = CompilerServerConnection.get_instance
+      @cmp.connect
+    end
+    after(:all) do
+      @cmp.close_down if @cmp
+    end
     it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do
       fname = "#{TEST_QP_PATH}/min.qpl"
       qpocode = @cmp.compile fname
@@ -66,7 +69,7 @@ describe CompilerServerConnection do
       @cmp.failure_message.should =~ /Semantic Error/
     end
     it "signals a warning when the code has a balance creation error" do
-      fname = "#{TEST_QP_PATH}invalidbalance.qpl"
+      fname = "#{TEST_QP_PATH}/invalidbalance.qpl"
       @cmp.compile fname
       @cmp.failed.should be_false
       @cmp.failure_message.should =~ /Semantic Warning/
@@ -81,6 +84,25 @@ describe CompilerServerConnection do
       @cmp.failed.should be_false
       @cmp.failure_message.should == ""
       @cmp.write_qpo_file
+      File.exist?("#{TEST_QP_PATH}/min.qpo").should be_true
+      File.open("#{TEST_QP_PATH}/min.reference.qpo") do |ref_compile|
+        ref_data = ref_compile.read
+        File.open("#{TEST_QP_PATH}/min.qpo") do |new_compile|
+          new_data = new_compile.read
+          new_data.should == ref_data
+        end
+      end
+    end
+    
+    it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code when using compile_and_write_qpo" do
+      fname = "#{TEST_QP_PATH}/min.qpl"
+      begin
+        File.delete("#{TEST_QP_PATH}/min.qpo")
+      rescue
+      end
+      @cmp.compile_and_write_qpo fname
+      @cmp.failed.should be_false
+      @cmp.failure_message.should == ""
       File.exist?("#{TEST_QP_PATH}/min.qpo").should be_true
       File.open("#{TEST_QP_PATH}/min.reference.qpo") do |ref_compile|
         ref_data = ref_compile.read
@@ -106,6 +128,24 @@ describe CompilerServerConnection do
           new_data.should == ref_data
         end
       end
+    end
+    it "sets failed to true if the desired qpl file is not existant" do
+      @cmp.send_included_file "<getFirst>GarbageFileThatDoesNotExist</getFirst>"
+      @cmp.failed?.should be_true
+    end
+    it "sets failure message to the name of the file if the desired qpl file is not existant" do
+      @cmp.send_included_file "<getFirst>GarbageFileThatDoesNotExist</getFirst>"
+      @cmp.failure_message.should =~ /GarbageFileThatDoesNotExist/
+    end
+    it "sets the success or fail message to '...successful...' if failed is false, and adds any failure message" do
+      @cmp.failed = false
+      @cmp.failure_message="testing"
+      @cmp.success_or_fail_message("file_name").should == "Compile of file_name was successful\ntesting"
+    end
+    it "sets the success or fail message to '...unsuccessful...' if failed is true, and adds any failure message" do
+      @cmp.failed = true
+      @cmp.failure_message="testing"
+      @cmp.success_or_fail_message("file_name").should == "Compile of file_name was unsuccessful\ntesting"
     end
   end
 end

@@ -1,20 +1,21 @@
 require 'lqpl_menu'
 
 class LqplView < ApplicationView
-  set_java_class com.drogar.lqpl.screens.QuantumEmulatorMainScreen
+  set_java_class QuantumEmulatorMainForm
 
   attr_accessor :the_menu
-  map :view => "spinnerPanel.visible", :model => :spinner_panel_visible
-  map :view => "buttonPanel.visible", :model => :button_panel_visible
+  map :view => "spinner_panel.visible", :model => :spinner_panel_visible
+  map :view => "button_panel.visible", :model => :button_panel_visible
 
-  map :view => "stepSpinner.model.value", :model => :step_spinner
-  map :view => "recursionSpinner.model.value", :model => :recursion_spinner
-  map :view => "treeDepthSpinner.model.value", :model => :tree_depth_spinner
+  map :view => "step_spinner.model.value", :model => :step_spinner
+  map :view => "recursion_spinner.model.value", :model => :recursion_spinner
+  map :view => "recursion_multiplier_spinner.model.value", :model => :recursion_multiplier_spinner
+  map :view => "tree_depth_spinner.model.value", :model => :tree_depth_spinner
 
-  map :view => "messagesTextArea.text", :model => :messages_text
+  map :view => "messages_text_area.text", :model => :messages_text
 
-  map :view => "stepButton.enabled", :model => :step_enabled
-  map :view => "goButton.enabled", :model => :go_enabled
+  map :view => "step_button.enabled", :model => :step_enabled
+  map :view => "go_button.enabled", :model => :go_enabled
 
   map :view => "the_menu.view_classical_stack.enabled", :model => :view_menu_classical_stack_enabled
   map :view => "the_menu.view_dump.enabled", :model => :view_menu_dump_enabled
@@ -26,7 +27,6 @@ class LqplView < ApplicationView
   map :view => "the_menu.view_executing_code.text", :model => :view_menu_executing_code_text
   map :view => "the_menu.view_stack_translation.text", :model => :view_menu_stack_translation_text
 
-  #map :view => "frameTitle", :model => :frame_title
   raw_mapping :set_title,nil
 
 
@@ -39,7 +39,10 @@ class LqplView < ApplicationView
   end
 
   def set_title(model,trans)
-    @main_view_component.title = model.frame_title
+      @main_view_component.title = model.frame_title
   end
 
+  def the_frame
+    @main_view_component
+  end
 end

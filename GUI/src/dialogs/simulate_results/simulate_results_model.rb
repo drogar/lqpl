@@ -1,8 +1,5 @@
-require 'exceptions/quantum_stack_model_invalid_create'
-
 
 class SimulateResultsModel
-  include XmlDecode
   attr_accessor :simulate_results
   attr_accessor :simulate_results_text
   attr_accessor :random_value_text
@@ -27,20 +24,10 @@ class SimulateResultsModel
 
   java_signature "void simulate_results(Object)"
   def simulate_results=(xml_data)
-    raise QuantumStackModelInvalidCreate, "Missing Stack Translation" if @stack_translation.nil?
-    sr = SIMULATE_PATTERN.match xml_data
-
-    raise QuantumStackModelInvalidCreate, "Invalid Simulate Results: #{xml_data}" if !sr
-    @random_value_text = "Random Value: "+sr[1]
-    @simulate_results = SimulateResultsModel.result_values_to_list(sr[2],@stack_translation)
+    raise ModelCreateError, "Missing Stack Translation" if @stack_translation.nil?
+    sr = SimulateResultsParser.new xml_data
+    @random_value_text = "Random Value: "+sr.random_value
+    @simulate_results = sr.simulate_results.collect {|srs| [@stack_translation.reverse_lookup(srs[0]),srs[1],srs[2]]}
   end
 
-  def self.result_values_to_list(rvals,stack_trans)
-    values_to_list rvals, TRIPLE_PATTERN, do |ret, rv|
-      ret << [stack_trans.reverse_lookup(rv[1]),rv[2],rv[3]]
-    end
-  end
-  SIMULATE_PATTERN = Regexp.new /<Simulated><double>(.*)<\/double><results>((<triple><string>.*?<\/string><string>.*?<\/string><string>.*?<\/string><\/triple>)*)<\/results><\/Simulated>/
-
-  TRIPLE_PATTERN = Regexp.new /<triple><string>(.*?)<\/string><string>(.*?)<\/string><string>(.*?)<\/string><\/triple>/
 end

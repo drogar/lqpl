@@ -9,6 +9,7 @@
 
     import Network.Socket
     import System.IO
+    import System.IO.Error
     import System.Cmd
 
     import Spec.SpecHelper
@@ -16,6 +17,8 @@
     import Compiler.CompilerServer
 
     import Control.Concurrent
+    
+    import Control.Exception
 
 
 
@@ -124,7 +127,7 @@
     getHandle (sa:rest) = do
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
-      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (show err))
+      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (ioeGetErrorString err))
       writable <- sIsWritable sock
       if (writable)
         then do
@@ -150,7 +153,7 @@
       putStrLn $ "addressinfo="++show sa
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
-      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (show err))
+      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (ioeGetErrorString err))
       --bnd <- sIsBound sock
       --putStrLn $ "Socket bound? " ++ show bnd
       writable <- sIsWritable sock

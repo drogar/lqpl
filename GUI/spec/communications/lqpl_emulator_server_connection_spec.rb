@@ -21,7 +21,7 @@ describe LqplEmulatorServerConnection do
       before :each do
         @sc = LqplEmulatorServerConnection.get_instance
       end
-      after(:each) do
+      after(:all) do
         @sc.close_down if @sc
       end
       it "connects to the lqpl-serv process when created" do
@@ -35,6 +35,10 @@ describe LqplEmulatorServerConnection do
         @sc = LqplEmulatorServerConnection.get_instance
         @sc.connect
       end
+    
+    after :all do
+      @sc.close_down if @sc
+    end
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
       fname = "#{TEST_QP_PATH}/min.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
@@ -48,22 +52,16 @@ describe LqplEmulatorServerConnection do
       fname = "#{TEST_QP_PATH}/coin.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
     end
-    it "allows depth multiples to be set" do
-      @sc.send_set_depth_multiplier.should =~ /reset/
+    after :all do
+      @sc.close_down if @sc
     end
-    it "steps through a program" do
-      @sc.do_step.should =~ /Stepped/
-      @sc.do_step(5).should =~ /Stepped/
-    end
+    specify {@sc.send_set_depth_multiplier.should =~ /reset/}
+    specify {@sc.do_step.should =~ /Stepped/}
+    specify {@sc.do_step(5).should =~ /Stepped/}
+    specify {@sc.do_run.should =~ /executed/}
+    specify {@sc.do_trim.should =~ /trimmed/}
     it "steps through a program and gives a different status when at the end" do
       @sc.do_step(40).should =~ /executed/
-    end
-    it "runs a program and gets the status 'executed'" do
-      @sc.do_run.should =~ /executed/
-    end
-
-    it "trims a stack and gets the status 'trimmed'" do
-      @sc.do_trim.should =~ /trimmed/
     end
     it "should allow a step or another run after a run and stil return executed" do
       @sc.do_run
@@ -79,27 +77,15 @@ describe LqplEmulatorServerConnection do
       flag = @sc.send_load_from_file(10,fname)
       @sc.do_step(10) # down one branch of the measure
     end
-    it "returns the qstack" do
-      @sc.get_qstack.should =~ /<Qstack/
+    after :all do
+      @sc.close_down if @sc
     end
-    it "returns the classical_stack" do
-      @sc.get_classical_stack.should =~ /<Cstack/
-    end
-    it "returns the dump" do
-      @sc.get_dump.should =~ /<Dump/
-    end
-    it "returns the code pointer" do
-      @sc.code_pointer.should =~ /<pair/
-    end
-    it "returns the code" do
-      @sc.loaded_code.should =~ /<Code/
-    end
-    it "returns the stack translation" do
-      @sc.get_stack_translation.should =~ /<MMap/
-    end
-    it "returns a simulation" do
-      @sc.get_simulate_results.should =~ /<Simulated><double/
-    end
-
+    specify {@sc.get_qstack.should =~ /<Qstack/}
+    specify {@sc.get_classical_stack.should =~ /<Classical/}
+    specify {@sc.get_dump.should =~ /<Dump/}
+    specify {@sc.code_pointer.should =~ /<pair/}
+    specify {@sc.loaded_code.should =~ /<Code/}
+    specify {@sc.get_stack_translation.should =~ /<MMap/}
+    specify {@sc.get_simulate_results.should =~ /<Simulated><double/}
   end
 end

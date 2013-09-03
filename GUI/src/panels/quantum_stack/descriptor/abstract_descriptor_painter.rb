@@ -1,10 +1,5 @@
-require 'utility/drawing'
-
-java_import "com.drogar.lqpl.qstack.Painter"
-
-
 class AbstractDescriptorPainter
-  include Painter
+  
   include Drawing
 
   def initialize(model)
@@ -28,53 +23,81 @@ class AbstractDescriptorPainter
   end
 
   def my_shape(point)
-    Ellipse2D::Double.new(point.x-half_node_size, point.y-half_node_size, node_size, node_size)
+    Ellipse2D::Double.new(point.x-half_node_size, 
+                          point.y-half_node_size, 
+                          node_size, 
+                          node_size)
   end
 
   def my_colour
     #Not to be used
-    raise RuntimeError, "do not call paint on abstract StackDescriptor, use on subclass: I am a #{self.class}"
+    raise RuntimeError, "do not call paint on abstract 
+                         StackDescriptor, use on subclass: 
+                         I am a #{self.class}"
   end
 
-  # painter interface start
-  alias :setModelElement :model_element=
 
-  def imageOfModel()
+  def image_of_model()
     nil
   end
 
-  alias :image_of_model :imageOfModel
 
-  def paintModel(g, p)
+  def paint_model(g)
     #Not to be used
-    raise RuntimeError, "do not call paintModel on descriptors, use paintModelAtPoint"
+    raise RuntimeError, "do not call paint_model on descriptors, 
+                         use paint_model_at_point"
   end
 
-  alias :paint_model :paintModel
 
-  def paintModelAtPoint(g,p,center)
+  def paint_model_at_point(g,center)
     draw_colour_filled_shape(g,my_shape(center), my_colour)
-    draw_text_to_left_of_point(g,"#{@model_element.name}",Point.new(center.x-node_size, center.y)) if @model_element.name
-    draw_text_centered_at_point(g,"#{@model_element.value}",Point.new(center.x, center.y+node_size)) if @model_element.length == 0
+    paint_name(g,center) if @model_element.name
+    paint_value(g,center) if @model_element.length == 0
   end
 
-  alias :paint_model_at_point :paintModelAtPoint
-  # end of painter interface
+  def paint_name(g,center)
+    draw_text_to_left_of_point(g,"#{@model_element.name}",
+                               Point.new(center.x-node_size, 
+                                         center.y
+                                         )
+                              )
+  end
+  
+  def paint_value(g,center)
+    draw_text_centered_at_point(g,"#{@model_element.value}",
+                                Point.new(center.x, 
+                                          center.y+2*node_size
+                                          )
+                                ) 
+  end
+  
 
   def model_paint_size(g)
 
-    left_width = half_node_size
-    left_width += get_string_size(g,"#{@model_element.name}").width + node_size if @model_element.name
-    right_width = half_node_size
-
     height  =  node_size
-    valsize =  get_string_size(g," #{@model_element.value} ")
-    height  += valsize.height + half_node_size if @model_element.length == 0
-    right_width   =  [right_width,valsize.width*0.5].max
-    left_width = [left_width,valsize.width*0.5].max
-    {:left => left_width, :right => right_width, :height => height}
+    valsize =  get_value_canvas_size g
+    height  += valsize.height_with_spacing if @model_element.length == 0
+    
+    right_width   =  valsize.right_required_width
+    left_width    =  [half_node_size + name_width(g),
+                      valsize.left_required_width].max
+    
+    CanvasSize.new_with_measures(left_width, right_width, height)
   end
 
+  def get_value_canvas_size(g)
+    valsize = get_string_size(g," #{@model_element.value} ")
+    CanvasSize.new_with_measures(valsize.width*0.5,
+                                 valsize.width*0.5,
+                                 valsize.height
+                                 )
+  end
+  
+  def name_width g
+    return get_string_size(g,"#{@model_element.name}").width + 
+           node_size if @model_element.name
+    0
+  end
 
 
 end

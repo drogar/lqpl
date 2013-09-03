@@ -10,11 +10,13 @@ class Connection
 
   attr_accessor :port
   attr_accessor :connect_to
+  attr_accessor :my_path
 
   def initialize(port=nil)
     @port = port
     @connection = nil
     @process = nil
+    _set_up_my_path
   end
 
   java_signature "boolean is_connected()"
@@ -37,33 +39,49 @@ class Connection
 
   def connect
     res = _make_connection
-
-    jar_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
-    if jar_path
-      jar_path=jar_path[5,jar_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
-    else
-      jar_path = File.expand_path(File.dirname(__FILE__))+"/../../"
-    end
-    #puts " will try from #{jar_path}"
+    
+    # puts " will try from #{jar_path}"
     if !res
       begin
-        @process=ProcessBuilder.new(@connect_to, "").start
-        sleep 0.25
-        res2 = _make_connection
-        raise ServerProcessNotFound if !res2
+        # try executing from PATH first - probably not right for testing.... 
+        #TODO - add flag to pick order of these.
+        _start_up_the_executable_in_a_process(@connect_to)
       rescue => e
         begin
-          @process=ProcessBuilder.new("#{jar_path}bin/#{@connect_to}", "").start
-          sleep 0.25
-          res2 = _make_connection
-          raise ServerProcessNotFound if !res2
+          # Assume executables just below jar path 
+          # Works for bundled executables.
+          _start_up_the_executable_in_a_process("#{@my_path}bin/#{@connect_to}")
         rescue => e1
-          raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+          begin
+            # assume one further .. and then over to out/bin 
+            # works for rspec and cucumber 
+            _start_up_the_executable_in_a_process("#{@my_path}../out/bin/#{@connect_to}")
+          rescue => e2
+            raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+          end
         end
       end
     end
   end
-
+  
+  def _set_up_my_path
+    @my_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
+    if @my_path
+      #:nocov:
+      @my_path=@my_path[5,@my_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
+      #:nocov:
+    else
+      @my_path = File.expand_path(File.dirname(__FILE__))+"/../../"
+    end
+  end
+  
+  def _start_up_the_executable_in_a_process(executable)
+    @process=ProcessBuilder.new(executable, "").start
+    sleep 0.25
+    res2 = _make_connection
+    raise ServerProcessNotFound if !res2
+  end
+  
   def _make_connection
 
     ["127.0.0.1", "::1", "localhost"].each do |addr|

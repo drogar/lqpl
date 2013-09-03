@@ -36,8 +36,8 @@
                       )
       context "Network connection file provider" $ do
               it "sends the message '<doesfileexist name=xyz />' to the socket "
-                $ pending "test that it sends a request"
-
+                $ pending 
+                
     dotOnFirst = [".", "abc"]
     dotOnSecond = ["first", ".", "abc"]
     dotOnLast =  ["first", "."]

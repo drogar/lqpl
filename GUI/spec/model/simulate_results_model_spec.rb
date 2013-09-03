@@ -28,9 +28,9 @@ describe SimulateResultsModel do
     it "should throw an error if given invalid input" do
       expect {
         @m.simulate_results = "junk"
-      }.to raise_error  QuantumStackModelInvalidCreate, /junk/
+      }.to raise_error  ParserError, /junk/
     end
-    it "should set the text or the random value to 'Random Value: rv" do
+    it "should set the text for the random value to 'Random Value: rv" do
       @m.simulate_results =ONEELT
       @m.random_value_text.should == "Random Value: 0.27"
     end
@@ -44,29 +44,5 @@ describe SimulateResultsModel do
     end
   end
 
-  describe "class method result_values_to_list" do
-    before(:each) do
-      @st = double("StackTranslation", :nil? => false)
-      @st.stub(:reverse_lookup) do |val|
-        case val
-        when "1" then "@p"
-        when "2" then "@q"
-        else val
-        end
-      end
-    end
-    it "should make an empty list with no data" do
-      SimulateResultsModel.result_values_to_list("",@st).should == []
-    end
-    it "should make an empty list with nil data" do
-      SimulateResultsModel.result_values_to_list(nil,@st).should == []
-    end
-    it "should make a singleton list when there is one triple" do
-      SimulateResultsModel.result_values_to_list(make_triple("1","Int",37),@st).should == [["@p","Int","37"]]
-    end
-    it "should make a list of all items" do
-      SimulateResultsModel.result_values_to_list(make_triple("1","Int",37)+make_triple("2","Bool","True")+
-        make_triple("3","qubit",1),@st).should == [["@p","Int","37"],["@q","Bool","True"],["3","qubit","1"]]
-    end
-  end
+ 
 end

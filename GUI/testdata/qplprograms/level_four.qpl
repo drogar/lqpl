@@ -1,0 +1,55 @@
+
+one_to_8::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = one_to_4()}
+     |1> => {c = five_to_8()}
+}
+
+one_to_4::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = one_to_2()}
+     |1> => {c = three_to_4()}
+}
+
+one_to_2::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = 1}
+     |1> => {c = 2}
+}
+
+three_to_4::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = 3}
+     |1> => {c = 4}
+}
+five_to_8::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = five_to_6()}
+     |1> => {c = seven_to_8()}
+}
+five_to_6::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = 5}
+     |1> => {c = 6}
+}
+seven_to_8::( ; c:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> => {c = 7}
+     |1> => {c = 8}
+}
+main::() =
+{  a = one_to_8()}

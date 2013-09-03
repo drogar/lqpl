@@ -2,12 +2,13 @@
 
 class ValueDescriptorModel < AbstractDescriptorModel
 
-  PATTERN=Regexp.new /^<Value>(<number>)?(.*?)(<\/number>)?<\/Value>$/
-
+  def self.validate_substacks_count(substacks)
+    return unless substacks
+    raise ModelCreateError, "Value element should not have substacks" if substacks.size > 0
+  end
+  
   def initialize(in_string)
-    matc = PATTERN.match in_string
-    raise StackDescriptorInvalidCreate, in_string if ! matc
-    @value = matc[2]
+    @value = @value = (ValuePatternParser.new in_string).parsed_value
     @name = nil
   end
 
