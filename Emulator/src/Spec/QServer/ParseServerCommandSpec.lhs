@@ -1,6 +1,8 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -16,7 +18,7 @@
     makeBoolParseError :: String -> Assertion
     makeBoolParseError s = assertBool ("'"++s++"' returns error") (expectLeftString (getCommand s))
 
-    main = hspecX $ describe "Parse Server Commands" $ mapM_ (makeSpec) tests
+    main = hspecWith defaultConfig{configFormatter=progress} $ describe "Parse Server Commands" $ mapM_ (makeSpec) tests
 
     makeSpec a = it ("hunit test: "++ show a) $ a
 

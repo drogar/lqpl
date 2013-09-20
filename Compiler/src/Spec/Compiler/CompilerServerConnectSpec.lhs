@@ -1,7 +1,9 @@
 \begin{code}
   module Main where
     import Test.Hspec.Core(Example(..),Result(..))
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -23,7 +25,7 @@
 
 
     main = do
-      hspecX compilerSpecs
+      hspecWith defaultConfig{configFormatter=progress} compilerSpecs
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do

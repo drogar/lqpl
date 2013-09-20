@@ -1,6 +1,8 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -20,7 +22,7 @@
 
     instance Quantum LazyNum
 
-    main = hspecX tests
+    main = hspecWith defaultConfig{configFormatter=progress} tests
 
 
     xmlValues =  [(StackZero, "<Zero/>"),
