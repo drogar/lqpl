@@ -1,5 +1,5 @@
 Name:                lqpl
-Version:             0.9.0
+Version:             0.9.1
 Stability:           Experimental
 Synopsis:            Compiler and Emulator for Linear-QPL
 Description:         A command-line compiler, a server based compiler and a server based emulator
