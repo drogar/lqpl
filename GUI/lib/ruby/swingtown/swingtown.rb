@@ -321,14 +321,21 @@ module Swingtown
     class STDialogWithOK < STDialog
       attr_accessor :button_pane
       attr_accessor :ok_button
+      attr_accessor :data_pane
       def initialize(title=nil)
         super(title)
-        @button_pane = Panel.new do |bp|
-          @ok_button = Button.new("OK") do |b|
-            bp.add(b)
-            self.root_pane.default_button = b
+        self.root_pane.content_pane = Panel.new do |cpane|
+
+          cpane.layout = BoxLayout.new(cpane,BoxLayout::Y_AXIS)
+          
+          @data_pane = Panel.new {|dp| cpane.add(dp)}
+          @button_pane = Panel.new do |bp|
+            @ok_button = Button.new("OK") do |b|
+              bp.add(b)
+              self.root_pane.default_button = b
+            end
+            cpane.add(bp)
           end
-          self.content_pane.add(bp)
         end
       end
     end

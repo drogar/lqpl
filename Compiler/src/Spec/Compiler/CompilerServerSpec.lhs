@@ -1,7 +1,9 @@
 \begin{code}
   module Main where
     import Test.Hspec.Core(Example(..),Result(..))
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -28,7 +30,7 @@
 
     main = do
       ior <- newIORef (CS_READY, "", empty)
-      hspecX (compilerSpecs ior)
+      hspecWith defaultConfig{configFormatter=progress} (compilerSpecs ior)
 
     compilerSpecs ior = describe "compiler server" $ do
       context "input commands" $ do

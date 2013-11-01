@@ -1,7 +1,9 @@
 \begin{code}
   module Main where
     import Test.Hspec.Core(Example(..),Result(..))
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -23,12 +25,11 @@
 
 
     main = do
-      hspecX compilerSpecs
+      hspecWith defaultConfig{configFormatter=progress} compilerSpecs
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do
         it ("runs on port "++default_port++" by default") $ do
-            putStrLn "Checking open port"
             running <- checkOpenPort default_port
             if running
               then return True
@@ -127,7 +128,7 @@
     getHandle (sa:rest) = do
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
-      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (ioeGetErrorString err))
+      catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("gethandle" ++ (ioeGetErrorString err)))
       writable <- sIsWritable sock
       if (writable)
         then do
@@ -135,6 +136,10 @@
           hSetBuffering h LineBuffering
           return (Just h)
         else getHandle rest
+        
+    ignoreIOError err =
+      do let a = ioeGetErrorString err
+         return ()
 
 
     checkOpenPort :: String -> IO Bool
@@ -150,10 +155,9 @@
     checkAddresses :: [AddrInfo] -> IO (Maybe Socket)
     checkAddresses [] = return (Nothing)
     checkAddresses (sa:rest) = do
-      putStrLn $ "addressinfo="++show sa
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
-      catch (connect sock (addrAddress sa)) (\ err -> putStrLn (ioeGetErrorString err))
+      catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("checkaddresses" ++ (ioeGetErrorString err)))
       --bnd <- sIsBound sock
       --putStrLn $ "Socket bound? " ++ show bnd
       writable <- sIsWritable sock

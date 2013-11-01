@@ -1,6 +1,8 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -31,6 +33,6 @@
     tests =  describe "StackToXML" $ mapM_ (uncurry checkIt) xmlValues
 
 
-    main = hspecX tests
+    main = hspecWith defaultConfig{configFormatter=progress} tests
 
 \end{code}
