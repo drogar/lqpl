@@ -5,15 +5,15 @@ class AboutDialog < STDialogWithOK
 
   def initialize()
     super("About LQPL")
-    make_data_panel(content_pane)
+    make_data_panel(self.data_pane)
 
   end
 
-  def make_data_panel(cpanel)
+  def make_data_panel(dpanel)
     Panel.new do |p|
       @about_data_label = Label.new("")
       p.add(@about_data_label)
-      cpanel.add(p)
+      dpanel.add(p)
     end
   end
 
