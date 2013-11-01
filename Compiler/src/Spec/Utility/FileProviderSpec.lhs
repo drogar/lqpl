@@ -1,6 +1,8 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -14,7 +16,7 @@
     import Utility.FileProvider.FileSystem
 
 
-    main = hspecX fileProviderSpecs
+    main = hspecWith defaultConfig{configFormatter=progress} fileProviderSpecs
 
     fileProviderSpecs = describe "FileProvider" $ do
       context "filesystem provider class implementation" $ do

@@ -1,7 +1,9 @@
 \begin{code}
   module Main where
     import Test.Hspec.Core(Example(..),Result(..))
-    import Test.Hspec.Monadic
+    import Test.Hspec
+    import Test.Hspec.Runner
+    import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
     import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
@@ -26,7 +28,7 @@
             Map.empty
             Map.empty [] (push 0 emptyStack) 9
 
-    main = hspecX unificationSpecs
+    main = hspecWith defaultConfig{configFormatter=progress} unificationSpecs
 
     runinstanceOf whichtv tv1 tv2 = do
       return $ evalStateT (liftM fst $ runWriterT $ instanceOf whichtv tv1 tv2 (Map.singleton "b" INT)) startsemstate

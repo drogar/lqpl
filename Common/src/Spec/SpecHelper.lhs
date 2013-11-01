@@ -4,8 +4,12 @@
   module Spec.SpecHelper (
     getTempFile,
     getTempFileWithContent,
-    removeTempFile,
-    context
+    removeTempFile
+#if MIN_VERSION_hspec(1,1,2)
+
+#else
+    , context
+#endif
     )
   where
 
@@ -17,7 +21,6 @@
   import System.IO
   --import Test.Hspec
   import Test.Hspec.Core(Example(..),Result(..))
-  import Test.Hspec.Monadic
 
   getTempFileName :: String -> IO(String)
   getTempFileName name = do
