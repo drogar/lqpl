@@ -7,5 +7,5 @@ SERVER_PROGRAMS=["lqpl-emulator", "lqpl", "lqpl-compiler-server"]
 
 HASKELL_BIN_DIRS=["out/bin","/usr/local/bin", "#{Etc.getpwuid.dir}/.cabal/bin"]
 
-DIST_INCLUDES=["LICENCE","README", "doc/lqplManual.pdf", "lqplcode"]
+DIST_INCLUDES=["LICENCE","README.md", "doc/lqplManual.pdf", "lqplcode"]
 
