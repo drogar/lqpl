@@ -31,9 +31,9 @@ end
 GlobalErrorHandler.on_error {|exception, thread| log_the_error(exception, thread) }
 
 begin
-  #SwingRunner.on_edt do
+  SwingRunner.on_edt do
     LqplController.instance.open
-  #end
+  end
 rescue => e
   log_the_error(e)
 end

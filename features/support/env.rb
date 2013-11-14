@@ -38,7 +38,6 @@ require "fest-swing-1.2.jar"
 
 
 require "monkeybars-1.1.1.jar"
-require "forms_rt.jar"
 
 ENV['PATH'] = "#{project_dir + '/out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
