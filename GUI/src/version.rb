@@ -1,4 +1,4 @@
-LQPL_GUI_VERSION="0.9.0"
+LQPL_GUI_VERSION="0.9.1"
 
 ABOUT_STRING="<html> <center><strong>LQPL Emulator</strong> - Version #{LQPL_GUI_VERSION} (Experimental)</center> <br />
 <table>

@@ -6,17 +6,15 @@ installing rvm (Ruby Version Manager) if you are on Linux or Apple.
 
 Java and Java Tools:
   Required:
-    - JDK 1.6 (Tested with Apple version 1.6.0_33)
+    - JDK 1.6 or 1.7 (Tested with Apple version 1.6 and OpenJDK 7)
     - ant (tested with version 1.8.2)
-  Optional:
-    - IntelliJ IDEA (version 11) to modify forms - we expect to create panels
-      using JRuby by the next version
+
 
 JRuby and associated tools:
   Highly suggested:
     - rvm (https://rvm.beginrescueend.com) (aka rvm.io)
   Required:
-    - JRuby (version 1.6.7, using 1.9 syntax, tested)
+    - JRuby (version 1.7.5, using 1.9 syntax, tested)
     - Rake (Gem)
     - Bundler (Gem)
     - cucumber (Gem)
