@@ -311,10 +311,10 @@ module Swingtown
     
     class STDialog < Java::javax::swing::JDialog
       
-      def initialize(title=nil)
+      def initialize(title=nil,do_not_yield = false)
         super()
         self.title = title if title
-        yield self if block_given?
+        yield self if block_given? and not do_not_yield
       end
     end
     
@@ -323,12 +323,12 @@ module Swingtown
       attr_accessor :ok_button
       attr_accessor :data_pane
       def initialize(title=nil)
-        super(title)
+        super(title, false)
         self.root_pane.content_pane = Panel.new do |cpane|
 
           cpane.layout = BoxLayout.new(cpane,BoxLayout::Y_AXIS)
           
-          @data_pane = Panel.new {|dp| cpane.add(dp)}
+          self.data_pane = Panel.new {|dp| cpane.add(dp)}
           @button_pane = Panel.new do |bp|
             @ok_button = Button.new("OK") do |b|
               bp.add(b)
@@ -337,6 +337,7 @@ module Swingtown
             cpane.add(bp)
           end
         end
+        yield self.data_pane if block_given?
       end
     end
   end

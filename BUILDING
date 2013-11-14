@@ -18,15 +18,16 @@ although you may run the CABAL builds for the Haskell components directly.
 REQUIREMENTS:
 
 For the Compiler and Emulator, you will need a recent version of Haskell
-(tested with GHC version 7.0.4 and 7.4.1). I suggest loading the
+(tested with GHC version 7.6.3). I suggest loading the
 Haskell Platform at http://hackage.haskell.org/platform/.
 
 If you choose to install individual pieces, you will need GHC, Happy, Alex,
 Cabal and a variety of libraries. See the lqpl.cabal file for required libraries.
 
 For the GUI and for running the common rake build system, you must install and
-use JRuby. This code is developed on version 1.6.7, but may work with earlier
-versions.
+use JRuby. This code is working on version 1.7.5, but may work with earlier
+versions. This will also require a recent JDK (version 7 is suggested) and the 
+ant build system.
 
 See further details in GUI/BUILDING.
 

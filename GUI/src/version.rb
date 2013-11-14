@@ -1,4 +1,4 @@
-LQPL_GUI_VERSION="0.9.0"
+LQPL_GUI_VERSION="0.9.1"
 
 ABOUT_STRING="<html> <center><strong>LQPL Emulator</strong> - Version #{LQPL_GUI_VERSION} (Experimental)</center> <br />
 <table>
@@ -33,7 +33,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<br />
 
 lqpl includes software redistributed under:</br>
 <ul>
-<li>The Apache 2.0 license - forms_rt.jar</li>
 <li>The Ruby license - monkeybars.jar - available at https://github.com/monkeybars/monkeybars-core</li>
 <li>The Common Public License version 1.0 - jruby-complete.jar - available at www.jruby.org</li>
 </ul>

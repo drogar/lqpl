@@ -15,7 +15,6 @@ $CLASSPATH << "../out/lqpl_gui/"
 
 $LOAD_PATH << File.expand_path(File.dirname(__FILE__))+"/src"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/jruby-complete.jar"
-$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/forms_rt.jar"
 $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/monkeybars-1.1.1.jar"
 #$CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 
@@ -33,7 +32,6 @@ $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/lib/java/monkeybars-1.1
 #end testing of edt violations
 
 require "monkeybars-1.1.1.jar"
-require "forms_rt.jar"
 require 'utility/swing_runner'
 
 ENV['PATH'] = "#{File.expand_path(File.dirname(__FILE__) + '/bin')}#{File::PATH_SEPARATOR}#{ENV['PATH']}"

@@ -18,7 +18,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Licences of included software:
 
-forms_rt.jar: Licensed from Idea under the Apache version 2.0 licence. - See http://www.apache.org/licenses/LICENSE-2.0
 
 monkeybars.jar: Available at https://github.com/monkeybars/monkeybars-core - Licenced under the Ruby licence. See COPYING.markdown at that site. This includes the Foxtrot library also noted in COPYING.markdown
 
