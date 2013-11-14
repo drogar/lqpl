@@ -56,7 +56,7 @@ build = namespace :build do
   desc 'Compile java files in preparation for JAR'
   task :compile => "out/lqpl_gui" do
     ant.javac :srcdir => "GUI/src", :destdir => "out/lqpl_gui", :includeAntRuntime => "no",
-      :classpath => "GUI/lib/java/forms_rt.jar:GUI/lib/java/jruby-complete.jar:GUI/lib/java/monkeybars-1.1.1.jar"
+      :classpath => "GUI/lib/java/jruby-complete.jar:GUI/lib/java/monkeybars-1.1.1.jar"
   end
   desc 'Make a jar'
   task :jar => ["out", "GUI/Manifest", :compile, :copy_jruby] do

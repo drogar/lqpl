@@ -43,7 +43,6 @@ end
 
 require "fest-swing-1.2.jar"
 
-$CLASSPATH << project_dir+"/GUI/lib/java/forms_rt.jar"
 $CLASSPATH << project_dir+"/GUI/lib/java/monkeybars-1.1.1.jar"
 $CLASSPATH << project_dir+"/out/lqpl_gui"
 

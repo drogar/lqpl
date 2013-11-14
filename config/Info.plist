@@ -31,7 +31,7 @@
     <key>apple.laf.useScreenMenuBar</key>
     <string>true</string>
     <key>ClassPath</key>
-    <string>$JAVAROOT/lqpl_gui.jar:$JAVAROOT/lib/java/forms_rt.jar:$JAVAROOT/lib/java/jruby-complete.jar:$JAVAROOT/lib/java/monkeybars-1.1.1.jar</string>
+    <string>$JAVAROOT/lqpl_gui.jar:$JAVAROOT/lib/java/jruby-complete.jar:$JAVAROOT/lib/java/monkeybars-1.1.1.jar</string>
   </dict>
 </dict>
 </plist>

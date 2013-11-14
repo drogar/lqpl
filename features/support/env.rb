@@ -24,7 +24,7 @@ require 'java'
 $CLASSPATH << project_dir+"/out/lqpl_gui"
 
 #runtime jars
-%w{jruby-complete forms_rt monkeybars-1.1.1}.each do |jar|
+%w{jruby-complete monkeybars-1.1.1}.each do |jar|
   $CLASSPATH << project_dir+"/GUI/lib/java/"+jar+".jar"
 end
 

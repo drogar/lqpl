@@ -89,7 +89,9 @@ class Connection
         @connection = TCPSocket.new addr, @port
         return true
       rescue Errno::ECONNREFUSED => e1
-        #puts "For #{addr}, exception: #{e1}"
+        #puts "Connect refused For #{addr}, exception: #{e1}"
+      rescue SocketError => e
+        #puts "Socket error for  #{addr}, exception: #{e} "
       end
     end
     return false # made it through without returning
