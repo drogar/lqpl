@@ -21,7 +21,7 @@
  Boston, MA 02111-1307, USA.
 
 -->
-<language id="lqplassem" _name="LQPLAssem" version="0.8.3" _section="Sources">
+<language id="lqplassem" _name="LQPLAssem" version="0.9.1" _section="Sources">
   <metadata>
     <property name="mimetypes">text/x-lqpla</property>
     <property name="globs">*.lqpla</property>

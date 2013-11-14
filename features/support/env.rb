@@ -24,7 +24,7 @@ require 'java'
 $CLASSPATH << project_dir+"/out/lqpl_gui"
 
 #runtime jars
-%w{jruby-complete forms_rt monkeybars-1.1.1}.each do |jar|
+%w{jruby-complete monkeybars-1.1.1}.each do |jar|
   $CLASSPATH << project_dir+"/GUI/lib/java/"+jar+".jar"
 end
 
@@ -38,7 +38,6 @@ require "fest-swing-1.2.jar"
 
 
 require "monkeybars-1.1.1.jar"
-require "forms_rt.jar"
 
 ENV['PATH'] = "#{project_dir + '/out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 

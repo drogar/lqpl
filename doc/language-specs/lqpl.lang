@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<language id="lqpl" _name="LQPL" version="0.8.3" _section="Sources">
+<language id="lqpl" _name="LQPL" version="0.9.1" _section="Sources">
   <metadata>
     <property name="mimetypes">text/x-lqpl</property>
     <property name="globs">*.lqpl</property>
