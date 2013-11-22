@@ -180,7 +180,7 @@ task :clean => [build[:server_clean]]
 namespace :run do
   desc "Run lqpl, ensuring all built"
   task :lqpl => [build[:all]] do
-    sh "(cd out; java -Xmx1G -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
+    sh "(cd out; java -Xdock:name=LQPL -Xdock:icon=../GUI/icons/lqpl_icon.tiff -Xmx1G -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
   end
 end
 
