@@ -147,7 +147,7 @@ tests = namespace :test do
     t.ruby_opts = "--1.9 -IGUI"
   end
 
-  desc "Run gui specs after ensuring jar is built"
+  desc "Run GUI specs after ensuring jar is built"
   task :spec => [build[:jar]]
 
   desc "Run lqpl Compiler and Emulator tests"
