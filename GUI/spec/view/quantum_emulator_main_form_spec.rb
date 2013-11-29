@@ -12,7 +12,7 @@ describe QuantumEmulatorMainForm do
   end
   specify {expect(@qemf.title).to eq("Quantum Emulator")}
   specify {expect(@qemf.name).to eq("Quantum Emulator")}
-  specify {expect(@qemf.content_pane.size).to eq(3)}
+  specify {expect(@qemf.content_pane).to have(3).components}
   context "the messages area" do
     before :each do
       @ma = @qemf.content_pane.components[0]
@@ -39,7 +39,7 @@ describe QuantumEmulatorMainForm do
       expect(@spinpanel.class).to eq(Panel)
     end
     it "should contain 8 children" do
-      expect(@spinpanel.size).to eq(8)
+      expect(@spinpanel).to have(8).components
     end
     it "has spinners for odd components" do
       [1,3,5,7].each do |i|
@@ -86,7 +86,7 @@ describe QuantumEmulatorMainForm do
       expect(@buttonpanel.class).to eq(Panel)
     end
     it "should contain 3 children" do
-      expect(@buttonpanel.size).to eq(3)
+      expect(@buttonpanel).to have(3).components
     end
     it "should have 3 buttons" do
       @buttonpanel.components.each do |comp|

@@ -15,14 +15,14 @@ describe AboutDialog do
     expect(@ab.edt_title).to eq('About LQPL')
   end
 
-  specify {expect(@ab.data_pane.size).to eq(1)}
+  specify {expect(@ab.data_pane).to have(1).components}
 
   context "the text label" do
     before (:each) do
       @tp = @ab.data_pane.components[0]
     end
     specify {expect(@tp.class).to eq(Panel)}
-    specify {expect(@tp.size).to eq(1)}
+    specify {expect(@tp).to have(1).components}
     specify {expect(@tp.components[0].class).to eq(Label)}
     context "the label" do
       before (:each) do

@@ -59,6 +59,13 @@ require 'manifest'
 require 'component_query'
 require 'drawing_extensions'
 require 'raster_queries'
+RSpec.configure do |configuration|
+  configuration.mock_with :rspec do |configuration|
+    #configuration.syntax = [:expect, :should]
+    #configuration.syntax = :should
+    configuration.syntax = :expect
+  end
+end
 
 def last(arr)
   arr[arr.size - 1]

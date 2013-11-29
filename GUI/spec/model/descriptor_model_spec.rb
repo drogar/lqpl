@@ -68,9 +68,9 @@ describe ClassicalDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    expect(sd.size).to eq(3)
+    expect(sd).to have(3).items
   end
   it "should have the value being the list of classicalvalues in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
@@ -78,9 +78,9 @@ describe ClassicalDescriptorModel do
   end
   it "should return a list of length 'length' when asked for substack labels" do
      sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    expect(sd.size).to eq(3)
+    expect(sd).to have(3).items
   end
   it "should have the substack_labels being the list of classicalvalues in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
@@ -115,9 +115,9 @@ describe DataDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    expect(sd.size).to eq(2)
+    expect(sd).to have(2).items
     
   end
   it "should have the value being the map of constructor/address pairs in the string" do
@@ -126,9 +126,9 @@ describe DataDescriptorModel do
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    expect(sd.size).to eq(2)
+    expect(sd).to have(2).items
   end
 
   it "should have constructer names only when there are no stack addresses" do
@@ -173,9 +173,9 @@ describe QubitDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    expect(sd.size).to eq(2)
+    expect(sd).to have(2).items
   end
   it "should have the value being the list of qubit indicators in the string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
@@ -183,9 +183,9 @@ describe QubitDescriptorModel do
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    expect(sd.size).to eq(1)
+    expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    expect(sd.size).to eq(2)
+    expect(sd).to have(2).items
   end
   it "should have the substack_labels being the list of 01 pairs in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
@@ -257,7 +257,7 @@ describe ValueDescriptorModel do
   context 'attributes' do
     it "should always have a length of 0" do
       sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-      expect(sd.size).to eq(0)
+      expect(sd).to have(0).items
     end
     it "should have the value in the construction string" do
       sd = AbstractDescriptorModel.make_instance "<Value>6.25e-2</Value>"

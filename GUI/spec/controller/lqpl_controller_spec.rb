@@ -30,13 +30,13 @@ describe LqplController do
       end
     end
     
-    specify {expect(@l.size).to eq(5)}
-    specify {expect(@l.size).to eq(2)}
+    specify {expect(@l).to have(5).sub_controllers}
+    specify {expect(@l).to have(2).dialogs}
     context "sub_controllers" do
-      specify {expect(@l.sub_controllers.compact.size).to eq(5)}
+      specify {expect(@l.sub_controllers.compact).to have(5).non_nil_items}
     end
     context "dialogs" do
-      specify {expect(@l.dialogs.compact.size).to eq(2)}
+      specify {expect(@l.dialogs.compact).to have(2).items}
     end
     
     context "the compiler server" do

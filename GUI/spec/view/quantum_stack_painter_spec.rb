@@ -7,7 +7,7 @@ require 'src/panels/quantum_stack/quantum_stack_painter'
 describe QuantumStackPainter do
   before :each do
     st = double("StackTranslation")
-    allow(st).to receive(:reverse_lookup, :nil? => false) do |val|
+    allow(st).to receive(:reverse_lookup) do |val|
       case val
       when "1" then "@p"
       when "2" then "@q"

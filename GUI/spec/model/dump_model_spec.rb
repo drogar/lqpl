@@ -27,7 +27,7 @@ describe DumpModel do
   it "should create a list of dumpcall and dumpsplit items" do
     dc=DumpModel.new
     dc.dump="<Dump>"+DCALL+DSPLIT+DCALL2+"</Dump>"
-    expect(dc.size).to eq(3)
+    expect(dc).to have(3).dump
     expect(dc.dump[0].class).to eq(DumpCallModel)
     expect(dc.dump[1].class).to eq(DumpSplitModel)
   end

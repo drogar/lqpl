@@ -24,7 +24,7 @@ describe STDialog do
         d.content_pane.add(Panel.new)
         d.content_pane.add(Panel.new)
       end
-      expect(dt.content_pane.size).to eq(2)
+      expect(dt.content_pane).to have(2).components
     end
   end
 end
@@ -58,7 +58,7 @@ describe STDialogWithOK do
             d.add(Panel.new)
             d.add(Panel.new)
          end
-          expect(s.data_pane.size).to eq(2)
+          expect(s.data_pane).to have(2).components
         end
       end
       it "should setup items in the init block before the button pane" do
@@ -93,7 +93,7 @@ describe STDialogWithOK do
           @bp = last(@sr.content_pane.components)
         end
         specify {expect(@bp.class).to eq(Panel)}
-        specify {expect(@bp.size).to eq(1)}
+        specify {expect(@bp).to have(1).components}
         specify {expect(@bp.components[0].class).to eq(Button)}
         context "the button" do
           before (:each) do

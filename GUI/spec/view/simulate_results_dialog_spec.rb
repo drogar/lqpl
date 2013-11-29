@@ -14,8 +14,8 @@ describe SimulateResultsDialog do
   it "should have a title of 'Simulate Results'" do
     expect(@sr.edt_title).to eq('Simulate Results')
   end
-  specify {expect(@sr.data_pane.size).to eq(1)}
-  specify {expect(@sr.data_pane.components[0].size).to eq(2)}
+  specify {expect(@sr.data_pane).to have(1).components}
+  specify {expect(@sr.data_pane.components[0]).to have(2).components}
   #specify {@sr.content_pane.get_layout.class.should == BoxLayout}
   context "the random value" do
     before (:each) do

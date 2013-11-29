@@ -21,21 +21,17 @@ describe AbstractListPatternParser do
       end
     end
     it "returns whatever elements the block adds to the first yield parameter" do
-      expect(AbstractListPatternParser::values_to_list "a",/a/ do |r,m|
+      expect(AbstractListPatternParser::values_to_list("a",/a/) { |r,m|
          r << 1
          r << 2
          r << 3
-       end).to eq([1,2,3])
+         }).to eq([1,2,3])
     end
     it "ignores assignments in the block to the first yield parameter" do
-      expect(AbstractListPatternParser::values_to_list "a",/a/ do |r,m|
-         r = [1,2,3]
-       end).to eq([])
+      expect(AbstractListPatternParser::values_to_list("a",/a/){|r,m| r = [1,2,3]}).to eq([])
     end
     it "successively yields further matches of repeated values" do
-      expect(AbstractListPatternParser::values_to_list "abababab",/ab/ do |r,m|
-         r << m[0]
-       end).to eq(["ab","ab","ab","ab"])
+      expect(AbstractListPatternParser::values_to_list("abababab",/ab/) {|r,m| r << m[0]}).to eq(["ab","ab","ab","ab"])
     end
   end
 end

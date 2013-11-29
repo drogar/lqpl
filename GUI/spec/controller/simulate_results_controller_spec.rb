@@ -10,7 +10,7 @@ describe SimulateResultsController do
       @c = SimulateResultsController.instance
     end
     @st = double("StackTranslation")
-    allow(@st).to receive(:reverse_lookup, :nil? => false) do |val|
+    allow(@st).to receive(:reverse_lookup) do |val|
         case val
         when "1" then "@p"
         when "2" then "@q"

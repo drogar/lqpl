@@ -13,9 +13,7 @@ def check_some_point_is_black(img,start_x,start_y,end_x,end_y)
       
   xs = Range.new(start_x,end_x)
   ys = Range.new(start_y,end_y)
-  (xs.any? do |x|
-     ys.any? {|y| get_sample_data_at_point(rstr,x,y)[3] == 255}
-   end).should == true
+  expect(xs.any? {|x|  ys.any? {|y| get_sample_data_at_point(rstr,x,y)[3] == 255}}).to be_true
 end
 
 
@@ -36,25 +34,25 @@ end
 def check_raster_point_is_black(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
   
-  s[3].should == 255
+  expect(s[3]).to eql(255)
 end
 
 def check_raster_point_is_grey(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
   
-  s[3].should > 50
+  expect(s[3]).to be > 50
 end
 
 def check_raster_point_is_white(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
-  s[3].should == 0
+  expect(s[3]).to eql(0)
 end
 
 def check_raster_point_is_green(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
   
-  s[1].should_not == 0
-  s[0].should == 0
-  s[2].should == 0
-  s[3].should_not == 0
+  expect(s[1]).to_not eql(0)
+  expect(s[0]).to eql(0)
+  expect(s[2]).to eql(0)
+  expect(s[3]).to_not eql(0)
 end
