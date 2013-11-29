@@ -10,10 +10,10 @@ describe Drawing do
     end
   end
   describe "get_string_size" do
-    it "returns a size for a regular string 'ab' w=15, h>15" do
+    it "returns a size for a regular string 'ab' w=15, h>14" do
       s=@d.get_string_size(@d.gc,"ab")
       s.width.should == 15.0
-      s.height.should > 15.0
+      s.height.should > 14.0
     end
     it "returns a size for an attributed string 'ab' of w=9, h>9" do
       ab = java.text.AttributedString.new("ab");

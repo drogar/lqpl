@@ -148,8 +148,8 @@ describe QuantumStackPainter do
       it "should have a right width of 6" do
         @bottom_size.right_width.should == 6.0
       end
-      it "should have a height > 15 and < 16" do
-        @bottom_size.height.should > 15
+      it "should have a height > 14 and < 16" do
+        @bottom_size.height.should > 14
         @bottom_size.height.should < 16
       end
     end
@@ -166,11 +166,11 @@ describe QuantumStackPainter do
         ps.right_width.should > 12.5
         ps.height.should > 28.0
       end
-      it "should have a preferred size > 10, 15 for bottom" do
+      it "should have a preferred size > 10, 14 for bottom" do
         ps = @qsb.model_paint_size(@d.gc)
         ps.left_width.should > 5.0
         ps.right_width.should > 5.0
-        ps.height.should > 15.0
+        ps.height.should > 14.0
       end
       it "should have a left size bigger than right width for qsint" do
         @qsint.model_paint_size(@d.gc).left_width > @qsint.model_paint_size(@d.gc).right_width

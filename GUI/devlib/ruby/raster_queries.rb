@@ -18,6 +18,21 @@ def check_some_point_is_black(img,start_x,start_y,end_x,end_y)
    end).should == true
 end
 
+
+def check_some_point_is_grey(img,start_x,start_y,end_x,end_y)
+  rstr = img.data(Rectangle.new(start_x,start_y,end_x+1,end_y+1))
+  check_some_raster_point_is_grey(rstr,start_x,start_y,end_x,end_y)  
+end
+
+
+def check_some_raster_point_is_grey(rstr,start_x,start_y,end_x,end_y)
+      
+  xs = Range.new(start_x,end_x)
+  ys = Range.new(start_y,end_y)
+#  xs.each {|x| ys.each {|y| puts "x=#{x}  y=#{y},  sd=#{get_sample_data_at_point(rstr,x,y)}" }}
+  expect(xs.any? {|x| ys.any? {|y| sd[3] > 50}}).to be_true
+end
+
 def check_raster_point_is_black(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
   
@@ -26,6 +41,7 @@ end
 
 def check_raster_point_is_grey(rstr,x,y)
   s=get_sample_data_at_point(rstr,x,y)
+  
   s[3].should > 50
 end
 
