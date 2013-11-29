@@ -21,19 +21,19 @@ describe LqplMenu do
     it "should successfully create a new menu" do
       SwingRunner::on_edt do 
         m = LqplMenu.new(@p)
-        m.should_not be_nil
+        expect(m).not_to be_nil
       end
     end
     it "should set the mbar of the parent" do
       SwingRunner::on_edt do 
         LqplMenu.new(@p)
-        @p.mbar.should_not be_nil
+        expect(@p.mbar).not_to be_nil
       end
     end
     it "should set the mbar of the parent to visible" do
       SwingRunner::on_edt do 
         LqplMenu.new(@p)
-        @p.mbar.visible.should be_true
+        expect(@p.mbar.visible).to be_true
       end
     end
     it "should set up two menus (when on mac)" do
@@ -41,7 +41,7 @@ describe LqplMenu do
       java.lang.System.set_property("com.drogar.testing.fest","false") # reset so not_on_mac, on_mac work as expected
       SwingRunner::on_edt do 
         LqplMenu.new(@p)
-        @p.mbar.menu_count.should == 2
+        expect(@p.mbar.menu_count).to eq(2)
       end
       java.lang.System.set_property("apple.laf.useScreenMenuBar", "false")
       java.lang.System.set_property("com.drogar.testing.fest","true")
@@ -63,16 +63,16 @@ describe LqplMenu do
         java.lang.System.set_property("com.drogar.testing.fest","true")
       end
       it "should have #{mtestdata[:menu_titles].size} menuitems" do
-        SwingRunner::on_edt {@tmenu.item_count.should == mtestdata[:menu_titles].size}
+        SwingRunner::on_edt {expect(@tmenu.item_count).to eq(mtestdata[:menu_titles].size)}
       end
       mtestdata[:menu_titles].each_with_index do |mtitle, ind|
         it "should have the title #{mtitle} for item #{ind}" do
-          SwingRunner::on_edt {@tmenu.item(ind).text.should == (mtitle)}
+          SwingRunner::on_edt {expect(@tmenu.item(ind).text).to eq(mtitle)}
         end
       end
       mtestdata[:menu_enabled].each_with_index do |is_enabl,ind| 
         it "should have #{is_enabl ? "enabled" : "disabled"} menu item #{ind}" do
-          SwingRunner::on_edt {@tmenu.item(ind).enabled.should == is_enabl}
+          SwingRunner::on_edt {expect(@tmenu.item(ind).enabled).to eq(is_enabl)}
         end
       end
     end

@@ -7,6 +7,6 @@ describe QuantumStackForm do
     end
   end
   it "should not be nil" do
-    @qsf.should_not be_nil
+    expect(@qsf).not_to be_nil
   end
 end

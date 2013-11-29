@@ -8,6 +8,6 @@ describe QuantumStackPanel do
     end
   end
   it "should not be nil" do
-    @qsp.should_not be_nil
+    expect(@qsp).not_to be_nil
   end
 end

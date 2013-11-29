@@ -8,27 +8,27 @@ describe AboutDialog do
   end
 
   it "should not be nil" do
-    @ab.should_not be_nil
+    expect(@ab).not_to be_nil
   end
   
   it "should have a title of 'About LQPL'" do
-    @ab.edt_title.should == 'About LQPL'
+    expect(@ab.edt_title).to eq('About LQPL')
   end
 
-  specify {@ab.data_pane.should have(1).components}
+  specify {expect(@ab.data_pane.size).to eq(1)}
 
   context "the text label" do
     before (:each) do
       @tp = @ab.data_pane.components[0]
     end
-    specify {@tp.class.should == Panel}
-    specify {@tp.should have(1).components}
-    specify {@tp.components[0].class.should == Label}
+    specify {expect(@tp.class).to eq(Panel)}
+    specify {expect(@tp.size).to eq(1)}
+    specify {expect(@tp.components[0].class).to eq(Label)}
     context "the label" do
       before (:each) do
         @lab = @tp.components[0]
       end
-      specify {@ab.about_data_label.should == @lab}
+      specify {expect(@ab.about_data_label).to eq(@lab)}
     end
   end
   

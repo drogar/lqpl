@@ -10,6 +10,6 @@ describe QuantumStackView do
     end
   end
   it "should not be nil" do
-    @qsv.should_not be_nil
+    expect(@qsv).not_to be_nil
   end
 end

@@ -14,7 +14,7 @@ describe LqplEmulatorServerConnection do
       end
       it "allows default creation with a port of 9502" do
         @sc = LqplEmulatorServerConnection.instance
-        @sc.port.should == 9502
+        expect(@sc.port).to eq(9502)
       end
     end
     context "connection" do
@@ -26,7 +26,7 @@ describe LqplEmulatorServerConnection do
       end
       it "connects to the lqpl-serv process when created" do
         @sc.connect
-        @sc.should be_connected
+        expect(@sc).to be_connected
       end
     end
   end
@@ -42,7 +42,7 @@ describe LqplEmulatorServerConnection do
     it "sends QPO code to the lqpl-serv and gets 'Assembled' back" do
       fname = "#{TEST_QP_PATH}/min.reference.qpo"
       flag = @sc.send_load_from_file(10,fname)
-      flag.should =~ /Assembled/
+      expect(flag).to match(/Assembled/)
     end
   end
   context "execution control" do
@@ -55,18 +55,18 @@ describe LqplEmulatorServerConnection do
     after :all do
       @sc.close_down if @sc
     end
-    specify {@sc.send_set_depth_multiplier.should =~ /reset/}
-    specify {@sc.do_step.should =~ /Stepped/}
-    specify {@sc.do_step(5).should =~ /Stepped/}
-    specify {@sc.do_run.should =~ /executed/}
-    specify {@sc.do_trim.should =~ /trimmed/}
+    specify {expect(@sc.send_set_depth_multiplier).to match(/reset/)}
+    specify {expect(@sc.do_step).to match(/Stepped/)}
+    specify {expect(@sc.do_step(5)).to match(/Stepped/)}
+    specify {expect(@sc.do_run).to match(/executed/)}
+    specify {expect(@sc.do_trim).to match(/trimmed/)}
     it "steps through a program and gives a different status when at the end" do
-      @sc.do_step(40).should =~ /executed/
+      expect(@sc.do_step(40)).to match(/executed/)
     end
     it "should allow a step or another run after a run and stil return executed" do
       @sc.do_run
-      @sc.do_step.should =~ /executed/
-      @sc.do_run.should =~ /executed/
+      expect(@sc.do_step).to match(/executed/)
+      expect(@sc.do_run).to match(/executed/)
     end
   end
   context "gets the data" do
@@ -80,12 +80,12 @@ describe LqplEmulatorServerConnection do
     after :all do
       @sc.close_down if @sc
     end
-    specify {@sc.get_qstack.should =~ /<Qstack/}
-    specify {@sc.get_classical_stack.should =~ /<Classical/}
-    specify {@sc.get_dump.should =~ /<Dump/}
-    specify {@sc.code_pointer.should =~ /<pair/}
-    specify {@sc.loaded_code.should =~ /<Code/}
-    specify {@sc.get_stack_translation.should =~ /<MMap/}
-    specify {@sc.get_simulate_results.should =~ /<Simulated><double/}
+    specify {expect(@sc.get_qstack).to match(/<Qstack/)}
+    specify {expect(@sc.get_classical_stack).to match(/<Classical/)}
+    specify {expect(@sc.get_dump).to match(/<Dump/)}
+    specify {expect(@sc.code_pointer).to match(/<pair/)}
+    specify {expect(@sc.loaded_code).to match(/<Code/)}
+    specify {expect(@sc.get_stack_translation).to match(/<MMap/)}
+    specify {expect(@sc.get_simulate_results).to match(/<Simulated><double/)}
   end
 end

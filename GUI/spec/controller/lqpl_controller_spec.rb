@@ -30,21 +30,21 @@ describe LqplController do
       end
     end
     
-    specify {@l.should have(5).sub_controllers}
-    specify {@l.should have(2).dialogs}
+    specify {expect(@l.size).to eq(5)}
+    specify {expect(@l.size).to eq(2)}
     context "sub_controllers" do
-      specify {@l.sub_controllers.compact.should have(5).non_nil_items}
+      specify {expect(@l.sub_controllers.compact.size).to eq(5)}
     end
     context "dialogs" do
-      specify {@l.dialogs.compact.should have(2).items}
+      specify {expect(@l.dialogs.compact.size).to eq(2)}
     end
     
     context "the compiler server" do
-      specify {@l.cmp.should_not be_nil}
-      specify {@l.cmp.should be_connected}
+      specify {expect(@l.cmp).not_to be_nil}
+      specify {expect(@l.cmp).to be_connected}
     end
     context "the emulator server" do
-      specify {@l.lqpl_emulator_server_connection.should be_connected}
+      specify {expect(@l.lqpl_emulator_server_connection).to be_connected}
     end
   end
   describe "file_exit" do
@@ -53,8 +53,8 @@ describe LqplController do
         @l.load
         @l.file_exit_action_performed()
       end
-      @l.cmp.should_not be_connected
-      @l.lqpl_emulator_server_connection(false).should_not be_connected
+      expect(@l.cmp).not_to be_connected
+      expect(@l.lqpl_emulator_server_connection(false)).not_to be_connected
     end
   end
   describe "all_controllers_dispose" do
@@ -63,13 +63,13 @@ describe LqplController do
         @l.load()
       end 
       d1=double("dialog1")
-      d1.should_receive(:dispose)
+      expect(d1).to receive(:dispose)
       d2=double("dialog2")
-      d2.should_receive(:dispose)
+      expect(d2).to receive(:dispose)
       s1=double("sub1")
-      s1.should_receive(:dispose)
+      expect(s1).to receive(:dispose)
       s2=double("sub2")
-      s2.should_receive(:dispose)
+      expect(s2).to receive(:dispose)
       @l.dialogs = [d1,d2]
       @l.sub_controllers = [s1,s2]
     end
@@ -87,13 +87,13 @@ describe LqplController do
         @l.load()
       end 
       d1=double("dialog1")
-      d1.should_receive(:dispose)
+      expect(d1).to receive(:dispose)
       d2=double("dialog2")
-      d2.should_receive(:dispose)
+      expect(d2).to receive(:dispose)
       s1=double("sub1")
-      s1.should_receive(:dispose)
+      expect(s1).to receive(:dispose)
       s2=double("sub2")
-      s2.should_receive(:dispose)
+      expect(s2).to receive(:dispose)
       @l.dialogs = [d1,d2]
       @l.sub_controllers = [s1,s2]
     end
@@ -106,17 +106,17 @@ describe LqplController do
     end
     it "closes the server connection" do
       @l.close()
-      @l.cmp.should_not be_connected
-      @l.lqpl_emulator_server_connection(false).should_not be_connected
+      expect(@l.cmp).not_to be_connected
+      expect(@l.lqpl_emulator_server_connection(false)).not_to be_connected
     end
   end
   
   describe "sub_controllers_open" do
     before :each do
       s1=double("sub1")
-      s1.should_receive(:open)
+      expect(s1).to receive(:open)
       s2=double("sub2")
-      s2.should_receive(:open)
+      expect(s2).to receive(:open)
       @l.sub_controllers = [s1,s2]
     end
     after(:each) do
@@ -131,9 +131,9 @@ describe LqplController do
   describe "update_sub_model_data" do
     before :each do
       s1=double("sub1")
-      s1.should_receive(:set_data_from_lqpl_model)
+      expect(s1).to receive(:set_data_from_lqpl_model)
       s2=double("sub2")
-      s2.should_receive(:set_data_from_lqpl_model)
+      expect(s2).to receive(:set_data_from_lqpl_model)
       @l.sub_controllers = [s1,s2]
     end
     after(:each) do
@@ -148,11 +148,11 @@ describe LqplController do
   describe "trim_button_action_performed" do
     before :each do
       s1=double("sub1")
-      s1.should_receive(:set_data_from_lqpl_model)
-      s1.should_receive(:update_on_lqpl_model_trim).and_return(true)
+      expect(s1).to receive(:set_data_from_lqpl_model)
+      expect(s1).to receive(:update_on_lqpl_model_trim).and_return(true)
       s2=double("sub2")
-      s2.should_receive(:update_on_lqpl_model_trim).and_return(false)
-      s2.should_not_receive(:set_data_from_lqpl_model)
+      expect(s2).to receive(:update_on_lqpl_model_trim).and_return(false)
+      expect(s2).not_to receive(:set_data_from_lqpl_model)
       @l.sub_controllers = [s1,s2]
     end
     after(:each) do

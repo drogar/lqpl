@@ -7,7 +7,7 @@ describe CompilerServerConnection do
     context "makeVersionNumber" do
       it "takes the input CS_VERSION [0,8,4] [] and returns 0.8.4" do
         res = CompilerServerConnection::makeVersionNumber("CS_VERSION [0,8,4] []")
-        res.should == "0.8.4"
+        expect(res).to eq("0.8.4")
       end
     end
   end
@@ -29,7 +29,7 @@ describe CompilerServerConnection do
       # end
       it "allows default creation with a port of 7683" do
         @cmp = CompilerServerConnection.get_instance
-        @cmp.port.should == 7683
+        expect(@cmp.port).to eq(7683)
       end
     end
     context "connection" do
@@ -41,7 +41,7 @@ describe CompilerServerConnection do
       end
       it "connects to the lqpl-compiler process when created" do
         @cmp.connect
-        @cmp.should be_connected
+        expect(@cmp).to be_connected
       end
     end
   end
@@ -56,23 +56,23 @@ describe CompilerServerConnection do
     it "sends QPL code to the lqpl-compiler-server and gets qpo code back" do
       fname = "#{TEST_QP_PATH}/min.qpl"
       qpocode = @cmp.compile fname
-      qpocode.should =~ /app_fcdlbl.*/
+      expect(qpocode).to match(/app_fcdlbl.*/)
     end
     it "signals failure when the code has a syntax error" do
       @cmp.compile "#{TEST_QP_PATH}/invalidsyntax.qpl"
-      @cmp.failed.should be_true
-      @cmp.failure_message.should =~ /unexpected/
+      expect(@cmp.failed).to be_true
+      expect(@cmp.failure_message).to match(/unexpected/)
     end
     it "signals failure when the code has a semantic error" do
       @cmp.compile "#{TEST_QP_PATH}/invalidsemantics.qpl"
-      @cmp.failed.should be_true
-      @cmp.failure_message.should =~ /Semantic Error/
+      expect(@cmp.failed).to be_true
+      expect(@cmp.failure_message).to match(/Semantic Error/)
     end
     it "signals a warning when the code has a balance creation error" do
       fname = "#{TEST_QP_PATH}/invalidbalance.qpl"
       @cmp.compile fname
-      @cmp.failed.should be_false
-      @cmp.failure_message.should =~ /Semantic Warning/
+      expect(@cmp.failed).to be_false
+      expect(@cmp.failure_message).to match(/Semantic Warning/)
     end
     it "writes a .qpo file with the same name as the original .qpl file with the corresponding QPO code" do
       fname = "#{TEST_QP_PATH}/min.qpl"
@@ -81,15 +81,15 @@ describe CompilerServerConnection do
       rescue
       end
       @cmp.compile fname
-      @cmp.failed.should be_false
-      @cmp.failure_message.should == ""
+      expect(@cmp.failed).to be_false
+      expect(@cmp.failure_message).to eq("")
       @cmp.write_qpo_file
-      File.exist?("#{TEST_QP_PATH}/min.qpo").should be_true
+      expect(File.exist?("#{TEST_QP_PATH}/min.qpo")).to be_true
       File.open("#{TEST_QP_PATH}/min.reference.qpo") do |ref_compile|
         ref_data = ref_compile.read
         File.open("#{TEST_QP_PATH}/min.qpo") do |new_compile|
           new_data = new_compile.read
-          new_data.should == ref_data
+          expect(new_data).to eq(ref_data)
         end
       end
     end
@@ -101,14 +101,14 @@ describe CompilerServerConnection do
       rescue
       end
       @cmp.compile_and_write_qpo fname
-      @cmp.failed.should be_false
-      @cmp.failure_message.should == ""
-      File.exist?("#{TEST_QP_PATH}/min.qpo").should be_true
+      expect(@cmp.failed).to be_false
+      expect(@cmp.failure_message).to eq("")
+      expect(File.exist?("#{TEST_QP_PATH}/min.qpo")).to be_true
       File.open("#{TEST_QP_PATH}/min.reference.qpo") do |ref_compile|
         ref_data = ref_compile.read
         File.open("#{TEST_QP_PATH}/min.qpo") do |new_compile|
           new_data = new_compile.read
-          new_data.should == ref_data
+          expect(new_data).to eq(ref_data)
         end
       end
     end
@@ -120,32 +120,32 @@ describe CompilerServerConnection do
       end
       @cmp.compile fname
       @cmp.write_qpo_file
-      File.exist?("#{TEST_QP_PATH}/importer.qpo").should be_true
+      expect(File.exist?("#{TEST_QP_PATH}/importer.qpo")).to be_true
       File.open("#{TEST_QP_PATH}/importer.reference.qpo") do |ref_compile|
         ref_data = ref_compile.read
         File.open("#{TEST_QP_PATH}/importer.qpo") do |new_compile|
           new_data = new_compile.read
-          new_data.should == ref_data
+          expect(new_data).to eq(ref_data)
         end
       end
     end
     it "sets failed to true if the desired qpl file is not existant" do
       @cmp.send_included_file "<getFirst>GarbageFileThatDoesNotExist</getFirst>"
-      @cmp.failed?.should be_true
+      expect(@cmp.failed?).to be_true
     end
     it "sets failure message to the name of the file if the desired qpl file is not existant" do
       @cmp.send_included_file "<getFirst>GarbageFileThatDoesNotExist</getFirst>"
-      @cmp.failure_message.should =~ /GarbageFileThatDoesNotExist/
+      expect(@cmp.failure_message).to match(/GarbageFileThatDoesNotExist/)
     end
     it "sets the success or fail message to '...successful...' if failed is false, and adds any failure message" do
       @cmp.failed = false
       @cmp.failure_message="testing"
-      @cmp.success_or_fail_message("file_name").should == "Compile of file_name was successful\ntesting"
+      expect(@cmp.success_or_fail_message("file_name")).to eq("Compile of file_name was successful\ntesting")
     end
     it "sets the success or fail message to '...unsuccessful...' if failed is true, and adds any failure message" do
       @cmp.failed = true
       @cmp.failure_message="testing"
-      @cmp.success_or_fail_message("file_name").should == "Compile of file_name was unsuccessful\ntesting"
+      expect(@cmp.success_or_fail_message("file_name")).to eq("Compile of file_name was unsuccessful\ntesting")
     end
   end
 end

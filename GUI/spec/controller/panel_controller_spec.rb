@@ -5,32 +5,32 @@ describe PanelController do
     describe "controller_from_name" do
       it "should return ClassicalStack controller for ['anything','Classical','Stack']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "Classical", "Stack"]).should == ClassicalStackController
+          expect(PanelController::controller_from_name(["junk", "Classical", "Stack"])).to eq(ClassicalStackController)
         end
       end
       it "should return Dump controller for ['anything','Dump']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "Dump"]).should == DumpController
+          expect(PanelController::controller_from_name(["junk", "Dump"])).to eq(DumpController)
         end
       end
       it "should return Executable Code controller for ['anything','Executing','Code']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "Executing", "Code"]).should == ExecutableCodeController
+          expect(PanelController::controller_from_name(["junk", "Executing", "Code"])).to eq(ExecutableCodeController)
         end
       end
       it "should return QuantumStack controller for ['anything','Quantum','Stack']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "Quantum", "Stack"]).should == QuantumStackController
+          expect(PanelController::controller_from_name(["junk", "Quantum", "Stack"])).to eq(QuantumStackController)
         end
       end
       it "should return stacktranslation controller for ['anything','Stack','Translation']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "Stack", "Translation"]).should == StackTranslationController
+          expect(PanelController::controller_from_name(["junk", "Stack", "Translation"])).to eq(StackTranslationController)
         end
       end
       it "should return nil for ['anything','something']" do
         SwingRunner::on_edt do
-          PanelController::controller_from_name(["junk", "somethin"]).should be_nil
+          expect(PanelController::controller_from_name(["junk", "somethin"])).to be_nil
         end
       end
     end
@@ -43,7 +43,7 @@ describe PanelController do
     end
     it "should return false for update_on_lqpl_model_trim" do
       SwingRunner::on_edt do
-        @pm.update_on_lqpl_model_trim.should be_false
+        expect(@pm.update_on_lqpl_model_trim).to be_false
       end
     end
   end

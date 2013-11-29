@@ -4,7 +4,7 @@ require 'spec/spec_helper'
 describe AbstractPatternParser do
   it "should parse only an empty string" do
     p = AbstractPatternParser.new ""
-    p.parsed?.should be_true
+    expect(p.parsed?).to be_true
   end
   it "should raise an error for other string" do
     expect {
@@ -17,10 +17,10 @@ describe AbstractPatternParser do
   describe "class methods" do
     describe "surround_with_start_end" do
       it "when given the regexp 'ab' gives a regexp that only parses 'ab' " do
-        AbstractPatternParser::surround_with_start_end(/ab/).should =~ 'ab'
+        expect(AbstractPatternParser::surround_with_start_end(/ab/)).to match('ab')
       end
       it "when given the regexp 'ab' gives a regexp that will not  parses 'xaby' " do
-        AbstractPatternParser::surround_with_start_end(/ab/).should_not =~ 'xaby'
+        expect(AbstractPatternParser::surround_with_start_end(/ab/)).not_to match('xaby')
       end
     end
   end

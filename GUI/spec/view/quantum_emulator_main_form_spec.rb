@@ -8,27 +8,27 @@ describe QuantumEmulatorMainForm do
     end
   end
   it "should not be nil" do
-    @qemf.should_not be_nil
+    expect(@qemf).not_to be_nil
   end
-  specify {@qemf.title.should == "Quantum Emulator"}
-  specify {@qemf.name.should == "Quantum Emulator"}
-  specify {@qemf.content_pane.should have(3).components}
+  specify {expect(@qemf.title).to eq("Quantum Emulator")}
+  specify {expect(@qemf.name).to eq("Quantum Emulator")}
+  specify {expect(@qemf.content_pane.size).to eq(3)}
   context "the messages area" do
     before :each do
       @ma = @qemf.content_pane.components[0]
     end
     
     it "should be a scroll pane as the first component" do
-      @ma.class.should == ScrollPane
+      expect(@ma.class).to eq(ScrollPane)
     end
     it "should have a text area as the viewport" do
-      @ma.viewport.view.class.should == JTextArea
+      expect(@ma.viewport.view.class).to eq(JTextArea)
     end
     it "should have a component named 'messagesTextArea' as the viewport" do
-      @ma.viewport.view.name.should == 'messagesTextArea'
+      expect(@ma.viewport.view.name).to eq('messagesTextArea')
     end
     it "should have a read-only textarea" do
-      @ma.viewport.view.editable.should == false
+      expect(@ma.viewport.view.editable).to eq(false)
     end
   end
   context "the spinner area" do
@@ -36,46 +36,46 @@ describe QuantumEmulatorMainForm do
       @spinpanel = @qemf.content_pane.components[1]
     end
     it "should be a panel" do
-      @spinpanel.class.should == Panel
+      expect(@spinpanel.class).to eq(Panel)
     end
     it "should contain 8 children" do
-      @spinpanel.should have(8).components
+      expect(@spinpanel.size).to eq(8)
     end
     it "has spinners for odd components" do
       [1,3,5,7].each do |i|
-        @spinpanel.components[i].class.should == Spinner
+        expect(@spinpanel.components[i].class).to eq(Spinner)
       end
     end
     it "should have labels for even components" do
       [0,2,4,6].each do |i|
-        @spinpanel.components[i].class.should == Label
+        expect(@spinpanel.components[i].class).to eq(Label)
       end
     end
     it "should have the even component being the label for the spinner" do
       [0,2,4,6].each do |i|
-        @spinpanel.components[i].label_for.should == @spinpanel.components[i+1]
+        expect(@spinpanel.components[i].label_for).to eq(@spinpanel.components[i+1])
       end
     end
-    specify {@spinpanel.components[0].text.should == "Step Size"}
-    specify {@spinpanel.components[2].text.should == "Recursion Depth"}
-    specify {@spinpanel.components[4].text.should == "Tree Depth"}
-    specify {@spinpanel.components[6].text.should == "Recursion Multiplier"}
-    specify {@spinpanel.components[1].value.should == 1}
-    specify {@spinpanel.components[3].value.should == 1}
-    specify {@spinpanel.components[5].value.should == 4}
-    specify {@spinpanel.components[7].value.should == 10}
-    specify {@spinpanel.components[1].model.maximum.should == 100000}
-    specify {@spinpanel.components[3].model.maximum.should == 100000}
-    specify {@spinpanel.components[5].model.maximum.should == 100}
-    specify {@spinpanel.components[7].model.maximum.should == 100000}
-    specify {@spinpanel.components[1].model.minimum.should == 1}
-    specify {@spinpanel.components[3].model.minimum.should == 1}
-    specify {@spinpanel.components[5].model.minimum.should == 1}
-    specify {@spinpanel.components[7].model.minimum.should == 1}
-    specify {@spinpanel.components[1].model.step_size.should == 1}
-    specify {@spinpanel.components[3].model.step_size.should == 1}
-    specify {@spinpanel.components[5].model.step_size.should == 1}
-    specify {@spinpanel.components[7].model.step_size.should == 1}
+    specify {expect(@spinpanel.components[0].text).to eq("Step Size")}
+    specify {expect(@spinpanel.components[2].text).to eq("Recursion Depth")}
+    specify {expect(@spinpanel.components[4].text).to eq("Tree Depth")}
+    specify {expect(@spinpanel.components[6].text).to eq("Recursion Multiplier")}
+    specify {expect(@spinpanel.components[1].value).to eq(1)}
+    specify {expect(@spinpanel.components[3].value).to eq(1)}
+    specify {expect(@spinpanel.components[5].value).to eq(4)}
+    specify {expect(@spinpanel.components[7].value).to eq(10)}
+    specify {expect(@spinpanel.components[1].model.maximum).to eq(100000)}
+    specify {expect(@spinpanel.components[3].model.maximum).to eq(100000)}
+    specify {expect(@spinpanel.components[5].model.maximum).to eq(100)}
+    specify {expect(@spinpanel.components[7].model.maximum).to eq(100000)}
+    specify {expect(@spinpanel.components[1].model.minimum).to eq(1)}
+    specify {expect(@spinpanel.components[3].model.minimum).to eq(1)}
+    specify {expect(@spinpanel.components[5].model.minimum).to eq(1)}
+    specify {expect(@spinpanel.components[7].model.minimum).to eq(1)}
+    specify {expect(@spinpanel.components[1].model.step_size).to eq(1)}
+    specify {expect(@spinpanel.components[3].model.step_size).to eq(1)}
+    specify {expect(@spinpanel.components[5].model.step_size).to eq(1)}
+    specify {expect(@spinpanel.components[7].model.step_size).to eq(1)}
   end
   context "the button area" do
     before :each do
@@ -83,42 +83,42 @@ describe QuantumEmulatorMainForm do
     end
     
     it "should be a panel" do
-      @buttonpanel.class.should == Panel
+      expect(@buttonpanel.class).to eq(Panel)
     end
     it "should contain 3 children" do
-      @buttonpanel.should have(3).components
+      expect(@buttonpanel.size).to eq(3)
     end
     it "should have 3 buttons" do
       @buttonpanel.components.each do |comp|
-        comp.class.should == Button
+        expect(comp.class).to eq(Button)
       end
     end
     it "should have 'Trim' as the text of the first button" do
-      @buttonpanel.components[0].text.should == 'Trim'
+      expect(@buttonpanel.components[0].text).to eq('Trim')
     end
     it "should have 'Step' as the text of the first button" do
-      @buttonpanel.components[1].text.should == 'Step'
+      expect(@buttonpanel.components[1].text).to eq('Step')
     end
     it "should have 'Go' as the text of the first button" do
-      @buttonpanel.components[2].text.should == 'Go'
+      expect(@buttonpanel.components[2].text).to eq('Go')
     end
     it "should have one row" do
-      @buttonpanel.get_layout.rows.should == 1
+      expect(@buttonpanel.get_layout.rows).to eq(1)
     end
     it "should have three columns" do
-      @buttonpanel.get_layout.columns.should == 3
+      expect(@buttonpanel.get_layout.columns).to eq(3)
     end
   end
   it "should hide the spinner panel" do
-    @qemf.content_pane.components[1].visible.should == false
+    expect(@qemf.content_pane.components[1].visible).to eq(false)
   end
   it "should hide the button panel" do
-    @qemf.content_pane.components[2].visible.should == false
+    expect(@qemf.content_pane.components[2].visible).to eq(false)
   end
   it "should have size of 390x290" do
-    @qemf.bounds.should == Rectangle.new(10,10,400,300)
+    expect(@qemf.bounds).to eq(Rectangle.new(10,10,400,300))
   end
   it "should be at 10.10" do
-    @qemf.bounds.should == Rectangle.new(10,10,400,300)
+    expect(@qemf.bounds).to eq(Rectangle.new(10,10,400,300))
   end
 end

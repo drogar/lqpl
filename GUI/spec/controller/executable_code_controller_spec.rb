@@ -7,5 +7,5 @@ describe ExecutableCodeController do
       @c = ExecutableCodeController.instance
     end
   end
-  specify {@c.update_on_lqpl_model_trim.should be_false}
+  specify {expect(@c.update_on_lqpl_model_trim).to be_false}
 end

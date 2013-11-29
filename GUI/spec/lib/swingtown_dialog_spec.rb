@@ -8,13 +8,13 @@ describe STDialog do
   end
 
   it "should not be nil" do
-    @sr.should_not be_nil
+    expect(@sr).not_to be_nil
   end
   
   it "should accept an arg and store it in title" do
     SwingRunner::on_edt do
       dt = STDialog.new("a title")
-      dt.title.should == 'a title'
+      expect(dt.title).to eq('a title')
     end
   end
   
@@ -24,7 +24,7 @@ describe STDialog do
         d.content_pane.add(Panel.new)
         d.content_pane.add(Panel.new)
       end
-      dt.content_pane.should have(2).components
+      expect(dt.content_pane.size).to eq(2)
     end
   end
 end
@@ -33,14 +33,14 @@ describe STDialogWithOK do
   it "should not be nil on creation" do
     SwingRunner::on_edt do
       sr = STDialogWithOK.new
-      sr.should_not be_nil
+      expect(sr).not_to be_nil
     end
   end
   
   it "should accept an arg and store it in title" do
     SwingRunner::on_edt do
       dt = STDialogWithOK.new("a title")
-      dt.title.should == 'a title'
+      expect(dt.title).to eq('a title')
     end
   end
   context "OK Button" do
@@ -48,7 +48,7 @@ describe STDialogWithOK do
       it "should allow setup of data pane in the init block " do
         SwingRunner::on_edt do
           s = STDialogWithOK.new() do |d|
-            d.should_not be_nil
+            expect(d).not_to be_nil
          end
         end
       end
@@ -58,7 +58,7 @@ describe STDialogWithOK do
             d.add(Panel.new)
             d.add(Panel.new)
          end
-          s.data_pane.should have(2).components
+          expect(s.data_pane.size).to eq(2)
         end
       end
       it "should setup items in the init block before the button pane" do
@@ -70,7 +70,7 @@ describe STDialogWithOK do
             d.add(p2)
           end
          # end
-          s.content_pane.components[1].should == s.button_pane
+          expect(s.content_pane.components[1]).to eq(s.button_pane)
         end
       end    
     end
@@ -80,28 +80,28 @@ describe STDialogWithOK do
           @sr = STDialogWithOK.new("a title")
         end
       end
-      specify {@sr.data_pane.should_not be_nil}
-      specify {@sr.data_pane.class.should == Panel}
-      specify {@sr.button_pane.should_not be_nil}
-      specify {@sr.ok_button.should_not be_nil}       
+      specify {expect(@sr.data_pane).not_to be_nil}
+      specify {expect(@sr.data_pane.class).to eq(Panel)}
+      specify {expect(@sr.button_pane).not_to be_nil}
+      specify {expect(@sr.ok_button).not_to be_nil}       
 
       it "should setup the button pane" do
-        last(@sr.content_pane.components).should == @sr.button_pane
+        expect(last(@sr.content_pane.components)).to eq(@sr.button_pane)
       end
       context "the button pane" do
         before (:each) do
           @bp = last(@sr.content_pane.components)
         end
-        specify {@bp.class.should == Panel}
-        specify {@bp.should have(1).components}
-        specify {@bp.components[0].class.should == Button}
+        specify {expect(@bp.class).to eq(Panel)}
+        specify {expect(@bp.size).to eq(1)}
+        specify {expect(@bp.components[0].class).to eq(Button)}
         context "the button" do
           before (:each) do
             @btn = @bp.components[0]
           end
-          specify {@sr.root_pane.default_button.should == @btn}
-          specify {@btn.text.should == "OK"}
-          specify {@sr.ok_button.should == @btn}
+          specify {expect(@sr.root_pane.default_button).to eq(@btn)}
+          specify {expect(@btn.text).to eq("OK")}
+          specify {expect(@sr.ok_button).to eq(@btn)}
         end
       end
     end

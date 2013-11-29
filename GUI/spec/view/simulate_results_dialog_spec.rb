@@ -8,30 +8,30 @@ describe SimulateResultsDialog do
   end
 
   it "should not be nil" do
-    @sr.should_not be_nil
+    expect(@sr).not_to be_nil
   end
   
   it "should have a title of 'Simulate Results'" do
-    @sr.edt_title.should == 'Simulate Results'
+    expect(@sr.edt_title).to eq('Simulate Results')
   end
-  specify {@sr.data_pane.should have(1).components}
-  specify {@sr.data_pane.components[0].should have(2).components}
+  specify {expect(@sr.data_pane.size).to eq(1)}
+  specify {expect(@sr.data_pane.components[0].size).to eq(2)}
   #specify {@sr.content_pane.get_layout.class.should == BoxLayout}
   context "the random value" do
     before (:each) do
       @rv = @sr.data_pane.components[0].components[0]
     end
-    specify {@rv.class.should == Label}
-    specify {@sr.random_value_label.should == @rv}
+    specify {expect(@rv.class).to eq(Label)}
+    specify {expect(@sr.random_value_label).to eq(@rv)}
   end
   
   context "the results" do
     before (:each) do
       @res = @sr.data_pane.components[0].components[1]
     end
-    specify {@res.class.should == ScrollPane}
-    specify {@res.viewport.view.class.should == Label}
-    specify {@sr.simulate_results_label.should == @res.viewport.view}
+    specify {expect(@res.class).to eq(ScrollPane)}
+    specify {expect(@res.viewport.view.class).to eq(Label)}
+    specify {expect(@sr.simulate_results_label).to eq(@res.viewport.view)}
   end
   
 end

@@ -7,7 +7,7 @@ require 'src/panels/quantum_stack/quantum_stack_painter'
 describe QuantumStackPainter do
   before :each do
     st = double("StackTranslation")
-    st.stub(:reverse_lookup, :nil? => false) do |val|
+    allow(st).to receive(:reverse_lookup, :nil? => false) do |val|
       case val
       when "1" then "@p"
       when "2" then "@q"
@@ -53,53 +53,53 @@ describe QuantumStackPainter do
   end
   describe "substack_label_placement" do
     it "returns :right for a single substack, index 0" do
-      @qsi_ss_bottom.substack_label_placement(0).should == :right
+      expect(@qsi_ss_bottom.substack_label_placement(0)).to eq(:right)
     end
     it "returns :left for ind =0 with 4 substacks" do
-      @qshad.substack_label_placement(0).should == :left
+      expect(@qshad.substack_label_placement(0)).to eq(:left)
     end
     it "returns :left for ind =1 with 4 substacks" do
-      @qshad.substack_label_placement(1).should == :left
+      expect(@qshad.substack_label_placement(1)).to eq(:left)
     end
     it "returns :right for ind =2 with 4 substacks" do
-      @qshad.substack_label_placement(2).should == :right
+      expect(@qshad.substack_label_placement(2)).to eq(:right)
     end
     it "returns :left for ind =3 with 4 substacks" do
-      @qshad.substack_label_placement(3).should == :right
+      expect(@qshad.substack_label_placement(3)).to eq(:right)
     end
     
     it "returns :left for ind =0 with 3 substacks" do
-      @qsi_three_ss.substack_label_placement(0).should == :left
+      expect(@qsi_three_ss.substack_label_placement(0)).to eq(:left)
     end
     it "returns :right for ind =1 with 3 substacks" do
-      @qsi_three_ss.substack_label_placement(1).should == :right
+      expect(@qsi_three_ss.substack_label_placement(1)).to eq(:right)
     end
     it "returns :right for ind =2 with 3 substacks" do
-      @qsi_three_ss.substack_label_placement(2).should == :right
+      expect(@qsi_three_ss.substack_label_placement(2)).to eq(:right)
     end
   end
   describe "substack_label" do
     it "returns the string '27' for index 0 of qsi_three_ss" do
-      @qsi_three_ss.substack_label(0).should == "27"
+      expect(@qsi_three_ss.substack_label(0)).to eq("27")
     end
     it "returns the string '5' for index 1 of qsi_three_ss" do
-      @qsi_three_ss.substack_label(1).should == "5"
+      expect(@qsi_three_ss.substack_label(1)).to eq("5")
     end
     it "returns the string '7' for index 2 of qsi_three_ss" do
-      @qsi_three_ss.substack_label(2).should == "7"
+      expect(@qsi_three_ss.substack_label(2)).to eq("7")
     end
     it "returns 'Nil for model descriptor' for stack==bottom" do
-      @qbottom.substack_label(0).should == 'Nil for model descriptor'
+      expect(@qbottom.substack_label(0)).to eq('Nil for model descriptor')
     end
   end
   describe "sub_stack_sizes" do
     before :each do
     end
     it "should return an empty array when no substacks" do
-      @qsb.sub_stack_sizes(@d.gc).should == []
+      expect(@qsb.sub_stack_sizes(@d.gc)).to eq([])
     end
     it "should return an array of len 4 when there are four substacks" do
-      @qshad.sub_stack_sizes(@d.gc).length.should == 4
+      expect(@qshad.sub_stack_sizes(@d.gc).length).to eq(4)
     end
   end
   describe "paint_substack" do
@@ -134,7 +134,7 @@ describe QuantumStackPainter do
   end
   describe "imageOfModel" do
     it "should return an imageicon of the paint" do
-      @qsval.image_of_model.class.should == ImageIcon
+      expect(@qsval.image_of_model.class).to eq(ImageIcon)
     end
   end
   describe "sizing" do
@@ -143,40 +143,40 @@ describe QuantumStackPainter do
         @bottom_size = @qsb.bottom_element_size(@d.gc)
       end
       it "should have a left width of 6" do
-        @bottom_size.left_width.should == 6.0
+        expect(@bottom_size.left_width).to eq(6.0)
       end
       it "should have a right width of 6" do
-        @bottom_size.right_width.should == 6.0
+        expect(@bottom_size.right_width).to eq(6.0)
       end
       it "should have a height > 14 and < 16" do
-        @bottom_size.height.should > 14
-        @bottom_size.height.should < 16
+        expect(@bottom_size.height).to be > 14
+        expect(@bottom_size.height).to be < 16
       end
     end
     describe "model paint size" do
       it "should have a preferred size of width > 160 and height > 60 for the hadamard qbit" do
         ps = @qshad.model_paint_size(@d.gc)
-        ps.left_width.should > 80.0
-        ps.right_width.should > 80.0
-        ps.height.should > 60.0
+        expect(ps.left_width).to be > 80.0
+        expect(ps.right_width).to be > 80.0
+        expect(ps.height).to be > 60.0
       end
       it "should have a preferred size of width >= 25 and height >= 28 for the value of 0.5 only" do
         ps = @qsval.model_paint_size(@d.gc)
-        ps.left_width.should > 12.5
-        ps.right_width.should > 12.5
-        ps.height.should > 28.0
+        expect(ps.left_width).to be > 12.5
+        expect(ps.right_width).to be > 12.5
+        expect(ps.height).to be > 28.0
       end
       it "should have a preferred size > 10, 14 for bottom" do
         ps = @qsb.model_paint_size(@d.gc)
-        ps.left_width.should > 5.0
-        ps.right_width.should > 5.0
-        ps.height.should > 14.0
+        expect(ps.left_width).to be > 5.0
+        expect(ps.right_width).to be > 5.0
+        expect(ps.height).to be > 14.0
       end
       it "should have a left size bigger than right width for qsint" do
         @qsint.model_paint_size(@d.gc).left_width > @qsint.model_paint_size(@d.gc).right_width
       end
       it "should have a left size ~= right for the had qubit" do
-        (@qsval.model_paint_size(@d.gc).left_width -  @qsval.model_paint_size(@d.gc).right_width).abs.should < 2
+        expect((@qsval.model_paint_size(@d.gc).left_width -  @qsval.model_paint_size(@d.gc).right_width).abs).to be < 2
       end
     end
   end

@@ -10,7 +10,7 @@ describe SimulateResultsController do
       @c = SimulateResultsController.instance
     end
     @st = double("StackTranslation")
-    @st.stub(:reverse_lookup, :nil? => false) do |val|
+    allow(@st).to receive(:reverse_lookup, :nil? => false) do |val|
         case val
         when "1" then "@p"
         when "2" then "@q"
@@ -26,7 +26,7 @@ describe SimulateResultsController do
   it "should create a results set when given the correct input" do
     SwingRunner::on_edt do
       @c.set_simulate_data(TWOELTS,@st)
-      @c.get_simulate_data.should == "<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>"
+      expect(@c.get_simulate_data).to eq("<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>")
     end
   end
 

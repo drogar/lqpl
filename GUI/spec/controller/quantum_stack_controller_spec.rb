@@ -13,7 +13,7 @@ describe QuantumStackController do
   
   it "should return true for update_on_lqpl_model_trim" do
     SwingRunner::on_edt do
-      @d.update_on_lqpl_model_trim.should be_true
+      expect(@d.update_on_lqpl_model_trim).to be_true
     end
   end
 end

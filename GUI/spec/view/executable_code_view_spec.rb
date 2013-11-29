@@ -17,15 +17,15 @@ describe ExecutableCodeView do
       end
     end
     it "should create a text area with the text passed in" do
-      SwingRunner::on_edt {@ta.text.should =~ /someline/}
+      SwingRunner::on_edt {expect(@ta.text).to match(/someline/)}
     end
     it "should not be an editable text area" do
-      SwingRunner::on_edt {@ta.editable.should be_false}
+      SwingRunner::on_edt {expect(@ta.editable).to be_false}
     end
     it "should have selection start and end of 0" do
       SwingRunner::on_edt do
-        @ta.selection_start.should == 0
-        @ta.selection_end.should == 0
+        expect(@ta.selection_start).to eq(0)
+        expect(@ta.selection_end).to eq(0)
       end
     end
   end
@@ -33,13 +33,13 @@ describe ExecutableCodeView do
     it "should return a JScrollPane" do
       SwingRunner::on_edt do
         jsp = ExecutableCodeView::init_scroll_pane QPOLINES
-        jsp.class.should == JScrollPane
+        expect(jsp.class).to eq(JScrollPane)
       end
     end
     it "should contain a text area with the text passed in." do      
       SwingRunner::on_edt do
         jsp = ExecutableCodeView::init_scroll_pane QPOLINES
-        jsp.viewport.view.text.should =~ /someline/
+        expect(jsp.viewport.view.text).to match(/someline/)
       end
     end
   end
@@ -51,12 +51,12 @@ describe ExecutableCodeView do
     end
     it "should reset the code_tabbed_pane to have no tabs" do
       @ecv.reset_tabbed_panes_and_maps
-      @ecv.code_tabbed_pane.tab_count.should == 0
+      expect(@ecv.code_tabbed_pane.tab_count).to eq(0)
     end
     it "should reset the map method_to_tab to be empty" do
       @ecv.qpo_method_to_tab_map = {:a => "b"}
       @ecv.reset_tabbed_panes_and_maps
-      @ecv.qpo_method_to_tab_map.should == {}
+      expect(@ecv.qpo_method_to_tab_map).to eq({})
     end
   end
   describe "add_to_selection_start_and_end_map" do
@@ -68,7 +68,7 @@ describe ExecutableCodeView do
     end
     it "adds 'm--1 =>[5,10]' for input cp('m',1),'1234',5" do
       @ecv.add_to_selection_start_and_end_map(CP,'1234',5)
-      @ecv.qpo_method_and_line_to_selection_start_and_end_map["m--1"].should == [5,10]
+      expect(@ecv.qpo_method_and_line_to_selection_start_and_end_map["m--1"]).to eq([5,10])
     end
   end
   describe "set_selection_bounds_in_view" do
@@ -84,8 +84,8 @@ describe ExecutableCodeView do
       SwingRunner::on_edt do
         @ecv.set_selection_bounds_in_view [2,5]
         jt = @ecv.code_tabbed_pane.selected_component.viewport.view
-        jt.selection_start.should == 2
-        jt.selection_end.should == 5
+        expect(jt.selection_start).to eq(2)
+        expect(jt.selection_end).to eq(5)
       end
     end
   end
@@ -103,8 +103,8 @@ describe ExecutableCodeView do
       SwingRunner::on_edt do
         @ecv.set_highlight_for_code_pointer(CP)
         jt = @ecv.code_tabbed_pane.selected_component.viewport.view
-        jt.selection_start.should == 5
-        jt.selection_end.should == 10
+        expect(jt.selection_start).to eq(5)
+        expect(jt.selection_end).to eq(10)
       end
     end
   end
@@ -117,28 +117,28 @@ describe ExecutableCodeView do
     end
     it "should have two panes" do
       SwingRunner::on_edt do
-        @ecv.code_tabbed_pane.tab_count.should == 2
+        expect(@ecv.code_tabbed_pane.tab_count).to eq(2)
       end
     end
     it "should have /someline/ in the first tab" do
       SwingRunner::on_edt do
         @ecv.code_tabbed_pane.selected_index = 0
-        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /someline/
+        expect(@ecv.code_tabbed_pane.selected_component.viewport.view.text).to match(/someline/)
       end
     end
     it "should have /entry/ in the second tab" do
       SwingRunner::on_edt do
         @ecv.code_tabbed_pane.selected_index = 1
-        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /entry/
+        expect(@ecv.code_tabbed_pane.selected_component.viewport.view.text).to match(/entry/)
       end
     end
   end
   describe "set_up_tabbed_views" do
     before :each do
       md = double("ApplicationModel", :nil? => false)
-      md.stub(:the_code).and_return(CM)
-      md.stub(:the_code_pointer).and_return(CP)
-      md.stub(:the_code_was_updated?).and_return(true)
+      allow(md).to receive(:the_code).and_return(CM)
+      allow(md).to receive(:the_code_pointer).and_return(CP)
+      allow(md).to receive(:the_code_was_updated?).and_return(true)
       SwingRunner::on_edt do
         @ecv = ExecutableCodeView.new
         @ecv.set_up_tabbed_views(md,nil)
@@ -146,19 +146,19 @@ describe ExecutableCodeView do
     end
     it "should have two panes" do
       SwingRunner::on_edt do
-        @ecv.code_tabbed_pane.tab_count.should == 2
+        expect(@ecv.code_tabbed_pane.tab_count).to eq(2)
       end
     end
     it "should have /someline/ in the first tab" do
       SwingRunner::on_edt do
         @ecv.code_tabbed_pane.selected_index = 0
-        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /someline/
+        expect(@ecv.code_tabbed_pane.selected_component.viewport.view.text).to match(/someline/)
       end
     end
     it "should have /entry/ in the second tab" do
       SwingRunner::on_edt do
         @ecv.code_tabbed_pane.selected_index = 1
-        @ecv.code_tabbed_pane.selected_component.viewport.view.text.should =~ /entry/
+        expect(@ecv.code_tabbed_pane.selected_component.viewport.view.text).to match(/entry/)
       end
     end
   end

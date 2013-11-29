@@ -20,11 +20,11 @@ describe DataPatternParser do
     end
     it "should result in a one element array of pairs when that is the only input" do
       dpp = DataPatternParser.new("<AlgebraicData><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses><\/AlgebraicData>")
-      dpp.parsed_value.should == [["C",[3,4]]]
+      expect(dpp.parsed_value).to eq([["C",[3,4]]])
     end
     it "should result in a mixed map when that is the input" do
       dpp = DataPatternParser.new("<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses><\/AlgebraicData>")
-      dpp.parsed_value.should == [["Nil",[]], ["C" , [3,4]]]
+      expect(dpp.parsed_value).to eq([["Nil",[]], ["C" , [3,4]]])
     end
     it "should raise an error when the map has duplicated constructors" do
       expect {
@@ -34,13 +34,13 @@ describe DataPatternParser do
   end
   context "address list matching" do
     it "should result in an empty list when there is no input" do
-      DataPatternParser::parse_address_list("").should ==  []
+      expect(DataPatternParser::parse_address_list("")).to eq([])
     end
     it "should result in a one element list when that is the only input" do
-      DataPatternParser::parse_address_list("<int>3</int>").should ==  [3]
+      expect(DataPatternParser::parse_address_list("<int>3</int>")).to eq([3])
     end
     it "should result in a many element list when that is the input" do
-      DataPatternParser::parse_address_list("<int>3</int><int>4</int><int>5</int><int>6</int><int>7</int>").should ==  [3,4,5,6,7]
+      expect(DataPatternParser::parse_address_list("<int>3</int><int>4</int><int>5</int><int>6</int><int>7</int>")).to eq([3,4,5,6,7])
     end
     it "should raise an error when the list has duplicated elements" do
       expect {

@@ -46,12 +46,12 @@ describe QuantumStackModel do
     end
     it "should successfully create the start qstack" do
       @qs.quantum_stack = "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
-      @qs.should_not be_bottom
+      expect(@qs).not_to be_bottom
     end
     describe "instance method make_name" do
       before(:each) do
         st = double("StackTranslation", :nil? => false)
-        st.stub(:reverse_lookup) do |val|
+        allow(st).to receive(:reverse_lookup) do |val|
           case val
           when 1 then "@q"
           when 2 then "@r"
@@ -63,30 +63,30 @@ describe QuantumStackModel do
       end
       it "returns the stackaddress as a string if not found in the translation" do
         @qs.quantum_stack = "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
-        @qs.make_name(:use_stack_address).should == ""
-        @qs.make_name(:hide_stack_address).should == ""
+        expect(@qs.make_name(:use_stack_address)).to eq("")
+        expect(@qs.make_name(:hide_stack_address)).to eq("")
       end
       it "returns the name(stackaddress) as a string if stackaddress found in the translation with use_stack_address symbol passed" do
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
-        @qs.make_name(:use_stack_address).should == "@q(1)"
+        expect(@qs.make_name(:use_stack_address)).to eq("@q(1)")
       end
       it "returns the name as a string if stackaddress found in the translation with hide_stack_address symbol passed" do
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack>"
-        @qs.make_name(:hide_stack_address).should == "@q"
+        expect(@qs.make_name(:hide_stack_address)).to eq("@q")
       end
     end
     it "should allow 'bottom' as the construction"  do
       @qs.quantum_stack = "<bottom/>"
-      @qs.should be_bottom
+      expect(@qs).to be_bottom
     end
     it "should allow 'bottom' in place of substacks"  do
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
     end
     it "should have the same number of substacks as the length of the descriptor" do
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-      @qs.should have(1).substacks
+      expect(@qs.size).to eq(1)
       @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks><bottom/><bottom/><bottom/></substacks><Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical></Qstack>"
-      @qs.should have(3).substacks
+      expect(@qs.size).to eq(3)
     end
   end
   it "should raise an exception if the stack is assigned before the translation" do
@@ -98,15 +98,15 @@ describe QuantumStackModel do
   it "should assign a name for a quantum descriptor" do
     qs = QuantumStackModel.new
     st = double("StackTranslation", :nil? => false)
-    st.should_receive(:reverse_lookup).and_return("p")
+    expect(st).to receive(:reverse_lookup).and_return("p")
     qs.stack_translation=st
     qs.quantum_stack =(QB2WITHBOTTOM)
-    qs.descriptor.name.should == "p(2)"
+    expect(qs.descriptor.name).to eq("p(2)")
   end
   it "should assign names to multi-level qstacks" do
     qs = QuantumStackModel.new
     st = double("StackTranslation", :nil? => false)
-    st.stub(:reverse_lookup) do |val|
+    allow(st).to receive(:reverse_lookup) do |val|
       case val
       when 1 then "@q"
       when 2 then "@r"
@@ -115,7 +115,7 @@ describe QuantumStackModel do
     end
     qs.stack_translation=st
     qs.quantum_stack =(QSQ1R2)
-    qs.descriptor.name.should == "@r(2)"
-    qs.substacks[0].descriptor.name.should == "@q(1)"
+    expect(qs.descriptor.name).to eq("@r(2)")
+    expect(qs.substacks[0].descriptor.name).to eq("@q(1)")
   end
 end

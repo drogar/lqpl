@@ -16,23 +16,23 @@ describe ClassicalPatternParser do
     end
     it "should result in a one element int list [1] when that is the only input" do
       cpp= ClassicalPatternParser.new("<Classical><cint>1</cint><\/Classical>")
-      cpp.parsed_value.should == [1]
+      expect(cpp.parsed_value).to eq([1])
     end
     it "should result in a one element int list [-3491] when that is the only input" do
       cpp= ClassicalPatternParser.new("<Classical><cint>-3491</cint><\/Classical>")
-      cpp.parsed_value.should == [-3491]
+      expect(cpp.parsed_value).to eq([-3491])
     end
     it "should result in a one element bool list [true] when that is the only input" do
       cpp= ClassicalPatternParser.new("<Classical><cbool>True</cbool><\/Classical>")
-      cpp.parsed_value.should == [true]
+      expect(cpp.parsed_value).to eq([true])
     end
     it "should result in a one element int list [false] when that is the only input" do
       cpp= ClassicalPatternParser.new("<Classical><cbool>False</cbool><\/Classical>")
-      cpp.parsed_value.should == [false]
+      expect(cpp.parsed_value).to eq([false])
     end
     it "should result in a mixed list [1,true,14] when that is the input" do
       cpp= ClassicalPatternParser.new("<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint><\/Classical>")
-      cpp.parsed_value.should == [1,true,14]
+      expect(cpp.parsed_value).to eq([1,true,14])
     end
   end
 end

@@ -8,19 +8,19 @@ require 'src/panels/quantum_stack/quantum_stack_painter'
 describe AbstractDescriptorPainter do
   before(:each) do
     m=double("model_elelment")
-    m.stub(:name).and_return("Z")
-    m.stub(:value).and_return("Z")
-    m.stub(:length).and_return(0)
+    allow(m).to receive(:name).and_return("Z")
+    allow(m).to receive(:value).and_return("Z")
+    allow(m).to receive(:length).and_return(0)
     @adp=AbstractDescriptorPainter.new(m)
   end
   describe "model element" do
     it "should assign the model element to whatever object is passed in" do
       @adp.model_element= 5
-      @adp.model_element.should == 5
+      expect(@adp.model_element).to eq(5)
     end
   end
   it "should return an ellipse as its shape" do
-    @adp.my_shape(Point.new(10,10)).class.should == Ellipse2D::Double
+    expect(@adp.my_shape(Point.new(10,10)).class).to eq(Ellipse2D::Double)
   end
   it "should raise a runtime exception for colour" do
     expect {
@@ -28,7 +28,7 @@ describe AbstractDescriptorPainter do
     }.to raise_error RuntimeError,/abstract/
   end
   it "should have a nil image of the model" do
-    @adp.image_of_model.should be_nil
+    expect(@adp.image_of_model).to be_nil
   end
   describe "drawing items" do
     before :each do
@@ -68,14 +68,14 @@ describe ClassicalDescriptorPainter do
     @sd = nil
   end
   it "should have the colour green" do
-    @sd.my_colour.should == Color.green
+    expect(@sd.my_colour).to eq(Color.green)
   end
   describe "painting" do
     before (:each) do
       m=double("model_elelment")
-      m.stub(:name).and_return("Z")
-      m.stub(:value).and_return("Z")
-      m.stub(:length).and_return(0)
+      allow(m).to receive(:name).and_return("Z")
+      allow(m).to receive(:value).and_return("Z")
+      allow(m).to receive(:length).and_return(0)
       @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>")
       @sd.model_element= m
       
@@ -107,11 +107,11 @@ describe DataDescriptorPainter do
    @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>")
   end
   it "should have the colour magenta" do
-    @sd.my_colour.should == Color.magenta
+    expect(@sd.my_colour).to eq(Color.magenta)
   end
   
   it "should return a Rectangle as its shape" do
-    @sd.my_shape(Point.new(10,10)).class.should == Rectangle2D::Double
+    expect(@sd.my_shape(Point.new(10,10)).class).to eq(Rectangle2D::Double)
   end
 end
 
@@ -123,12 +123,12 @@ describe QubitDescriptorPainter do
 
   end
   it "should have the colour red" do
-    @sd.my_colour.should == Color.red
+    expect(@sd.my_colour).to eq(Color.red)
   end
 
   it "should have a left  width that is more than the right width" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    @sd.model_paint_size(g).left_width.should >  @sd.model_paint_size(g).right_width
+    expect(@sd.model_paint_size(g).left_width).to be >  @sd.model_paint_size(g).right_width
   end
 end
 
@@ -137,18 +137,18 @@ describe ValueDescriptorPainter do
     @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<Value>0.5</Value>")
   end
   it "should have the colour blue" do
-    @sd.my_colour.should == Color.blue
+    expect(@sd.my_colour).to eq(Color.blue)
   end
   it "should have a preferred size of W>10, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    @sd.model_paint_size(g).left_width.should > 5
-    @sd.model_paint_size(g).right_width.should > 5
-    @sd.model_paint_size(g).height.should > 15
+    expect(@sd.model_paint_size(g).left_width).to be > 5
+    expect(@sd.model_paint_size(g).right_width).to be > 5
+    expect(@sd.model_paint_size(g).height).to be > 15
   end
 
   it "should have a left equal to the right" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    @sd.model_paint_size(g).left_width.should ==  @sd.model_paint_size(g).right_width
+    expect(@sd.model_paint_size(g).left_width).to eq(@sd.model_paint_size(g).right_width)
   end
 end
 
@@ -157,18 +157,18 @@ describe ZeroDescriptorPainter do
     @sd = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance "<Zero/>")
   end
   it "should have the colour black" do
-    @sd.my_colour.should == Color.black
+    expect(@sd.my_colour).to eq(Color.black)
   end
   it "should have a total size of W=55, H > 15" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
     ps = @sd.model_paint_size(g)
-    ps.left_width.should == 27.5
-    ps.right_width.should == 27.5
-    ps.height.should > 15
+    expect(ps.left_width).to eq(27.5)
+    expect(ps.right_width).to eq(27.5)
+    expect(ps.height).to be > 15
   end
   it "should have a left equal to 1/2 the total width" do
     g = BufferedImage.new(500,500,BufferedImage::TYPE_INT_RGB).graphics
-    @sd.model_paint_size(g).left_width.should ==  @sd.model_paint_size(g).total_width * 0.5
+    expect(@sd.model_paint_size(g).left_width).to eq(@sd.model_paint_size(g).total_width * 0.5)
   end
 
 end

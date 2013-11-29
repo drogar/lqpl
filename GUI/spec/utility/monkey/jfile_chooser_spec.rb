@@ -8,22 +8,22 @@ describe JFileChooser do
       end
     end
     it "should create a JFileChooser" do
-      @j.should_not be_nil
+      expect(@j).not_to be_nil
     end
     it "should set the title to the first parameter" do
       SwingRunner::on_edt do
-        @j.dialog_title.should == "a"
+        expect(@j.dialog_title).to eq("a")
       end
     end
     it "should set a file_filter whose description is the second parm" do
       SwingRunner::on_edt do
-        @j.file_filter.description.should == "b"
+        expect(@j.file_filter.description).to eq("b")
       end
     end
     it "should only accept files whose extension equals the third parm" do
       SwingRunner::on_edt do
-        @j.file_filter.accept(java.io.File.new("~/junk.c")).should be_true
-        @j.file_filter.accept(java.io.File.new("~/junk.jun")).should be_false
+        expect(@j.file_filter.accept(java.io.File.new("~/junk.c"))).to be_true
+        expect(@j.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
       end
     end
   end
@@ -35,18 +35,18 @@ describe JFileChooser do
     end
     it "should have a title of 'Load LQPO (Assembly) File'" do
       SwingRunner::on_edt do
-        @qpo.dialog_title.should == "Load LQPO (Assembly) File"
+        expect(@qpo.dialog_title).to eq("Load LQPO (Assembly) File")
       end
     end
     it "should set a file_filter whose description is 'LQPL assembled file'" do
       SwingRunner::on_edt do
-        @qpo.file_filter.description.should == "LQPL assembled file"
+        expect(@qpo.file_filter.description).to eq("LQPL assembled file")
       end
     end
     it "should only accept files whose extension is qpo" do
       SwingRunner::on_edt do
-        @qpo.file_filter.accept(java.io.File.new("~/junk.qpo")).should be_true
-        @qpo.file_filter.accept(java.io.File.new("~/junk.jun")).should be_false
+        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.qpo"))).to be_true
+        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
       end
     end
   end
@@ -59,18 +59,18 @@ describe JFileChooser do
     end
     it "should have a title of 'Open LQPL File for Compiling'" do
       SwingRunner::on_edt do
-        @qpl.dialog_title.should == "Open LQPL File for Compiling"
+        expect(@qpl.dialog_title).to eq("Open LQPL File for Compiling")
       end
     end
     it "should set a file_filter whose description is 'LQPL source file'" do
       SwingRunner::on_edt do
-        @qpl.file_filter.description.should == "LQPL source file"
+        expect(@qpl.file_filter.description).to eq("LQPL source file")
       end
     end
     it "should only accept files whose extension is qpo" do
       SwingRunner::on_edt do
-        @qpl.file_filter.accept(java.io.File.new("~/junk.qpl")).should be_true
-        @qpl.file_filter.accept(java.io.File.new("~/junk.jun")).should be_false
+        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.qpl"))).to be_true
+        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
       end
     end
   end

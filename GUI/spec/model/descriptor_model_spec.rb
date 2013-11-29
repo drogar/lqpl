@@ -10,24 +10,24 @@ describe AbstractDescriptorModel do
   end
   it "should create an instance of ZeroDescriptorModel when created with  <Zero/>" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"
-    sd.class.should == ZeroDescriptorModel
+    expect(sd.class).to eq(ZeroDescriptorModel)
   end
   it "should create an instance of ValueDescriptorModel when created with  <Value>0.5</Value>" do
     sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-    sd.class.should == ValueDescriptorModel
+    expect(sd.class).to eq(ValueDescriptorModel)
   end
 
   it "should create an instance of ClassicalDescriptorModel when created with  <Classical><cint>5</cint><cbool>True</cbool></Classical>" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>5</cint><cbool>True</cbool></Classical>"
-    sd.class.should == ClassicalDescriptorModel
+    expect(sd.class).to eq(ClassicalDescriptorModel)
   end
   it "should create an instance of QubitDescriptorModel when created with  <Qubits><pair><qz/><qz/></pair></Qubits>" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    sd.class.should == QubitDescriptorModel
+    expect(sd.class).to eq(QubitDescriptorModel)
   end
   it "should create an instance of DataDescriptorModel when created with  <AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.class.should == DataDescriptorModel
+    expect(sd.class).to eq(DataDescriptorModel)
   end
   context "input string doesn't start with one of <Zero, <Value, <Class, <Qubi, or <Alge" do
     example "input 'something'" do expect {
@@ -52,7 +52,7 @@ describe AbstractDescriptorModel do
 
   it "should return 'nil' when asked for substack labels of Zero" do
     sd = AbstractDescriptorModel.make_instance "<Zero/>"
-    sd.substack_labels.should be_nil
+    expect(sd.substack_labels).to be_nil
   end
 
 end
@@ -68,28 +68,28 @@ describe ClassicalDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
-    sd.should have(1).item
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    sd.should have(3).items
+    expect(sd.size).to eq(3)
   end
   it "should have the value being the list of classicalvalues in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    sd.value.should == [1,true,14]
+    expect(sd.value).to eq([1,true,14])
   end
   it "should return a list of length 'length' when asked for substack labels" do
      sd = AbstractDescriptorModel.make_instance "<Classical><cint>14</cint></Classical>"
-    sd.should have(1).substack_labels
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    sd.should have(3).substack_labels
+    expect(sd.size).to eq(3)
   end
   it "should have the substack_labels being the list of classicalvalues in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Classical><cint>1</cint><cbool>True</cbool><cint>14</cint></Classical>"
-    sd.substack_labels.should == ["1","true","14"]
+    expect(sd.substack_labels).to eq(["1","true","14"])
   end
   context "class methods" do
     context "validation" do
       it "should not raise an error if passed an array with elements" do
-         ClassicalDescriptorModel.validate_substacks_count([1,2]).should be_nil
+         expect(ClassicalDescriptorModel.validate_substacks_count([1,2])).to be_nil
       end
       it "should raise an error if passed an empty array" do
         expect {
@@ -115,38 +115,38 @@ describe DataDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.should have(1).item
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.should have(2).items
+    expect(sd.size).to eq(2)
     
   end
   it "should have the value being the map of constructor/address pairs in the string" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
-    sd.value.should == [["Nil",[]], ["C",[3,4]]]
+    expect(sd.value).to eq([["Nil",[]], ["C",[3,4]]])
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.should have(1).substack_labels
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.should have(2).substack_labels
+    expect(sd.size).to eq(2)
   end
 
   it "should have constructer names only when there are no stack addresses" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.substack_labels.should == ["Nil"]
+    expect(sd.substack_labels).to eq(["Nil"])
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
-    sd.substack_labels.should == ["Nil", "Nil2"]
+    expect(sd.substack_labels).to eq(["Nil", "Nil2"])
   end
 
   it "should have the substack_labels being the list of constructors with addresses in brackets" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
-    sd.substack_labels.should == ["Nil", "C[3, 4]"]
+    expect(sd.substack_labels).to eq(["Nil", "C[3, 4]"])
   end
   
   context "class methods" do
     context "validation" do
       it "should not raise an error if passed an array with elements" do
-          DataDescriptorModel.validate_substacks_count([1,2]).should be_nil
+          expect(DataDescriptorModel.validate_substacks_count([1,2])).to be_nil
       end
       it "should raise an error if passed an empty array" do
         expect {
@@ -173,37 +173,37 @@ describe QubitDescriptorModel do
   end
   it  "should have a length equal to the number of elements of the passed in list" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    sd.should have(1).item
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.should have(2).items
+    expect(sd.size).to eq(2)
   end
   it "should have the value being the list of qubit indicators in the string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.value.should == [[0,0],[0,1],[1,0],[1,1]]
+    expect(sd.value).to eq([[0,0],[0,1],[1,0],[1,1]])
   end
   it "should return a list of length 'length' when asked for substack labels" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair></Qubits>"
-    sd.should have(1).substack_labels
+    expect(sd.size).to eq(1)
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.should have(2).substack_labels
+    expect(sd.size).to eq(2)
   end
   it "should have the substack_labels being the list of 01 pairs in the construction string" do
     sd = AbstractDescriptorModel.make_instance "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits>"
-    sd.substack_labels.should == ["00","01","10","11"]
+    expect(sd.substack_labels).to eq(["00","01","10","11"])
   end
   context "class methods" do
     context "validation" do
       it "should not raise an error if passed an array with 1 element" do
-          QubitDescriptorModel.validate_substacks_count([1]).should be_nil
+          expect(QubitDescriptorModel.validate_substacks_count([1])).to be_nil
       end
       it "should not raise an error if passed an array with 2 elements" do
-          QubitDescriptorModel.validate_substacks_count([1,2]).should be_nil
+          expect(QubitDescriptorModel.validate_substacks_count([1,2])).to be_nil
       end
       it "should not raise an error if passed an array with 3 elements" do
-          QubitDescriptorModel.validate_substacks_count([1,2,3]).should be_nil
+          expect(QubitDescriptorModel.validate_substacks_count([1,2,3])).to be_nil
       end
       it "should not raise an error if passed an array with 4 elements" do
-          QubitDescriptorModel.validate_substacks_count([1,2,3,4]).should be_nil
+          expect(QubitDescriptorModel.validate_substacks_count([1,2,3,4])).to be_nil
       end
       it "should raise an error if passed an empty array" do
         expect {
@@ -229,7 +229,7 @@ end
 describe ValueDescriptorModel do
   it "should successfully be created with input '<Value>0.5</Value>'" do
     z = ValueDescriptorModel.new '<Value>0.5</Value>'
-    z.should_not be_nil
+    expect(z).not_to be_nil
   end
   it "should raise an error on other input" do
     expect {
@@ -247,33 +247,33 @@ describe ValueDescriptorModel do
         }.to raise_error ModelCreateError, /Value.*should not have/
       end
       it "should not raise an error if passed an empty array" do
-          ValueDescriptorModel.validate_substacks_count([]).should be_nil
+          expect(ValueDescriptorModel.validate_substacks_count([])).to be_nil
       end
       it "should not raise an error if passed an array with no elements" do
-          ValueDescriptorModel.validate_substacks_count(nil).should be_nil
+          expect(ValueDescriptorModel.validate_substacks_count(nil)).to be_nil
       end
     end
   end
   context 'attributes' do
     it "should always have a length of 0" do
       sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-      sd.should have(0).items
+      expect(sd.size).to eq(0)
     end
     it "should have the value in the construction string" do
       sd = AbstractDescriptorModel.make_instance "<Value>6.25e-2</Value>"
-      sd.value.should == 6.25e-2
+      expect(sd.value).to eq(6.25e-2)
     end
     it "should allow a number tag to surround the data" do
       sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
-      sd.value.should == 0.32
+      expect(sd.value).to eq(0.32)
     end
     it "should have no name" do
       sd = AbstractDescriptorModel.make_instance "<Value>0.5</Value>"
-      sd.name.should be_nil
+      expect(sd.name).to be_nil
     end
     it "should return 'nil' when asked for substack labels" do
       sd = AbstractDescriptorModel.make_instance "<Value><number>0.32</number></Value>"
-      sd.substack_labels.should be_nil
+      expect(sd.substack_labels).to be_nil
     end
   end
 end
@@ -282,11 +282,11 @@ end
 describe ZeroDescriptorModel do
   it "Should create when given no input" do
     z = ZeroDescriptorModel.new
-    z.should_not be_nil
+    expect(z).not_to be_nil
   end
   it "should successfully be created with input '<Zero/>'" do
     z = ZeroDescriptorModel.new '<Zero/>'
-    z.should_not be_nil
+    expect(z).not_to be_nil
   end
   it "should raise an error on other input" do
     expect {
@@ -304,10 +304,10 @@ describe ZeroDescriptorModel do
         }.to raise_error ModelCreateError, /Zero.*should not have/
       end
       it "should not raise an error if passed an empty array" do
-          ZeroDescriptorModel.validate_substacks_count([]).should be_nil
+          expect(ZeroDescriptorModel.validate_substacks_count([])).to be_nil
       end
       it "should not raise an error if passed an array with no elements" do
-          ZeroDescriptorModel.validate_substacks_count(nil).should be_nil
+          expect(ZeroDescriptorModel.validate_substacks_count(nil)).to be_nil
       end
     end
   end
@@ -316,16 +316,16 @@ describe ZeroDescriptorModel do
       @z = ZeroDescriptorModel.new
     end
     it "should have a value of '0'" do
-      @z.value.should == "0"
+      expect(@z.value).to eq("0")
     end
     it "should have a length of 0" do
-      @z.length.should == 0
+      expect(@z.length).to eq(0)
     end
     it "should have no name" do
-      @z.name.should be_nil
+      expect(@z.name).to be_nil
     end
     it "should return 'nil' when asked for substack labels" do
-      @z.substack_labels.should be_nil
+      expect(@z.substack_labels).to be_nil
     end
  end
 end

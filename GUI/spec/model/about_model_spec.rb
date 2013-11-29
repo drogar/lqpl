@@ -3,5 +3,5 @@ require 'spec/spec_helper'
 
 describe AboutModel do
   subject {AboutModel.new}
-  specify {subject.about_text.should == ABOUT_STRING}
+  specify {expect(subject.about_text).to eq(ABOUT_STRING)}
 end

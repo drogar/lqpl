@@ -10,11 +10,11 @@ describe Connection do
   describe "_make_connection" do
     it "should connect to the default web server when the port is set to 80" do
       @c.port=80
-      @c._make_connection.should be_true
+      expect(@c._make_connection).to be_true
     end
     it "should be false when trying to connect to  port 20 (normally unused)" do
       @c.port = 20
-      @c._make_connection.should be_false
+      expect(@c._make_connection).to be_false
     end
   end
   describe "connect" do
@@ -28,7 +28,7 @@ describe Connection do
       @c.port = 7683
       @c.connect_to = "lqpl-compiler-server"
       @c.connect
-      @c.connected?.should be_true
+      expect(@c.connected?).to be_true
     end
     it "should raise an error if the port is incorrect" do
       @c.port = 76

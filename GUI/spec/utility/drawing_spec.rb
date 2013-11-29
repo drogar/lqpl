@@ -6,22 +6,22 @@ describe Drawing do
   end
   describe "mid_point" do
     it "returns (10,10) for input points (0,0) and 20,20" do
-      @d.mid_point(Point.new(0,0),Point.new(20,20)).should == Point.new(10,10)
+      expect(@d.mid_point(Point.new(0,0),Point.new(20,20))).to eq(Point.new(10,10))
     end
   end
   describe "get_string_size" do
     it "returns a size for a regular string 'ab' w=15, h>14" do
       s=@d.get_string_size(@d.gc,"ab")
-      s.width.should == 15.0
-      s.height.should > 14.0
+      expect(s.width).to eq(15.0)
+      expect(s.height).to be > 14.0
     end
     it "returns a size for an attributed string 'ab' of w=9, h>9" do
       ab = java.text.AttributedString.new("ab");
       ab.add_attribute(java.text.AttributedCharacterIterator::Attribute::LANGUAGE, 
           java.util.Locale.new("en"))
       s=@d.get_string_size(@d.gc,ab.iterator)
-      s.width.should == 9.0
-      s.height.should > 9.0  
+      expect(s.width).to eq(9.0)
+      expect(s.height).to be > 9.0  
     end  
   end
   describe "draw_black_line" do
