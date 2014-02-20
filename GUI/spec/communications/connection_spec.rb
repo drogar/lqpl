@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'spec/spec_helper'
 
 describe Connection do
@@ -45,5 +46,5 @@ describe Connection do
       }.to raise_error ServerProcessNotFound, /junk/
     end
   end
-    
+
 end

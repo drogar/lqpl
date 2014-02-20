@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'singleton'
 require 'socket'
 
@@ -5,23 +6,25 @@ java_import java.lang.ProcessBuilder
 java_import com.drogar.lqpl.Main
 java_import java.net.URLDecoder
 
+# base for creating a connection
 class Connection
   include Singleton
 
+  LOCAL_CONNECTS = ['127.0.0.1', '::1', 'localhost']
   attr_accessor :port
   attr_accessor :connect_to
   attr_accessor :my_path
 
-  def initialize(port=nil)
+  def initialize(port = nil)
     @port = port
     @connection = nil
     @process = nil
     _set_up_my_path
   end
 
-  java_signature "boolean is_connected()"
+  java_signature 'boolean is_connected()'
   def connected?
-    @connection != nil
+    !@connection.nil?
   end
 
   def close_down
@@ -31,76 +34,75 @@ class Connection
     @process = nil
   end
 
-  def self.get_instance(port=nil)
-    c = self.instance
+  def self.get_instance(port = nil)
+    c = instance
     c.port = port
     c
   end
 
+  def connection_list
+    # TODO: - add flag to pick order of these.
+    [@connect_to, "#{@my_path}bin/#{@connect_to}", "#{@my_path}../out/bin/#{@connect_to}"]
+  end
+
   def connect
-    res = _make_connection
-    
-    # puts " will try from #{jar_path}"
-    if !res
-      begin
-        # try executing from PATH first - probably not right for testing.... 
-        #TODO - add flag to pick order of these.
-        _start_up_the_executable_in_a_process(@connect_to)
-      rescue => e
-        begin
-          # Assume executables just below jar path 
-          # Works for bundled executables.
-          _start_up_the_executable_in_a_process("#{@my_path}bin/#{@connect_to}")
-        rescue => e1
-          begin
-            # assume one further .. and then over to out/bin 
-            # works for rspec and cucumber 
-            _start_up_the_executable_in_a_process("#{@my_path}../out/bin/#{@connect_to}")
-          rescue => e2
-            raise ServerProcessNotFound, "There was no process found on port #{@port}. Please start '#{@connect_to}'."
-          end
-        end
-      end
+    errors = _make_connection
+
+    connection_list.each do |location|
+      errors = try_connecting_to location unless errors.empty?
+    end
+
+    unless errors.empty?
+      fail ServerProcessNotFound,
+           "There was no process found on port #{@port}. Please start '#{@connect_to}'."
     end
   end
-  
+
+  def try_connecting_to(location)
+    begin
+      # assume one further .. and then over to out/bin
+      # works for rspec and cucumber
+      _start_up_the_executable_in_a_process(location)
+    rescue
+      return ['Unable to connect to ' + location]
+    end
+    []
+  end
+
   def _set_up_my_path
-    @my_path= File.expand_path(__FILE__)[Regexp.new /.*?jar!/]
+    @my_path = File.expand_path(__FILE__)[Regexp.new(/.*?jar!/)]
     if @my_path
       #:nocov:
-      @my_path=@my_path[5,@my_path.length - 18] #remove 'file:' from front, lqpl_gui.jar! from back
+      @my_path = @my_path[5, @my_path.length - 18]
+      # remove 'file:' from front, lqpl_gui.jar! from back
       #:nocov:
     else
-      @my_path = File.expand_path(File.dirname(__FILE__))+"/../../"
+      @my_path = File.expand_path(File.dirname(__FILE__)) + '/../../'
     end
   end
-  
+
   def _start_up_the_executable_in_a_process(executable)
-    @process=ProcessBuilder.new(executable, "").start
+    @process = ProcessBuilder.new(executable, '').start
     sleep 0.25
     res2 = _make_connection
-    raise ServerProcessNotFound if !res2
+    fail ServerProcessNotFound unless res2.empty
   end
-  
-  def _make_connection
 
-    ["127.0.0.1", "::1", "localhost"].each do |addr|
+  def _make_connection
+    LOCAL_CONNECTS.each do |addr|
       begin
         @connection = TCPSocket.new addr, @port
-        return true
+        return []
       rescue Errno::ECONNREFUSED => e1
-        #puts "Connect refused For #{addr}, exception: #{e1}"
-      rescue SocketError => e
-        #puts "Socket error for  #{addr}, exception: #{e} "
+        return ["Connect refused For #{addr}, exception: #{e1}"]
+      rescue SocketError  => e
+        return ["Socket error for  #{addr}, exception: #{e} "]
       end
     end
-    return false # made it through without returning
   end
 
-
-
   def send_and_receive_command(command)
-    connect if !connected?
+    connect unless connected?
     @connection.puts command
     @connection.readline
   end

@@ -1,22 +1,22 @@
+# encoding: utf-8
 require 'rbconfig'
 require 'java'
 require 'config/platform'
 
-Dir.glob(File.expand_path(File.dirname(__FILE__) + 
-  "/**/*").gsub('%20', ' ')).each do |directory|
+Dir.glob(File.expand_path(File.dirname(__FILE__) +
+  '/**/*').gsub('%20', ' ')).each do |directory|
   # File.directory? is broken in current JRuby for dirs inside jars
   # http://jira.codehaus.org/browse/JRUBY-2289
   $LOAD_PATH << directory unless directory =~ /\.\w+$/
 end
 
-
 #puts "set loadpath #{$LOAD_PATH}"
 # Some JRuby $LOAD_PATH path bugs to check if you're having trouble:
-# http://jira.codehaus.org/browse/JRUBY-2518 - 
+# http://jira.codehaus.org/browse/JRUBY-2518 -
 #         Dir.glob and Dir[] doesn't work
 #         for starting in a dir in a jar
 #         (such as Active-Record migrations)
-# http://jira.codehaus.org/browse/JRUBY-3247 - 
+# http://jira.codehaus.org/browse/JRUBY-3247 -
 #         Compiled Ruby classes produce
 #         word substitutes for characters
 #         like - and . (to minus and dot).
@@ -24,7 +24,7 @@ end
 #         like ActiveSupport and Prawn
 
 #===================================================================
-# Monkeybars requires, this pulls in the requisite libraries needed 
+# Monkeybars requires, this pulls in the requisite libraries needed
 # for Monkeybars to operate.
 
 require 'resolver'
@@ -49,8 +49,6 @@ case Monkeybars::Resolver.run_location
 end
 #:nocov:
 
-
-
 require 'monkeybars'
 
 require 'application_controller'
@@ -59,23 +57,22 @@ require 'application_view'
 # End of Monkeybars requires
 #==================================================================
 #
-# Add your own application-wide libraries below.  To include jars, 
+# Add your own application-wide libraries below.  To include jars,
 # append to $CLASSPATH, or use add_to_classpath, for example:
 #
-# $CLASSPATH << File.expand_path(File.dirname(__FILE__) + 
+# $CLASSPATH << File.expand_path(File.dirname(__FILE__) +
 #    "/../lib/java/swing-layout-1.0.3.jar")
 #
 # is equivalent to
 #
 # add_to_classpath "../lib/java/swing-layout-1.0.3.jar"
 #
-# There is also a helper for adding to your load path and avoiding 
-# issues with file: being appended to the load path (useful for 
+# There is also a helper for adding to your load path and avoiding
+# issues with file: being appended to the load path (useful for
 # JRuby libs that need your jar directory on the load path).
 #
 # add_to_load_path "../lib/java"
 #
-
 
 case Monkeybars::Resolver.run_location
 when Monkeybars::Resolver::IN_FILE_SYSTEM
@@ -88,13 +85,13 @@ end
   java_import "java.awt.#{awtfile}"
 end
 
-%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter 
+%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter
   JTextArea JScrollPane BoxLayout SpinnerNumberModel}.each do |cfile|
-  java_import "javax.swing."+cfile
+  java_import 'javax.swing.'+cfile
 end
 
 # for swinging
-add_to_load_path "../lib/ruby/swingtown"
+add_to_load_path '../lib/ruby/swingtown'
 require 'swingtown'
 include  Swingtown::Core
 
@@ -110,16 +107,16 @@ java_import java.awt.Point
 end
 
 
-%w{translate_line_ends drawing duck_matcher 
+%w{translate_line_ends drawing duck_matcher
   swing_runner}.each do |f|
-  require "utility/"+f
+  require 'utility/'+f
 end
 
-%w{abstract_pattern zero_pattern value_pattern abstract_list_pattern 
-  qubit_pattern data_pattern classical_pattern stack_translation 
-  code_pointer executable_code dump_call dump_split dump 
+%w{abstract_pattern zero_pattern value_pattern abstract_list_pattern
+  qubit_pattern data_pattern classical_pattern stack_translation
+  code_pointer executable_code dump_call dump_split dump
   quantum_stack}.each do |rf|
-  require "panels/parsers/"+rf+"_parser"
+  require 'panels/parsers/'+rf+'_parser'
 end
 
 require 'dialogs/parsers/simulate_results_parser'
@@ -128,13 +125,13 @@ require 'application_model'
 require 'panels/panel_controller'
 
 %w{server_process_not_found invalid_input}.each do |f|
-  require "exceptions/"+f
+  require 'exceptions/'+f
 end
 
 
-%w{lqpl_emulator_server_connection 
+%w{lqpl_emulator_server_connection
   compiler_server_connection}.each do |f|
-  require "communications/"+f
+  require 'communications/'+f
 end
 
 %w{about simulate_results}.each do |dialog|
@@ -162,23 +159,17 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
-
-
-SwingRunner::on_edt do 
-  { ""=>%w{lqpl}, 
-  "panels/" => %w{quantum_stack classical_stack dump executable_code 
+SwingRunner::on_edt do
+  { ''=>%w{lqpl},
+  'panels/' => %w{quantum_stack classical_stack dump executable_code
                   stack_translation},
-  "dialogs/" =>%w{simulate_results about}}.each do |k,v|
-    v.each do |f|   
-      require k+f+"/"+f+"_view" 
-      require k+f+"/"+f+"_model" 
-      require k+f+"/"+f+"_controller"
+  'dialogs/' =>%w{simulate_results about}}.each do |k,v|
+    v.each do |f|
+      require k+f+'/'+f+'_view'
+      require k+f+'/'+f+'_model'
+      require k+f+'/'+f+'_controlle'
     end
   end
 end
 
-require "exit_handler"
-
-
-
-
+require 'exit_handler'

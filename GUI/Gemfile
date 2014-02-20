@@ -12,5 +12,6 @@ group :test, :development do
   gem 'flay'
   gem 'syntax'
   gem 'awesome_print'
+  gem 'rubocop'
 end
 

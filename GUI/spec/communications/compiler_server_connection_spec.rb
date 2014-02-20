@@ -4,9 +4,9 @@ require 'spec/spec_helper'
 describe CompilerServerConnection do
 
   context "helper functions" do
-    context "makeVersionNumber" do
+    context "make_version_number" do
       it "takes the input CS_VERSION [0,8,4] [] and returns 0.8.4" do
-        res = CompilerServerConnection::makeVersionNumber("CS_VERSION [0,8,4] []")
+        res = CompilerServerConnection::make_version_number("CS_VERSION [0,8,4] []")
         expect(res).to eq("0.8.4")
       end
     end
