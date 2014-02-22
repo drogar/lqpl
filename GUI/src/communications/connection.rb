@@ -80,6 +80,19 @@ class Connection
     connection.readline
   end
 
+  def _make_connection
+    LOCAL_CONNECTS.each do |addr|
+      begin
+        @connection = TCPSocket.new addr, @port
+        return []
+      rescue Errno::ECONNREFUSED => e1
+        return ["Connect refused For #{addr}, exception: #{e1}"]
+      rescue SocketError  => e
+        return ["Socket error for  #{addr}, exception: #{e} "]
+      end
+    end
+  end
+
   private
 
   def _set_up_my_path
@@ -101,16 +114,5 @@ class Connection
     fail ServerProcessNotFound unless res2.empty
   end
 
-  def _make_connection
-    LOCAL_CONNECTS.each do |addr|
-      begin
-        @connection = TCPSocket.new addr, @port
-        return []
-      rescue Errno::ECONNREFUSED => e1
-        return ["Connect refused For #{addr}, exception: #{e1}"]
-      rescue SocketError  => e
-        return ["Socket error for  #{addr}, exception: #{e} "]
-      end
-    end
-  end
+
 end

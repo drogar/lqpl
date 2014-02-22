@@ -75,7 +75,7 @@ class CompilerCommandInterpretor
 
   def make_object_file_name(fname)
     @dir = File.dirname(fname)
-    @objfile_name = @dir + File::SEPARATOR + File.basename(fname, '.qpl') + '.qpo'
+    @object_file_name = @dir + File::SEPARATOR + File.basename(fname, '.qpl') + '.qpo'
   end
 
   def base_file_from_line(line_input)
