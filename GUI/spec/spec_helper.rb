@@ -17,9 +17,9 @@ SimpleCov.at_exit do
           covered #{SimpleCov.result.covered_lines} lines of 
           #{SimpleCov.result.total_lines} for a coverage of 
           %#{SimpleCov.result.covered_percent}."
-  SwingRunner::on_edt do
+  #SwingRunner::on_edt do
     LqplController.instance.close
-  end
+    #end
   java.lang.System.exit(status)
 end
 

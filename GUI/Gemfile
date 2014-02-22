@@ -13,5 +13,10 @@ group :test, :development do
   gem 'syntax'
   gem 'awesome_print'
   gem 'rubocop'
+  
+
+  gem 'rspec-formatter-webkit'
+  gem 'fuubar'  # rspec formatter
+  gem 'rspec_junit_formatter'
 end
 

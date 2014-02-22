@@ -14,6 +14,7 @@ class Connection
   attr_accessor :port
   attr_accessor :connect_to
   attr_accessor :my_path
+  attr_reader :connection
 
   def initialize(port = nil)
     @port = port
@@ -24,11 +25,11 @@ class Connection
 
   java_signature 'boolean is_connected()'
   def connected?
-    !@connection.nil?
+    !connection.nil?
   end
 
   def close_down
-    @connection.close if connected?
+    connection.close if connected?
     @process.destroy if @process
     @connection = nil
     @process = nil
@@ -47,11 +48,9 @@ class Connection
 
   def connect
     errors = _make_connection
-
     connection_list.each do |location|
       errors = try_connecting_to location unless errors.empty?
     end
-
     unless errors.empty?
       fail ServerProcessNotFound,
            "There was no process found on port #{@port}. Please start '#{@connect_to}'."
@@ -60,14 +59,28 @@ class Connection
 
   def try_connecting_to(location)
     begin
-      # assume one further .. and then over to out/bin
-      # works for rspec and cucumber
       _start_up_the_executable_in_a_process(location)
     rescue
       return ['Unable to connect to ' + location]
     end
     []
   end
+
+  def send_command(command)
+    connection.puts(command)
+  end
+
+  def send_and_receive_command(command)
+    connect unless connected?
+    connection.puts command
+    connection.readline
+  end
+
+  def receive_command_data
+    connection.readline
+  end
+
+  private
 
   def _set_up_my_path
     @my_path = File.expand_path(__FILE__)[Regexp.new(/.*?jar!/)]
@@ -99,11 +112,5 @@ class Connection
         return ["Socket error for  #{addr}, exception: #{e} "]
       end
     end
-  end
-
-  def send_and_receive_command(command)
-    connect unless connected?
-    @connection.puts command
-    @connection.readline
   end
 end

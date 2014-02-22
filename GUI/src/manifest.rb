@@ -129,7 +129,7 @@ require 'panels/panel_controller'
 end
 
 
-%w{lqpl_emulator_server_connection
+%w{lqpl_emulator_server_connection compiler_command_interpretor connection_commander
   compiler_server_connection}.each do |f|
   require 'communications/'+f
 end
@@ -159,7 +159,7 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
-SwingRunner::on_edt do
+#SwingRunner::on_edt do
   { ''=>%w{lqpl},
   'panels/' => %w{quantum_stack classical_stack dump executable_code
                   stack_translation},
@@ -167,9 +167,9 @@ SwingRunner::on_edt do
     v.each do |f|
       require k+f+'/'+f+'_view'
       require k+f+'/'+f+'_model'
-      require k+f+'/'+f+'_controlle'
+      require k+f+'/'+f+'_controller'
     end
   end
-end
+  #end
 
 require 'exit_handler'
