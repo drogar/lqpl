@@ -1,23 +1,23 @@
-class ParserError < RuntimeError 
-end
+# encoding: utf-8
+# Error class for parsing
+class ParserError < RuntimeError ; end
 
+# Abstract parser
 class AbstractPatternParser
   attr_reader :md
+  attr_reader :parsed
+  alias_method :parsed?, :parsed
   
   def initialize(in_string)
     @md = self.class.top_level_regexp.match in_string
+    @parsed = !@md.nil?
     raise ParserError, "No match -#{self.class.top_level_regexp}- to -#{in_string}-" unless @md
   end
-  
-  def parsed?
-    @md
-  end
-  
+    
   def self.top_level_regexp
     self.surround_with_start_end self.embeddable_top_level_regexp
   end
-  
-  
+    
   def self.embeddable_top_level_regexp
     Regexp.new /^$/
   end

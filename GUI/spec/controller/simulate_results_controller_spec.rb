@@ -26,7 +26,7 @@ describe SimulateResultsController do
   it "should create a results set when given the correct input" do
     SwingRunner::on_edt do
       @c.set_simulate_data(TWOELTS,@st)
-      expect(@c.get_simulate_data).to eq("<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>")
+      expect(@c.simulate_data).to eq("<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>")
     end
   end
 
