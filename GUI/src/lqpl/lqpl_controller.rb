@@ -78,7 +78,7 @@ class LqplController < ApplicationController
   def file_compile_action_performed
     chooser = JFileChooser.lqpl_source_file_opener
     if chooser.show_open_dialog(self.my_frame) == JFileChooser::APPROVE_OPTION
-      @cmp.compile_and_write_qpo chooser.get_selected_file.get_absolute_path
+      @cmp.compile chooser.get_selected_file.get_absolute_path
       model.messages_text = @cmp.success_or_fail_message(chooser.get_selected_file.name)
     else
       model.messages_text  = "Compile action cancelled."

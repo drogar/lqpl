@@ -7,7 +7,7 @@ COMPILER_SERVER = 'lqpl-compiler-server'
 # Handle connections to the compiler server
 class CompilerServerConnection < Connection
   extend Forwardable
-  def_delegators :@commander, :compile, :failed?
+  def_delegators :@commander, :compile, :failed?, :success_or_fail_message
 
   def initialize(port = 7683)
     super(port)
