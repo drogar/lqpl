@@ -51,9 +51,9 @@ describe LqplModel do
         expect(@lm.view_menu_classical_stack_enabled).to be_true
       end
     end
-    describe "set_title_and_enable" do
+    describe "enable_buttons!" do
       before :each do
-        @lm.set_title_and_enable("test")
+        @lm.enable_buttons!("test")
       end
       it "should set the title to 'Quantum Emulator - <arg>" do
         expect(@lm.frame_title).to eq('Quantum Emulator - test')

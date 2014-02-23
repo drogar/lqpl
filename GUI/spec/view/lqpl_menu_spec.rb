@@ -8,7 +8,7 @@ TESTMENU_STRUCTURE = {:file => {:menu_index => 0,
       :menu_enabled =>[false,false,false,false]}}
 class Parent 
   attr_accessor :mbar
-  def set_menu_bar(mb)
+  def make_menu_bar(mb)
     @mbar = mb
   end
 end

@@ -160,14 +160,16 @@ require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
 #SwingRunner::on_edt do
+require 'lqpl_menu'
+require 'lqpl_subs_handler'
   { ''=>%w{lqpl},
   'panels/' => %w{quantum_stack classical_stack dump executable_code
                   stack_translation},
   'dialogs/' =>%w{simulate_results about}}.each do |k,v|
     v.each do |f|
-      require k+f+'/'+f+'_view'
-      require k+f+'/'+f+'_model'
-      require k+f+'/'+f+'_controller'
+      require k + f + '/' + f + '_view'
+      require k + f + '/' + f + '_model'
+      require k + f + '/' + f + '_controller'
     end
   end
   #end
