@@ -4,30 +4,30 @@ require 'src/lqpl/lqpl_model'
 describe LqplModel do
   describe "toggle_action" do
     it "should return 'Hide' for 'Show'" do
-      expect(LqplModel::toggle_action("Show")).to eq("Hide")
+      expect(LqplModel.toggle_action("Show")).to eq("Hide")
     end
     it "should return 'Show' for 'Hide'" do
-      expect(LqplModel::toggle_action("Hide")).to eq("Show")
+      expect(LqplModel.toggle_action("Hide")).to eq("Show")
     end
     
     it "should return 'Show' for 'anything'" do
-      expect(LqplModel::toggle_action("whatever")).to eq("Show")
+      expect(LqplModel.toggle_action("whatever")).to eq("Show")
     end
   end
   describe "new_view_command" do
     it "should return 'Hide X Y' for input ['Show', 'X', 'Y']" do
-      expect(LqplModel::new_view_command(["Show", 'X', 'Y'])).to eq("Hide X Y")
+      expect(LqplModel.new_view_command(["Show", 'X', 'Y'])).to eq("Hide X Y")
     end
     it "should return 'Show X Y' for input ['Hide', 'X', 'Y']" do
-      expect(LqplModel::new_view_command(["Hide", 'X', 'Y'])).to eq("Show X Y")
+      expect(LqplModel.new_view_command(["Hide", 'X', 'Y'])).to eq("Show X Y")
     end
   end
   describe "symbol_for_view_menu_item" do
     it "should return :view_menu_x_text= for input ['whatever','X']" do
-      expect(LqplModel::symbol_for_view_menu_item(['whatever','X'])).to eq(:view_menu_x_text=)
+      expect(LqplModel.symbol_for_view_menu_item(['whatever','X'])).to eq(:view_menu_x_text=)
     end
     it "should return :view_menu_x_y_text= for input ['whatever','X', 'Y']" do
-      expect(LqplModel::symbol_for_view_menu_item(['whatever','X', 'Y'])).to eq(:view_menu_x_y_text=)
+      expect(LqplModel.symbol_for_view_menu_item(['whatever','X', 'Y'])).to eq(:view_menu_x_y_text=)
     end
   end
   describe "instance methods" do

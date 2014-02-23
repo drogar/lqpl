@@ -30,13 +30,13 @@ describe LqplController do
       end
     end
     
-    specify {expect(@l).to have(5).sub_controllers}
-    specify {expect(@l).to have(2).dialogs}
+    specify {expect(LqplController::SUBS.size).to eq(5)}
+    specify {expect(LqplController::DIALOGS.size).to eq(2)}
     context "sub_controllers" do
-      specify {expect(@l.sub_controllers.compact).to have(5).non_nil_items}
+      specify {expect(@l.sub_controllers_handler).not_to be_nil}
     end
     context "dialogs" do
-      specify {expect(@l.dialogs.compact).to have(2).items}
+      specify {expect(@l.dialogs_handler).not_to be_nil}
     end
     
     context "the compiler server" do
@@ -57,113 +57,49 @@ describe LqplController do
       expect(@l.lqpl_emulator_server_connection(false)).not_to be_connected
     end
   end
-  describe "all_controllers_dispose" do
-    before :each do
-      SwingRunner::on_edt do
-        @l.load()
-      end 
-      d1=double("dialog1")
-      expect(d1).to receive(:dispose)
-      d2=double("dialog2")
-      expect(d2).to receive(:dispose)
-      s1=double("sub1")
-      expect(s1).to receive(:dispose)
-      s2=double("sub2")
-      expect(s2).to receive(:dispose)
-      @l.dialogs = [d1,d2]
-      @l.sub_controllers = [s1,s2]
+  describe "sub handlers" do
+    let(:dh) {double('dh')}
+    let(:sh) {double('sh')}
+    subject {@l}
+    before(:each) do
+      subject.sub_controllers_handler = sh
+      subject.dialogs_handler = dh
+      allow(dh).to receive(:dispose_all)
+      allow(sh).to receive(:dispose_all)
     end
     after(:each) do
-      @l.dialogs = []
-      @l.sub_controllers = []
+      subject.sub_controllers_handler = nil
+      subject.dialogs_handler = nil
     end
-    it "should send 'dispose' to each member of the dialogs and subcontrollers" do
-      @l.all_controllers_dispose
-    end
-  end
-  describe "close" do
-    before :each do
-      SwingRunner::on_edt do
-        @l.load()
-      end 
-      d1=double("dialog1")
-      expect(d1).to receive(:dispose)
-      d2=double("dialog2")
-      expect(d2).to receive(:dispose)
-      s1=double("sub1")
-      expect(s1).to receive(:dispose)
-      s2=double("sub2")
-      expect(s2).to receive(:dispose)
-      @l.dialogs = [d1,d2]
-      @l.sub_controllers = [s1,s2]
-    end
-    after(:each) do
-      @l.dialogs = []
-      @l.sub_controllers = []
-    end
-    it "should send 'dispose' to each member of the dialogs and subcontrollers" do
-      @l.close
-    end
-    it "closes the server connection" do
-      @l.close()
-      expect(@l.cmp).not_to be_connected
-      expect(@l.lqpl_emulator_server_connection(false)).not_to be_connected
-    end
-  end
-  
-  describe "sub_controllers_open" do
-    before :each do
-      s1=double("sub1")
-      expect(s1).to receive(:open)
-      s2=double("sub2")
-      expect(s2).to receive(:open)
-      @l.sub_controllers = [s1,s2]
-    end
-    after(:each) do
-      @l.dialogs = []
-      @l.sub_controllers = []
-    end
-    it "should send 'open' to each member of the subcontrollers" do
-      @l.open_sub_panels
-    end
-  end
-  
-  describe "update_sub_model_data" do
-    before :each do
-      s1=double("sub1")
-      expect(s1).to receive(:set_data_from_lqpl_model)
-      s2=double("sub2")
-      expect(s2).to receive(:set_data_from_lqpl_model)
-      @l.sub_controllers = [s1,s2]
-    end
-    after(:each) do
-      @l.dialogs = []
-      @l.sub_controllers = []
-    end
-    it "should send 'set_data_from_lqpl_model' to each member of the subcontrollers" do
-      @l.update_sub_model_data
-    end
-  end
-  
-  describe "trim_button_action_performed" do
-    before :each do
-      s1=double("sub1")
-      expect(s1).to receive(:set_data_from_lqpl_model)
-      expect(s1).to receive(:update_on_lqpl_model_trim).and_return(true)
-      s2=double("sub2")
-      expect(s2).to receive(:update_on_lqpl_model_trim).and_return(false)
-      expect(s2).not_to receive(:set_data_from_lqpl_model)
-      @l.sub_controllers = [s1,s2]
-    end
-    after(:each) do
-      @l.dialogs = []
-      @l.sub_controllers = []
-    end
-    it "should send 'set_data_from_lqpl_model' to sub1 and not to sub2" do
-      SwingRunner::on_edt do
-        @l.trim_button_action_performed
+    describe "close" do
+      it "should send 'dispose_all' to each of the sub handlers" do
+        expect(dh).to receive(:dispose_all)
+        expect(sh).to receive(:dispose_all)
+        allow(ExitHandler.instance).to receive(:close_servers)
+        subject.close
+      end
+      it "closes the server connection" do
+        subject.load
+        subject.close()
+        expect(subject.cmp).not_to be_connected
+        expect(subject.lqpl_emulator_server_connection(false)).not_to be_connected
       end
     end
-  end 
-  
+    
+    describe "initialize_sub_controllers" do
+      it "should call update_and_open on subs" do
+        expect(dh).to_not receive(:update_and_open)
+        expect(sh).to receive(:update_and_open)
+        subject.initialize_sub_controllers
+      end
+    end
+    
+    describe "update_all" do
+      it "should call update_all on the subs" do
+        expect(dh).to_not receive(:update_all)
+        expect(sh).to receive(:update_all)
+        subject.update_all
+      end
+    end
+  end  
 end

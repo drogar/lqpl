@@ -3,21 +3,13 @@ JInteger = java.lang.Integer
 
 # model for the lqpl main screen.
 class LqplModel < ApplicationModel
-  attr_accessor :spinner_panel_visible, :button_panel_visible
-  attr_accessor :step_spinner, :recursion_spinner, :recursion_multiplier_spinner,
-                :tree_depth_spinner
-  attr_accessor :go_enabled, :step_enabled
-
-  attr_accessor :messages_text
-
-  attr_accessor :view_menu_classical_stack_enabled, :view_menu_dump_enabled,
-                :view_menu_executing_code_enabled, :view_menu_stack_translation_enabled
-  attr_accessor :view_menu_classical_stack_text, :view_menu_dump_text,
-                :view_menu_executing_code_text, :view_menu_stack_translation_text
-
-  attr_accessor :frame_title
-
-  attr_accessor :compiler_connection, :lqpl_server_connection
+  attr_accessor :spinner_panel_visible, :button_panel_visible, :step_spinner, :recursion_spinner,
+                :recursion_multiplier_spinner, :tree_depth_spinner, :go_enabled, :step_enabled,
+                :messages_text, :view_menu_classical_stack_enabled, :view_menu_dump_enabled,
+                :view_menu_executing_code_enabled, :view_menu_stack_translation_enabled,
+                :view_menu_classical_stack_text, :view_menu_dump_text, :frame_title,
+                :view_menu_executing_code_text, :view_menu_stack_translation_text,
+                :compiler_connection, :lqpl_server_connection
 
   def initialize
     init_panels
@@ -40,15 +32,11 @@ class LqplModel < ApplicationModel
   end
 
   def init_buttons
-    @go_enabled = true
-    @step_enabled = true
+    enable_go!(true)
   end
 
   def init_view_menu
-    @view_menu_stack_translation_enabled = false
-    @view_menu_dump_enabled = false
-    @view_menu_executing_code_enabled = false
-    @view_menu_classical_stack_enabled = false
+    enable_view_menu_items(false)
 
     @view_menu_stack_translation_text = 'Hide Stack Translation'
     @view_menu_executing_code_text = 'Hide Executing Code'
@@ -61,17 +49,16 @@ class LqplModel < ApplicationModel
          LqplModel.new_view_command(current_command))
   end
 
-  def enable_view_menu_items
-    self.view_menu_stack_translation_enabled = true
-    self.view_menu_dump_enabled = true
-    self.view_menu_executing_code_enabled = true
-    self.view_menu_classical_stack_enabled = true
+  def enable_view_menu_items(value = true)
+    self.view_menu_stack_translation_enabled = value
+    self.view_menu_dump_enabled = value
+    self.view_menu_executing_code_enabled = value
+    self.view_menu_classical_stack_enabled = value
   end
 
   def enable_buttons!(base_file_name)
     self.frame_title = "Quantum Emulator - #{base_file_name}"
-    self.go_enabled = true
-    self.step_enabled = true
+    enable_go! true
     self.spinner_panel_visible = true
     self.button_panel_visible = true
     self.messages_text = "#{base_file_name} was loaded."
@@ -83,8 +70,7 @@ class LqplModel < ApplicationModel
   end
 
   def self.toggle_action(current)
-    return 'Hide' if current == 'Show'
-    'Show'
+    current == 'Show' ? 'Hide' : 'Show'
   end
 
   def self.new_view_command(current_command)
@@ -96,10 +82,9 @@ class LqplModel < ApplicationModel
     "view_menu_#{which_menu}_text=".to_sym
   end
 
-
   def compile(file)
     compiler_connection.compile file.get_absolute_path
-    messages_text = compiler_connection.success_or_fail_message(file.name)
+    self.messages_text = compiler_connection.success_or_fail_message(file.name)
   end
 
   def load_and_enable!(file)
@@ -107,16 +92,15 @@ class LqplModel < ApplicationModel
     enable_buttons! file.name
   end
 
-
   def load_file(file_path)
     lqpl_server_connection.send_load_from_file(recursion_multiplier_spinner,
-                                                        file_path)
+                                               file_path)
     lqpl_server_connection.send_set_depth_multiplier(recursion_multiplier_spinner)
   end
 
   def update_recursion_spinner(value)
-    recursion_spinner = java.lang.Integer.new(value)
-    messages_text =  "Recursion Depth set to #{recursion_spinner}"
+    self.recursion_spinner = java.lang.Integer.new(value)
+    self.messages_text =  "Recursion Depth set to #{recursion_spinner}"
     enable_go!(true)
   end
 
@@ -131,10 +115,10 @@ class LqplModel < ApplicationModel
   end
 
   def update_recursion_multiplier_spinner(value)
-    model.recursion_multiplier_spinner =
+    self.recursion_multiplier_spinner =
       java.lang.Integer.new(value)
     lqpl_server_connection.send_set_depth_multiplier(recursion_multiplier_spinner)
-    model.messages_text =  "Recursion Multiplier set to #{model.recursion_multiplier_spinner}"
+    self.messages_text =  "Recursion Multiplier set to #{model.recursion_multiplier_spinner}"
     enable_go!(true)
   end
 end

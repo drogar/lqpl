@@ -14,10 +14,11 @@ class LqplController < ApplicationController
           ExecutableCodeController, StackTranslationController]
   attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
 
-  LqplMenu.set_menu_actions(->(opts) { add_listener(opts) })
+  LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
 
   def close
-    all_controllers_dispose
+    dialogs_handler.dispose_all if dialogs_handler
+    sub_controllers_handler.dispose_all if sub_controllers_handler
     ExitHandler.instance.close_servers
     super
   end
@@ -25,7 +26,7 @@ class LqplController < ApplicationController
   def load(*args)
     @cmp = CompilerServerConnection.get_instance
     # @cmp.connect
-    model.compiler_server_connection = @cmp
+    model.compiler_connection = @cmp
 
     # lqpl_emulator_server_connection.connect
     model.lqpl_server_connection = lqpl_emulator_server_connection
@@ -60,11 +61,6 @@ class LqplController < ApplicationController
       model.messages_text =  'QPO file load cancelled.'
     end
     update_view
-  end
-
-  def all_controllers_dispose
-    dialogs_handler.dispose_all
-    @sub_controllers_handler.dispose_alleach { |sc| sc.dispose } if @sub_controllers
   end
 
   def file_simulate_action_performed
