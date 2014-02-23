@@ -3,7 +3,7 @@ class StackTranslationController < PanelController
   set_view 'StackTranslationView'
   set_close_action :hide
 
-  def set_data_from_lqpl_model(lqpl_model)
+  def update_data_from_lqpl_model(lqpl_model)
     set_stack_translation(lqpl_model.tree_depth_spinner, lqpl_model.recursion_spinner)
   end
   

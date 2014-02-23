@@ -1,3 +1,6 @@
+# encoding: utf-8
+# classical stack model
+# Currently just an html dump
 class ClassicalStackModel < ApplicationModel
   attr_accessor :classical_stack_text
   attr_accessor :classical_stack
@@ -7,9 +10,9 @@ class ClassicalStackModel < ApplicationModel
 
   def classical_stack_text
     cs = @classical_stack || []
-    return "" if cs == []
-    inside=cs.collect {|c| "#{c}"}.join("<br />")
-    "<html>"+inside+"</html>"
+    return '' if cs == []
+    inside = cs.map { |c| "#{c}" }.join('<br />')
+    '<html>' + inside + '</html>'
   end
 
   def to_a
@@ -20,5 +23,4 @@ class ClassicalStackModel < ApplicationModel
     cpp = ClassicalPatternParser.new xml_input
     @classical_stack = cpp.parsed_value
   end
-
 end

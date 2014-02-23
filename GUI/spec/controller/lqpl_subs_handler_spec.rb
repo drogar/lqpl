@@ -28,17 +28,17 @@ describe LqplSubsHandler do
   end
 
   describe "update_all" do
-    it "should send 'set_data_from_lqpl_model' to each member of the subcontrollers" do
-      expect(s1).to receive(:set_data_from_lqpl_model)
-      expect(s2).to receive(:set_data_from_lqpl_model)
+    it "should send 'update_data_from_lqpl_model' to each member of the subcontrollers" do
+      expect(s1).to receive(:update_data_from_lqpl_model)
+      expect(s2).to receive(:update_data_from_lqpl_model)
       subject.update_all("")
     end
   end
 
   describe "update_and_open" do
-    it "should send 'set_data_from_lqpl_model' to each member of the subcontrollers" do
-      expect(s1).to receive(:set_data_from_lqpl_model)
-      expect(s2).to receive(:set_data_from_lqpl_model)
+    it "should send 'update_data_from_lqpl_model' to each member of the subcontrollers" do
+      expect(s1).to receive(:update_data_from_lqpl_model)
+      expect(s2).to receive(:update_data_from_lqpl_model)
       expect(s1).to receive(:open)
       expect(s2).to receive(:open)
       subject.update_and_open("")
@@ -46,11 +46,11 @@ describe LqplSubsHandler do
   end
 
   describe "update_on_trim" do
-    it "should send 'set_data_from_lqpl_model' to sub1 and not to sub2" do
-      expect(s1).to receive(:set_data_from_lqpl_model)
+    it "should send 'update_data_from_lqpl_model' to sub1 and not to sub2" do
+      expect(s1).to receive(:update_data_from_lqpl_model)
       expect(s1).to receive(:update_on_lqpl_model_trim).and_return(true)
       expect(s2).to receive(:update_on_lqpl_model_trim).and_return(false)
-      expect(s2).not_to receive(:set_data_from_lqpl_model)
+      expect(s2).not_to receive(:update_data_from_lqpl_model)
       subject.update_on_trim("")
     end
   end 

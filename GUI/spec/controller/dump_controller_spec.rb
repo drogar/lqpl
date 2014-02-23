@@ -12,8 +12,8 @@ describe DumpController do
   end
   it "should accessibly store the dump text in the model" do
     SwingRunner::on_edt do
-      @c.set_dump_data("<Dump>"+DCALL+"</Dump>")
-      expect(@c.get_dump_data).to eq("<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>")
+      @c.update_dump_data("<Dump>"+DCALL+"</Dump>")
+      expect(@c.dump_data).to eq("<html><ol><li>Return to Ret(5). CS=[]</li></ol></html>")
     end
   end
   

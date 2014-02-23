@@ -21,18 +21,18 @@ class LqplSubsHandler
 
   def update_and_open(model)
     @subs.each do |sc|
-      sc.set_data_from_lqpl_model(model)
+      sc.update_data_from_lqpl_model(model)
       sc.open
     end
   end
 
   def update_all(model)
-    @subs.each { |sc| sc.set_data_from_lqpl_model(model) }
+    @subs.each { |sc| sc.update_data_from_lqpl_model(model) }
   end
 
   def update_on_trim(model)
     @subs.each do |sc|
-      sc.set_data_from_lqpl_model(model) if sc.update_on_lqpl_model_trim
+      sc.update_data_from_lqpl_model(model) if sc.update_on_lqpl_model_trim
     end
   end
 end
