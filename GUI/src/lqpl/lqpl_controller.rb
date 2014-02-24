@@ -78,7 +78,7 @@ class LqplController < ApplicationController
   end
 
   def initialize_sub_controllers
-    ExecutableCodeController.instance.set_code_and_code_pointer  model.recursion_spinner
+    ExecutableCodeController.instance.update_code_and_code_pointer  model.recursion_spinner
     sub_controllers_handler.update_and_open(model)
     model.enable_view_menu_items
   end

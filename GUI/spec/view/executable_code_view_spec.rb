@@ -71,7 +71,7 @@ describe ExecutableCodeView do
       expect(@ecv.qpo_method_and_line_to_selection_start_and_end_map["m--1"]).to eq([5,10])
     end
   end
-  describe "set_selection_bounds_in_view" do
+  describe "highlight_selection_in_view" do
     before :each do
       SwingRunner::on_edt do
         @ecv = ExecutableCodeView.new
@@ -82,14 +82,14 @@ describe ExecutableCodeView do
     end
     it "should set the selection bounds to 2,5 on input of [2,5]" do
       SwingRunner::on_edt do
-        @ecv.set_selection_bounds_in_view [2,5]
+        @ecv.highlight_selection_in_view [2,5]
         jt = @ecv.code_tabbed_pane.selected_component.viewport.view
         expect(jt.selection_start).to eq(2)
         expect(jt.selection_end).to eq(5)
       end
     end
   end
-  describe "set_highlight_for_code_pointer" do
+  describe "highlight_the_code_pointer" do
     before :each do
       SwingRunner::on_edt do
         @ecv = ExecutableCodeView.new
@@ -101,7 +101,7 @@ describe ExecutableCodeView do
     end
     it "should set the bounds to 5,10 for input CP" do
       SwingRunner::on_edt do
-        @ecv.set_highlight_for_code_pointer(CP)
+        @ecv.highlight_the_code_pointer(CP)
         jt = @ecv.code_tabbed_pane.selected_component.viewport.view
         expect(jt.selection_start).to eq(5)
         expect(jt.selection_end).to eq(10)
