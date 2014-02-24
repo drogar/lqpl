@@ -1,7 +1,9 @@
-class ClassicalDescriptorModel< AbstractDescriptorModel
-  
+# encoding: utf-8
+# abstract base for the descriptor models
+class ClassicalDescriptorModel < AbstractDescriptorModel
   def self.validate_substacks_count(substacks)
-    raise ModelCreateError, "Classical element on stack should have substacks" if !substacks || substacks.size == 0
+    fail ModelCreateError,
+         'Classical element on stack should have substacks' if !substacks || substacks.size == 0
   end
 
   def initialize(in_string)
@@ -14,7 +16,6 @@ class ClassicalDescriptorModel< AbstractDescriptorModel
   end
 
   def substack_labels
-    @value.collect {|v| "#{v}"}
+    @value.map { |v| "#{v}" }
   end
-
 end

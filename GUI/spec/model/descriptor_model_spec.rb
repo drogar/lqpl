@@ -118,7 +118,7 @@ describe DataDescriptorModel do
     expect(sd).to have(1).item
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>Nil2</string><StackAddresses></StackAddresses></AlgebraicData>"
     expect(sd).to have(2).items
-    
+
   end
   it "should have the value being the map of constructor/address pairs in the string" do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
@@ -142,7 +142,7 @@ describe DataDescriptorModel do
     sd = AbstractDescriptorModel.make_instance "<AlgebraicData><string>Nil</string><StackAddresses></StackAddresses><string>C</string><StackAddresses><int>3</int><int>4</int></StackAddresses></AlgebraicData>"
     expect(sd.substack_labels).to eq(["Nil", "C[3, 4]"])
   end
-  
+
   context "class methods" do
     context "validation" do
       it "should not raise an error if passed an array with elements" do
@@ -160,8 +160,8 @@ describe DataDescriptorModel do
       end
     end
   end
-  
-  
+
+
 end
 
 
@@ -208,17 +208,17 @@ describe QubitDescriptorModel do
       it "should raise an error if passed an empty array" do
         expect {
           QubitDescriptorModel.validate_substacks_count([])
-        }.to raise_error ModelCreateError, /Qubit.*should have/
+        }.to raise_error ModelCreateError, /Qubit.*must have/
       end
       it "should raise an error if passed a nil array" do
         expect {
           QubitDescriptorModel.validate_substacks_count(nil)
-        }.to raise_error ModelCreateError, /Qubit.*should have/
+        }.to raise_error ModelCreateError, /Qubit.*must have/
       end
       it "should raise an error if passed an array with > 4 elements" do
         expect {
           QubitDescriptorModel.validate_substacks_count([1,2,3,4,5])
-        }.to raise_error ModelCreateError, /Qubit.*should have/
+        }.to raise_error ModelCreateError, /Qubit.*must have/
       end
     end
   end

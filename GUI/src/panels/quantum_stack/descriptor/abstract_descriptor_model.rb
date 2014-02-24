@@ -1,4 +1,6 @@
-class AbstractDescriptorModel <ApplicationModel
+# encoding: utf-8
+# abstract base for the descriptor models
+class AbstractDescriptorModel < ApplicationModel
   attr_accessor :value
   attr_accessor :name
 
@@ -9,12 +11,12 @@ class AbstractDescriptorModel <ApplicationModel
     when /^<Clas/ then ClassicalDescriptorModel.new in_string
     when /^<Qubi/ then QubitDescriptorModel.new in_string
     when /^<Alge/ then DataDescriptorModel.new in_string
-    else raise ModelCreateError, in_string
+    else fail ModelCreateError, in_string
     end
   end
 
   def initialize
-    raise ModelCreateError
+    fail ModelCreateError
   end
 
   def substack_labels

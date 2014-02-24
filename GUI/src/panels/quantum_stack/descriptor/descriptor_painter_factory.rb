@@ -1,4 +1,5 @@
-
+# encoding: utf-8
+# factory to create the data descriptor's painter
 class DescriptorPainterFactory
   def self.make_painter(model)
     case model

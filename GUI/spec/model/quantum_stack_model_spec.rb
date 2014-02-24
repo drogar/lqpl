@@ -32,7 +32,7 @@ describe QuantumStackModel do
     it "should give an error when stackqubit does not have substacks" do
       expect {
         @qs.quantum_stack = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-      }.to raise_error ModelCreateError, /should have/
+      }.to raise_error ModelCreateError, /must have/
     end
     it "should give an error when stackclassical does not have substacks"  do
       expect {
