@@ -1,4 +1,4 @@
-class ExecutableCodeParser < AbstractListPatternParser
+class ExecutingCodeParser < AbstractListPatternParser
   
   def self.embeddable_top_level_regexp
     Regexp.new "<Code><map>(?<code_map>("+
@@ -6,8 +6,8 @@ class ExecutableCodeParser < AbstractListPatternParser
   end
   
   def parse_list
-    ExecutableCodeParser::values_to_list @md[:code_map], KVPAIRS_PATTERN, {} do |retmap, kvpair|
-      retmap[kvpair[:code_key].to_sym] = ExecutableCodeParser::instructions_to_list kvpair[:instructions_list]
+    ExecutingCodeParser::values_to_list @md[:code_map], KVPAIRS_PATTERN, {} do |retmap, kvpair|
+      retmap[kvpair[:code_key].to_sym] = ExecutingCodeParser::instructions_to_list kvpair[:instructions_list]
     end
   end
   

@@ -1,9 +1,9 @@
 # encoding: utf-8
 
 WIDTH_OF_TEXT_PANE = 60
-# View for the executable code - a tabbed vew pane
-class ExecutableCodeView < ApplicationView
-  set_java_class ExecutableCodeForm
+# View for the executing code - a tabbed vew pane
+class ExecutingCodeView < ApplicationView
+  set_java_class ExecutingCodeForm
 
   raw_mapping :set_up_tabbed_views, nil
 
@@ -20,7 +20,7 @@ class ExecutableCodeView < ApplicationView
     i = 0
     cp = CodePointer.new ''
     code_map.each do |qpo_method, qpo_ins|
-      code_tab_pane.add_tab(qpo_method.to_s, ExecutableCodeView.init_scroll_pane(qpo_ins))
+      code_tab_pane.add_tab(qpo_method.to_s, ExecutingCodeView.init_scroll_pane(qpo_ins))
       @qpo_method_to_tab_map[qpo_method] = i
       cp.qpo_method = qpo_method
       process_instructions_text(cp, qpo_ins)
@@ -50,7 +50,7 @@ class ExecutableCodeView < ApplicationView
   end
 
   def self.init_scroll_pane(qpo_ins)
-    JScrollPane.new(ExecutableCodeView.init_instructions_text_area qpo_ins)
+    JScrollPane.new(ExecutingCodeView.init_instructions_text_area qpo_ins)
   end
 
   def self.init_instructions_text_area(qpo_ins)

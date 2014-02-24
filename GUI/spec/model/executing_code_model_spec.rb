@@ -1,12 +1,12 @@
 require 'spec/spec_helper'
-require 'src/panels/executable_code/executable_code_model'
-require 'spec/specdata/executable_code_data'
+require 'src/panels/executing_code/executing_code_model'
+require 'spec/specdata/executing_code_data'
 
-describe ExecutableCodeModel do
+describe ExecutingCodeModel do
   describe "public instance methods" do
     describe "the_code" do
       before(:each) do
-        @ecm = ExecutableCodeModel.new
+        @ecm = ExecutingCodeModel.new
       end
       it "should throw an exception with bad input" do
         expect {@ecm.the_code="junk"}.to raise_error ParserError, /junk/
@@ -44,11 +44,11 @@ describe ExecutableCodeModel do
         @ecm.the_code_was_updated = true
         expect(@ecm.the_code_was_updated?).to be_true
       end
-      
+
     end
     describe "the_code_pointer" do
       before(:each) do
-        @ecm = ExecutableCodeModel.new
+        @ecm = ExecutingCodeModel.new
       end
       it "should throw an exception with bad input" do
         expect {@ecm.the_code_pointer="junk"}.to raise_error ParserError, /junk/

@@ -114,7 +114,7 @@ end
 
 %w{abstract_pattern zero_pattern value_pattern abstract_list_pattern
   qubit_pattern data_pattern classical_pattern stack_translation
-  code_pointer executable_code dump_call dump_split dump
+  code_pointer executing_code dump_call dump_split dump
   quantum_stack}.each do |rf|
   require 'panels/parsers/'+rf+'_parser'
 end
@@ -146,7 +146,7 @@ end
   require "forms/generic/#{generic_form}"
 end
 
-%w{classical_stack dump executable_code quantum_emulator_main
+%w{classical_stack dump executing_code quantum_emulator_main
   quantum_stack stack_translation}.each do |a_form|
   require "forms/#{a_form}_form"
 end
@@ -159,13 +159,19 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
+# %w{classical_stack dump executing_code quantum_stack stack_translation}.each do |a_panel|
+#   require "panels/#{a_panel}/#{a_panel}_view"
+#   require "panels/#{a_panel}/#{a_panel}_model"
+#   require "panels/#{a_panel}/#{a_panel}_controller"
+# end
+
 #SwingRunner::on_edt do
 require 'lqpl_menu'
 require 'lqpl_subs_handler'
-  { ''=>%w{lqpl},
-  'panels/' => %w{quantum_stack classical_stack dump executable_code
-                  stack_translation},
-  'dialogs/' =>%w{simulate_results about}}.each do |k,v|
+  { 'panels/' => %w{quantum_stack classical_stack dump executing_code
+                stack_translation},
+    ''=>%w{lqpl},
+    'dialogs/' =>%w{simulate_results about}}.each do |k,v|
     v.each do |f|
       require k + f + '/' + f + '_view'
       require k + f + '/' + f + '_model'

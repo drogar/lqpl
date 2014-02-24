@@ -11,7 +11,7 @@ class LqplController < ApplicationController
   set_close_action :close
   DIALOGS = [AboutController,  SimulateResultsController]
   SUBS = [QuantumStackController, ClassicalStackController, DumpController,
-          ExecutableCodeController, StackTranslationController]
+          ExecutingCodeController, StackTranslationController]
   attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
 
   LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
@@ -78,7 +78,7 @@ class LqplController < ApplicationController
   end
 
   def initialize_sub_controllers
-    ExecutableCodeController.instance.update_code_and_code_pointer  model.recursion_spinner
+    ExecutingCodeController.instance.update_code_and_code_pointer  model.recursion_spinner
     sub_controllers_handler.update_and_open(model)
     model.enable_view_menu_items
   end

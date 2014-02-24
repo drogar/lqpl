@@ -1,8 +1,8 @@
 # encoding: utf-8
-# controller to handle the executable code display
-class ExecutableCodeController < PanelController
-  set_model 'ExecutableCodeModel'
-  set_view 'ExecutableCodeView'
+# controller to handle the executing code display
+class ExecutingCodeController < PanelController
+  set_model 'ExecutingCodeModel'
+  set_view 'ExecutingCodeView'
   set_close_action :hide
 
   def update_data_from_lqpl_model(lqpl_model)

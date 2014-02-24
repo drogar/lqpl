@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
 
-require 'src/panels/executable_code/executable_code_view'
-require 'src/panels/executable_code/code_pointer'
+require 'src/panels/executing_code/executing_code_view'
+require 'src/panels/executing_code/code_pointer'
 
 QPOLINES=["1   someline","2 another line"]
 CP = CodePointer.new("<pair><string>m</string><int>1</int></pair>")
@@ -9,11 +9,11 @@ QPOLINES2 = ["1 entry 1", "2 entry 2", "3 entry 3"]
 
 CM = {:m => QPOLINES, :s => QPOLINES2}
 
-describe ExecutableCodeView do
+describe ExecutingCodeView do
   describe "init_instructions_text_area" do
     before :each do
-      SwingRunner::on_edt do 
-        @ta = ExecutableCodeView::init_instructions_text_area QPOLINES
+      SwingRunner::on_edt do
+        @ta = ExecutingCodeView::init_instructions_text_area QPOLINES
       end
     end
     it "should create a text area with the text passed in" do
@@ -32,13 +32,13 @@ describe ExecutableCodeView do
   describe "init_scroll_pane" do
     it "should return a JScrollPane" do
       SwingRunner::on_edt do
-        jsp = ExecutableCodeView::init_scroll_pane QPOLINES
+        jsp = ExecutingCodeView::init_scroll_pane QPOLINES
         expect(jsp.class).to eq(JScrollPane)
       end
     end
-    it "should contain a text area with the text passed in." do      
+    it "should contain a text area with the text passed in." do
       SwingRunner::on_edt do
-        jsp = ExecutableCodeView::init_scroll_pane QPOLINES
+        jsp = ExecutingCodeView::init_scroll_pane QPOLINES
         expect(jsp.viewport.view.text).to match(/someline/)
       end
     end
@@ -46,7 +46,7 @@ describe ExecutableCodeView do
   describe "reset_tabbed_panes_and_maps" do
     before :each do
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
       end
     end
     it "should reset the code_tabbed_pane to have no tabs" do
@@ -62,7 +62,7 @@ describe ExecutableCodeView do
   describe "add_to_selection_start_and_end_map" do
     before :each do
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
         @ecv.qpo_method_and_line_to_selection_start_and_end_map = {}
       end
     end
@@ -74,9 +74,9 @@ describe ExecutableCodeView do
   describe "highlight_selection_in_view" do
     before :each do
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
         @ecv.reset_tabbed_panes_and_maps
-        @ecv.code_tabbed_pane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+        @ecv.code_tabbed_pane.add_tab("m",ExecutingCodeView::init_scroll_pane(QPOLINES))
         @ecv.code_tabbed_pane.selected_index = 0
       end
     end
@@ -92,9 +92,9 @@ describe ExecutableCodeView do
   describe "highlight_the_code_pointer" do
     before :each do
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
         @ecv.reset_tabbed_panes_and_maps
-        @ecv.code_tabbed_pane.add_tab("m",ExecutableCodeView::init_scroll_pane(QPOLINES))
+        @ecv.code_tabbed_pane.add_tab("m",ExecutingCodeView::init_scroll_pane(QPOLINES))
         @ecv.add_to_selection_start_and_end_map(CP,'1234',5)
         @ecv.qpo_method_to_tab_map[CP.qpo_method] = 0
       end
@@ -111,7 +111,7 @@ describe ExecutableCodeView do
   describe "create_tabbed_view" do
     before :each do
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
         @ecv.create_tabbed_views(CM)
       end
     end
@@ -140,7 +140,7 @@ describe ExecutableCodeView do
       allow(md).to receive(:the_code_pointer).and_return(CP)
       allow(md).to receive(:the_code_was_updated?).and_return(true)
       SwingRunner::on_edt do
-        @ecv = ExecutableCodeView.new
+        @ecv = ExecutingCodeView.new
         @ecv.set_up_tabbed_views(md,nil)
       end
     end

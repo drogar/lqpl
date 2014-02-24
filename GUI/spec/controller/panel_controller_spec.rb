@@ -2,7 +2,23 @@ require 'spec/spec_helper'
 
 describe PanelController do
   describe "class methods" do
+    describe "class_name_to_sym" do
+      it "creates a symbol of the name minus controller" do
+        expect(PanelController.class_name_to_sym(DumpController)).to eq(:Dump)
+      end
+      it "creates a symbol of the name being the first Word in SnakeCase" do
+        class SomeThingElse ; end
+        expect(PanelController.class_name_to_sym(SomeThingElse)).to eq(:Some)
+      end
+    end
     describe "controller_from_name" do
+      before(:each) do
+        class ClassicalStackController < PanelController ; end
+        class DumpController < PanelController ; end
+        class ExecutingCodeController < PanelController ; end
+        class StackTranslationController < PanelController ; end
+        class QuantumStackController < PanelController ; end
+      end
       it "should return ClassicalStack controller for ['anything','Classical','Stack']" do
         SwingRunner::on_edt do
           expect(PanelController::controller_from_name(["junk", "Classical", "Stack"])).to eq(ClassicalStackController)
@@ -15,7 +31,7 @@ describe PanelController do
       end
       it "should return Executable Code controller for ['anything','Executing','Code']" do
         SwingRunner::on_edt do
-          expect(PanelController::controller_from_name(["junk", "Executing", "Code"])).to eq(ExecutableCodeController)
+          expect(PanelController::controller_from_name(["junk", "Executing", "Code"])).to eq(ExecutingCodeController)
         end
       end
       it "should return QuantumStack controller for ['anything','Quantum','Stack']" do
