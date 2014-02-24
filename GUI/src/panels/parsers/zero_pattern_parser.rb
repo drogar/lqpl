@@ -1,10 +1,11 @@
+# encoding: utf-8
+# Parse the zero xml
 class ZeroPatternParser < AbstractPatternParser
-  
   def self.embeddable_top_level_regexp
-    Regexp.new "<Zero/>"
+    /<Zero\/>/
   end
-  
+
   def parsed_value
-    "0" if @md
+    '0' if @md
   end
 end
