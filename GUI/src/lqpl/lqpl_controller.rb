@@ -66,7 +66,7 @@ class LqplController < ApplicationController
   def file_simulate_action_performed
     SimulateResultsController.instance
       .set_simulate_results(model.recursion_spinner,
-                            StackTranslationController.instance.get_stack_translation)
+                            StackTranslationController.instance.stack_translation)
     SimulateResultsController.instance.open
   end
 

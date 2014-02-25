@@ -113,6 +113,4 @@ class Connection
     res2 = _make_connection
     fail ServerProcessNotFound unless res2.empty
   end
-
-
 end

@@ -12,16 +12,16 @@ describe StackTranslationController do
   end
   it "should accessibly store the dump text in the model" do
     SwingRunner::on_edt do
-      @d.set_stack_translation_data(P1)
-      expect(@d.get_stack_translation_text).to eq("<html><ol><li>p=>1</li></ol></html>")
+      @d.update_stack_translation_data(P1)
+      expect(@d.stack_translation_text).to eq("<html><ol><li>p=>1</li></ol></html>")
     end
   end
-  
+
   it "should return false for update_on_lqpl_model_trim" do
     expect(@d.update_on_lqpl_model_trim).to be_false
   end
   it "should return a stack translation model" do
-    @d.set_stack_translation_data(P1)
-    expect(@d.get_stack_translation.stack_translation).to eq([{:p=>1}])
+    @d.update_stack_translation_data(P1)
+    expect(@d.stack_translation.stack_translation).to eq([{:p=>1}])
   end
 end
