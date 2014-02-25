@@ -1,66 +1,66 @@
 require 'spec/spec_helper'
 
 describe Array do
-  describe "get_left_partition" do
+  describe "qpl_left_partition" do
     it "should get first 2 of a size four array" do
-      expect([1,2,3,4].get_left_partition).to eq([1,2])
+      expect([1,2,3,4].qpl_left_partition).to eq([1,2])
     end    
     it "should get first 2 of a size five array into 2,1,2" do
-      expect([1,2,3,4,5].get_left_partition).to eq([1,2])
+      expect([1,2,3,4,5].qpl_left_partition).to eq([1,2])
     end
     it "should get first 1 of a size two array" do
-      expect([1,2].get_left_partition).to eq([1])
+      expect([1,2].qpl_left_partition).to eq([1])
     end
     it "should get first 1 of a size three array" do
-      expect([1,2,3].get_left_partition).to eq([1])
+      expect([1,2,3].qpl_left_partition).to eq([1])
     end
     it "should get empty array from a size one array" do
-      expect([1].get_left_partition).to eq([])
+      expect([1].qpl_left_partition).to eq([])
     end
     it "should get empty array from  a size zero array" do
-      expect([].get_left_partition).to eq([])
+      expect([].qpl_left_partition).to eq([])
     end
   end
   
   describe "get middle element" do
     it "should get nil for a size 4 array" do
-      expect([1,2,3,4].get_middle_element).to be_nil
+      expect([1,2,3,4].qpl_middle_element).to be_nil
     end    
     it "should get the 3rd element of a size five array" do
-      expect([1,2,3,4,5].get_middle_element).to eq(3)
+      expect([1,2,3,4,5].qpl_middle_element).to eq(3)
     end
     it "should get nil for  a size two array into 1,0,1" do
-      expect([1,2].get_middle_element).to be_nil
+      expect([1,2].qpl_middle_element).to be_nil
     end
     it "should get the second element of a size three array" do
-      expect([1,2,3].get_middle_element).to eq(2)
+      expect([1,2,3].qpl_middle_element).to eq(2)
     end
     it "should get the only element of a size one array" do
-      expect([1].get_middle_element).to eq(1)
+      expect([1].qpl_middle_element).to eq(1)
     end
     it "should get nil for  a size zero array" do
-      expect([].get_middle_element).to be_nil
+      expect([].qpl_middle_element).to be_nil
     end
   end
   
-  describe "get_right_partition" do
+  describe "qpl_right_partition" do
     it "should get the last 2 of a size four array" do
-      expect([1,2,3,4].get_right_partition).to eq([3,4])
+      expect([1,2,3,4].qpl_right_partition).to eq([3,4])
     end    
     it "should get the last 2 of a size five array" do
-      expect([1,2,3,4,5].get_right_partition).to eq([4,5])
+      expect([1,2,3,4,5].qpl_right_partition).to eq([4,5])
     end
     it "should get the last  of a size two array" do
-      expect([1,2].get_right_partition).to eq([2])
+      expect([1,2].qpl_right_partition).to eq([2])
     end
     it "should get the last  of a size three array" do
-      expect([1,2,3].get_right_partition).to eq([3])
+      expect([1,2,3].qpl_right_partition).to eq([3])
     end
     it "should get empty from a size one array" do
-      expect([1].get_right_partition).to eq([])
+      expect([1].qpl_right_partition).to eq([])
     end
     it "should get empty from a size zero array" do
-      expect([].get_right_partition).to eq([])
+      expect([].qpl_right_partition).to eq([])
     end
   end
   

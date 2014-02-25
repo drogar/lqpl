@@ -10,7 +10,7 @@ Dir.glob(File.expand_path(File.dirname(__FILE__) +
   $LOAD_PATH << directory unless directory =~ /\.\w+$/
 end
 
-#puts "set loadpath #{$LOAD_PATH}"
+# puts "set loadpath #{$LOAD_PATH}"
 # Some JRuby $LOAD_PATH path bugs to check if you're having trouble:
 # http://jira.codehaus.org/browse/JRUBY-2518 -
 #         Dir.glob and Dir[] doesn't work
@@ -23,29 +23,28 @@ end
 #         This is problematic with gems
 #         like ActiveSupport and Prawn
 
-#===================================================================
+# ===================================================================
 # Monkeybars requires, this pulls in the requisite libraries needed
 # for Monkeybars to operate.
 
 require 'resolver'
 #:nocov:
-def monkeybars_jar path
-  Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/}.first
+def monkeybars_jar(path)
+  Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/ }.first
 end
 
 case Monkeybars::Resolver.run_location
-  when Monkeybars::Resolver::IN_FILE_SYSTEM
-
-    here = File.expand_path File.dirname(__FILE__)
-    npath = here + '/../lib/java/*.jar'
-#    puts npath
-    mbj =   monkeybars_jar( here + '/../lib/java/*.jar' )
-#    puts "resulting mbj=#{mbj}"
-    if !mbj || mbj == ''
-      mbj =  monkeybars_jar( here + '/../../../lib/java/*.jar' )
-#      puts "or is #{mbj}"
-    end
-    add_to_classpath mbj
+when Monkeybars::Resolver::IN_FILE_SYSTEM
+  here = File.expand_path File.dirname(__FILE__)
+  #    npath = here + '/../lib/java/*.jar'
+  #    puts npath
+  mbj =   monkeybars_jar(here + '/../lib/java/*.jar')
+  #    puts "resulting mbj=#{mbj}"
+  if !mbj || mbj == ''
+    mbj =  monkeybars_jar(here + '/../../../lib/java/*.jar')
+    #     puts "or is #{mbj}"
+  end
+  add_to_classpath mbj
 end
 #:nocov:
 
@@ -55,7 +54,7 @@ require 'application_controller'
 require 'application_view'
 
 # End of Monkeybars requires
-#==================================================================
+# ==================================================================
 #
 # Add your own application-wide libraries below.  To include jars,
 # append to $CLASSPATH, or use add_to_classpath, for example:
@@ -86,15 +85,14 @@ end
 end
 
 %w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter
-  JTextArea JScrollPane BoxLayout SpinnerNumberModel}.each do |cfile|
-  java_import 'javax.swing.'+cfile
+   JTextArea JScrollPane BoxLayout SpinnerNumberModel}.each do |cfile|
+  java_import 'javax.swing.' + cfile
 end
 
 # for swinging
 add_to_load_path '../lib/ruby/swingtown'
 require 'swingtown'
 include  Swingtown::Core
-
 
 # end for swinging
 
@@ -103,20 +101,19 @@ java_import java.lang.System
 java_import java.awt.Point
 
 %w{point jfile_chooser array}.each do |rfile|
-  require 'utility/monkey/'+rfile
+  require 'utility/monkey/' + rfile
 end
 
-
 %w{translate_line_ends drawing duck_matcher
-  swing_runner}.each do |f|
-  require 'utility/'+f
+   swing_runner}.each do |f|
+  require 'utility/' + f
 end
 
 %w{abstract_pattern zero_pattern value_pattern abstract_list_pattern
-  qubit_pattern data_pattern classical_pattern stack_translation
-  code_pointer executing_code dump_call dump_split dump
-  quantum_stack}.each do |rf|
-  require 'panels/parsers/'+rf+'_parser'
+   qubit_pattern data_pattern classical_pattern stack_translation
+   code_pointer executing_code dump_call dump_split dump
+   quantum_stack}.each do |rf|
+  require 'panels/parsers/' + rf + '_parser'
 end
 
 require 'dialogs/parsers/simulate_results_parser'
@@ -125,13 +122,12 @@ require 'application_model'
 require 'panels/panel_controller'
 
 %w{server_process_not_found invalid_input}.each do |f|
-  require 'exceptions/'+f
+  require 'exceptions/' + f
 end
 
-
 %w{lqpl_emulator_server_connection compiler_command_interpretor connection_commander
-  compiler_server_connection}.each do |f|
-  require 'communications/'+f
+   compiler_server_connection}.each do |f|
+  require 'communications/' + f
 end
 
 %w{about simulate_results}.each do |dialog|
@@ -147,7 +143,7 @@ end
 end
 
 %w{classical_stack dump executing_code quantum_emulator_main
-  quantum_stack stack_translation}.each do |a_form|
+   quantum_stack stack_translation}.each do |a_form|
   require "forms/#{a_form}_form"
 end
 
@@ -165,19 +161,19 @@ require 'panels/quantum_stack/quantum_stack_painter'
 #   require "panels/#{a_panel}/#{a_panel}_controller"
 # end
 
-#SwingRunner::on_edt do
+# SwingRunner::on_edt do
 require 'lqpl_menu'
 require 'lqpl_subs_handler'
-  { 'panels/' => %w{quantum_stack classical_stack dump executing_code
-                stack_translation},
-    ''=>%w{lqpl},
-    'dialogs/' =>%w{simulate_results about}}.each do |k,v|
-    v.each do |f|
-      require k + f + '/' + f + '_view'
-      require k + f + '/' + f + '_model'
-      require k + f + '/' + f + '_controller'
-    end
+{ 'panels/' => %w{quantum_stack classical_stack dump executing_code
+                  stack_translation},
+  '' => %w{lqpl},
+  'dialogs/' => %w{simulate_results about} }.each do |k, v|
+  v.each do |f|
+    require k + f + '/' + f + '_view'
+    require k + f + '/' + f + '_model'
+    require k + f + '/' + f + '_controller'
   end
-  #end
+end
+# end
 
 require 'exit_handler'

@@ -13,15 +13,15 @@ class QuantumStackPainter
   def model_element=(model)
     @model_element = model
 
-    @descriptor_painter = 
+    @descriptor_painter =
     DescriptorPainterFactory.make_painter(model.descriptor)
-    @sstack_painters = @model_element.substacks.collect do |s| 
+    @sstack_painters = @model_element.substacks.collect do |s|
       QuantumStackPainter.new(s)
     end
 
   end
 
-  
+
   def image_of_model()
     bistart = BufferedImage.new(10,10,
                                 BufferedImage::TYPE_4BYTE_ABGR)
@@ -35,9 +35,9 @@ class QuantumStackPainter
     ImageIcon.new(bifull)
   end
 
-  
+
   def paint_model(g)
-    g.set_rendering_hint(RenderingHints::KEY_ANTIALIASING, 
+    g.set_rendering_hint(RenderingHints::KEY_ANTIALIASING,
                          RenderingHints::VALUE_ANTIALIAS_ON)
 
     d = model_paint_size(g);
@@ -57,26 +57,26 @@ class QuantumStackPainter
 
   def bottom_element_size(g)
     dim= get_string_size(g,"...")
-    @preferred_size = CanvasSize.new_with_measures(dim.width * 0.5, 
-                                                   dim.width * 0.5, 
+    @preferred_size = CanvasSize.new_with_measures(dim.width * 0.5,
+                                                   dim.width * 0.5,
                                                    dim.height)
     return @preferred_size
   end
-  
+
   def model_paint_size(g)
     return @preferred_size if @preferred_size
     return bottom_element_size g if model_element.bottom?
-    
-    
-    @preferred_size = 
+
+
+    @preferred_size =
       CanvasSize.new_from_subtree(
-        @sstack_painters.collect do |painter| 
+        @sstack_painters.collect do |painter|
           painter.model_paint_size(g)
           end)
-    
+
     @preferred_size.max_of_each_dimension!(
       @descriptor_painter.model_paint_size(g)) if @descriptor_painter
- 
+
     @preferred_size
   end
 
@@ -86,36 +86,36 @@ class QuantumStackPainter
     "Nil for model descriptor"
     #"#{@model_element.descriptor.substack_labels[index]}"
   end
-  
+
   def substack_label_placement(index)
     PLACEMENTS[index <=> (@model_element.substacks.length - 1) * 0.5]
   end
-  
+
   def paint_substacks(top_point,g)
     offsets = CanvasSize::compute_offsets(sub_stack_sizes(g))
     Range.new(0,@sstack_painters.size-1).each do |i|
       paint_at_point = top_point.copy_with_x_and_y_offset(
-                          offsets[i], 
+                          offsets[i],
                           CanvasSize::vertical_node_separation)
       paint_substack(g,i,top_point,paint_at_point)
     end
   end
-  
+
   def paint_substack(g,index,top_point,paint_point)
     draw_black_line(g,top_point, paint_point)
     draw_sized_text(g,LINE_LABEL_FONT_SIZE,substack_label(index),
-                    top_point, paint_point,
+                    mid_point(top_point, paint_point),
                     substack_label_placement(index))
     @sstack_painters[index].paint_model_at_point(g,paint_point)
 
   end
 
   def sub_stack_sizes(g)
-    @sstack_painters.collect do |sstack_painter| 
+    @sstack_painters.collect do |sstack_painter|
       sstack_painter.model_paint_size(g)
     end
   end
 
- 
+
 
 end

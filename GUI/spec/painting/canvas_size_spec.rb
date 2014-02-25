@@ -91,7 +91,7 @@ describe CanvasSize do
           c1 = CanvasSize::new_with_measures(10,99,0)
           c2 = CanvasSize::new_with_measures(75,85,0)
           sizes = [c1,c2]
-          mid = sizes.get_middle_element
+          mid = sizes.qpl_middle_element
           expect(CanvasSize::left_offsets(sizes,mid)).to eq([-99])
         end
       end
@@ -100,7 +100,7 @@ describe CanvasSize do
           c1 = CanvasSize::new_with_measures(10,99,0)
           c2 = CanvasSize::new_with_measures(75,85,0)
           sizes = [c1,c2]
-          mid = sizes.get_middle_element
+          mid = sizes.qpl_middle_element
           expect(CanvasSize::right_offsets(sizes,mid)).to eq([75])
         end
       end
