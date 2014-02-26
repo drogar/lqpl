@@ -118,7 +118,7 @@ class LqplModel < ApplicationModel
     self.recursion_multiplier_spinner =
       java.lang.Integer.new(value)
     lqpl_server_connection.send_set_depth_multiplier(recursion_multiplier_spinner)
-    self.messages_text =  "Recursion Multiplier set to #{model.recursion_multiplier_spinner}"
+    self.messages_text =  "Recursion Multiplier set to #{recursion_multiplier_spinner}"
     enable_go!(true)
   end
 end

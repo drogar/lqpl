@@ -11,7 +11,7 @@ class StackTranslationController < PanelController
 
   def update_stack_translation(tree_depth, recursion_level)
     update_stack_translation_data(lqpl_emulator_server_connection
-      .stack_translation(tree_depth, recursion_level))
+      .get_stack_translation(tree_depth, recursion_level))
   end
 
   def update_stack_translation_data(stack_translation_data)

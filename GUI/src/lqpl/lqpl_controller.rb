@@ -93,7 +93,7 @@ class LqplController < ApplicationController
   end
 
   def recursion_multiplier_spinner_state_changed
-    update_recursion_multiplier_spinner("#{view_model.recursion_multiplier_spinner}")
+    model.update_recursion_multiplier_spinner("#{view_model.recursion_multiplier_spinner}")
     update_all
   end
 
