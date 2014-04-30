@@ -5,7 +5,7 @@ gem 'rake'
 gem 'monkeybars', '~>1.1'
 
 group :test, :development do
-  gem "rspec"
+  gem "rspec", '~> 3.0.0.beta'
   gem "cucumber"
   gem 'simplecov'
   gem 'flog'
@@ -13,10 +13,10 @@ group :test, :development do
   gem 'syntax'
   gem 'awesome_print'
   gem 'rubocop'
-  
+
 
   gem 'rspec-formatter-webkit'
   gem 'fuubar'  # rspec formatter
-  gem 'rspec_junit_formatter'
+  #gem 'rspec_junit_formatter'
 end
 

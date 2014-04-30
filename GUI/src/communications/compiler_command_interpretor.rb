@@ -12,6 +12,7 @@ class CompilerCommandInterpretor
     @connection = connection
     @dir = ''
     @connection_commander = ConnectionCommander.new(connection)
+    reset_failure_status
   end
 
   def add_non_command_line(line)
@@ -35,7 +36,7 @@ class CompilerCommandInterpretor
     accum = ''
     line = @connection_commander.bypass_messages(/CS_/)
     read_warning = (line =~ /w='YES'/)
-    while line && line != "</qpo>\n"  && line !~ /<\/compilefail/  && !@failed
+    while line && line != "</qpo>\n"  && line !~ /<\/compilefail/  && !failed
       line = process_input_line(line) { |checked_line| accum += add_non_command_line(checked_line) }
     end
     read_failure_message if read_warning
@@ -50,21 +51,21 @@ class CompilerCommandInterpretor
   end
 
   def bypass_because_of_failure(line)
-    @failed = line =~  /<compilefail/
-    read_failure_message if @failed
-    @failed
+    self.failed = (line =~  /<compilefail/).nil? ? false :  true
+    read_failure_message if failed?
+    failed
   end
 
   def reset_failure_status
-    @failed = false
-    @failure_message = ''
+    self.failed = false
+    self.failure_message = ''
   end
 
   def read_failure_message
     line = connection.receive_command_data
-    @failure_message = ''
+    self.failure_message = ''
     while line &&  line !~ /<\/compilefail/ && line !~ /<\/warning/
-      @failure_message << line unless line =~ /^</
+      self.failure_message << line unless line =~ /^</
       line = connection.receive_command_data
     end
   end
@@ -93,8 +94,8 @@ class CompilerCommandInterpretor
   end
 
   def log_failure(message)
-    @failed = true
-    @failure_message = message
+    self.failed = true
+    self.failure_message = message
   end
 
   def write_qpo_file(code)
