@@ -1,8 +1,8 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/classical_stack_data'
-require 'src/panels/classical_stack/classical_stack_controller'
-require 'src/panels/classical_stack/classical_stack_model'
+require 'GUI/src/panels/classical_stack/classical_stack_controller'
+require 'GUI/src/panels/classical_stack/classical_stack_model'
 
 describe ClassicalStackController do
   before(:each) do

@@ -1,8 +1,8 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/simulate_results_data'
-require 'src/dialogs/simulate_results/simulate_results_controller'
-require 'src/dialogs/simulate_results/simulate_results_model'
+require 'GUI/src/dialogs/simulate_results/simulate_results_controller'
+require 'GUI/src/dialogs/simulate_results/simulate_results_model'
 
 describe SimulateResultsController do
   before(:each) do

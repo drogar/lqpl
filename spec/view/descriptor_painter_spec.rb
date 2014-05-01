@@ -1,6 +1,6 @@
 require 'spec/spec_helper'
-require 'src/panels/quantum_stack/quantum_stack_model'
-require 'src/panels/quantum_stack/quantum_stack_painter'
+require 'GUI/src/panels/quantum_stack/quantum_stack_model'
+require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
 
 
 

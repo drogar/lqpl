@@ -1,6 +1,6 @@
 require 'spec/spec_helper'
 
-require 'src/panels/quantum_stack/quantum_stack_model'
+require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 
 describe AbstractDescriptorModel do
   it "should only be created by the factory" do

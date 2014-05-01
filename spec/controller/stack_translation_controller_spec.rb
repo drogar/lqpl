@@ -1,8 +1,8 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/stack_translation_data'
-require 'src/panels/stack_translation/stack_translation_controller'
-require 'src/panels/stack_translation/stack_translation_model'
+require 'GUI/src/panels/stack_translation/stack_translation_controller'
+require 'GUI/src/panels/stack_translation/stack_translation_model'
 
 describe StackTranslationController do
   before(:each) do

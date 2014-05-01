@@ -2,7 +2,7 @@ require 'spec/spec_helper'
 
 require 'spec/specdata/stack_translation_data'
 
-require 'src/panels/stack_translation/stack_translation_model'
+require 'GUI/src/panels/stack_translation/stack_translation_model'
 
 describe StackTranslationModel do
   it "should give an invalid create error when sent incorrect data" do

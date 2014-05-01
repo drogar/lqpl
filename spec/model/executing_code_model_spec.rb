@@ -1,5 +1,5 @@
 require 'spec/spec_helper'
-require 'src/panels/executing_code/executing_code_model'
+require 'GUI/src/panels/executing_code/executing_code_model'
 require 'spec/specdata/executing_code_data'
 
 describe ExecutingCodeModel do

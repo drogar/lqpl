@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
 
-require 'src/panels/executing_code/executing_code_view'
-require 'src/panels/executing_code/code_pointer'
+require 'GUI/src/panels/executing_code/executing_code_view'
+require 'GUI/src/panels/executing_code/code_pointer'
 
 QPOLINES=["1   someline","2 another line"]
 CP = CodePointer.new("<pair><string>m</string><int>1</int></pair>")

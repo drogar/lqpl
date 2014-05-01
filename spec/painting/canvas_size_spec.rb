@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
-require 'src/painting/canvas_size'
-require 'src/panels/quantum_stack/quantum_stack_model'
-require 'src/panels/quantum_stack/quantum_stack_painter'
+require 'GUI/src/painting/canvas_size'
+require 'GUI/src/panels/quantum_stack/quantum_stack_model'
+require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
 
 describe CanvasSize do
   describe "Class Methods" do

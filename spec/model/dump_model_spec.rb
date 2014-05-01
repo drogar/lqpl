@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/dump_data'
-require 'src/panels/dump/dump_model'
+require 'GUI/src/panels/dump/dump_model'
 
 describe DumpCallModel do
   it "should accessibly store the dumpcall data in the model" do

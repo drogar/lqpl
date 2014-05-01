@@ -1,8 +1,8 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/quantum_stack_data'
-require 'src/panels/quantum_stack/quantum_stack_controller'
-require 'src/panels/quantum_stack/quantum_stack_model'
+require 'GUI/src/panels/quantum_stack/quantum_stack_controller'
+require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 
 describe QuantumStackController do
   before(:each) do

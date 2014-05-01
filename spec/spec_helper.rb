@@ -8,17 +8,17 @@ SimpleCov.merge_timeout 1200
 SimpleCov.start do
   add_filter 'GUI/spec/'
   add_filter 'spec/'
-  add_group  'DevLib', 'devlib'
-  add_group  'Lib', 'lib'
-  add_group  'Communications', 'src/communications'
-  add_group  'Config', 'src/config'
-  add_group  'Dialogs', 'src/dialogs'
-  add_group  'Forms', 'src/forms'
-  add_group  'Main', 'src/lqpl'
-  add_group  'Painting', 'src/painting'
-  add_group  'Panels', 'src/panels'
-  add_group  'Utility', 'src/utility'
-  add_filter "features"
+  add_group  'DevLib', 'GUI/devlib'
+  add_group  'Lib', 'GUI/lib'
+  add_group  'Communications', 'GUI/src/communications'
+  add_group  'Config', 'GUI/src/config'
+  add_group  'Dialogs', 'GUI/src/dialogs'
+  add_group  'Forms', 'GUI/src/forms'
+  add_group  'Main', 'GUI/src/lqpl'
+  add_group  'Painting', 'GUI/src/painting'
+  add_group  'Panels', 'GUI/src/panels'
+  add_group  'Utility', 'GUI/src/utility'
+  add_filter "features/"
   nocov_token = ":nocov:"
 end
 
@@ -42,7 +42,7 @@ end
 
 project_dir_array = File.expand_path(File.dirname(__FILE__)).split(File::SEPARATOR)
 
-project_dir = project_dir_array.reverse.drop(2).reverse.join(File::SEPARATOR)
+project_dir = project_dir_array.reverse.drop(1).reverse.join(File::SEPARATOR)
 
 %w{src lqpl_gui lib/java lib/ruby devlib/java devlib/ruby}.each do |dir|
   $LOAD_PATH << project_dir+"/GUI/"+ dir

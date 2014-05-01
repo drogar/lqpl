@@ -1,8 +1,8 @@
 require 'spec/spec_helper'
 
 require 'spec/specdata/dump_data'
-require 'src/panels/dump/dump_controller'
-require 'src/panels/dump/dump_model'
+require 'GUI/src/panels/dump/dump_controller'
+require 'GUI/src/panels/dump/dump_model'
 
 describe DumpController do
   before(:each) do
