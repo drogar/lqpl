@@ -1,5 +1,5 @@
 \begin{code}
-  module Spec.Compiler.CompilerSpecHelper where
+  module Compiler.CompilerSpecHelper where
 
 
     import Utility.FileProvider

@@ -10,7 +10,7 @@
     import Test.HUnit
 
     import Data.Map as Map
-    import Spec.SpecHelper
+    import SpecHelper
 
 
     import Control.Concurrent

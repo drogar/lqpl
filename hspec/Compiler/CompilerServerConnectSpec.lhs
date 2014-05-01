@@ -14,7 +14,7 @@
     import System.IO.Error
     import System.Cmd
 
-    import Spec.SpecHelper
+    import SpecHelper
 
     import Compiler.CompilerServer
 

@@ -142,9 +142,9 @@ end
 
 tests = namespace :test do
   RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern="GUI/spec/**/*_spec.rb"
+    t.pattern="spec/**/*_spec.rb"
     t.rspec_opts = "--color"
-    t.ruby_opts = "--1.9 -IGUI"
+    t.ruby_opts = "--debug --1.9 -IGUI"
   end
 
   desc "Run GUI specs after ensuring jar is built"
@@ -152,7 +152,7 @@ tests = namespace :test do
 
   desc "Run lqpl Compiler and Emulator tests"
   task :server_tests =>[build[:server_with_tests]] do
-    sh "runghc Setup.hs test --show-details=failures"
+    sh "runghc Setup.hs test --show-details=always"
   end
 
   desc "Run all tests"

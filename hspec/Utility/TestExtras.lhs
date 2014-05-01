@@ -1,10 +1,10 @@
 \begin{code}
-  module Tests.Utility.TestExtras where
+  module Utility.TestExtras where
     import Test.HUnit
-    
+
     import Utility.Extras
-    
-    
+
+
     tests =  ["t1 " ~: "String with all printable not changed" ~: "abc" @=? (filterNonPrintable "abc"),
       "t2 " ~: "String with \\n loses that" ~: "ab" @=? (filterNonPrintable "ab\n"),
       "t3 " ~: assertBool "String with \\n not retained"  ("a\n" /= (filterNonPrintable "a\n")),
@@ -14,5 +14,5 @@
       "splitFilePath3 " ~: "apath1/Base + ext = apath1,base,ext" ~: ("/apath/","abc","123") @=? splitFilePath "/apath/abc.123",
       "splitFilePath2 " ~: "rpathn/Base + ext = rpathn,base,ext" ~: ("r/p/ath/","abc","123") @=? splitFilePath "r/p/ath/abc.123",
       "splitFilePath3 " ~: "apathn/Base + ext = apathm,base,ext" ~: ("/a/pa/th/","abc","123") @=? splitFilePath "/a/pa/th/abc.123"]
-    
+
 \end{code}

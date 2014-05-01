@@ -9,7 +9,7 @@
     import Test.HUnit
 
 
-    import Spec.SpecHelper
+    import SpecHelper
 
     import QSM.BasicData
 

@@ -14,12 +14,12 @@
     import Data.IORef
     import System.Cmd
 
-    import Spec.SpecHelper
+    import SpecHelper
 
     import Compiler.CompilerServer
 
     import Control.Concurrent
-    import Spec.Compiler.CompilerSpecHelper
+    import Compiler.CompilerSpecHelper
 
     import Data.Version
     import Data.Map

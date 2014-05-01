@@ -3,7 +3,7 @@
     import System.Exit(exitFailure)
     import Test.HUnit
     import Tests.Data.TestLazyNum as TestLazy
-    import Tests.Utility.TestExtras as TestExtras
+    import Utility.TestExtras as TestExtras
 
     main = do
       b0 <- runIt "Testing lazynum:" TestLazy.tests

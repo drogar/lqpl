@@ -1,7 +1,7 @@
 \begin{code}
 
   {-#LANGUAGE FlexibleInstances#-}
-  module Spec.SpecHelper (
+  module SpecHelper (
     getTempFile,
     getTempFileWithContent,
     removeTempFile

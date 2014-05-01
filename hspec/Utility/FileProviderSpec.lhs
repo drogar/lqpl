@@ -8,7 +8,7 @@
     import Test.QuickCheck hiding (property)
     import Test.HUnit
 
-    import Spec.SpecHelper
+    import SpecHelper
 
     import Network.Socket
     import System.IO

@@ -12,7 +12,7 @@
     import Text.Parsec
     import Compiler.Qtypes
 
-    import Spec.SpecHelper
+    import SpecHelper
 
 
     import Utility.FileProvider
@@ -24,7 +24,7 @@
     import System.IO
     import GHC.IO
 
-    import Spec.Compiler.CompilerSpecHelper
+    import Compiler.CompilerSpecHelper
 
     main = hspecWith defaultConfig{configFormatter=progress} parserSpecs
 

@@ -10,7 +10,7 @@
 
     import Data.Stack
 
-    import Spec.SpecHelper
+    import SpecHelper
 
     import QSM.BasicData
 
