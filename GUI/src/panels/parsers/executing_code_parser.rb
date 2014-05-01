@@ -22,7 +22,7 @@ class ExecutingCodeParser < AbstractListPatternParser
   def self.instructions_to_list(instructions)
     count = 0
     values_to_list(instructions, INSTRUCTIONS_PATTERN)  do |ret, ins|
-      ret << sprintf('%3d  %s', count, ins[1])
+      ret << format('%3d  %s', count, ins[1])
       count += 1
     end
   end

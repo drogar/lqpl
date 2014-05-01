@@ -5,7 +5,7 @@ class AboutController < ApplicationController
   set_view 'AboutView'
   set_close_action :dispose
 
-  def handle_about(about_event)
+  def handle_about(_about_event)
     open
   end
 

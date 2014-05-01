@@ -23,7 +23,7 @@ class LqplController < ApplicationController
     super
   end
 
-  def load(*args)
+  def load(*)
     @cmp = CompilerServerConnection.get_instance
     # @cmp.connect
     model.compiler_connection = @cmp
@@ -78,7 +78,7 @@ class LqplController < ApplicationController
   end
 
   def initialize_sub_controllers
-    ExecutingCodeController.instance.update_code_and_code_pointer  model.recursion_spinner
+    ExecutingCodeController.instance.update_code_and_code_pointer model.recursion_spinner
     sub_controllers_handler.update_and_open(model)
     model.enable_view_menu_items
   end

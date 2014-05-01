@@ -65,7 +65,7 @@ class CompilerCommandInterpretor
     line = connection.receive_command_data
     self.failure_message = ''
     while line &&  line !~ /<\/compilefail/ && line !~ /<\/warning/
-      self.failure_message << line unless line =~ /^</
+      failure_message << line unless line =~ /^</
       line = connection.receive_command_data
     end
   end
@@ -81,12 +81,12 @@ class CompilerCommandInterpretor
 
   def base_file_from_line(line_input)
     basef = line_input[/(<getFirst>)(.*)(<\/getFirst>)/, 2]
-    File.exists?(basef) ? basef : @dir + '/' + basef
+    File.exist?(basef) ? basef : @dir + '/' + basef
   end
 
   def send_included_file(line)
     f = base_file_from_line line
-    if File.exists?(f)
+    if File.exist?(f)
       @connection_commander.send_file("<file name='#{File.basename f}'>", f, '</file>')
     else
       log_failure("Unable to find or open file #{f}, Looking in #{Dir.pwd}")

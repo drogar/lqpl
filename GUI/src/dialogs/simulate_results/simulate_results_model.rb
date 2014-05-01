@@ -7,11 +7,11 @@ class SimulateResultsModel
   attr_accessor :stack_translation
 
   java_signature 'void random_value_text(Object)'
-  def random_value_text=(whatever)
+  def random_value_text=(_)
   end
 
   java_signature 'void simulate_results_text(Object)'
-  def simulate_results_text=(whatever)
+  def simulate_results_text=(_)
   end
 
   def simulate_results_text

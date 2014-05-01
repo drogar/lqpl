@@ -5,7 +5,7 @@ class ClassicalStackModel < ApplicationModel
   attr_accessor :classical_stack_text
   attr_accessor :classical_stack
 
-  def classical_stack_text=(whatever)
+  def classical_stack_text=(_)
   end
 
   def classical_stack_text

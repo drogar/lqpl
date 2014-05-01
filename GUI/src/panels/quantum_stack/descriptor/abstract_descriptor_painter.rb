@@ -32,7 +32,7 @@ class AbstractDescriptorPainter
     nil
   end
 
-  def paint_model(g)
+  def paint_model(_)
     # Not to be used
     fail 'do not call paint_model on descriptors, use paint_model_at_point'
   end

@@ -6,7 +6,7 @@ class ExecutingCodeModel < ApplicationModel
   attr_accessor :the_code
   attr_accessor :the_code_pointer
   attr_accessor :the_code_was_updated
-  alias_method  :the_code_was_updated?,  :the_code_was_updated
+  alias_method :the_code_was_updated?, :the_code_was_updated
 
   def the_code=(xml_string)
     ecp = ExecutingCodeParser.new xml_string

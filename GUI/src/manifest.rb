@@ -80,19 +80,19 @@ when Monkeybars::Resolver::IN_JAR_FILE
   # Files to be added only when run from inside a jar file
 end
 
-%w{BorderLayout GridLayout}.each do |awtfile|
+%w(BorderLayout GridLayout).each do |awtfile|
   java_import "java.awt.#{awtfile}"
 end
 
-%w{JOptionPane JFileChooser filechooser.FileNameExtensionFilter
-   JTextArea JScrollPane BoxLayout SpinnerNumberModel}.each do |cfile|
+%w(JOptionPane JFileChooser filechooser.FileNameExtensionFilter
+   JTextArea JScrollPane BoxLayout SpinnerNumberModel).each do |cfile|
   java_import 'javax.swing.' + cfile
 end
 
 # for swinging
 add_to_load_path '../lib/ruby/swingtown'
 require 'swingtown'
-include  Swingtown::Core
+include Swingtown::Core
 
 # end for swinging
 
@@ -100,19 +100,19 @@ java_import java.lang.System
 
 java_import java.awt.Point
 
-%w{point jfile_chooser array}.each do |rfile|
+%w(point jfile_chooser array).each do |rfile|
   require 'utility/monkey/' + rfile
 end
 
-%w{translate_line_ends drawing duck_matcher
-   swing_runner}.each do |f|
+%w(translate_line_ends drawing duck_matcher
+   swing_runner).each do |f|
   require 'utility/' + f
 end
 
-%w{abstract_pattern zero_pattern value_pattern abstract_list_pattern
+%w(abstract_pattern zero_pattern value_pattern abstract_list_pattern
    qubit_pattern data_pattern classical_pattern stack_translation
    code_pointer executing_code dump_call dump_split dump
-   quantum_stack}.each do |rf|
+   quantum_stack).each do |rf|
   require 'panels/parsers/' + rf + '_parser'
 end
 
@@ -121,33 +121,33 @@ require 'painting/canvas_size'
 require 'application_model'
 require 'panels/panel_controller'
 
-%w{server_process_not_found invalid_input}.each do |f|
+%w(server_process_not_found invalid_input).each do |f|
   require 'exceptions/' + f
 end
 
-%w{lqpl_emulator_server_connection compiler_command_interpretor connection_commander
-   compiler_server_connection}.each do |f|
+%w(lqpl_emulator_server_connection compiler_command_interpretor connection_commander
+   compiler_server_connection).each do |f|
   require 'communications/' + f
 end
 
-%w{about simulate_results}.each do |dialog|
+%w(about simulate_results).each do |dialog|
   require "forms/dialogs/#{dialog}_dialog"
 end
 
-%w{quantum_stack_panel}.each do |component|
+%w(quantum_stack_panel).each do |component|
   require "forms/components/#{component}"
 end
 
-%w{scrollable_label}.each do |generic_form|
+%w(scrollable_label).each do |generic_form|
   require "forms/generic/#{generic_form}"
 end
 
-%w{classical_stack dump executing_code quantum_emulator_main
-   quantum_stack stack_translation}.each do |a_form|
+%w(classical_stack dump executing_code quantum_emulator_main
+   quantum_stack stack_translation).each do |a_form|
   require "forms/#{a_form}_form"
 end
 
-%w{abstract classical data qubit value zero}.each do |rf|
+%w(abstract classical data qubit value zero).each do |rf|
   require "panels/quantum_stack/descriptor/#{rf}_descriptor_model"
   require "panels/quantum_stack/descriptor/#{rf}_descriptor_painter"
 end
@@ -155,7 +155,7 @@ end
 require 'panels/quantum_stack/descriptor/descriptor_painter_factory'
 require 'panels/quantum_stack/quantum_stack_painter'
 
-# %w{classical_stack dump executing_code quantum_stack stack_translation}.each do |a_panel|
+# %w(classical_stack dump executing_code quantum_stack stack_translation).each do |a_panel|
 #   require "panels/#{a_panel}/#{a_panel}_view"
 #   require "panels/#{a_panel}/#{a_panel}_model"
 #   require "panels/#{a_panel}/#{a_panel}_controller"
@@ -164,10 +164,10 @@ require 'panels/quantum_stack/quantum_stack_painter'
 # SwingRunner::on_edt do
 require 'lqpl_menu'
 require 'lqpl_subs_handler'
-{ 'panels/' => %w{quantum_stack classical_stack dump executing_code
-                  stack_translation},
-  '' => %w{lqpl},
-  'dialogs/' => %w{simulate_results about} }.each do |k, v|
+{ 'panels/' => %w(quantum_stack classical_stack dump executing_code
+                  stack_translation),
+  '' => %w(lqpl),
+  'dialogs/' => %w(simulate_results about) }.each do |k, v|
   v.each do |f|
     require k + f + '/' + f + '_view'
     require k + f + '/' + f + '_model'

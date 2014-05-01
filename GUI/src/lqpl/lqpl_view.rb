@@ -33,7 +33,7 @@ class LqplView < ApplicationView
 
   raw_mapping :set_title, nil
 
-  def load(*args)
+  def load(*)
     @the_menu = LqplMenu.new(self)
   end
 
@@ -41,7 +41,7 @@ class LqplView < ApplicationView
     main_view_component.setJMenuBar(mbar)
   end
 
-  def set_title(model, trans)
+  def set_title(model, _transfer)
     main_view_component.title = model.frame_title
   end
 end

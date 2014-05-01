@@ -10,7 +10,7 @@ class AbstractPatternParser
 
   def initialize(in_string)
     @md = self.class.top_level_regexp.match in_string
-    @parsed = !@md.nil?
+    @parsed = @md.nil? ? false : true
     fail ParserError, "No match -#{self.class.top_level_regexp}- to -#{in_string}-" unless @md
   end
 

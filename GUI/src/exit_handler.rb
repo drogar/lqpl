@@ -8,7 +8,7 @@ require 'communications/lqpl_emulator_server_connection'
 class ExitHandler
   include Singleton
 
-  def handle_quit_request_with(quit_event, quit_response)
+  def handle_quit_request_with(_quit_event, quit_response)
     close_servers
     quit_response.performQuit
   end

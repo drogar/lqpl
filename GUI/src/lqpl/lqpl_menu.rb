@@ -1,6 +1,6 @@
 # encoding: utf-8
-%w{JMenuBar JMenu JMenuItem}.each do |nm|
-  java_import  'javax.swing.' + nm
+%w(JMenuBar JMenu JMenuItem).each do |nm|
+  java_import 'javax.swing.' + nm
 end
 
 # menu handling and loading for the main screen

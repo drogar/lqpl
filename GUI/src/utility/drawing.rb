@@ -1,18 +1,18 @@
 # encoding: utf-8
 
-%w{AlphaComposite BasicStroke Color Dimension Font Point Rectangle RenderingHints}.each do |name|
+%w(AlphaComposite BasicStroke Color Dimension Font Point Rectangle RenderingHints).each do |name|
   java_import "java.awt.#{name}"
 end
 
 java_import java.awt.font.TextAttribute
 
-%w{Dimension2D Line2D Ellipse2D Rectangle2D}.each do |name|
+%w(Dimension2D Line2D Ellipse2D Rectangle2D).each do |name|
   java_import "java.awt.geom.#{name}"
 end
 
 java_import java.awt.image.BufferedImage
 
-%w{AttributedString AttributedCharacterIterator}.each do |name|
+%w(AttributedString AttributedCharacterIterator).each do |name|
   java_import "java.text.#{name}"
 end
 

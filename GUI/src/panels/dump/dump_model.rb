@@ -12,7 +12,7 @@ class DumpModel < ApplicationModel
     @dump = dp.parsed_value
   end
 
-  def text=(whatev)
+  def text=(_)
   end
 
   def text

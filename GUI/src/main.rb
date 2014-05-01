@@ -4,7 +4,7 @@ require 'manifest'
 
 # Set up global error handling so that it is consistantly logged or outputed
 # You will probably want to replace the puts with your application's logger
-def log_the_error(exception, thread = nil)
+def log_the_error(exception, _thread = nil)
   rexcep = exception.exception
   puts exception
   show_error_dialog('Server(s) not found',

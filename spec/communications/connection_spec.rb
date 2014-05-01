@@ -10,15 +10,24 @@ describe Connection do
     @c.close_down
   end
   describe "_make_connection" do
-    it "should connect to the default web server when the port is set to 80" do
-      @c.port=80
+    it "should return [] when it actually connects" do
+      @c.port = 80
+      expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 80).and_return(nil)
       expect(@c._make_connection).to eql([])
     end
-    it "should be an array of strings when trying to connect to  port 20 (normally unused)" do
+    it "should return 'refused' if trying to connect to an unused port" do
       @c.port = 20
+      expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
+        .and_raise(Errno::ECONNREFUSED)
       res = @c._make_connection
-      expect(res.class).to eq(Array)
-      expect(res[0].class).to eq(String)
+      expect(res[0]).to match('Connect refused For')
+    end
+    it "should return 'error' if getting a socket error" do
+      @c.port = 20
+      expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
+        .and_raise(SocketError)
+      res = @c._make_connection
+      expect(res[0]).to match('Socket error for')
     end
   end
   describe "connect" do

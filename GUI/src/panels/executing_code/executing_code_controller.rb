@@ -6,7 +6,7 @@ class ExecutingCodeController < PanelController
   set_close_action :hide
 
   def update_data_from_lqpl_model(lqpl_model)
-    update_code_pointer  lqpl_model.recursion_spinner
+    update_code_pointer lqpl_model.recursion_spinner
   end
 
   def update_code_and_code_pointer(recursion_depth)

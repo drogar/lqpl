@@ -12,7 +12,7 @@ class StackTranslationModel < ApplicationModel
     end
   end
 
-  def text=(whatever)
+  def text=(_)
   end
 
   def text
