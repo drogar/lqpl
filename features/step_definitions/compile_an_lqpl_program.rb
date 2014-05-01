@@ -20,10 +20,10 @@ end
 
 Then /^"([\w\s]*?\.qpo)" should be created in the project directory "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/ do |outfile, outdir,reference|
   the_file = File.file_in_project_subdir(outdir, outfile)
-  
-  sleep_until_file_exists(10,the_file).should be_true
-  
-  File.read(the_file).should == File.read(File.file_in_project_subdir(outdir,reference))
+
+  expect(sleep_until_file_exists(10,the_file)).to be true
+
+  expect(File.read(the_file)).to eql(File.read(File.file_in_project_subdir(outdir,reference)))
 end
 
 Then /^the messages field should contain:$/ do |client_message_table|

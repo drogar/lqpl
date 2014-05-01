@@ -4,15 +4,15 @@ require 'spec/spec_helper'
 describe ValuePatternParser do
   it "should successfully parse VALUE-number-VALUE '<Value>1.0</Value>'" do
     p = ValuePatternParser.new "<Value>1.0</Value>"
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should successfully parse VALUE-NUMBER-number-NUMBER-VALUE '<Value><number>0.3846298001</number></Value>'" do
     p = ValuePatternParser.new "<Value>0.3846298001</Value>"
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should successfully parse VALUE-NUMBER-enumber-NUMBER-VALUE '<Value>6.25e-2</Value>'" do
     p = ValuePatternParser.new "<Value>6.25e-2</Value>"
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should raise an error if the value is > 1" do
     expect {

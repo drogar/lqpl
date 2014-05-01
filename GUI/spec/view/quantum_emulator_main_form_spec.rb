@@ -2,7 +2,7 @@ require 'spec/spec_helper'
 
 describe QuantumEmulatorMainForm do
   before (:each) do
-    
+
     SwingRunner::on_edt do
       @qemf = QuantumEmulatorMainForm.new
     end
@@ -12,12 +12,12 @@ describe QuantumEmulatorMainForm do
   end
   specify {expect(@qemf.title).to eq("Quantum Emulator")}
   specify {expect(@qemf.name).to eq("Quantum Emulator")}
-  specify {expect(@qemf.content_pane).to have(3).components}
+  specify {expect(@qemf.content_pane.components.size).to eql(3)}
   context "the messages area" do
     before :each do
       @ma = @qemf.content_pane.components[0]
     end
-    
+
     it "should be a scroll pane as the first component" do
       expect(@ma.class).to eq(ScrollPane)
     end
@@ -39,7 +39,7 @@ describe QuantumEmulatorMainForm do
       expect(@spinpanel.class).to eq(Panel)
     end
     it "should contain 8 children" do
-      expect(@spinpanel).to have(8).components
+      expect(@spinpanel.components.size).to eql(8)
     end
     it "has spinners for odd components" do
       [1,3,5,7].each do |i|
@@ -81,12 +81,12 @@ describe QuantumEmulatorMainForm do
     before :each do
       @buttonpanel = @qemf.content_pane.components[2]
     end
-    
+
     it "should be a panel" do
       expect(@buttonpanel.class).to eq(Panel)
     end
     it "should contain 3 children" do
-      expect(@buttonpanel).to have(3).components
+      expect(@buttonpanel.components.size).to eql(3)
     end
     it "should have 3 buttons" do
       @buttonpanel.components.each do |comp|

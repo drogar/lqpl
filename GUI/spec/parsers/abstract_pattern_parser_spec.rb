@@ -4,7 +4,7 @@ require 'spec/spec_helper'
 describe AbstractPatternParser do
   it "should parse only an empty string" do
     p = AbstractPatternParser.new ""
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should raise an error for other string" do
     expect {

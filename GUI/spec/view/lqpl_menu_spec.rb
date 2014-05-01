@@ -33,7 +33,7 @@ describe LqplMenu do
     it "should set the mbar of the parent to visible" do
       SwingRunner::on_edt do 
         LqplMenu.new(@p)
-        expect(@p.mbar.visible).to be_true
+        expect(@p.mbar.visible).to be true
       end
     end
     it "should set up two menus (when on mac)" do

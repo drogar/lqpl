@@ -22,8 +22,8 @@ describe JFileChooser do
     end
     it "should only accept files whose extension equals the third parm" do
       SwingRunner::on_edt do
-        expect(@j.file_filter.accept(java.io.File.new("~/junk.c"))).to be_true
-        expect(@j.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
+        expect(@j.file_filter.accept(java.io.File.new("~/junk.c"))).to be true
+        expect(@j.file_filter.accept(java.io.File.new("~/junk.jun"))).to be false
       end
     end
   end
@@ -45,8 +45,8 @@ describe JFileChooser do
     end
     it "should only accept files whose extension is qpo" do
       SwingRunner::on_edt do
-        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.qpo"))).to be_true
-        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
+        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.qpo"))).to be true
+        expect(@qpo.file_filter.accept(java.io.File.new("~/junk.jun"))).to be false
       end
     end
   end
@@ -69,8 +69,8 @@ describe JFileChooser do
     end
     it "should only accept files whose extension is qpo" do
       SwingRunner::on_edt do
-        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.qpl"))).to be_true
-        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.jun"))).to be_false
+        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.qpl"))).to be true
+        expect(@qpl.file_filter.accept(java.io.File.new("~/junk.jun"))).to be false
       end
     end
   end

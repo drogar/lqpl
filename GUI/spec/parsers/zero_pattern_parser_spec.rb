@@ -4,7 +4,7 @@ require 'spec/spec_helper'
 describe ZeroPatternParser do
   it "should successfully parse only '<Zero/>'" do
     p = ZeroPatternParser.new "<Zero/>"
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should raise an error for any other string" do
     expect {

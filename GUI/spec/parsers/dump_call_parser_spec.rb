@@ -5,16 +5,16 @@ require 'spec/specdata/dump_data'
 describe DumpCallParser do
   it "should successfully parse a call with no entries in the classical stack" do
     p = DumpCallParser.new DCALL
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should successfully parse a call with 1 entry in the classical stack" do
     p = DumpCallParser.new DCALL1
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   
   it "should successfully parse a call with 2 entries in the classical stack" do
     p = DumpCallParser.new DCALL2
-    expect(p.parsed?).to be_true
+    expect(p.parsed?).to be true
   end
   it "should give a parse error if the int is missing" do
     expect {

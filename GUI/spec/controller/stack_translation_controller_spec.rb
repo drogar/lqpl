@@ -18,7 +18,7 @@ describe StackTranslationController do
   end
 
   it "should return false for update_on_lqpl_model_trim" do
-    expect(@d.update_on_lqpl_model_trim).to be_false
+    expect(@d.update_on_lqpl_model_trim).to be false
   end
   it "should return a stack translation model" do
     @d.update_stack_translation_data(P1)

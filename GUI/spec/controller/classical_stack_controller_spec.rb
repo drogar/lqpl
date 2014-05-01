@@ -13,8 +13,8 @@ describe ClassicalStackController do
   it "should raise an error when created with junk" do
     expect { @c.update_classical_stack_data("junk")}. to raise_error   ParserError, /junk/
   end
-  
-  specify {expect(@c.update_on_lqpl_model_trim).to be_false}
+
+  specify {expect(@c.update_on_lqpl_model_trim).to be false}
   it "should create a classical stack when given the correct input" do
     SwingRunner::on_edt do
       @c.update_classical_stack_data("<Classical>"+cint(-27)+CIBT+cint(40)+CIBF+"</Classical>")

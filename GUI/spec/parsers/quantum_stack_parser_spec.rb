@@ -34,16 +34,16 @@ describe QuantumStackParser do
   describe "bottom stacks" do
     it "should return a bottom=true for '<bottom/>'" do
       q = QuantumStackParser.new "<bottom/>"
-      expect(q.bottom?).to be_true
+      expect(q.bottom?).to be true
     end
     BOTTOMS.each do |b|
       it "parses  stack with bottom" do
         q = QuantumStackParser.new b
-        expect(q.parsed?).to be_true
+        expect(q.parsed?).to be true
       end
       it "returns a single 'bottom' qs for the substacks of these" do
         q = QuantumStackParser.new b
-        expect(q.substacks[0].bottom?).to be_true
+        expect(q.substacks[0].bottom?).to be true
       end
     end
   end

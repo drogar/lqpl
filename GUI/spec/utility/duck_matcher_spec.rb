@@ -33,7 +33,7 @@ describe DuckMatcher do
       expect(@dm.recurss).to eq(-1)
     end
     it "should do nothing and return true when passed an enumerable a where a[:strt] and a[:stop] are false" do
-      expect(@dm._matched_paired_start_stop?({}) ).to be_true
+      expect(@dm._matched_paired_start_stop?({}) ).to be true
     end
   end
   describe "match" do

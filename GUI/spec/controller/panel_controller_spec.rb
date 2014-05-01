@@ -59,7 +59,7 @@ describe PanelController do
     end
     it "should return false for update_on_lqpl_model_trim" do
       SwingRunner::on_edt do
-        expect(@pm.update_on_lqpl_model_trim).to be_false
+        expect(@pm.update_on_lqpl_model_trim).to be false
       end
     end
   end

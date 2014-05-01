@@ -17,5 +17,5 @@ describe DumpController do
     end
   end
   
-  specify {expect(@c.update_on_lqpl_model_trim).to be_true}
+  specify {expect(@c.update_on_lqpl_model_trim).to be true}
 end

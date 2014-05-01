@@ -20,7 +20,7 @@ describe ExecutingCodeView do
       SwingRunner::on_edt {expect(@ta.text).to match(/someline/)}
     end
     it "should not be an editable text area" do
-      SwingRunner::on_edt {expect(@ta.editable).to be_false}
+      SwingRunner::on_edt {expect(@ta.editable).to be false}
     end
     it "should have selection start and end of 0" do
       SwingRunner::on_edt do

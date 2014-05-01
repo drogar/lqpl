@@ -40,9 +40,9 @@ describe ExecutingCodeModel do
       end
       it "should return the value set into the_code_was_updated" do
         @ecm.the_code_was_updated = false
-        expect(@ecm.the_code_was_updated?).to be_false
+        expect(@ecm.the_code_was_updated?).to be false
         @ecm.the_code_was_updated = true
-        expect(@ecm.the_code_was_updated?).to be_true
+        expect(@ecm.the_code_was_updated?).to be true
       end
 
     end

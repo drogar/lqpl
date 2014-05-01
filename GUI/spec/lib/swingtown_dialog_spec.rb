@@ -10,21 +10,21 @@ describe STDialog do
   it "should not be nil" do
     expect(@sr).not_to be_nil
   end
-  
+
   it "should accept an arg and store it in title" do
     SwingRunner::on_edt do
       dt = STDialog.new("a title")
       expect(dt.title).to eq('a title')
     end
   end
-  
+
   it "should accept a block" do
     SwingRunner::on_edt do
       dt = STDialog.new() do |d|
         d.content_pane.add(Panel.new)
         d.content_pane.add(Panel.new)
       end
-      expect(dt.content_pane).to have(2).components
+      expect(dt.content_pane.components.size).to eql(2)
     end
   end
 end
@@ -36,7 +36,7 @@ describe STDialogWithOK do
       expect(sr).not_to be_nil
     end
   end
-  
+
   it "should accept an arg and store it in title" do
     SwingRunner::on_edt do
       dt = STDialogWithOK.new("a title")
@@ -58,7 +58,7 @@ describe STDialogWithOK do
             d.add(Panel.new)
             d.add(Panel.new)
          end
-          expect(s.data_pane).to have(2).components
+          expect(s.data_pane.components.size).to eql(2)
         end
       end
       it "should setup items in the init block before the button pane" do
@@ -72,7 +72,7 @@ describe STDialogWithOK do
          # end
           expect(s.content_pane.components[1]).to eq(s.button_pane)
         end
-      end    
+      end
     end
     describe "details" do
       before (:each) do
@@ -83,7 +83,7 @@ describe STDialogWithOK do
       specify {expect(@sr.data_pane).not_to be_nil}
       specify {expect(@sr.data_pane.class).to eq(Panel)}
       specify {expect(@sr.button_pane).not_to be_nil}
-      specify {expect(@sr.ok_button).not_to be_nil}       
+      specify {expect(@sr.ok_button).not_to be_nil}
 
       it "should setup the button pane" do
         expect(last(@sr.content_pane.components)).to eq(@sr.button_pane)
@@ -93,7 +93,7 @@ describe STDialogWithOK do
           @bp = last(@sr.content_pane.components)
         end
         specify {expect(@bp.class).to eq(Panel)}
-        specify {expect(@bp).to have(1).components}
+        specify {expect(@bp.components.size).to eql(1)}
         specify {expect(@bp.components[0].class).to eq(Button)}
         context "the button" do
           before (:each) do

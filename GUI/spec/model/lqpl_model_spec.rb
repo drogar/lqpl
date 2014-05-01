@@ -39,16 +39,16 @@ describe LqplModel do
         @lm.enable_view_menu_items
       end
       it "sets view_menu_stack_translation_enabled to true" do
-        expect(@lm.view_menu_stack_translation_enabled).to be_true
+        expect(@lm.view_menu_stack_translation_enabled).to be true
       end
       it "sets view_menu_dump_enabled to true" do
-        expect(@lm.view_menu_dump_enabled).to be_true
+        expect(@lm.view_menu_dump_enabled).to be true
       end
       it "sets view_menu_executing_code_enabled to true" do
-        expect(@lm.view_menu_executing_code_enabled).to be_true
+        expect(@lm.view_menu_executing_code_enabled).to be true
       end
       it "sets view_menu_classical_stack_enabled to true" do
-        expect(@lm.view_menu_classical_stack_enabled).to be_true
+        expect(@lm.view_menu_classical_stack_enabled).to be true
       end
     end
     describe "enable_buttons!" do
@@ -59,16 +59,16 @@ describe LqplModel do
         expect(@lm.frame_title).to eq('Quantum Emulator - test')
       end
       it "should set the go button to enabled" do
-        expect(@lm.go_enabled).to be_true
+        expect(@lm.go_enabled).to be true
       end
       it "should set the step button to enabled" do
-        expect(@lm.step_enabled).to be_true
+        expect(@lm.step_enabled).to be true
       end
       it "should set the spinner panel to visible" do
-        expect(@lm.spinner_panel_visible).to be_true
+        expect(@lm.spinner_panel_visible).to be true
       end
       it "should set the button panel to visible" do
-        expect(@lm.button_panel_visible).to be_true
+        expect(@lm.button_panel_visible).to be true
       end
       it "should set the message to '<arg> was loaded.'" do
         expect(@lm.messages_text).to eq('test was loaded.')
