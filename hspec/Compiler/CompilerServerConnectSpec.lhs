@@ -13,19 +13,28 @@
     import System.IO
     import System.IO.Error
     import System.Cmd
+    import System.Exit
 
     import SpecHelper
 
     import Compiler.CompilerServer
 
     import Control.Concurrent
-    
+
     import Control.Exception
 
+    compile_command = "{ \"command\" : \"compile\" }"
+    getfile_command = "{ \"command\" : \"get_file\", \"filename\" : \"f\" }"
+    ready_status = "{ \"status\" : \"ready\" }"
 
+    program_one = "{ \"file\" : { \"name\" : \"f\", \"qpl_program\" : [ \"qdata C = {H|T}\", \"app::(| ; )= {skip}\"] } }"
+    program_two = "{ \"file\" : { \"name\" : \"g\", \"qpl_program\" : [ \"#Import f\"] } }"
 
+    assembled_one = "{ \"qpo\" : [ \"app_fcdlbl0   Start\"] }"
     main = do
-      hspecWith defaultConfig{configFormatter=progress} compilerSpecs
+      summary <- hspecWith defaultConfig{configFormatter=progress} compilerSpecs
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do
@@ -41,76 +50,53 @@
                 putStrLn $ "Waited 2s for server to start"
                 checkOpenPort default_port
       context "compiler server" $ do
-        it "accepts the XML tag 'qplprogram'" $ do
+        it "accepts the command tag 'compile'" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl "<qplprogram>"
+              hPutStrLn hndl compile_command
               hFlush hndl
               res <- hGetLine hndl
-              case res of
-                "CS_READY"  -> return Test.Hspec.Core.Success
-                _     -> return $ Test.Hspec.Core.Fail $ "invalid back status: " ++ res
+              return $ if (res == ready_status)
+                          then Test.Hspec.Core.Success
+                          else Test.Hspec.Core.Fail $ "invalid back status: " ++ res
         it "sends back a valid assembler code when sent a qpl program" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl "<qplprogram>"
+              hPutStrLn hndl compile_command
               hFlush hndl
               hGetLine hndl
-              hPutStrLn hndl "qdata C = {H|T}"
+              hPutStrLn hndl program_one
               hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "app::(| ; )= {skip}"
-              hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "</qplprogram>"
-              hFlush hndl
-              fres <- hGetLine hndl
               res <- hGetLine hndl
-              case res of
-                "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
-                _                       -> return $ Test.Hspec.Core.Fail $ "invalid program: " ++ res
+              return $ if ((take 24 res) ==  (take 24 assembled_one))
+                         then Test.Hspec.Core.Success
+                         else Test.Hspec.Core.Fail $ "invalid program: " ++ res
         it "sends back a 'getFirst' request when sent a program with import" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl "<qplprogram>"
+              hPutStrLn hndl compile_command
               hFlush hndl
               hGetLine hndl
-              hPutStrLn hndl "#Import f"
-              hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "</qplprogram>"
+              hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
-              case res of
-                "<getFirst>f</getFirst>"    -> return Test.Hspec.Core.Success
-                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
+              return $ if (res == getfile_command)
+                           then Test.Hspec.Core.Success
+                           else Test.Hspec.Core.Fail $ "invalid import: " ++ res
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl "<qplprogram>"
+              hPutStrLn hndl compile_command
               hFlush hndl
               hGetLine hndl
-              hPutStrLn hndl "#Import f"
-              hFlush hndl
-              hGetLine hndl
-              hPutStrLn hndl "</qplprogram>"
+              hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
-              case res of
-                "<getFirst>f</getFirst>"    -> do
-                    hPutStrLn hndl "<file name='f'>"
+              if (res == getfile_command)
+                 then do
+                    hPutStrLn hndl program_one
                     hFlush hndl
-                    hGetLine hndl
-                    hPutStrLn hndl "qdata C = {H|T}"
-                    hFlush hndl
-                    hGetLine hndl
-                    hPutStrLn hndl "app::(| ; )= {skip}"
-                    hFlush hndl
-                    hGetLine hndl
-                    hPutStrLn hndl "</file>"
-                    hFlush hndl
-                    fres <- hGetLine hndl
-                    fres2 <-hGetLine hndl
-                    case fres2 of
-                      "app_fcdlbl0   Start"   -> return Test.Hspec.Core.Success
-                      _                       -> return $ Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres2
-                _                           -> return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
+                    fres <-hGetLine hndl
+                    return $ if ((take 24 fres) ==  (take 24 assembled_one))
+                               then Test.Hspec.Core.Success
+                               else Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres
+                 else return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
 
 
     connectToServer :: String -> IO Handle
@@ -136,7 +122,7 @@
           hSetBuffering h LineBuffering
           return (Just h)
         else getHandle rest
-        
+
     ignoreIOError err =
       do let a = ioeGetErrorString err
          return ()

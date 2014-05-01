@@ -10,6 +10,7 @@
 
     import QServer.Types
     import QServer.ParseServerCommand
+    import System.Exit
 
     expectLeftString :: Either String a -> Bool
     expectLeftString (Left _)  = True
@@ -18,7 +19,11 @@
     makeBoolParseError :: String -> Assertion
     makeBoolParseError s = assertBool ("'"++s++"' returns error") (expectLeftString (getCommand s))
 
-    main = hspecWith defaultConfig{configFormatter=progress} $ describe "Parse Server Commands" $ mapM_ (makeSpec) tests
+    main = do
+      let ptests = describe "Parse Server Commands" $ mapM_ (makeSpec) tests
+      summary <- hspecWith defaultConfig{configFormatter=progress} ptests
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
     makeSpec a = it ("hunit test: "++ show a) $ a
 

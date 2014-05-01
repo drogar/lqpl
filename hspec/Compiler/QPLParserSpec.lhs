@@ -22,12 +22,15 @@
 
 
     import System.IO
+    import System.Exit
     import GHC.IO
 
     import Compiler.CompilerSpecHelper
 
-    main = hspecWith defaultConfig{configFormatter=progress} parserSpecs
-
+    main = do
+      summary <- hspecWith defaultConfig{configFormatter=progress} parserSpecs
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
 \end{code}
 The Parser Specification

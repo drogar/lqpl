@@ -18,6 +18,7 @@
     import QServer.StackToXML
     import Data.Map as Map
     import Data.List as List
+    import System.Exit
 
     xmlValues :: [([Map String Int], String)]
     xmlValues =  [([Map.singleton "p" 2, Map.singleton "r" 3],
@@ -33,6 +34,9 @@
     tests =  describe "StackToXML" $ mapM_ (uncurry checkIt) xmlValues
 
 
-    main = hspecWith defaultConfig{configFormatter=progress} tests
+    main = do
+      summary <- hspecWith defaultConfig{configFormatter=progress} tests
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
 \end{code}

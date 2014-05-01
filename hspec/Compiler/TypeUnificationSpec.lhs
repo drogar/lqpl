@@ -21,6 +21,7 @@
     import Compiler.Qtypes
     import Compiler.SemTypes
     import Data.Stack
+    import System.Exit
 
     startsemstate =  SemState (Lvl 0 0 0 0)
             Map.empty Map.empty Map.empty
@@ -28,7 +29,10 @@
             Map.empty
             Map.empty [] (push 0 emptyStack) 9
 
-    main = hspecWith defaultConfig{configFormatter=progress} unificationSpecs
+    main = do
+      summary <- hspecWith defaultConfig{configFormatter=progress} unificationSpecs
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
     runinstanceOf whichtv tv1 tv2 = do
       return $ evalStateT (liftM fst $ runWriterT $ instanceOf whichtv tv1 tv2 (Map.singleton "b" INT)) startsemstate

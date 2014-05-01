@@ -12,11 +12,15 @@
 
     import Network.Socket
     import System.IO
+    import System.Exit
     import Utility.FileProvider
     import Utility.FileProvider.FileSystem
 
 
-    main = hspecWith defaultConfig{configFormatter=progress} fileProviderSpecs
+    main = do
+      summary <- hspecWith defaultConfig{configFormatter=progress} fileProviderSpecs
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
     fileProviderSpecs = describe "FileProvider" $ do
       context "filesystem provider class implementation" $ do
@@ -38,8 +42,8 @@
                       )
       context "Network connection file provider" $ do
               it "sends the message '<doesfileexist name=xyz />' to the socket "
-                $ pending 
-                
+                $ pending
+
     dotOnFirst = [".", "abc"]
     dotOnSecond = ["first", ".", "abc"]
     dotOnLast =  ["first", "."]

@@ -19,10 +19,15 @@
     import QSM.QuantumStack.QSDefinition
     import QServer.StackToXML
 
+    import System.Exit
+
 
     instance Quantum LazyNum
 
-    main = hspecWith defaultConfig{configFormatter=progress} tests
+    main = do
+      summary <- hspecWith defaultConfig{configFormatter=progress} tests
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
 
     xmlValues =  [(StackZero, "<Zero/>"),

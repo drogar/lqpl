@@ -13,6 +13,7 @@
     import System.IO
     import Data.IORef
     import System.Cmd
+    import System.Exit
 
     import SpecHelper
 
@@ -30,7 +31,9 @@
 
     main = do
       ior <- newIORef (CS_READY, "", empty)
-      hspecWith defaultConfig{configFormatter=progress} (compilerSpecs ior)
+      summary <- hspecWith defaultConfig{configFormatter=progress} (compilerSpecs ior)
+      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+                                     else exitWith ExitSuccess
 
     compilerSpecs ior = describe "compiler server" $ do
       context "input commands" $ do
