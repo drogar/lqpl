@@ -24,6 +24,9 @@
 
     import Data.Version
     import Data.Map
+    import Data.Aeson
+    import Data.ByteString
+
     import Paths_lqpl
 
     cstester = compilerService
@@ -58,13 +61,13 @@
           resultToJSON (CS_COMPILED_FAIL "t\nu") `shouldBe` "{\"compile_fail\" : \"t\nu\"}"
         it "creates a request object for a file if given" $ do
           resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"get_file\" : \"t\"}"
-      context "qpl file" do
+      context "qpl file" $ do
         it "should parse a single line file" $ do
-          parseJSON program_bad `shouldBe` QPLFile "g" ["qdata Coin = {head}"]
-        it "should parse a multi line file" $ do
-          parseJSON program_one `shouldBe` QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"]
-        it "should fail on non file inputs" $ do
-          parseJSON jsonSendVersion `shouldBe` mzero
+          ((decode $ pack program_bad):: Maybe QPLFile) `shouldBe` (Just $ QPLFile "g" ["qdata Coin = {head}"])
+        -- it "should parse a multi line file" $ do
+        --   decode program_one `shouldBe` Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"]
+        -- it "should fail on non file inputs" $ do
+        --   decode jsonSendVersion `shouldBe` Nothing
       context "input commands" $ do
         it "accepts a complete file and responds with the QPO"    $ do
               rc <- cstester ior program_one

@@ -13,7 +13,7 @@
   import Control.Concurrent
   import Control.Concurrent.MVar
 
-  import Control.Exception
+  import Control.Exception as CE
 
   import Control.Monad.Writer as W
 
@@ -36,7 +36,8 @@
   import Data.Version
 
   import Data.Aeson
-  import Data.Attoparsec
+  import Data.Typeable
+  import Data.Data
 
   import Paths_lqpl
 
@@ -45,7 +46,7 @@
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |
                                 CS_VERSION [Int] [String] |
-                                CS_NEED_FILE String
+                                CS_NEED_FILE String | CS_READY
     deriving (Show,Eq)
 
 
@@ -53,12 +54,13 @@
     name :: String,
     qpl_program :: [String]
   }
+    deriving(Data,Typeable,Show)
 
-  instance FromJSON QPLFile where
-    parseJSON (Object v) = QPLFile <$>
-                           v .: "name" <*>
-                           v .: "qpl_program"
-    parseJSON _          = mzero
+  -- instance FromJSON QPLFile where
+  --   parseJSON (Object v) = QPLFile <$>
+  --                          v .: "name" <*>
+  --                          v .: "qpl_program"
+  --   parseJSON _          = mzero
 
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (CompilerServiceStatus,String, Map String (Maybe String))       -- ^ Function to handle incoming messages
@@ -220,14 +222,14 @@
   compilerService ior "<sendversion />" = do
     setAndReturn ior $ CS_VERSION (versionBranch version) (versionTags version)
   compilerService ior a
-    | "<file name='" == take 12 a = do
-          let fname = takeWhile (/= '\'') $ drop 12 a
+    | "<file name='" == List.take 12 a = do
+          let fname = List.takeWhile (/= '\'') $ drop 12 a
           (_,s,imps)<-readIORef ior
           if imps `haskey` fname
-            then setAndReturn ior $ CS_READING_FILE Nothing
+            then setAndReturn ior $ CS_READY
             else do
-              writeIORef ior (CS_READING_FILE (Just fname), s, Data.Map.insert fname (Just "") imps)
-              return $ CS_READING_FILE (Just fname)
+              writeIORef ior (CS_READY, s, Data.Map.insert fname (Just "") imps)
+              return $ CS_READY
     | "</file>" == a = do
           tryCompiling ior
     | otherwise = do
@@ -236,10 +238,6 @@
           CS_READY                    -> do
             modifyIORef ior (\(_, s,ims) -> (CS_READY, s++(a++"\n"), ims))
             return CS_READY
-          CS_READING_FILE Nothing     -> setAndReturn ior $ CS_READING_FILE Nothing
-          CS_READING_FILE (Just f)    -> do
-            modifyIORef ior (\(cs, s,ims) -> (CS_READING_FILE (Just f), s, adjust (appendJustWith (a++"\n")) f ims))
-            return $ CS_READING_FILE (Just f)
           _                           -> setAndReturn ior CS_READY
 
   setAndReturn :: IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
@@ -254,14 +252,15 @@
                   IO CompilerServiceStatus
   tryCompiling ior = do
     (_,p,imps) <- readIORef ior
-    errOrTxt <- try $ doCompile (fp imps) p
+    errOrTxt <- CE.try $ doCompile (fp imps) p
     case errOrTxt of
       Left e    -> do
         let errString = ioeGetErrorString e
-        if "Need file " == take 10 errString
+        if "Need file " == List.take 10 errString
           then setAndReturn ior $ CS_NEED_FILE $ drop 10 errString
           else setAndReturn ior $ CS_COMPILED_FAIL $ ioeGetErrorString e
-      Right (txt,logs) -> setAndReturn ior $ CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) (concat $ intersperse "\n" logs)
+      Right (txt,logs) -> setAndReturn ior $
+        CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) (concat $ intersperse "\n" logs)
 
   appendJustWith :: [a] -> Maybe [a] -> Maybe [a]
   appendJustWith aas mas = do
