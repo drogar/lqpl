@@ -95,7 +95,7 @@ Executable lqpl
 
 Executable lqpl-compiler-server
    Main-is:           Compiler/ServerMain.lhs
-   Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,hspec
+   Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,hspec,attoparsec,aeson
    extensions:        ExistentialQuantification
    hs-source-dirs:    Compiler/src,Common/src
 

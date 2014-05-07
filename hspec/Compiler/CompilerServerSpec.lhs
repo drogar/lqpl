@@ -27,6 +27,15 @@
     import Paths_lqpl
 
     cstester = compilerService
+    program_one = "{ \"file_name\" : \"f\", \"qpl_program\" : [ \"qdata C = {H|T}\", \"app::(| ; )= {skip}\"] }"
+    program_two = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"#Import f\"] }"
+    program_bad = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"qdata Coin = {head}\"] }"
+    program_bad2 = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"main::() = { q = |0>; purejunk q}\"] }"
+    program_bad3 = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"main::() = { q = |0>; measure q of |0> => {c=1} |1> => {d=2}}\"] }"
+
+    assembled_one = "{ \"qpo\" : [ \"app_fcdlbl0   Start\"] }"
+
+    jsonSendVersion = "{\"command\" : \"send_version\"}"
 
 
     main = do
@@ -36,164 +45,82 @@
                                      else exitWith ExitSuccess
 
     compilerSpecs ior = describe "compiler server" $ do
+      context "resultToJSON" $ do
+        it "creates a single object with the code on success" $ do
+          resultToJSON (CS_COMPILED_SUCCESS "t" "") `shouldBe` "{\"qpo\" : [\"t\"]}"
+        it "creates a single object with the the code split into lines on success" $ do
+          resultToJSON (CS_COMPILED_SUCCESS "t\nu\nv" "") `shouldBe` "{\"qpo\" : [\"t\",\"u\",\"v\"]}"
+        it "creates a single object plus a warning if success with warning" $ do
+          resultToJSON (CS_COMPILED_SUCCESS "t" "w") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\"}"
+        it "creates a single object with a single warning even if multiple lines in the warning" $ do
+          resultToJSON (CS_COMPILED_SUCCESS "t" "w\nu") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\nu\"}"
+        it "creates a single object if the compile fails" $ do
+          resultToJSON (CS_COMPILED_FAIL "t\nu") `shouldBe` "{\"compile_fail\" : \"t\nu\"}"
+        it "creates a request object for a file if given" $ do
+          resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"get_file\" : \"t\"}"
+      context "qpl file" do
+        it "should parse a single line file" $ do
+          parseJSON program_bad `shouldBe` QPLFile "g" ["qdata Coin = {head}"]
+        it "should parse a multi line file" $ do
+          parseJSON program_one `shouldBe` QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"]
+        it "should fail on non file inputs" $ do
+          parseJSON jsonSendVersion `shouldBe` mzero
       context "input commands" $ do
-        it "accepts the XML tag 'qplprogram'"    $ do
-              rc <- cstester ior "<qplprogram>"
+        it "accepts a complete file and responds with the QPO"    $ do
+              rc <- cstester ior program_one
               case rc of
-                CS_READY  -> return True
-                _         -> return False
-        it "empties the held data when receiving the XML tag 'qplprogram'"    $ do
-              writeIORef ior (CS_READY, "test data",singleton "x" Nothing)
-              cstester ior "<qplprogram>"
-              tdata <- readIORef ior
-              case tdata of
-                (CS_READY, "",empty)  -> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Ioref not emptied: '"++show a++"'"
-        it "sets a ready status for each line after receiving the XML tag 'qplprogram'"    $ do
-              rc<- cstester  ior "<qplprogram>"
-              rc0 <- cstester ior "something"
-              rc1 <- cstester ior "something"
-              rc2 <- cstester ior "something"
-              case [rc0,rc1,rc2] of
-                [CS_READY,CS_READY,CS_READY]  -> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"
-        it "sets a complete status after receiving the closing XML tag 'qplprogram'"    $ do
-              cstester ior "<qplprogram>"
-              cstester ior "qdata C = {H|T}"
-              cstester ior "app::(| ; )= {skip}"
-              rc2 <- cstester ior "</qplprogram>"
-              case rc2 of
-                CS_COMPILED_SUCCESS  _ _-> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"
-        it "accumulates the characters between a 'qplprogram' tag pair"    $ do
-              writeIORef ior (CS_READY, "", empty)
-              cstester ior "<qplprogram>"
-              cstester ior "something"
-              (_,tdata,_) <- readIORef ior
-              case tdata of
-                "something\n"  -> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Ioref not filled with 'something\\n': '"++a++"'"
-        it "accumulates multiple lines between a 'qplprogram' tag pair"    $ do
-              writeIORef ior (CS_READY, "", empty)
-              cstester ior "<qplprogram>"
-              cstester ior "something"
-              cstester ior "else"
-              (_,tdata,_) <- readIORef ior
-              case tdata of
-                "something\nelse\n"  -> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Ioref not filled with 'something\\nelse\\n': '"++a++"'"
-        it "accepts the XML tag 'sendversion' with no content"   $ do
-              rc <- cstester ior "<sendversion />"
+                CS_COMPILED_SUCCESS _ _  -> return True
+                _                        -> return False
+        it "accepts the json 'sendversion'"   $ do
+              rc <- cstester ior jsonSendVersion
               case rc of
                 CS_VERSION _ _-> return True
-                _         -> return False
-        it "sends back '[d,d,d] []' when sent <sendversion />" $ do
-              rc <- cstester ior "<sendversion />"
+                _             -> return False
+        it "sends back '[d,d,d] []' when sent json 'sendversion'" $ do
+              rc <- cstester ior jsonSendVersion
               case rc of
                 CS_VERSION  vs tgs -> do
                   if vs == (versionBranch version) && tgs == (versionTags version)
                     then return Test.Hspec.Core.Success
-                    else return $ Test.Hspec.Core.Fail $ "incorrect version, should be"++ showVersion version ++ "but was" ++ (showList vs $ showList tgs "")
+                    else return $ Test.Hspec.Core.Fail $ "incorrect version, should be" ++
+                      showVersion version ++ "but was" ++ (showList vs $ showList tgs "")
                 a         -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
         it "adds the key 'f' when sent <file name='f'>" $ do
               writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester  ior "<file name='f'>"
+              cstester  ior program_one
               (_,_,imps) <- readIORef ior
               return $ if imps `haskey` "f"
                           then Test.Hspec.Core.Success
                           else Test.Hspec.Core.Fail $ "key 'f' not added"
-        it "sends status CS_READING_FILE 'f' when sent <file name='f'>" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              rc <- cstester ior "<file name='f'>"
-              case rc of
-                CS_READING_FILE  (Just "f")   -> return Test.Hspec.Core.Success
-                a                             -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
-        it "sends status CS_READING_FILE 'f' when sent <file name='f'> followed by other lines" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester  ior "<file name='f'>"
-              cstester ior "some line "
-              rc <- cstester ior "of data"
-              case rc of
-                CS_READING_FILE (Just "f") -> return Test.Hspec.Core.Success
-                a                   -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
-        it "adds the data between <file name='f'> and </file> to the map" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester ior "<file name='f'>"
-              cstester  ior "line 1"
-              cstester  ior "line 2"
-              cstester ior "</file>"
-              (_,_,imps) <- readIORef ior
-              if imps ! "f" == Just "line 1\nline 2\n"
-                then return Test.Hspec.Core.Success
-                else return $ Test.Hspec.Core.Fail $ "'f' points to "++show (imps ! "f")
-        it "leaves the data for 'f' if sent another request" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester  ior "<file name='f'>"
-              cstester ior "line 1"
-              cstester ior "line 2"
-              cstester ior "</file>"
-              cstester ior "<file name='f'>"
-              (_,_,imps) <- readIORef ior
-              if imps ! "f" == Just "line 1\nline 2\n"
-                then return Test.Hspec.Core.Success
-                else return $ Test.Hspec.Core.Fail $ "'f' points to "++show (imps ! "f")
-        it "returns a status of reading Nothing if sent another request for the same file" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester ior "<file name='f'>"
-              cstester ior "line 1"
-              cstester ior "line 2"
-              cstester ior "</file>"
-              rc <- cstester ior "<file name='f'>"
-              case rc of
-                CS_READING_FILE (Nothing) -> return Test.Hspec.Core.Success
-                a                   -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
-        it "sends back a Need File when sent <qplprogram>#Import f</qplprogram>" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "#Import f"
-              rc <- cstester ior "</qplprogram>"
+        it "sends back a Need File when sent a program with an #Import" $ do
+              rc <- cstester ior program_two
               case rc of
                 CS_NEED_FILE "f" -> return Test.Hspec.Core.Success
                 a                -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
-        it "sends back a compiled ok when sent <qplprogram>#Import f</qplprogram> and then the file f" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "#Import f"
-              cstester ior "</qplprogram>"
-              cstester ior "<file name='f'>"
-              cstester ior "qdata C = {H|T}"
-              cstester ior "app::(| ; )= {skip}"
-              rc2 <- cstester ior "</file>"
+        it "sends back a compiled ok when sent #Import f and then the file f" $ do
+              cstester ior program_two
+              rc2 <- cstester ior program_one
               case rc2 of
                 CS_COMPILED_SUCCESS _ _-> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"
         it "sends back an assembled file when sent compilable info with imports" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "#Import f"
-              cstester ior "</qplprogram>"
-              cstester ior "<file name='f'>"
-              cstester ior "qdata C = {H|T}"
-              cstester ior "app::(| ; )= {skip}"
-              rc2 <- cstester ior "</file>"
+              cstester ior program_two
+              rc2 <- cstester ior program_one
               case rc2 of
                 CS_COMPILED_SUCCESS ('a':'p':'p':'_':_) _ -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"
         it "sends back compile failed status with the error when the code has a syntax error" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "qdata Coin = {head}"
-              rc2 <- cstester ior "</qplprogram>"
+              rc2 <- cstester ior program_bad
               case rc2 of
                 CS_COMPILED_FAIL ('(':'l':'i':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"
         it "sends back compile failed status with the error when the code has a semantic error" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "main::() = { q = |0>; purejunk q}"
-              rc2 <- cstester ior "</qplprogram>"
+              rc2 <- cstester ior program_bad2
               case rc2 of
                 CS_COMPILED_FAIL ('S':'e':'m':'a':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"
         it "sends back compile passed status with the error when the code has a creation balance error" $ do
-              cstester ior "<qplprogram>"
-              cstester ior "main::() = { q = |0>; measure q of |0> => {c=1} |1> => {d=2}}"
-              rc2 <- cstester ior "</qplprogram>"
+              rc2 <- cstester ior program_bad3
               case rc2 of
                 CS_COMPILED_SUCCESS _ ('S':'e':'m':'a':_) -> return Test.Hspec.Core.Success
                 a         -> return $ Test.Hspec.Core.Fail $ "compile mismatch '"++(show a)++"'"

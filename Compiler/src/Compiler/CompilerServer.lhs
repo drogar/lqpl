@@ -18,7 +18,7 @@
   import Control.Monad.Writer as W
 
   import Data.IORef
-  import Data.List
+  import Data.List as List
   import Data.Map
 
   import Network.Socket
@@ -34,9 +34,31 @@
   import Utility.Extras(filterNonPrintable)
 
   import Data.Version
+
+  import Data.Aeson
+  import Data.Attoparsec
+
   import Paths_lqpl
 
   default_port = "7683"
+
+  data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
+                                CS_COMPILED_FAIL String |
+                                CS_VERSION [Int] [String] |
+                                CS_NEED_FILE String
+    deriving (Show,Eq)
+
+
+  data QPLFile = QPLFile {
+    name :: String,
+    qpl_program :: [String]
+  }
+
+  instance FromJSON QPLFile where
+    parseJSON (Object v) = QPLFile <$>
+                           v .: "name" <*>
+                           v .: "qpl_program"
+    parseJSON _          = mzero
 
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (CompilerServiceStatus,String, Map String (Maybe String))       -- ^ Function to handle incoming messages
@@ -110,25 +132,44 @@
     --putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService progAndImps msg
     --putStrLn $ show css
-    case css of
-      CS_COMPILED_SUCCESS l  ""  -> do
-        hPutStrLn shandle $ "<qpo w='NO'>"
-        hPutStrLn shandle l
-        hPutStrLn shandle "</qpo>"
-      CS_COMPILED_SUCCESS l  w  -> do
-        hPutStrLn shandle $ "<qpo w='YES'>"
-        hPutStrLn shandle l
-        hPutStrLn shandle "</qpo>"
-        hPutStrLn shandle $ "<warning>"
-        hPutStrLn shandle w
-        hPutStrLn shandle "</warning>"
-      CS_COMPILED_FAIL l      -> do
-        hPutStrLn shandle "<compilefail>"
-        hPutStrLn shandle l
-        hPutStrLn shandle "</compilefail>"
-      CS_NEED_FILE f          -> do
-        hPutStrLn shandle $ "<getFirst>"++f++"</getFirst>"
-      _                       -> hPutStrLn shandle $ show css
+    hPutStrLn shandle $ resultToJSON css
+--      _                       -> hPutStrLn shandle $ show css
+
+  resultToJSON :: CompilerServiceStatus -> String
+  resultToJSON (CS_COMPILED_SUCCESS l "") =
+    jsonObject $ [jsonArrayElement "qpo" (lines l)]
+
+  resultToJSON (CS_COMPILED_SUCCESS l w) =
+    jsonObject $ [jsonArrayElement "qpo" (lines l),
+                  jsonElement "warning" w]
+
+  resultToJSON (CS_COMPILED_FAIL message) =
+    jsonObject $ [jsonElement "compile_fail" message]
+
+  resultToJSON (CS_NEED_FILE fileName) =
+    jsonObject $ [jsonElement "get_file" fileName]
+
+  surroundWithQuotes :: String -> String
+  surroundWithQuotes = surroundWith '"' '"'
+
+  surroundWithBraces :: String -> String
+  surroundWithBraces = surroundWith '{' '}'
+
+  surroundWithBrackets :: String -> String
+  surroundWithBrackets = surroundWith '[' ']'
+
+  surroundWith :: Char -> Char -> String -> String
+  surroundWith c1 c2 s = c1:s ++ [c2]
+
+  jsonObject :: [String] -> String
+  jsonObject elements = surroundWithBraces $ concat $ intersperse ", " elements
+
+  jsonElement :: String -> String -> String
+  jsonElement key val = surroundWithQuotes key ++ " : " ++ surroundWithQuotes val
+
+  jsonArrayElement :: String -> [String] -> String
+  jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
+    surroundWithBrackets ( concat $ intersperse "," $ List.map surroundWithQuotes val )
 
   fp :: Map String (Maybe String) -> FileProvider
   fp imps = FileProvider {
@@ -176,7 +217,6 @@
     return CS_READY
   compilerService ior "</qplprogram>" = do
     tryCompiling ior
-
   compilerService ior "<sendversion />" = do
     setAndReturn ior $ CS_VERSION (versionBranch version) (versionTags version)
   compilerService ior a
@@ -194,7 +234,7 @@
         (instatus,_,_) <- readIORef ior
         case instatus of
           CS_READY                    -> do
-            modifyIORef ior (\(cs, s,ims) -> (CS_READY, s++(a++"\n"), ims))
+            modifyIORef ior (\(_, s,ims) -> (CS_READY, s++(a++"\n"), ims))
             return CS_READY
           CS_READING_FILE Nothing     -> setAndReturn ior $ CS_READING_FILE Nothing
           CS_READING_FILE (Just f)    -> do
@@ -210,6 +250,8 @@
     writeIORef ior (cs,s,m)
     return cs
 
+  tryCompiling :: IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
+                  IO CompilerServiceStatus
   tryCompiling ior = do
     (_,p,imps) <- readIORef ior
     errOrTxt <- try $ doCompile (fp imps) p
@@ -234,12 +276,6 @@
     return (cd,cls)
 
   haskey mp k = k `elem` (keys mp)
-
-  data CompilerServiceStatus =  CS_READY | CS_GOT_PROGRAM | CS_COMPILED_SUCCESS String String|
-                                CS_COMPILED_FAIL String | CS_MESSAGE String |
-                                CS_VERSION [Int] [String] | CS_NEED_FILE String |
-                                CS_READING_FILE (Maybe String)
-    deriving (Show,Eq)
 
 
 \end{code}
