@@ -20,16 +20,18 @@ Cabal-Version:       >=1.9.2
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Compiler/CompilerServerSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,ByteString,transformers,directory,process,unix,mtl,transformers,containers,random,aeson
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,transformers,
+                     directory,process,unix,mtl,transformers,containers,random,aeson,attoparsec,text
    hs-source-dirs:   Compiler/src,Common/src, hspec
-   extensions:       FlexibleInstances,CPP,DeriveDataTypeable
+   extensions:       FlexibleInstances,CPP,OverloadedStrings
 
 Test-Suite compiler-server-connection-spec
    type:             exitcode-stdio-1.0
    main-is:          Compiler/CompilerServerConnectSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,transformers,directory,process,unix,mtl,transformers,containers,aeson
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,transformers,
+                     directory,process,unix,mtl,transformers,containers,aeson,attoparsec,text
    hs-source-dirs:   Compiler/src,Common/src,hspec
-   extensions:       FlexibleInstances,CPP,DeriveDataTypeable
+   extensions:       FlexibleInstances,CPP,OverloadedStrings
 
 Test-Suite lqpl-parser-spec
    type:             exitcode-stdio-1.0
@@ -95,8 +97,9 @@ Executable lqpl
 
 Executable lqpl-compiler-server
    Main-is:           Compiler/ServerMain.lhs
-   Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,hspec,aeson
-   extensions:        ExistentialQuantification,DeriveDataTypeable
+   Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,
+                      hspec,aeson,bytestring,attoparsec,text
+   extensions:        ExistentialQuantification,OverloadedStrings
    hs-source-dirs:    Compiler/src,Common/src
 
 Executable lqpl-emulator

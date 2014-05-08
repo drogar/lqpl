@@ -10,6 +10,7 @@
   import Compiler.Semantic
   import Compiler.GenCode
 
+  import Control.Applicative
   import Control.Concurrent
   import Control.Concurrent.MVar
 
@@ -19,7 +20,7 @@
 
   import Data.IORef
   import Data.List as List
-  import Data.Map
+  import Data.Map as Map
 
   import Network.Socket
   import Network.Socket as NS
@@ -35,9 +36,12 @@
 
   import Data.Version
 
+  import qualified Data.ByteString.Char8 as B
+  import qualified Data.Text as DT
   import Data.Aeson
-  import Data.Typeable
-  import Data.Data
+  import Data.Attoparsec
+  import Data.Attoparsec.Number
+
 
   import Paths_lqpl
 
@@ -54,13 +58,13 @@
     name :: String,
     qpl_program :: [String]
   }
-    deriving(Data,Typeable,Show)
+    deriving(Eq, Show)
 
-  -- instance FromJSON QPLFile where
-  --   parseJSON (Object v) = QPLFile <$>
-  --                          v .: "name" <*>
-  --                          v .: "qpl_program"
-  --   parseJSON _          = mzero
+  instance FromJSON QPLFile where
+    parseJSON (Object v) =
+        QPLFile <$> v .: (DT.pack "name")
+                <*> v .: (DT.pack "qpl_program")
+    parseJSON _          = mzero
 
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (CompilerServiceStatus,String, Map String (Maybe String))       -- ^ Function to handle incoming messages
@@ -106,7 +110,7 @@
             procMessages lock connsock clientaddr =
                 do connhdl <- socketToHandle connsock ReadWriteMode
                    hSetBuffering connhdl LineBuffering
-                   ref <- newIORef (CS_READY, "", empty)
+                   ref <- newIORef (CS_READY, "", Map.empty)
                    messages <- hGetContents connhdl
                    mapM_ (handle lock  ref connhdl clientaddr) (lines messages)
                    hClose connhdl
@@ -215,7 +219,7 @@
                       String ->
                       IO CompilerServiceStatus
   compilerService ior "<qplprogram>" = do
-    writeIORef ior (CS_READY, "", empty)
+    writeIORef ior (CS_READY, "", Map.empty)
     return CS_READY
   compilerService ior "</qplprogram>" = do
     tryCompiling ior
@@ -228,7 +232,7 @@
           if imps `haskey` fname
             then setAndReturn ior $ CS_READY
             else do
-              writeIORef ior (CS_READY, s, Data.Map.insert fname (Just "") imps)
+              writeIORef ior (CS_READY, s, Map.insert fname (Just "") imps)
               return $ CS_READY
     | "</file>" == a = do
           tryCompiling ior

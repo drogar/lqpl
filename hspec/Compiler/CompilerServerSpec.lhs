@@ -25,7 +25,7 @@
     import Data.Version
     import Data.Map
     import Data.Aeson
-    import Data.ByteString
+    import qualified Data.ByteString.Char8 as B
 
     import Paths_lqpl
 
@@ -63,7 +63,7 @@
           resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"get_file\" : \"t\"}"
       context "qpl file" $ do
         it "should parse a single line file" $ do
-          ((decode $ pack program_bad):: Maybe QPLFile) `shouldBe` (Just $ QPLFile "g" ["qdata Coin = {head}"])
+          ((decodeStrict $ B.pack program_bad):: Maybe QPLFile) `shouldBe` (Just $ QPLFile "g" ["qdata Coin = {head}"])
         -- it "should parse a multi line file" $ do
         --   decode program_one `shouldBe` Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"]
         -- it "should fail on non file inputs" $ do
