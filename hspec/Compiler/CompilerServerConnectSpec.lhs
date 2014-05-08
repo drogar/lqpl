@@ -23,14 +23,8 @@
 
     import Control.Exception
 
-    compile_command = "{ \"command\" : \"compile\" }"
-    getfile_command = "{ \"command\" : \"get_file\", \"filename\" : \"f\" }"
-    ready_status = "{ \"status\" : \"ready\" }"
+    import Fixture.CompilerData
 
-    program_one = "{ \"file\" : { \"name\" : \"f\", \"qpl_program\" : [ \"qdata C = {H|T}\", \"app::(| ; )= {skip}\"] } }"
-    program_two = "{ \"file\" : { \"name\" : \"g\", \"qpl_program\" : [ \"#Import f\"] } }"
-
-    assembled_one = "{ \"qpo\" : [ \"app_fcdlbl0   Start\"] }"
     main = do
       summary <- hspecWith defaultConfig{configFormatter=progress} compilerSpecs
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
@@ -50,19 +44,8 @@
                 putStrLn $ "Waited 2s for server to start"
                 checkOpenPort default_port
       context "compiler server" $ do
-        it "accepts the command tag 'compile'" $ do
-              hndl <- connectToServer default_port
-              hPutStrLn hndl compile_command
-              hFlush hndl
-              res <- hGetLine hndl
-              return $ if (res == ready_status)
-                          then Test.Hspec.Core.Success
-                          else Test.Hspec.Core.Fail $ "invalid back status: " ++ res
         it "sends back a valid assembler code when sent a qpl program" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl compile_command
-              hFlush hndl
-              hGetLine hndl
               hPutStrLn hndl program_one
               hFlush hndl
               res <- hGetLine hndl
@@ -71,9 +54,6 @@
                          else Test.Hspec.Core.Fail $ "invalid program: " ++ res
         it "sends back a 'getFirst' request when sent a program with import" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl compile_command
-              hFlush hndl
-              hGetLine hndl
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
@@ -82,9 +62,6 @@
                            else Test.Hspec.Core.Fail $ "invalid import: " ++ res
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer default_port
-              hPutStrLn hndl compile_command
-              hFlush hndl
-              hGetLine hndl
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl

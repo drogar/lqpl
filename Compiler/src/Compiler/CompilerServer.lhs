@@ -43,7 +43,6 @@
   import Data.Attoparsec
   import Data.Attoparsec.Number
 
-
   import Paths_lqpl
 
   default_port = "7683"
@@ -130,7 +129,8 @@
             -- Lock the handler before passing data to it.
             handle :: MVar () -> HandlerFunc (Map (Maybe String) String)
             handle lock ref shandle clientaddr msg =
-                    withMVar lock  (\a -> handlerfunc ref shandle clientaddr (filterNonPrintable msg) >> return a)
+                    withMVar lock  (\a -> handlerfunc ref shandle clientaddr
+                                                      (filterNonPrintable msg) >> return a)
             -- Lock the logger before passing data to it.
             logit :: MVar () -> Logger
             logit lock clientaddr msg =
@@ -164,6 +164,13 @@
 
   resultToJSON (CS_NEED_FILE fileName) =
     jsonObject $ [jsonElement "get_file" fileName]
+
+  resultToJSON (CS_ILLEGAL_INPUT badInput) =
+    jsonObject $ [jsonElement "illegal_input" badInput]
+
+  resultToJSON (CS_VERSION nums strs) =
+    jsonObject $ [jsonArrayElement "version_number" (Prelude.map show nums),
+                  jsonArrayElement "version_string" strs]
 
   surroundWithQuotes :: String -> String
   surroundWithQuotes = surroundWith '"' '"'
