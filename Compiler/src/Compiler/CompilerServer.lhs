@@ -21,6 +21,7 @@
   import Data.IORef
   import Data.List as List
   import Data.Map as Map
+  import Data.Maybe
 
   import Network.Socket
   import Network.Socket as NS
@@ -50,7 +51,8 @@
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |
                                 CS_VERSION [Int] [String] |
-                                CS_NEED_FILE String | CS_READY
+                                CS_NEED_FILE String |
+                                CS_ILLEGAL_INPUT String
     deriving (Show,Eq)
 
 
@@ -66,8 +68,16 @@
                 <*> v .: (DT.pack "qpl_program")
     parseJSON _          = mzero
 
+  data CompilerCommand = CompilerCommand String
+    deriving(Eq, Show)
+
+  instance FromJSON CompilerCommand where
+    parseJSON  (Object v) =
+        CompilerCommand <$> v .: (DT.pack "command")
+    parseJSON _          = mzero
+
   serveLog :: String              -- ^ Port number or name;
-           -> HandlerFunc  (CompilerServiceStatus,String, Map String (Maybe String))       -- ^ Function to handle incoming messages
+           -> HandlerFunc  (Map (Maybe String) String)       -- ^ Function to handle incoming messages
            -> Logger               -- ^ Function handle logging
            -> IO ()
   serveLog port handlerfunc logger = withSocketsDo $
@@ -110,7 +120,7 @@
             procMessages lock connsock clientaddr =
                 do connhdl <- socketToHandle connsock ReadWriteMode
                    hSetBuffering connhdl LineBuffering
-                   ref <- newIORef (CS_READY, "", Map.empty)
+                   ref <- newIORef (Map.empty)
                    messages <- hGetContents connhdl
                    mapM_ (handle lock  ref connhdl clientaddr) (lines messages)
                    hClose connhdl
@@ -118,7 +128,7 @@
                       "lqpl-compiler-serv: client disconnected"
 
             -- Lock the handler before passing data to it.
-            handle :: MVar () -> HandlerFunc (CompilerServiceStatus, String, Map String (Maybe String))
+            handle :: MVar () -> HandlerFunc (Map (Maybe String) String)
             handle lock ref shandle clientaddr msg =
                     withMVar lock  (\a -> handlerfunc ref shandle clientaddr (filterNonPrintable msg) >> return a)
             -- Lock the logger before passing data to it.
@@ -133,10 +143,10 @@
 
 
   -- A simple handler that prints incoming packets
-  commandHandler :: HandlerFunc (CompilerServiceStatus, String, Map String (Maybe String))
-  commandHandler progAndImps shandle addr msg = do
+  commandHandler :: HandlerFunc (Map (Maybe String) String)
+  commandHandler prog shandle addr msg = do
     --putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
-    css <- compilerService progAndImps msg
+    css <- compilerService prog msg
     --putStrLn $ show css
     hPutStrLn shandle $ resultToJSON css
 --      _                       -> hPutStrLn shandle $ show css
@@ -177,10 +187,10 @@
   jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
     surroundWithBrackets ( concat $ intersperse "," $ List.map surroundWithQuotes val )
 
-  fp :: Map String (Maybe String) -> FileProvider
+  fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
     fpDoesFileExist = \ f -> do
-          if f `elem` (keys imps)
+          if (Just f) `elem` (keys imps)
             then return True
             else return False,
       fpReadFile = \f -> return "",
@@ -188,88 +198,65 @@
       currentFPDir = "",
       fpcombine = (++),
       getFirstFileInSearchPath = \p f -> do
-        if imps `haskey` f
-          then do
-            let fdata = imps ! f
-            case fdata of
-              Nothing   -> return Nothing
-              Just fd   -> return $ Just (f,fd)
+        if imps `haskey` (Just f)
+          then return $ Just (f, imps ! (Just f))
           else ioError $ userError $  "Need file "++f
       }
 
-  hGetLinesDelimitedBy :: Handle -> String -> String -> IO String
-  hGetLinesDelimitedBy h start end = do
-    l <- hGetLine h
-    if l == start
-      then do
-        ls <- hAccumLinesEndedBy h end []
-        return $ concat $ intersperse "\n" ls
-      else hGetLinesDelimitedBy h start end
 
-  hAccumLinesEndedBy :: Handle -> String -> [String] -> IO [String]
-  hAccumLinesEndedBy h end accum = do
-    l <- hGetLine h
-    hPutStr stderr l
-    if l == end
-      then return $ reverse accum
-      else hAccumLinesEndedBy h end (l:accum)
+  toMultiLineString :: [String] -> String
+  toMultiLineString s = concat $ intersperse "\n" s
 
+  compile_me :: Maybe String
+  compile_me = Nothing
 
-  compilerService ::  IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
+  addProgramToIOREF :: IORef (Map (Maybe String) String) ->
+                      String ->
+                      [String] ->
+                      IO ()
+  addProgramToIOREF ior filename statements = do
+    current_files <- readIORef ior
+    let files = if Map.null current_files
+                  then Map.singleton compile_me (toMultiLineString statements)
+                  else current_files
+        newFileMap = Map.singleton (Just filename) (toMultiLineString statements)
+    writeIORef ior (Map.union newFileMap files)
+
+  compilerService ::  IORef (Map (Maybe String) String) ->
                       String ->
                       IO CompilerServiceStatus
-  compilerService ior "<qplprogram>" = do
-    writeIORef ior (CS_READY, "", Map.empty)
-    return CS_READY
-  compilerService ior "</qplprogram>" = do
-    tryCompiling ior
-  compilerService ior "<sendversion />" = do
-    setAndReturn ior $ CS_VERSION (versionBranch version) (versionTags version)
-  compilerService ior a
-    | "<file name='" == List.take 12 a = do
-          let fname = List.takeWhile (/= '\'') $ drop 12 a
-          (_,s,imps)<-readIORef ior
-          if imps `haskey` fname
-            then setAndReturn ior $ CS_READY
-            else do
-              writeIORef ior (CS_READY, s, Map.insert fname (Just "") imps)
-              return $ CS_READY
-    | "</file>" == a = do
-          tryCompiling ior
-    | otherwise = do
-        (instatus,_,_) <- readIORef ior
-        case instatus of
-          CS_READY                    -> do
-            modifyIORef ior (\(_, s,ims) -> (CS_READY, s++(a++"\n"), ims))
-            return CS_READY
-          _                           -> setAndReturn ior CS_READY
+  compilerService ior input = do
+    let qplfile = (decodeStrict $ B.pack input :: Maybe QPLFile)
+    case qplfile of
+      Just q  -> do
+        addProgramToIOREF ior (file_name q) (qpl_program q)
+        tryCompiling ior
+      Nothing -> do
+        let command = (decodeStrict $ B.pack input :: Maybe CompilerCommand)
+        case command of
+          Just (CompilerCommand "send_version") ->
+             return $ CS_VERSION (versionBranch version) (versionTags version)
+          Just (CompilerCommand s) -> return $ CS_ILLEGAL_INPUT input
+          Nothing -> return $ CS_ILLEGAL_INPUT input
 
-  setAndReturn :: IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
-                  CompilerServiceStatus ->
-                  IO CompilerServiceStatus
-  setAndReturn ior cs = do
-    (_,s,m) <- readIORef ior
-    writeIORef ior (cs,s,m)
-    return cs
 
-  tryCompiling :: IORef (CompilerServiceStatus, String, Map String (Maybe String)) ->
+  tryCompiling :: IORef (Map (Maybe String) String) ->
                   IO CompilerServiceStatus
   tryCompiling ior = do
-    (_,p,imps) <- readIORef ior
-    errOrTxt <- CE.try $ doCompile (fp imps) p
+    imps <- readIORef ior
+    let compile_file = fromJust $ Map.lookup compile_me imps
+    errOrTxt <- CE.try $ doCompile (fp imps) compile_file
     case errOrTxt of
       Left e    -> do
         let errString = ioeGetErrorString e
         if "Need file " == List.take 10 errString
-          then setAndReturn ior $ CS_NEED_FILE $ drop 10 errString
-          else setAndReturn ior $ CS_COMPILED_FAIL $ ioeGetErrorString e
-      Right (txt,logs) -> setAndReturn ior $
-        CS_COMPILED_SUCCESS (concat $ intersperse "\n" txt) (concat $ intersperse "\n" logs)
-
-  appendJustWith :: [a] -> Maybe [a] -> Maybe [a]
-  appendJustWith aas mas = do
-    theas <- mas
-    return $ theas ++ aas
+          then return $ CS_NEED_FILE $ drop 10 errString
+          else do
+            writeIORef ior (Map.empty)
+            return $ CS_COMPILED_FAIL $ ioeGetErrorString e
+      Right (txt,logs) -> do
+            writeIORef ior (Map.empty)
+            return $ CS_COMPILED_SUCCESS (toMultiLineString txt) (toMultiLineString logs)
 
   doCompile :: FileProvider -> String -> IO ([String],[String])
   doCompile fp p = do

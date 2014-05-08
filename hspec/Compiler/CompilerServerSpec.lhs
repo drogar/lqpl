@@ -29,9 +29,16 @@
 
     import Paths_lqpl
 
+    checkCompileStatus rc = do
+      case rc of
+        CS_COMPILED_SUCCESS _ _  -> return Test.Hspec.Core.Success
+        CS_COMPILED_FAIL m       -> return $ Test.Hspec.Core.Fail m
+        a                        -> return $ Test.Hspec.Core.Fail $ show a
+
     cstester = compilerService
     program_one = "{ \"file_name\" : \"f\", \"qpl_program\" : [ \"qdata C = {H|T}\", \"app::(| ; )= {skip}\"] }"
     program_two = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"#Import f\"] }"
+    program_three = "{ \"file_name\" : \"h\", \"qpl_program\" : [ \"#Import g\"] }"
     program_bad = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"qdata Coin = {head}\"] }"
     program_bad2 = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"main::() = { q = |0>; purejunk q}\"] }"
     program_bad3 = "{ \"file_name\" : \"g\", \"qpl_program\" : [ \"main::() = { q = |0>; measure q of |0> => {c=1} |1> => {d=2}}\"] }"
@@ -42,8 +49,8 @@
 
 
     main = do
-      ior <- newIORef (CS_READY, "", empty)
-      summary <- hspecWith defaultConfig{configFormatter=progress} (compilerSpecs ior)
+      ior <- newIORef (empty)
+      summary <- hspecWith defaultConfig{configFormatter=specdoc} (compilerSpecs ior)
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 
@@ -70,12 +77,26 @@
                                     (Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"])
         it "should fail on non file inputs" $ do
           ((decodeStrict $ B.pack jsonSendVersion):: Maybe QPLFile) `shouldBe` Nothing
+      context "command" $ do
+        it "should parse a command object" $ do
+          ((decodeStrict $ B.pack jsonSendVersion) :: Maybe CompilerCommand) `shouldBe`
+                      (Just $ CompilerCommand "send_version")
+        it "should return Nothing on a program input " $ do
+          ((decodeStrict $ B.pack program_one):: Maybe CompilerCommand) `shouldBe` Nothing
+      context "compiling from ior" $ do
+        it "should return success when the map has a complete program" $ do
+          writeIORef ior (singleton compile_me "qdata C = {H|T}\napp::(| ; )= {skip}")
+          rc <- tryCompiling ior
+          checkCompileStatus rc
       context "input commands" $ do
+        it "responds to bad input with a CS_ILLEGAL_INPUT" $ do
+          rc <- cstester ior "junk"
+          case rc of
+            CS_ILLEGAL_INPUT "junk" -> return Test.Hspec.Core.Success
+            a                       -> return $ Test.Hspec.Core.Fail $ show a
         it "accepts a complete file and responds with the QPO"    $ do
               rc <- cstester ior program_one
-              case rc of
-                CS_COMPILED_SUCCESS _ _  -> return True
-                _                        -> return False
+              checkCompileStatus rc
         it "accepts the json 'sendversion'"   $ do
               rc <- cstester ior jsonSendVersion
               case rc of
@@ -90,13 +111,14 @@
                     else return $ Test.Hspec.Core.Fail $ "incorrect version, should be" ++
                       showVersion version ++ "but was" ++ (showList vs $ showList tgs "")
                 a         -> return $ Test.Hspec.Core.Fail $ "Got "++ show a
-        it "adds the key 'f' when sent <file name='f'>" $ do
-              writeIORef ior ((CS_NEED_FILE "f"), "", empty)
-              cstester  ior program_one
-              (_,_,imps) <- readIORef ior
-              return $ if imps `haskey` "f"
+        it "adds the key 'g' when sent a second file with name 'g' and still needing more" $ do
+              writeIORef ior (empty)
+              cstester ior program_three
+              cstester ior program_two
+              imps <- readIORef ior
+              return $ if imps `haskey` (Just "g")
                           then Test.Hspec.Core.Success
-                          else Test.Hspec.Core.Fail $ "key 'f' not added"
+                          else Test.Hspec.Core.Fail $ "key 'g' not added"
         it "sends back a Need File when sent a program with an #Import" $ do
               rc <- cstester ior program_two
               case rc of
@@ -105,9 +127,7 @@
         it "sends back a compiled ok when sent #Import f and then the file f" $ do
               cstester ior program_two
               rc2 <- cstester ior program_one
-              case rc2 of
-                CS_COMPILED_SUCCESS _ _-> return Test.Hspec.Core.Success
-                a         -> return $ Test.Hspec.Core.Fail $ "Status mismatch '"++(show a)++"'"
+              checkCompileStatus rc2
         it "sends back an assembled file when sent compilable info with imports" $ do
               cstester ior program_two
               rc2 <- cstester ior program_one
