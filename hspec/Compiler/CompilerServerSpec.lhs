@@ -63,11 +63,13 @@
           resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"get_file\" : \"t\"}"
       context "qpl file" $ do
         it "should parse a single line file" $ do
-          ((decodeStrict $ B.pack program_bad):: Maybe QPLFile) `shouldBe` (Just $ QPLFile "g" ["qdata Coin = {head}"])
-        -- it "should parse a multi line file" $ do
-        --   decode program_one `shouldBe` Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"]
-        -- it "should fail on non file inputs" $ do
-        --   decode jsonSendVersion `shouldBe` Nothing
+          ((decodeStrict $ B.pack program_bad):: Maybe QPLFile) `shouldBe`
+                      (Just $  QPLFile "g" ["qdata Coin = {head}"])
+        it "should parse a multi line file" $ do
+          ((decodeStrict $ B.pack program_one):: Maybe QPLFile) `shouldBe`
+                                    (Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"])
+        it "should fail on non file inputs" $ do
+          ((decodeStrict $ B.pack jsonSendVersion):: Maybe QPLFile) `shouldBe` Nothing
       context "input commands" $ do
         it "accepts a complete file and responds with the QPO"    $ do
               rc <- cstester ior program_one
