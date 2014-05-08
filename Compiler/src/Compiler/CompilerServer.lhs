@@ -55,14 +55,14 @@
 
 
   data QPLFile = QPLFile {
-    name :: String,
+    file_name :: String,
     qpl_program :: [String]
   }
     deriving(Eq, Show)
 
   instance FromJSON QPLFile where
     parseJSON (Object v) =
-        QPLFile <$> v .: (DT.pack "name")
+        QPLFile <$> v .: (DT.pack "file_name")
                 <*> v .: (DT.pack "qpl_program")
     parseJSON _          = mzero
 
