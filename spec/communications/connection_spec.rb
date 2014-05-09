@@ -65,24 +65,24 @@ describe Connection do
       allow(subject).to receive(:connection).and_return(conn)
       allow(conn).to receive(:close)
     end
-    describe :send_command do
+    describe :send_data do
       it "should send a command" do
         expect(conn).to receive(:puts).with("arg")
-        subject.send_command("arg")
+        subject.send_data("arg")
       end
     end
 
-    describe :receive_command_data do
+    describe :get_data do
       it "should get data" do
         expect(conn).to receive(:readline).and_return("read a line")
-        expect(subject.receive_command_data).to eq("read a line")
+        expect(subject.get_data).to eq("read a line")
       end
     end
-    describe "send_and_receive_command" do
+    describe "send_and_get_data" do
       it "should send a command and get output" do
         expect(conn).to receive(:puts).with("arg")
         expect(conn).to receive(:readline).and_return("read a line")
-        expect(subject.send_and_receive_command("arg")).to eq("read a line")
+        expect(subject.send_and_get_data("arg")).to eq("read a line")
       end
     end
   end

@@ -163,7 +163,7 @@
     jsonObject $ [jsonElement "compile_fail" message]
 
   resultToJSON (CS_NEED_FILE fileName) =
-    jsonObject $ [jsonElement "get_file" fileName]
+    jsonObject $ [jsonElement "send_file" fileName]
 
   resultToJSON (CS_ILLEGAL_INPUT badInput) =
     jsonObject $ [jsonElement "illegal_input" badInput]

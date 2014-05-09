@@ -13,6 +13,7 @@ group :test, :development do
   gem 'syntax'
   gem 'awesome_print'
   gem 'rubocop'
+  gem 'coderay'
 
 
   gem 'rspec-formatter-webkit'

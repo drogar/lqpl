@@ -23,7 +23,6 @@ class Connection
     _set_up_my_path
   end
 
-  java_signature 'boolean is_connected()'
   def connected?
     !connection.nil?
   end
@@ -66,17 +65,17 @@ class Connection
     []
   end
 
-  def send_command(command)
+  def send_data(command)
     connection.puts(command)
   end
 
-  def send_and_receive_command(command)
+  def send_and_get_data(command)
     connect unless connected?
-    connection.puts command
-    connection.readline
+    send_data command
+    get_data
   end
 
-  def receive_command_data
+  def get_data
     connection.readline
   end
 

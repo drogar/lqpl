@@ -1,116 +1,92 @@
 # encoding: utf-8
 # handle the transmision and actions of commands from the connection
+
+require 'json'
+
 class CompilerCommandInterpretor
-  attr_accessor :failed
-  alias_method :failed?, :failed
   attr_accessor :failure_message
   attr_reader :connection
   attr_reader :object_file_name
+  attr_accessor :dir, :qpo_file_name, :qpl_file_name
 
-  COMMAND_START = /(CS_)|(<qpo)|(<compilefail)|(<getFirst)/
   def initialize(connection)
     @connection = connection
-    @dir = ''
+    self.dir = ''
     @connection_commander = ConnectionCommander.new(connection)
-    reset_failure_status
   end
 
-  def add_non_command_line(line)
-    return line unless line =~ COMMAND_START
-    ''
+  def dir=(fname)
+    @dir = File.dirname(fname)
+  end
+
+  def qpo_file_name=(file_name)
+    @qpo_file_name = file_name.gsub(/\.qpl$/, '.qpo')
+  end
+
+  def qpl_file_name=(file_name)
+    @qpl_file_name = File.basename(file_name, '.qpl')
+  end
+
+  def read_qpl_file(file_name)
+    JSON.generate({'file_name' => file_name,
+      'qpl_program' => File.readlines(file_name)})
   end
 
   def compile(fname)
-    make_object_file_name(fname)
-    reset_failure_status
-    File.open(fname, 'r') do |f|
-      @connection_commander.send_list_of_lines(['<qplprogram>'] + f.read.lines('\n').to_a)
-    end
-    connection.send_command '</qplprogram>'
-    qp = read_qpo_program
-    write_qpo_file qp
-    qp
+    self.qpl_file_name = fname
+    self.dir = fname
+    self.qpo_file_name = fname
+    self.failure_message = nil
+    converse send_file(fname)
   end
 
-  def read_qpo_program
-    accum = ''
-    line = @connection_commander.bypass_messages(/CS_/)
-    read_warning = (line =~ /w='YES'/)
-    while line && line != "</qpo>\n"  && line !~ /<\/compilefail/  && !failed
-      line = process_input_line(line) { |checked_line| accum += add_non_command_line(checked_line) }
-    end
-    read_failure_message if read_warning
-    accum
-  end
-
-  def process_input_line(line)
-    return nil if bypass_because_of_failure(line)
-    yield line
-    send_included_file(line) if line =~ /<getFirst>/
-    connection.receive_command_data
-  end
-
-  def bypass_because_of_failure(line)
-    self.failed = (line =~  /<compilefail/).nil? ? false :  true
-    read_failure_message if failed?
-    failed
-  end
-
-  def reset_failure_status
-    self.failed = false
-    self.failure_message = ''
-  end
-
-  def read_failure_message
-    line = connection.receive_command_data
-    self.failure_message = ''
-    while line &&  line !~ /<\/compilefail/ && line !~ /<\/warning/
-      failure_message << line unless line =~ /^</
-      line = connection.receive_command_data
+  def converse(input)
+    input_line = input
+    while input_line do
+      result = JSON.parse(input_line, symbolize_names: true)
+      result.each do |meth, value|
+        input_line = self.send(meth,value)
+      end
     end
   end
 
-  def success_or_fail_message(file_name)
-    "Compile of #{file_name} was #{failed ? 'un' : ''}successful\n" + failure_message
+  def send_file(fname)
+    connection.send_and_get_data(read_qpl_file(fname)) if fname
   end
 
-  def make_object_file_name(fname)
-    @dir = File.dirname(fname)
-    @object_file_name = @dir + File::SEPARATOR + File.basename(fname, '.qpl') + '.qpo'
+  def warning(message)
+    failure('Warning',message)
   end
 
-  def base_file_from_line(line_input)
-    basef = line_input[/(<getFirst>)(.*)(<\/getFirst>)/, 2]
-    File.exist?(basef) ? basef : @dir + '/' + basef
+  def compile_fail(message)
+    failure('Compile Failure',message)
   end
 
-  def send_included_file(line)
-    f = base_file_from_line line
-    if File.exist?(f)
-      @connection_commander.send_file("<file name='#{File.basename f}'>", f, '</file>')
-    else
-      log_failure("Unable to find or open file #{f}, Looking in #{Dir.pwd}")
-    end
+  def illegal_input(message)
+    failure('Illegal Input',message)
   end
 
-  def log_failure(message)
-    self.failed = true
-    self.failure_message = message
+  def failure(type,message)
+    self.failure_message = "#{type}: #{message}"
+    nil
   end
 
-  def write_qpo_file(code)
-    File.open(object_file_name, 'w+') do |f|
-      f.puts current_version_line
-      f.puts code
-    end
+  def success_or_fail_message
+    "Compile of #{qpl_file_name} was " \
+    "#{failure_message.nil? ? '' : 'un'}successful.\n #{failure_message}"
+  end
+
+  def qpo(code)
+    File.write(qpo_file_name,([current_version_line] + code).join("\n"))
+    nil
   end
 
   def current_version_line
-    version = connection.send_and_receive_command '<sendversion />'
+    version = connection.send_and_get_data '{"command" : "send_version"}'
     'Compiler: Version=' + CompilerCommandInterpretor.make_version_number(version)
   end
 
-  def self.make_version_number(vstring)
-    vstring[/(\d+,)+\d+/].gsub(/,/, '.')
+  def self.make_version_number(json_string)
+    JSON.parse(json_string)['version_number'].join('.')
   end
 end
