@@ -21,3 +21,8 @@ group :test, :development do
   #gem 'rspec_junit_formatter'
 end
 
+group :development do
+  gem "guard"
+  gem "guard-rspec"
+  gem "guard-rubocop"
+end

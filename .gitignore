@@ -12,7 +12,6 @@ dist
 .idea
 .hpc
 *.iml
-*.lock
 tmp
 out
 GUI/testdata/**/*.qpo
