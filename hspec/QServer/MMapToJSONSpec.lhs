@@ -23,14 +23,14 @@
     jsonValues :: [([Map String Int], String)]
     jsonValues =  [([Map.singleton "p" 2, Map.singleton "r" 3],
                     "{\"mmap\":[{\"p\":2},{\"r\":3}]}"),
-                   ([Map.singleton "p" 2], "{\"mmap\":[{\"p\":2\}]}"),
+                   ([Map.singleton "p" 2], "{\"mmap\":[{\"p\":2}]}"),
                    ([Map.insert "r" 3 $ Map.singleton "p" 7, Map.singleton "p" 2],
                     "{\"mmap\":[{\"p\":7, \"r\":3},{\"p\":2}]}")]
 
     --checkIt :: MemoryMap -> String -> SpecM ()
     checkIt mm res = it ("returns "++show mm++" as '"++res++"'") $ res ~=? (listToJSON "MMap" mm)
 
-    tests =  describe "StackToJSON" $ mapM_ (uncurry checkIt) xmlValues
+    tests =  describe "StackToJSON" $ mapM_ (uncurry checkIt) jsonValues
 
 
     main = do

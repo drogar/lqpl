@@ -22,7 +22,7 @@
 
     jsonValues :: [(Memory Basis, String)]
     jsonValues =  [(Map.singleton "main" [QDelete "q", QPullup "r"],
-                  "{\"code\":[\"main\":[\"QDelete\":\"q\",\"QPullup\":\"r\"]]}"
+                  "{\"code\":[\"main\":[\"QDelete\":\"q\",\"QPullup\":\"r\"]]}")]
 
 
     --checkIt :: Memory Basis -> String -> SpecM ()

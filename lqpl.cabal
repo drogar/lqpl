@@ -47,7 +47,7 @@ Test-Suite type-unification-spec
    hs-source-dirs:   Compiler/src,Common/src,hspec
    extensions:       CPP
 
-Test-Suite utility-fileprovider-spec
+Test-Suite utility-file-spec
    type:             exitcode-stdio-1.0
    main-is:          Utility/FileProviderSpec.lhs
    build-depends:    HUnit,hspec,QuickCheck,base,directory,filepath,network,parsec,process,unix
@@ -67,24 +67,24 @@ Test-Suite parse-server-command-spec
    extensions:       CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite stack-to-xml-spec
+Test-Suite stack-to-json-spec
    type:             exitcode-stdio-1.0
-   main-is:          QServer/StackToXMLSpec.lhs
+   main-is:          QServer/StackToJSONSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck
    extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,Rank2Types,ScopedTypeVariables,
                      FlexibleContexts,KindSignatures,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite mmap-to-xml-spec
+Test-Suite mmap-to-json-spec
    type:             exitcode-stdio-1.0
-   main-is:          QServer/MMapToXMLSpec.lhs
+   main-is:          QServer/MMapToJSONSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
    extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite code-to-xml-spec
+Test-Suite code-to-json-spec
    type:             exitcode-stdio-1.0
-   main-is:          QServer/CodeToXMLSpec.lhs
+   main-is:          QServer/CodeToJSONSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
    extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec

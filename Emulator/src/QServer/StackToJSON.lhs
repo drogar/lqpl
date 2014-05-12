@@ -44,10 +44,7 @@
   class JSON a where
     toJSON :: a -> String
     listToJSON :: String -> [a] -> String
-    listToJSON label = (surroundWith label) . listToJSON'
-      where
-        listToJSON' [] = ""
-        listToJSON' (x:xs) = (toJSON x) ++ listToJSON' xs
+    listToJSON s items = jsonArrayElement s $ map toJSON items
 
     bounder :: (a->String)->a -> String
     bounder _ = toJSON
@@ -56,22 +53,19 @@
     boundedToJSON _ = toJSON
 
     boundedListToJSON :: Int -> String -> [a] -> String
-    boundedListToJSON n label = (surroundWith label) . boundedListToJSON' n
-      where
-        boundedListToJSON' n [] = ""
-        boundedListToJSON' n (x:xs) = (boundedToJSON n x) ++ boundedListToJSON' n xs
+    boundedListToJSON n label items = jsonArrayElement s $ map (boundedToJSON n) $ items
 
   instance JSON Bool where
-    toJSON = (surroundWith "bool") . show
+    toJSON = show
 
   instance JSON Char where
-    toJSON = (surroundWith "char") . show
+    toJSON = surroundWithQuotes . show
 
   instance JSON String where
-    toJSON = (surroundWith "string")
+    toJSON = surroundWithQuotes
 
   instance JSON LazyNum where
-    toJSON = (surroundWith "number") . show
+    toJSON = show
 
   instance (JSON k,JSON v)=>JSON (Map k v) where
     toJSON a = surroundWith "map"  $ List.foldl (++) "" $ fmap (surroundWith "kvpair") $
@@ -89,52 +83,53 @@
     boundedToJSON n (a,b,c) = surroundWith "triple" $ boundedToJSON n a ++ boundedToJSON n b ++ boundedToJSON n c
 
   instance JSON Basis where
-    toJSON Z = "<qz/>"
-    toJSON O = "<qo/>"
+    toJSON Z = "Z"
+    toJSON O = "O"
 
 
   instance JSON Int where
-    toJSON i = surroundWith "int" $ show i
+    toJSON  = show
 
   instance JSON Double where
-    toJSON d = surroundWith "double" $ show d
+    toJSON  = show
 
 
   instance JSON ClassicalData where
-    toJSON (Left i) = surroundWith "cint" $ show i
-    toJSON (Right b) = surroundWith "cbool" $ show b
+    toJSON (Left i) = show i
+    toJSON (Right b) = show b
 
   instance JSON ClassicalStack where
-    toJSON a = listToJSON "Classical"  $ Stack.toList a
-    boundedToJSON n  a = listToJSON "Classical"  $ take n $ Stack.toList a
+    toJSON a = listToJSON "cstack"  $ Stack.toList a
+    boundedToJSON n  a = listToJSON "cstack"  $ take n $ Stack.toList a
 
   instance (JSON b) => JSON (StackDescriptor b) where
-    toJSON StackZero = "<Zero/>"
-    toJSON (StackValue b) = surroundWith "Value" $ toJSON b
-    toJSON (StackClassical cs) = listToJSON "Classical" cs
-    toJSON (StackQubit b) = listToJSON "Qubits" b
+    toJSON StackZero = jsonObject ["\"zero\":0"]
+    toJSON (StackValue b) = jsonObject [jsonElement "value" $ show b]
+    toJSON (StackClassical cs) = listToJSON "cstack" cs
+    toJSON (StackQubit b) = listToJSON "qubit" b
     toJSON (StackData constructors) =
-      surroundWith "AlgebraicData" $ sdJSON constructors
+      jsonObject $ jsonArrayElement "AlgebraicData" $ sdJSON constructors
       where
-        sdJSON [] = ""
+        sdJSON [] = []
         sdJSON ((c,stackAddresses):constructors) =
-          toJSON c ++ listToJSON "StackAddresses" stackAddresses ++ sdJSON constructors
+          ((jsonElement "cons" (show c)) ++ listToJSON "StackAddresses" stackAddresses) : (sdJSON constructors)
 
 
   instance (Show a)=> JSON (Instruction a) where
-    toJSON = surroundWith "i" . show
+    toJSON = show
 
   instance (Show a) => JSON [Instruction a] where
-    toJSON = surroundWith "instructions" . concat . (List.map toJSON)
+    toJSON ins = jsonObject $ jsonArrayElement "mmap" $ List.map toJSON ins
 
   instance (JSON b)=> JSON (QuantumStack b) where
-    toJSON fqs =
-      surroundWith "Qstack" $ toJSON (address fqs) ++
+    toJSON fqs = jsonObject  [ jsonElement "qstack" $
+      jsonObject [jsonElement "id" (show $ address fqs), jsonElement "diagonal" (show $ onDiagonal fqs), jsonArrayElement "substacks" (map toJSON (substacks fqs)), toJson (descriptor fqs)]]
+      surroundWith "sstack" $ toJSON (address fqs) ++
                   toJSON (onDiagonal fqs) ++
                   (listToJSON "substacks" (subStacks fqs)) ++
                   toJSON (descriptor fqs)
 
-    boundedToJSON 0 _ = "<bottom/>"
+    boundedToJSON 0 _ = "\"bottom\""
     boundedToJSON n fqs =
       surroundWith "Qstack" $ toJSON (address fqs) ++
                   toJSON (onDiagonal fqs) ++

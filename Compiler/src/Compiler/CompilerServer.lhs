@@ -34,7 +34,7 @@
   import Utility.FileProvider
 
   import Utility.Extras(filterNonPrintable)
-
+  import Utility.MakeJSON
   import Data.Version
 
   import qualified Data.ByteString.Char8 as B
@@ -172,27 +172,6 @@
     jsonObject $ [jsonArrayElement "version_number" (Prelude.map show nums),
                   jsonArrayElement "version_string" strs]
 
-  surroundWithQuotes :: String -> String
-  surroundWithQuotes = surroundWith '"' '"'
-
-  surroundWithBraces :: String -> String
-  surroundWithBraces = surroundWith '{' '}'
-
-  surroundWithBrackets :: String -> String
-  surroundWithBrackets = surroundWith '[' ']'
-
-  surroundWith :: Char -> Char -> String -> String
-  surroundWith c1 c2 s = c1:s ++ [c2]
-
-  jsonObject :: [String] -> String
-  jsonObject elements = surroundWithBraces $ concat $ intersperse ", " elements
-
-  jsonElement :: String -> String -> String
-  jsonElement key val = surroundWithQuotes key ++ " : " ++ surroundWithQuotes val
-
-  jsonArrayElement :: String -> [String] -> String
-  jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
-    surroundWithBrackets ( concat $ intersperse "," $ List.map surroundWithQuotes val )
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
