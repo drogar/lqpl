@@ -18,7 +18,7 @@ describe CompilerCommandInterpretor do
     end
     describe "current_version_line" do
       it "sends a version request and returns a string" do
-        expect(@cmp).to receive(:send_and_get_data).with('{"command" : "send_version"}')
+        expect(@cmp).to receive(:send_and_read_data).with('{"command" : "send_version"}')
           .and_return(json_version)
         expect(subject.current_version_line).to eql('Compiler: Version=0.8.4')
       end
@@ -83,7 +83,7 @@ describe CompilerCommandInterpretor do
       allow(subject).to receive(:dir=).with('f')
       allow(subject).to receive(:qpo_file_name=).with('f')
       expect(subject).to receive(:read_qpl_file).with('f').and_return(program_one)
-      expect(@cmp).to receive(:send_and_get_data).with(program_one).and_return("stuff")
+      expect(@cmp).to receive(:send_and_read_data).with(program_one).and_return("stuff")
       expect(subject).to receive(:converse).with("stuff")
       subject.compile('f')
     end
@@ -114,12 +114,12 @@ describe CompilerCommandInterpretor do
       end
       it 'reads the qpl file and sends on the connection' do
         expect(subject).to receive(:read_qpl_file).with('f').and_return('stuff')
-        expect(@cmp).to receive(:send_and_get_data).with('stuff')
+        expect(@cmp).to receive(:send_and_read_data).with('stuff')
         subject.send_file("f")
       end
       it 'returns the result of the send' do
         allow(subject).to receive(:read_qpl_file)
-        expect(@cmp).to receive(:send_and_get_data).and_return('stuff')
+        expect(@cmp).to receive(:send_and_read_data).and_return('stuff')
         expect(subject.send_file("f")).to eql('stuff')
       end
     end

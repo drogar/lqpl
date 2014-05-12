@@ -69,13 +69,13 @@ class Connection
     connection.puts(command)
   end
 
-  def send_and_get_data(command)
+  def send_and_read_data(command)
     connect unless connected?
     send_data command
-    get_data
+    read_data
   end
 
-  def get_data
+  def read_data
     connection.readline
   end
 
