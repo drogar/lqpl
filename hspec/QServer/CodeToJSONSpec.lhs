@@ -15,20 +15,20 @@
 
     import Data.LazyNum
     import QSM.Components.Instructions
-    import QServer.StackToXML
+    import QServer.StackToJSON
     import Data.Map as Map
     import Data.List as List
     import System.Exit
 
-    xmlValues :: [(Memory Basis, String)]
-    xmlValues =  [(Map.singleton "main" [QDelete "q", QPullup "r"],
-        "<Code><map><kvpair><key><string>main</string></key><value><instructions><i>QDelete \"q\"</i><i>QPullup \"r\"</i></instructions></value></kvpair></map></Code>")]
-                  -- May need to revise as order of maps is undefined....
+    jsonValues :: [(Memory Basis, String)]
+    jsonValues =  [(Map.singleton "main" [QDelete "q", QPullup "r"],
+                  "{\"code\":[\"main\":[\"QDelete\":\"q\",\"QPullup\":\"r\"]]}"
+
 
     --checkIt :: Memory Basis -> String -> SpecM ()
-    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ res ~=? (surroundWith "Code" $ toXML cd)
+    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ res ~=? (surroundWith "Code" $ toJSON cd)
 
-    tests =  describe "StackToXML" $ mapM_ (uncurry checkIt) xmlValues
+    tests =  describe "StackToJSON" $ mapM_ (uncurry checkIt) jsonValues
 
 
     main = do
