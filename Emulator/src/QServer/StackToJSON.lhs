@@ -8,8 +8,8 @@
   import QSM.QuantumStack.QSDefinition
   import QSM.QuantumStack.QSManipulation
   import Data.Stack as Stack
-  import Data.Map as Map
-  import Data.List as List
+  import qualified Data.Map as Map
+  import qualified Data.List as List
   import Data.Tuples
   import Data.Tuple
   import Data.LazyNum
@@ -17,7 +17,7 @@
   import QSM.Components.Dump
   import QSM.Components.Instructions
   import QSM.Components.MemoryMap
-
+  import Utility.MakeJSON
 
   --instance Quantum LazyNum
 
@@ -44,7 +44,7 @@
   class JSON a where
     toJSON :: a -> String
     listToJSON :: String -> [a] -> String
-    listToJSON s items = jsonArrayElement s $ map toJSON items
+    listToJSON s items = jsonArrayElement s $ List.map toJSON items
 
     bounder :: (a->String)->a -> String
     bounder _ = toJSON
@@ -53,68 +53,36 @@
     boundedToJSON _ = toJSON
 
     boundedListToJSON :: Int -> String -> [a] -> String
-    boundedListToJSON n label items = jsonArrayElement s $ map (boundedToJSON n) $ items
-
-  instance JSON Bool where
-    toJSON = show
-
-  instance JSON Char where
-    toJSON = surroundWithQuotes . show
-
-  instance JSON String where
-    toJSON = surroundWithQuotes
-
-  instance JSON LazyNum where
-    toJSON = show
-
-  instance (JSON k,JSON v)=>JSON (Map k v) where
-    toJSON a = surroundWith "map"  $ List.foldl (++) "" $ fmap (surroundWith "kvpair") $
-      uncurry (zipWith (++)) $ unzip $
-      fmap (pair (surroundWith "key" . toJSON) (surroundWith "value" . toJSON)) $ Map.toList a
-
-  instance (JSON a, JSON b) => JSON (a,b) where
-    toJSON (a,b) = surroundWith "pair" $ toJSON a ++ toJSON b
-    boundedToJSON 0 (a,b) = surroundWith "pair" "<bottom/>"
-    boundedToJSON n (a,b) = surroundWith "pair" $ boundedToJSON n a ++ boundedToJSON n b
-
-  instance (JSON a, JSON b,JSON c) => JSON (a,b,c) where
-    toJSON (a,b,c) = surroundWith "triple" $ toJSON a ++ toJSON b ++ toJSON c
-    boundedToJSON 0 (_,_,_) = surroundWith "triple" "<bottom/>"
-    boundedToJSON n (a,b,c) = surroundWith "triple" $ boundedToJSON n a ++ boundedToJSON n b ++ boundedToJSON n c
-
-  instance JSON Basis where
-    toJSON Z = "Z"
-    toJSON O = "O"
+    boundedListToJSON n label items = jsonArrayElement label $ List.map (boundedToJSON n) $ items
 
 
-  instance JSON Int where
-    toJSON  = show
+--  instance JSON ClassicalStack where
+--    toJSON a = listToJSON "cstack"  $ Stack.toList a
+--    boundedToJSON n  a = listToJSON "cstack"  $ take n $ Stack.toList a
 
-  instance JSON Double where
-    toJSON  = show
+  stripClassical :: Either Int Bool -> String
+  stripClassical (Left i) = show i
+  stripClassical (Right b) = if b then "true" else "false"
 
+  stripBasis :: (Basis,Basis) -> String
+  stripBasis (Z,Z) = "ZZ"
+  stripBasis (Z,O) = "ZO"
+  stripBasis (O,Z) = "OZ"
+  stripBasis (O,O) = "OO"
 
-  instance JSON ClassicalData where
-    toJSON (Left i) = show i
-    toJSON (Right b) = show b
-
-  instance JSON ClassicalStack where
-    toJSON a = listToJSON "cstack"  $ Stack.toList a
-    boundedToJSON n  a = listToJSON "cstack"  $ take n $ Stack.toList a
-
-  instance (JSON b) => JSON (StackDescriptor b) where
+  instance (Show b) => JSON (StackDescriptor b) where
     toJSON StackZero = jsonObject ["\"zero\":0"]
-    toJSON (StackValue b) = jsonObject [jsonElement "value" $ show b]
-    toJSON (StackClassical cs) = listToJSON "cstack" cs
-    toJSON (StackQubit b) = listToJSON "qubit" b
+    toJSON (StackValue b) = jsonObject [jsonValueElement "value" b]
+    toJSON (StackClassical cs) = jsonObject [jsonArrayElement "classical" (List.map stripClassical cs)]
+    toJSON (StackQubit basis) = jsonObject [jsonValueArrayElement "qubit" (List.map stripBasis basis)]
     toJSON (StackData constructors) =
-      jsonObject $ jsonArrayElement "AlgebraicData" $ sdJSON constructors
+      jsonObject $ [jsonArrayElement "data" $ sdJSON constructors]
       where
         sdJSON [] = []
         sdJSON ((c,stackAddresses):constructors) =
-          ((jsonElement "cons" (show c)) ++ listToJSON "StackAddresses" stackAddresses) : (sdJSON constructors)
+          (jsonObject [jsonValueElement "cons" c, jsonValueArrayElement "addresses" stackAddresses]) : (sdJSON constructors)
 
-
+{-
   instance (Show a)=> JSON (Instruction a) where
     toJSON = show
 
@@ -123,7 +91,7 @@
 
   instance (JSON b)=> JSON (QuantumStack b) where
     toJSON fqs = jsonObject  [ jsonElement "qstack" $
-      jsonObject [jsonElement "id" (show $ address fqs), jsonElement "diagonal" (show $ onDiagonal fqs), jsonArrayElement "substacks" (map toJSON (substacks fqs)), toJson (descriptor fqs)]]
+      jsonObject [jsonElement "id" (show $ address fqs), jsonElement "diagonal" (show $ onDiagonal fqs), jsonArrayElement "substacks" (List.map toJSON (substacks fqs)), toJson (descriptor fqs)]]
       surroundWith "sstack" $ toJSON (address fqs) ++
                   toJSON (onDiagonal fqs) ++
                   (listToJSON "substacks" (subStacks fqs)) ++
@@ -167,5 +135,5 @@
               resultstackaddress = snd resultNS
     boundedToJSON n c@(DumpCall _ _ _) = toJSON c
 
-
+-}
 \end{code}

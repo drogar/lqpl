@@ -1,23 +1,32 @@
 module Utility.MakeJSON where
 
-  surroundWithQuotes :: String -> String
-  surroundWithQuotes = surroundWith '"' '"'
+    import qualified Data.List as List
 
-  surroundWithBraces :: String -> String
-  surroundWithBraces = surroundWith '{' '}'
+    surroundWithQuotes :: String -> String
+    surroundWithQuotes = surroundWith '"' '"'
 
-  surroundWithBrackets :: String -> String
-  surroundWithBrackets = surroundWith '[' ']'
+    surroundWithBraces :: String -> String
+    surroundWithBraces = surroundWith '{' '}'
 
-  surroundWith :: Char -> Char -> String -> String
-  surroundWith c1 c2 s = c1:s ++ [c2]
+    surroundWithBrackets :: String -> String
+    surroundWithBrackets = surroundWith '[' ']'
 
-  jsonObject :: [String] -> String
-  jsonObject elements = surroundWithBraces $ concat $ intersperse ", " elements
+    surroundWith :: Char -> Char -> String -> String
+    surroundWith c1 c2 s = c1:s ++ [c2]
 
-  jsonElement :: String -> String -> String
-  jsonElement key val = surroundWithQuotes key ++ " : " ++ surroundWithQuotes val
+    jsonObject :: [String] -> String
+    jsonObject elements = surroundWithBraces $ concat $ List.intersperse ", " elements
 
-  jsonArrayElement :: String -> [String] -> String
-  jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
-    surroundWithBrackets ( concat $ intersperse "," $ List.map surroundWithQuotes val )
+    jsonElement :: String -> String -> String
+    jsonElement key val = surroundWithQuotes key ++ " : " ++ val
+
+    jsonValueElement :: (Show a) => String -> a -> String
+    jsonValueElement key val = surroundWithQuotes key ++ " : " ++ show val
+
+    jsonArrayElement :: String -> [String] -> String
+    jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
+       surroundWithBrackets ( concat $ List.intersperse "," $  val )
+
+    jsonValueArrayElement :: (Show a) => String -> [a] -> String
+    jsonValueArrayElement key val = surroundWithQuotes key ++ " : " ++
+       surroundWithBrackets ( concat $ List.intersperse "," $ List.map show val )

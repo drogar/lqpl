@@ -11,5 +11,5 @@ module Fixture.CompilerData  where
 
     jsonSendVersion = "{\"command\" : \"send_version\"}"
 
-    getfile_command = "{\"get_file\" : \"f\"}"
+    getfile_command = "{\"send_file\" : \"f\"}"
 

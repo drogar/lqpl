@@ -153,24 +153,24 @@
 
   resultToJSON :: CompilerServiceStatus -> String
   resultToJSON (CS_COMPILED_SUCCESS l "") =
-    jsonObject $ [jsonArrayElement "qpo" (lines l)]
+    jsonObject $ [jsonValueArrayElement "qpo" (lines l)]
 
   resultToJSON (CS_COMPILED_SUCCESS l w) =
-    jsonObject $ [jsonArrayElement "qpo" (lines l),
-                  jsonElement "warning" w]
+    jsonObject $ [jsonValueArrayElement "qpo" (lines l),
+                  jsonValueElement "warning" w]
 
   resultToJSON (CS_COMPILED_FAIL message) =
-    jsonObject $ [jsonElement "compile_fail" message]
+    jsonObject $ [jsonValueElement "compile_fail" message]
 
   resultToJSON (CS_NEED_FILE fileName) =
-    jsonObject $ [jsonElement "send_file" fileName]
+    jsonObject $ [jsonValueElement "send_file" fileName]
 
   resultToJSON (CS_ILLEGAL_INPUT badInput) =
-    jsonObject $ [jsonElement "illegal_input" badInput]
+    jsonObject $ [jsonValueElement "illegal_input" badInput]
 
   resultToJSON (CS_VERSION nums strs) =
     jsonObject $ [jsonArrayElement "version_number" (Prelude.map show nums),
-                  jsonArrayElement "version_string" strs]
+                  jsonValueArrayElement "version_string" strs]
 
 
   fp :: Map (Maybe String) String -> FileProvider

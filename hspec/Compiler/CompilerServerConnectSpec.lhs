@@ -59,7 +59,7 @@
               res <- hGetLine hndl
               return $ if (res == getfile_command)
                            then Test.Hspec.Core.Success
-                           else Test.Hspec.Core.Fail $ "invalid import: " ++ res
+                           else Test.Hspec.Core.Fail $ "invalid reply: " ++ res
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer default_port
               hPutStrLn hndl program_two
@@ -73,7 +73,7 @@
                     return $ if ((take 24 fres) ==  (take 24 assembled_one))
                                then Test.Hspec.Core.Success
                                else Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres
-                 else return $ Test.Hspec.Core.Fail $ "invalid import: " ++ res
+                 else return $ Test.Hspec.Core.Fail $ "invalid reply: " ++ res
 
 
     connectToServer :: String -> IO Handle

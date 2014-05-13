@@ -75,19 +75,19 @@ Test-Suite stack-to-json-spec
                      FlexibleContexts,KindSignatures,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite mmap-to-json-spec
-   type:             exitcode-stdio-1.0
-   main-is:          QServer/MMapToJSONSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
-   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
-   hs-source-dirs:   Emulator/src,Common/src,hspec
+--Test-Suite mmap-to-json-spec
+--   type:             exitcode-stdio-1.0
+--   main-is:          QServer/MMapToJSONSpec.lhs
+--   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
+--   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
+--   hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite code-to-json-spec
-   type:             exitcode-stdio-1.0
-   main-is:          QServer/CodeToJSONSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
-   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
-   hs-source-dirs:   Emulator/src,Common/src,hspec
+--Test-Suite code-to-json-spec
+--   type:             exitcode-stdio-1.0
+--   main-is:          QServer/CodeToJSONSpec.lhs
+--   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
+--   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
+--   hs-source-dirs:   Emulator/src,Common/src,hspec
 
 Executable lqpl
    Main-is:           Compiler/Main.lhs
@@ -102,13 +102,14 @@ Executable lqpl-compiler-server
    extensions:        ExistentialQuantification,OverloadedStrings
    hs-source-dirs:    Compiler/src,Common/src
 
-Executable lqpl-emulator
-   Main-is:           QServer/QServer.lhs
-   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
-   hs-source-dirs:    Emulator/src,Common/src
-   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
+-- Disable until toJson testing completed
+--Executable lqpl-emulator
+--   Main-is:           QServer/QServer.lhs
+--   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
+--   hs-source-dirs:    Emulator/src,Common/src
+--   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
 
-   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
+--   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
 
 -- Below is the former configuration for the GTK2HS GUI. This code is still included in the distribution
 -- but may not currently compile. To try it out, comment out the following lines and the lines

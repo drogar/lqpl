@@ -28,10 +28,21 @@
       summary <- hspecWith defaultConfig{configFormatter=progress} tests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
+{-      data  StackDescriptor b
+    = StackZero  |
+      StackValue ! b |
+      StackClassical [ClassicalData] |
+      StackQubit [(Basis,Basis)]|
+      StackData [(Constructor,[StackAddress])]
+                deriving Show
+-}
 
-
-    jsonValues =  [(StackZero, "{\"qnode\":{\"zero\":0}}"),
-                  (StackValue (SZero), "{\"qnode\":{\"value\":0}}" )]
+    jsonValues =  [(StackZero, "{\"zero\":0}"),
+                   (StackValue (SZero), "{\"value\" : 0}" ),
+                   (StackClassical [Left 1, Right True], "{\"classical\" : [1,true]}"),
+                   (StackQubit [(Z,Z), (Z,O), (O,Z), (O,O)], "{\"qubit\" : [\"ZZ\",\"ZO\",\"OZ\",\"OO\"]}"),
+                   (StackData [("Cons", [1,4]), ("Nil",[])],
+                                "{\"data\" : [{\"cons\" : \"Cons\", \"addresses\" : [1,4]},{\"cons\" : \"Nil\", \"addresses\" : []}]}")]
     cstacks :: [(ClassicalStack,String)]
     cstacks = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\":[5, false,-1]}")]
 
@@ -83,9 +94,9 @@
 
     tests =  describe "StackToJSON" $ do
       mapM_ (uncurry checkIt) jsonValues
-      mapM_ (uncurry checkIt) cstacks
-      context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
-      context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
+--      mapM_ (uncurry checkIt) cstacks
+--      context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
+--      context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
 
 
 \end{code}

@@ -53,11 +53,11 @@
         it "creates a single object plus a warning if success with warning" $ do
           resultToJSON (CS_COMPILED_SUCCESS "t" "w") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\"}"
         it "creates a single object with a single warning even if multiple lines in the warning" $ do
-          resultToJSON (CS_COMPILED_SUCCESS "t" "w\nu") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\nu\"}"
+          resultToJSON (CS_COMPILED_SUCCESS "t" "w\nu") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\\nu\"}"
         it "creates a single object if the compile fails" $ do
-          resultToJSON (CS_COMPILED_FAIL "t\nu") `shouldBe` "{\"compile_fail\" : \"t\nu\"}"
+          resultToJSON (CS_COMPILED_FAIL "t\nu") `shouldBe` "{\"compile_fail\" : \"t\\nu\"}"
         it "creates a request object for a file if given" $ do
-          resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"get_file\" : \"t\"}"
+          resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"send_file\" : \"t\"}"
       context "qpl file" $ do
         it "should parse a single line file" $ do
           ((decodeStrict $ B.pack program_bad):: Maybe QPLFile) `shouldBe`
