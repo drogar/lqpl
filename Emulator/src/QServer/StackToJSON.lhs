@@ -84,6 +84,9 @@
         sdJSON ((c,stackAddresses):constructors) =
           (jsonObject [jsonValueElement "cons" c, jsonValueArrayElement "addresses" stackAddresses]) : (sdJSON constructors)
 
+  instance JSON CodePointer where
+      toJSON (ep,lab) = jsonObject [jsonArrayElement "codepointer" $ [show ep, show lab]]
+                                                                                                     
 {-
   instance (Show a)=> JSON (Instruction a) where
     toJSON = show

@@ -18,6 +18,7 @@
     import Data.LazyNum
     import QSM.Components.ClassicalStack
     import QSM.QuantumStack.QSDefinition
+    import QSM.Components.Instructions
     import QServer.StackToJSON
 
 
@@ -89,8 +90,10 @@
     cstacksbnd :: [(ClassicalStack,String)]
     cstacksbnd = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\" : [5]}")]
 
-
-    --checkIt :: StackDescriptor LazyNum -> String -> SpecM ()
+    codepointer :: [(CodePointer, String)]
+    codepointer = [(("ent",5), "{\"codepointer\" : [\"ent\", 5]}")]
+                 
+    --checkIt :: a -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
     checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
 
@@ -107,6 +110,7 @@
       context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
       mapM_ (uncurry checkIt) cstacks
       mapM_ (uncurry checkItBounded) cstacksbnd
+      context "code pointers" $ mapM_ (uncurry checkIt) codepointer
 
 
 \end{code}
