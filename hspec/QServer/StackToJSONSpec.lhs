@@ -47,10 +47,6 @@
                    (StackQubit [(Z,Z), (Z,O), (O,Z), (O,O)], "{\"qubit\" : [\"ZZ\", \"ZO\", \"OZ\", \"OO\"]}"),
                    (StackData [("Cons", [1,4]), ("Nil",[])],
                                 "{\"data\" : [{\"cons\" : \"Cons\", \"addresses\" : [1, 4]}, {\"cons\" : \"Nil\", \"addresses\" : []}]}")]
-    cstacks :: [(ClassicalStack,String)]
-    cstacks = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\":[5, false,-1]}")]
-
-
 
     sub5 = QuantumStack (-1) True [] (StackValue (Snum 0.5))
     sub5f = QuantumStack (-1) False [] (StackValue (Snum 0.5))
@@ -87,8 +83,16 @@
                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : \"bottom\", " ++
                   "\"qnode\" : " ++ (toJSON sqbzz) ++"}}" )]
 
+    cstacks :: [(ClassicalStack,String)]
+    cstacks = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\" : [5, false, -1]}")]
+
+    cstacksbnd :: [(ClassicalStack,String)]
+    cstacksbnd = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\" : [5]}")]
+
+
     --checkIt :: StackDescriptor LazyNum -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
+    checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
 
     --checkUnbounded :: QuantumStack LazyNum -> String -> SpecM ()
     checkUnbounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res ~=? (toJSON $ fixDiags qs)
@@ -99,9 +103,10 @@
 
     tests =  describe "StackToJSON" $ do
       mapM_ (uncurry checkIt) jsonValues
---      mapM_ (uncurry checkIt) cstacks
       context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
       context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
+      mapM_ (uncurry checkIt) cstacks
+      mapM_ (uncurry checkItBounded) cstacksbnd
 
 
 \end{code}

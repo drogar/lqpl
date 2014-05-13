@@ -56,9 +56,9 @@
     boundedListToJSON n label items = jsonArrayElement label $ List.map (boundedToJSON n) $ items
 
 
---  instance JSON ClassicalStack where
---    toJSON a = listToJSON "cstack"  $ Stack.toList a
---    boundedToJSON n  a = listToJSON "cstack"  $ take n $ Stack.toList a
+  instance JSON ClassicalStack where
+    toJSON a = jsonObject [jsonArrayElement "cstack"  $ List.map stripClassical $ Stack.toList a]
+    boundedToJSON n a = jsonObject [jsonArrayElement "cstack"  $ List.map stripClassical $ take n $ Stack.toList a]
 
   boolForJSON :: Bool -> String
   boolForJSON b = if b then "true" else "false"
