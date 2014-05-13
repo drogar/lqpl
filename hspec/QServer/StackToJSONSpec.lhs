@@ -84,8 +84,8 @@
                    "], \"qnode\" : " ++ (toJSON sclass) ++ "}}")]
 
     stackBoundedJSON = [ (QuantumStack 1 True [QuantumStack (-1) True [] (StackValue (Snum 0.5))] (StackQubit [(Z,Z)]),
-                  "{\"qstack\":{\"id\":1,\"diagonal\":true,\"substacks\":\"bottom\"" ++
-                  "\"qnode\":{\"qbit\":[\"ZZ\"]}}}" )]
+                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : \"bottom\", " ++
+                  "\"qnode\" : " ++ (toJSON sqbzz) ++"}}" )]
 
     --checkIt :: StackDescriptor LazyNum -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
@@ -101,7 +101,7 @@
       mapM_ (uncurry checkIt) jsonValues
 --      mapM_ (uncurry checkIt) cstacks
       context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
---      context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
+      context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
 
 
 \end{code}

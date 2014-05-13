@@ -101,14 +101,25 @@
                                           ]
                              ]
 
-{-
-    boundedToJSON 0 _ = "\"bottom\""
-    boundedToJSON n fqs =
-      surroundWith "Qstack" $ toJSON (address fqs) ++
-                  toJSON (onDiagonal fqs) ++
-                  (boundedListToJSON (n-1) "substacks" (subStacks fqs)) ++
-                  toJSON (descriptor fqs)
 
+    boundedToJSON 1 fqs =
+        jsonObject  [ jsonElement "qstack" $
+                      jsonObject [jsonValueElement "id" (address fqs),
+                                  jsonElement "diagonal" (boolForJSON $ onDiagonal fqs),
+                                  jsonValueElement "substacks" "bottom",
+                                  jsonElement "qnode" (toJSON (descriptor fqs))
+                                 ]
+                    ]
+    boundedToJSON n fqs =
+        jsonObject  [ jsonElement "qstack" $
+                      jsonObject [jsonValueElement "id" (address fqs),
+                                  jsonElement "diagonal" (boolForJSON $ onDiagonal fqs),
+                                  jsonArrayElement "substacks" (List.map (\x -> boundedToJSON (n-1) x) (subStacks fqs)),
+                                  jsonElement "qnode" (toJSON (descriptor fqs))
+                                 ]
+                    ]
+
+{-
   instance (JSON b) => JSON (Dump b) where
     toJSON = listToJSON "Dump"
     boundedToJSON n = boundedListToJSON n "Dump"
