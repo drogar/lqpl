@@ -190,9 +190,6 @@
       }
 
 
-  toMultiLineString :: [String] -> String
-  toMultiLineString s = concat $ intersperse "\n" s
-
   compile_me :: Maybe String
   compile_me = Nothing
 

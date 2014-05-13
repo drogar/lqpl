@@ -60,9 +60,11 @@
 --    toJSON a = listToJSON "cstack"  $ Stack.toList a
 --    boundedToJSON n  a = listToJSON "cstack"  $ take n $ Stack.toList a
 
+  boolForJSON :: Bool -> String
+  boolForJSON b = if b then "true" else "false"
   stripClassical :: Either Int Bool -> String
   stripClassical (Left i) = show i
-  stripClassical (Right b) = if b then "true" else "false"
+  stripClassical (Right b) = boolForJSON b
 
   stripBasis :: (Basis,Basis) -> String
   stripBasis (Z,Z) = "ZZ"
@@ -88,15 +90,18 @@
 
   instance (Show a) => JSON [Instruction a] where
     toJSON ins = jsonObject $ jsonArrayElement "mmap" $ List.map toJSON ins
+-}
 
-  instance (JSON b)=> JSON (QuantumStack b) where
+  instance (Show b)=> JSON (QuantumStack b) where
     toJSON fqs = jsonObject  [ jsonElement "qstack" $
-      jsonObject [jsonElement "id" (show $ address fqs), jsonElement "diagonal" (show $ onDiagonal fqs), jsonArrayElement "substacks" (List.map toJSON (substacks fqs)), toJson (descriptor fqs)]]
-      surroundWith "sstack" $ toJSON (address fqs) ++
-                  toJSON (onDiagonal fqs) ++
-                  (listToJSON "substacks" (subStacks fqs)) ++
-                  toJSON (descriptor fqs)
+                               jsonObject [jsonValueElement "id" (address fqs),
+                                           jsonElement "diagonal" (boolForJSON $ onDiagonal fqs),
+                                           jsonArrayElement "substacks" (List.map toJSON (subStacks fqs)),
+                                           jsonElement "qnode" (toJSON (descriptor fqs))
+                                          ]
+                             ]
 
+{-
     boundedToJSON 0 _ = "\"bottom\""
     boundedToJSON n fqs =
       surroundWith "Qstack" $ toJSON (address fqs) ++
@@ -136,4 +141,5 @@
     boundedToJSON n c@(DumpCall _ _ _) = toJSON c
 
 -}
+
 \end{code}

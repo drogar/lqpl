@@ -9,7 +9,8 @@
     import Test.HUnit
 
     import Data.Stack
-
+    import qualified Data.List as List
+        
     import SpecHelper
 
     import QSM.BasicData
@@ -19,6 +20,9 @@
     import QSM.QuantumStack.QSDefinition
     import QServer.StackToJSON
 
+
+    import Utility.MakeJSON
+        
     import System.Exit
 
 
@@ -39,44 +43,45 @@
 
     jsonValues =  [(StackZero, "{\"zero\":0}"),
                    (StackValue (SZero), "{\"value\" : 0}" ),
-                   (StackClassical [Left 1, Right True], "{\"classical\" : [1,true]}"),
-                   (StackQubit [(Z,Z), (Z,O), (O,Z), (O,O)], "{\"qubit\" : [\"ZZ\",\"ZO\",\"OZ\",\"OO\"]}"),
+                   (StackClassical [Left 1, Right True], "{\"classical\" : [1, true]}"),
+                   (StackQubit [(Z,Z), (Z,O), (O,Z), (O,O)], "{\"qubit\" : [\"ZZ\", \"ZO\", \"OZ\", \"OO\"]}"),
                    (StackData [("Cons", [1,4]), ("Nil",[])],
-                                "{\"data\" : [{\"cons\" : \"Cons\", \"addresses\" : [1,4]},{\"cons\" : \"Nil\", \"addresses\" : []}]}")]
+                                "{\"data\" : [{\"cons\" : \"Cons\", \"addresses\" : [1, 4]}, {\"cons\" : \"Nil\", \"addresses\" : []}]}")]
     cstacks :: [(ClassicalStack,String)]
     cstacks = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\":[5, false,-1]}")]
 
-    stackJSON = [ (QuantumStack 1 True [QuantumStack (-1) True [] (StackValue (Snum 0.5))] (StackQubit [(Z,Z)]),
-                  "{\"qstack\":{\"id\":1,\"diagonal\":true,\"substacks\":" ++
-                  "[{\"qstack\":{\"id\":-1,\"diagonal\":true,\"substacks\":[],\"qnode\":{\"value\":0.5}}}]," ++
-                  "\"qnode\":{\"qbit\":[\"ZZ\"]}}}" ),
-                  (QuantumStack 1 True [QuantumStack (-1) True []
-                       (StackValue (Snum 0.5)),
-                        QuantumStack (-1) False [] (StackValue (Snum 0.5)),
-                        QuantumStack (-1) True [] (StackValue (Snum 0.5))]
-                   (StackQubit [(Z,Z),(Z,O),(O,O)]),
-                  "{\"qstack\":{\"id\":1,\"diagonal\":true,\"substacks\":" ++
-                  "[{\"qstack\":{\"id\":-1,\"diagonal\":true,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":false,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":false,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":true,\"substacks\":[],\"qnode\":{\"value\":0.5}}}]," ++
-                  "\"qnode\":{\"qbit\":[\"ZZ\",\"ZO\",\"OZ\",\"OO\"]}}}" ),
-                  (QuantumStack 1 False [QuantumStack (-1) False [] (StackValue (Snum 0.5)),
-                      QuantumStack (-1) False []  (StackValue (Snum 0.5)),
-                      QuantumStack (-1) False [] (StackValue (Snum 0.5))]
-                    (StackQubit [(Z,Z),(Z,O),(O,O)]),
-                  "{\"qstack\":{\"id\":1,\"diagonal\":false,\"substacks\":" ++
-                  "[{\"qstack\":{\"id\":-1,\"diagonal\":false,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":false,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":false,\"substacks\":[],\"qnode\":{\"value\":0.5}}}]," ++
-                  "\"qnode\":{\"qbit\":[\"ZZ\",\"ZO\",\"OO\"]}}}" ),
-                  (QuantumStack 1 True [QuantumStack (-1) True [] (StackValue (Snum 0.5)),
-                                            QuantumStack (-1) True [] (StackValue (Snum 0.5))]
-                    (StackClassical [Left 4, Right True]),
-                  "{\"qstack\":{\"id\":1,\"diagonal\":true,\"substacks\":" ++
-                  "[{\"qstack\":{\"id\":-1,\"diagonal\":true,\"substacks\":[],\"qnode\":{\"value\":0.5}}}," ++
-                  "{\"qstack\":{\"id\":-1,\"diagonal\":true,\"substacks\":[],\"qnode\":{\"value\":0.5}}}]," ++
-                  "\"qnode\":{\"cstack\":[4,true]}}}" )]
+
+
+    sub5 = QuantumStack (-1) True [] (StackValue (Snum 0.5))
+    sub5f = QuantumStack (-1) False [] (StackValue (Snum 0.5))
+
+    sqbzz :: StackDescriptor LazyNum
+    sqbzz = StackQubit [(Z,Z)]
+
+    sqb3 :: StackDescriptor LazyNum
+    sqb3  = StackQubit [(Z,Z),(Z,O),(O,O)]
+
+    sqb4 :: StackDescriptor LazyNum
+    sqb4  = StackQubit [(Z,Z),(Z,O),(O,Z),(O,O)]
+
+    sclass :: StackDescriptor LazyNum
+    sclass = StackClassical [Left 4, Right True]
+
+    stackJSON = [ (QuantumStack 1 True [sub5] sqbzz,
+                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++(toJSON sub5) ++ 
+                  "], \"qnode\" : "++(toJSON sqbzz) ++ "}}"),
+                  (QuantumStack 1 True [sub5, sub5f, sub5]  sqb3,
+                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++
+                   (toCommaSepString [toJSON sub5, toJSON sub5f, toJSON sub5f, toJSON sub5]) ++
+                   "], \"qnode\" : " ++ (toJSON sqb4) ++ "}}"),
+                  (QuantumStack 1 False [sub5f,sub5f,sub5f] sqb3,
+                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : false, \"substacks\" : [" ++
+                   (toCommaSepString [toJSON sub5f, toJSON sub5f, toJSON sub5f]) ++
+                   "], \"qnode\" : "++ (toJSON sqb3) ++ "}}"),
+                  (QuantumStack 1 True [sub5, sub5]  sclass,
+                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++
+                   (toCommaSepString [toJSON sub5, toJSON sub5]) ++
+                   "], \"qnode\" : " ++ (toJSON sclass) ++ "}}")]
 
     stackBoundedJSON = [ (QuantumStack 1 True [QuantumStack (-1) True [] (StackValue (Snum 0.5))] (StackQubit [(Z,Z)]),
                   "{\"qstack\":{\"id\":1,\"diagonal\":true,\"substacks\":\"bottom\"" ++
@@ -95,7 +100,7 @@
     tests =  describe "StackToJSON" $ do
       mapM_ (uncurry checkIt) jsonValues
 --      mapM_ (uncurry checkIt) cstacks
---      context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
+      context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
 --      context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON
 
 

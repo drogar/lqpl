@@ -15,7 +15,7 @@ module Utility.MakeJSON where
     surroundWith c1 c2 s = c1:s ++ [c2]
 
     jsonObject :: [String] -> String
-    jsonObject elements = surroundWithBraces $ concat $ List.intersperse ", " elements
+    jsonObject elements = surroundWithBraces $ toCommaSepString elements
 
     jsonElement :: String -> String -> String
     jsonElement key val = surroundWithQuotes key ++ " : " ++ val
@@ -25,8 +25,16 @@ module Utility.MakeJSON where
 
     jsonArrayElement :: String -> [String] -> String
     jsonArrayElement key val = surroundWithQuotes key ++ " : " ++
-       surroundWithBrackets ( concat $ List.intersperse "," $  val )
+       surroundWithBrackets ( toCommaSepString  val )
 
     jsonValueArrayElement :: (Show a) => String -> [a] -> String
     jsonValueArrayElement key val = surroundWithQuotes key ++ " : " ++
-       surroundWithBrackets ( concat $ List.intersperse "," $ List.map show val )
+       surroundWithBrackets (toCommaSepString $ List.map show val )
+
+
+    toMultiLineString :: [String] -> String
+    toMultiLineString s = concat $ List.intersperse "\n" s
+
+
+    toCommaSepString :: [String] -> String
+    toCommaSepString s = concat $ List.intersperse ", " s

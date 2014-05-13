@@ -49,7 +49,7 @@
         it "creates a single object with the code on success" $ do
           resultToJSON (CS_COMPILED_SUCCESS "t" "") `shouldBe` "{\"qpo\" : [\"t\"]}"
         it "creates a single object with the the code split into lines on success" $ do
-          resultToJSON (CS_COMPILED_SUCCESS "t\nu\nv" "") `shouldBe` "{\"qpo\" : [\"t\",\"u\",\"v\"]}"
+          resultToJSON (CS_COMPILED_SUCCESS "t\nu\nv" "") `shouldBe` "{\"qpo\" : [\"t\", \"u\", \"v\"]}"
         it "creates a single object plus a warning if success with warning" $ do
           resultToJSON (CS_COMPILED_SUCCESS "t" "w") `shouldBe` "{\"qpo\" : [\"t\"], \"warning\" : \"w\"}"
         it "creates a single object with a single warning even if multiple lines in the warning" $ do
