@@ -175,7 +175,7 @@ sendExecutableCode depth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         ec = codeMem bms
-    hPutStrLn shndle $  surroundWith "Code" $ toJSON ec
+    hPutStrLn shndle $  toJSON ec
 
 sendMemoryMap :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendMemoryMap depth treedepth machineStateRef shndle =

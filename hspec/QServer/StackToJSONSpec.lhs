@@ -11,20 +11,21 @@
     import Data.Stack
     import qualified Data.List as List
     import qualified Data.Map as Map
-        
+
     import SpecHelper
 
     import QSM.BasicData
 
     import Data.LazyNum
     import QSM.Components.ClassicalStack
+    import QSM.Components.MemoryMap
     import QSM.QuantumStack.QSDefinition
     import QSM.Components.Instructions
     import QServer.StackToJSON
 
 
     import Utility.MakeJSON
-        
+
     import System.Exit
 
 
@@ -66,7 +67,7 @@
     sclass = StackClassical [Left 4, Right True]
 
     stackJSON = [ (QuantumStack 1 True [sub5] sqbzz,
-                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++(toJSON sub5) ++ 
+                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++(toJSON sub5) ++
                   "], \"qnode\" : "++(toJSON sqbzz) ++ "}}"),
                   (QuantumStack 1 True [sub5, sub5f, sub5]  sqb3,
                    "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++
@@ -98,6 +99,12 @@
     memory :: [(Memory Basis, String)]
     memory = [(Map.fromList [("ep1", [EnScope, DeScope]), ("ep2",[AddCtrl, UnCtrl])],
                "{\"memory\" : [{\"ep1\" : [\"EnScope\",\"DeScope\"]}, {\"ep2\" : [\"AddCtrl\",\"UnCtrl\"]}]}")]
+
+
+    mmap :: [(MemoryMap, String)]
+    mmap =  [([Map.fromList [("x", 1), ("x2",3)]], "{\"memory_map\" : [{\"x\" : 1, \"x2\" : 3}]}"),
+             ([Map.fromList [("x", 1), ("x2",3)], Map.fromList [("x", 2), ("a",3)]],
+              "{\"memory_map\" : [{\"x\" : 1, \"x2\" : 3}, {\"a\" : 3, \"x\" : 2}]}")]
     --checkIt :: a -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
     checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
@@ -117,6 +124,7 @@
       mapM_ (uncurry checkItBounded) cstacksbnd
       context "code pointers" $ mapM_ (uncurry checkIt) codepointer
       context "memory" $ mapM_ (uncurry checkIt) memory
+      context "memorymap" $ mapM_ (uncurry checkIt) mmap
 
 
 \end{code}

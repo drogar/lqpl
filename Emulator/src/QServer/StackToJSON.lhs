@@ -72,7 +72,7 @@
   stripBasis (O,Z) = "OZ"
   stripBasis (O,O) = "OO"
 
-                     
+
   instance (Show b) => JSON (StackDescriptor b) where
     toJSON StackZero = jsonObject ["\"zero\":0"]
     toJSON (StackValue b) = jsonObject [jsonValueElement "value" b]
@@ -87,14 +87,9 @@
 
   instance JSON CodePointer where
       toJSON (ep,lab) = jsonObject [jsonArrayElement "codepointer" $ [show ep, show lab]]
-                                                                                                     
-{-
-  instance (Show a)=> JSON (Instruction a) where
-    toJSON = show
 
-  instance (Show a) => JSON [Instruction a] where
-    toJSON ins = jsonObject $ jsonArrayElement "mmap" $ List.map toJSON ins
--}
+  instance JSON MemoryMap where
+      toJSON mm = jsonObject [jsonArrayElement "memory_map" $ List.map jsonBareObjectFromMap mm]
 
   instance (Show b)=> JSON (QuantumStack b) where
     toJSON fqs = jsonObject  [ jsonElement "qstack" $
@@ -129,7 +124,7 @@
                          strascs = List.map (app2of2 (List.map show)) ascs
                          jvelts =  List.map (:[]) $ List.map (uncurry jsonValueElement) strascs
                      in jsonObject [jsonArrayElement "memory" $ List.map jsonObject jvelts]
-                     
+
 {-
   instance (JSON b) => JSON (Dump b) where
     toJSON = listToJSON "Dump"

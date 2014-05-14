@@ -1,6 +1,7 @@
 module Utility.MakeJSON where
 
     import qualified Data.List as List
+    import qualified Data.Map as Map
 
     surroundWithQuotes :: String -> String
     surroundWithQuotes = surroundWith '"' '"'
@@ -16,6 +17,11 @@ module Utility.MakeJSON where
 
     jsonObject :: [String] -> String
     jsonObject elements = surroundWithBraces $ toCommaSepString elements
+
+
+    jsonBareObjectFromMap :: (Show a, Show b) => Map.Map a b -> String
+    jsonBareObjectFromMap mapab = surroundWithBraces $ toCommaSepString $
+                                  Map.foldrWithKey (\k x js -> ((show k) ++ " : " ++ (show x)) : js) [] mapab
 
     jsonElement :: String -> String -> String
     jsonElement key val = surroundWithQuotes key ++ " : " ++ val
