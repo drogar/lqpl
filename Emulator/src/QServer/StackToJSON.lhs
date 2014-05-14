@@ -72,6 +72,7 @@
   stripBasis (O,Z) = "OZ"
   stripBasis (O,O) = "OO"
 
+                     
   instance (Show b) => JSON (StackDescriptor b) where
     toJSON StackZero = jsonObject ["\"zero\":0"]
     toJSON (StackValue b) = jsonObject [jsonValueElement "value" b]
@@ -122,6 +123,13 @@
                                  ]
                     ]
 
+
+  instance (Show a) => JSON (Memory a) where
+        toJSON mem = let ascs = Map.assocs mem
+                         strascs = List.map (app2of2 (List.map show)) ascs
+                         jvelts =  List.map (:[]) $ List.map (uncurry jsonValueElement) strascs
+                     in jsonObject [jsonArrayElement "memory" $ List.map jsonObject jvelts]
+                     
 {-
   instance (JSON b) => JSON (Dump b) where
     toJSON = listToJSON "Dump"

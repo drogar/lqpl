@@ -10,6 +10,7 @@
 
     import Data.Stack
     import qualified Data.List as List
+    import qualified Data.Map as Map
         
     import SpecHelper
 
@@ -92,7 +93,11 @@
 
     codepointer :: [(CodePointer, String)]
     codepointer = [(("ent",5), "{\"codepointer\" : [\"ent\", 5]}")]
-                 
+
+
+    memory :: [(Memory Basis, String)]
+    memory = [(Map.fromList [("ep1", [EnScope, DeScope]), ("ep2",[AddCtrl, UnCtrl])],
+               "{\"memory\" : [{\"ep1\" : [\"EnScope\",\"DeScope\"]}, {\"ep2\" : [\"AddCtrl\",\"UnCtrl\"]}]}")]
     --checkIt :: a -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
     checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
@@ -111,6 +116,7 @@
       mapM_ (uncurry checkIt) cstacks
       mapM_ (uncurry checkItBounded) cstacksbnd
       context "code pointers" $ mapM_ (uncurry checkIt) codepointer
+      context "memory" $ mapM_ (uncurry checkIt) memory
 
 
 \end{code}
