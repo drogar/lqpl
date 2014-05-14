@@ -75,13 +75,6 @@ Test-Suite stack-to-json-spec
                      FlexibleContexts,KindSignatures,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
---Test-Suite mmap-to-json-spec
---   type:             exitcode-stdio-1.0
---   main-is:          QServer/MMapToJSONSpec.lhs
---   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,array,hspec,directory,unix,process,QuickCheck,random
---   extensions:       TypeSynonymInstances,FlexibleInstances,Rank2Types,CPP
---   hs-source-dirs:   Emulator/src,Common/src,hspec
-
 --Test-Suite code-to-json-spec
 --   type:             exitcode-stdio-1.0
 --   main-is:          QServer/CodeToJSONSpec.lhs
