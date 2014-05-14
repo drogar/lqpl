@@ -34,6 +34,7 @@ import QServer.ParseServerCommand
 import QServer.StackToJSON
 
 import Utility.Extras(filterNonPrintable)
+import Utility.MakeJSON
 
 \end{code}
 
@@ -183,7 +184,7 @@ sendMemoryMap depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         mm = stackTranslation bms
-    hPutStrLn shndle $  listToJSON "MMap" mm
+    hPutStrLn shndle $  toJSON mm
 
 sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendClassicalStack depth treedepth machineStateRef shndle =
@@ -211,11 +212,11 @@ assemble depthMult assemblyCode machineStateRef shandle =
       case  parsedAssembly of
           Left error -> do
                 putStrLn $ "Error in parse: " ++ error
-                hPutStrLn shandle $ "ERROR: " ++ error
+                hPutStrLn shandle $ sendResult ("ERROR: " ++ error)
           Right ((cnotes,trs),loadedCode) -> do
                 writeIORef machineStateRef $ (startMachine depthMult initialMachine loadedCode)
                 dumpMachine 1 machineStateRef
-                hPutStrLn shandle "Assembled"
+                hPutStrLn shandle $ sendResult "Assembled"
 
 simulate :: Int ->
             IORef (MachineState BaseType) ->
@@ -226,7 +227,7 @@ simulate depth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let qstk = quantumStack $ pickIthMS depth mstate
     (rval,resultList) <- chooseIt (canonicalize qstk)
-    hPutStrLn shndle $ surroundWith "Simulated" $ toJSON rval ++ listToJSON "results" resultList
+    hPutStrLn shndle $ jsonObject [jsonValueElement "Simulated" rval, jsonValueArrayElement "results" resultList]
 
 trim :: IORef (MachineState BaseType) ->
         Handle ->
@@ -234,7 +235,7 @@ trim :: IORef (MachineState BaseType) ->
 trim machineStateRef shndle =
   do
     modifyIORef machineStateRef (trimMachine Nothing 0)
-    hPutStrLn shndle "trimmed"
+    hPutStrLn shndle $ sendResult "trimmed"
 
 dumpMachine ::  Int -> IORef (MachineState BaseType) -> IO()
 dumpMachine depth machineStateRef =

@@ -16,6 +16,7 @@
   import QSM.BasicData
   import QSM.QSM
   import QServer.Types
+  import QServer.ParseServerCommand
 
   stepMachine ::  Int ->
                   Int ->
@@ -28,8 +29,8 @@
       mstate <- readIORef machineStateRef
       let bms =  pickIthMS  depth mstate
       case runningCode bms of
-        []    ->       hPutStrLn shandle "executed"
-        _     ->       hPutStrLn shandle "Stepped"
+        []    ->       hPutStrLn shandle $ sendResult "executed"
+        _     ->       hPutStrLn shandle $ sendResult "Stepped"
 
 
   runIt ::  Int ->
@@ -47,7 +48,7 @@
   executeMachine depth machineStateRef shandle =
     do
       modifyIORef machineStateRef (go depth)
-      hPutStrLn shandle "executed"
+      hPutStrLn shandle $ sendResult "executed"
 
 
   resetDepthMultiplier ::   Int ->
@@ -57,6 +58,6 @@
   resetDepthMultiplier depthMultiple machineStateRef shandle =
     do
       modifyIORef machineStateRef (resetCallDepth depthMultiple)
-      hPutStrLn shandle "Depth reset"
+      hPutStrLn shandle $ sendResult "Depth reset"
 
 \end{code}

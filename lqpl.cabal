@@ -63,7 +63,7 @@ Test-Suite test-all
 Test-Suite parse-server-command-spec
    type:             exitcode-stdio-1.0
    main-is:          QServer/ParseServerCommandSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck
+   build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck,containers
    extensions:       CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
@@ -95,14 +95,13 @@ Executable lqpl-compiler-server
    extensions:        ExistentialQuantification,OverloadedStrings
    hs-source-dirs:    Compiler/src,Common/src
 
--- Disable until toJson testing completed
---Executable lqpl-emulator
---   Main-is:           QServer/QServer.lhs
---   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
---   hs-source-dirs:    Emulator/src,Common/src
---   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
 
---   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
+Executable lqpl-emulator
+   Main-is:           QServer/QServer.lhs
+   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
+   hs-source-dirs:    Emulator/src,Common/src
+   extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
+   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
 
 -- Below is the former configuration for the GTK2HS GUI. This code is still included in the distribution
 -- but may not currently compile. To try it out, comment out the following lines and the lines

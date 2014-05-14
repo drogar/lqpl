@@ -2,11 +2,16 @@
 \begin{code}
   module QServer.ParseServerCommand (
        getCommand,
+       sendResult
        )
   where
 
   import QServer.Types
   import Text.ParserCombinators.Parsec
+  import Utility.MakeJSON
+
+  sendResult :: String -> String
+  sendResult s = jsonObject [jsonValueElement "result" s]
 
   getCommand :: String -> Either String QCommand
   getCommand s =
