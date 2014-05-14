@@ -19,6 +19,7 @@
     import Data.LazyNum
     import QSM.Components.ClassicalStack
     import QSM.Components.MemoryMap
+    import QSM.Components.Dump
     import QSM.QuantumStack.QSDefinition
     import QSM.Components.Instructions
     import QServer.StackToJSON
@@ -86,11 +87,14 @@
                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : \"bottom\", " ++
                   "\"qnode\" : " ++ (toJSON sqbzz) ++"}}" )]
 
+    baseCstack :: ClassicalStack
+    baseCstack = Stack [Left 5, Right False, Left (-1)]
+
     cstacks :: [(ClassicalStack,String)]
-    cstacks = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\" : [5, false, -1]}")]
+    cstacks = [(baseCstack, "{\"cstack\" : [5, false, -1]}")]
 
     cstacksbnd :: [(ClassicalStack,String)]
-    cstacksbnd = [(Stack [Left 5, Right False, Left (-1)], "{\"cstack\" : [5]}")]
+    cstacksbnd = [(baseCstack, "{\"cstack\" : [5]}")]
 
     codepointer :: [(CodePointer, String)]
     codepointer = [(("ent",5), "{\"codepointer\" : [\"ent\", 5]}")]
@@ -105,6 +109,16 @@
     mmap =  [([Map.fromList [("x", 1), ("x2",3)]], "{\"memory_map\" : [{\"x\" : 1, \"x2\" : 3}]}"),
              ([Map.fromList [("x", 1), ("x2",3)], Map.fromList [("x", 2), ("a",3)]],
               "{\"memory_map\" : [{\"x\" : 1, \"x2\" : 3}, {\"a\" : 3, \"x\" : 2}]}")]
+
+    dumps :: [(Dump Basis, String)]
+    dumps = [([DumpCall 3 "ep" baseCstack], "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
+                                              (toJSON baseCstack) ++ "}}]}")]
+
+    dumpsBounded :: [(Dump Basis, String)]
+    dumpsBounded = [([DumpCall 3 "ep" baseCstack], "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
+                                                     (boundedToJSON 1 baseCstack) ++ "}}]}")]
+
+
     --checkIt :: a -> String -> SpecM ()
     checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
     checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
@@ -125,6 +139,8 @@
       context "code pointers" $ mapM_ (uncurry checkIt) codepointer
       context "memory" $ mapM_ (uncurry checkIt) memory
       context "memorymap" $ mapM_ (uncurry checkIt) mmap
+      context "dump" $ mapM_ (uncurry checkIt) dumps
+      context "bounded dump" $ mapM_ (uncurry checkItBounded) dumpsBounded
 
 
 \end{code}
