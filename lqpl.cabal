@@ -63,7 +63,8 @@ Test-Suite test-all
 Test-Suite parse-server-command-spec
    type:             exitcode-stdio-1.0
    main-is:          QServer/ParseServerCommandSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck,containers
+   build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck,containers,aeson,
+                     text,bytestring
    extensions:       CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
@@ -98,7 +99,8 @@ Executable lqpl-compiler-server
 
 Executable lqpl-emulator
    Main-is:           QServer/QServer.lhs
-   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec
+   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec,
+                      aeson,text,bytestring
    hs-source-dirs:    Emulator/src,Common/src
    extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
    Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
