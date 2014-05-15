@@ -95,7 +95,7 @@ class LqplModel < ApplicationModel
   def load_file(file_path)
     lqpl_server_connection.send_load_from_file(recursion_multiplier_spinner,
                                                file_path)
-    lqpl_server_connection.send_set_depth_multiplier(recursion_multiplier_spinner)
+    lqpl_server_connection.do_depth_multiple(recursion_multiplier_spinner)
   end
 
   def update_recursion_spinner(value)
@@ -117,7 +117,7 @@ class LqplModel < ApplicationModel
   def update_recursion_multiplier_spinner(value)
     self.recursion_multiplier_spinner =
       java.lang.Integer.new(value)
-    lqpl_server_connection.send_set_depth_multiplier(recursion_multiplier_spinner)
+    lqpl_server_connection.do_depth_multiple(recursion_multiplier_spinner)
     self.messages_text =  "Recursion Multiplier set to #{recursion_multiplier_spinner}"
     enable_go!(true)
   end

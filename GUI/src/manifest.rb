@@ -125,8 +125,8 @@ require 'panels/panel_controller'
   require 'exceptions/' + f
 end
 
-%w(lqpl_emulator_server_connection compiler_command_interpretor connection_commander
-   compiler_server_connection).each do |f|
+%w(lqpl_emulator_server_connection compiler_command_interpretor
+   emulator_command_interpretor compiler_server_connection).each do |f|
   require 'communications/' + f
 end
 

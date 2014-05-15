@@ -56,7 +56,7 @@ describe LqplEmulatorServerConnection do
     after :all do
       @sc.close_down if @sc
     end
-    specify {expect(@sc.send_set_depth_multiplier).to match(/reset/)}
+    specify {expect(@sc.do_depth_multiple).to match(/reset/)}
     specify {expect(@sc.do_step).to match(/Stepped/)}
     specify {expect(@sc.do_step(5)).to match(/Stepped/)}
     specify {expect(@sc.do_run).to match(/executed/)}
@@ -87,6 +87,6 @@ describe LqplEmulatorServerConnection do
     specify {expect(@sc.code_pointer).to match(/<pair/)}
     specify {expect(@sc.loaded_code).to match(/<Code/)}
     specify {expect(@sc.get_stack_translation).to match(/<MMap/)}
-    specify {expect(@sc.get_simulate_results).to match(/<Simulated><double/)}
+    specify {expect(@sc.do_simulate).to match(/<Simulated><double/)}
   end
 end

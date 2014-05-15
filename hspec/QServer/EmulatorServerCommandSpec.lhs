@@ -42,14 +42,14 @@
               "parse_get_qs1 " ~: "get qstack 5 3 returns QCGet" ~: Right (QCGet QDQuantumStack 5 3) @=? (getCommand "{\"command\" : \"get_qstack\", \"parameters\" : [5, 3]}"),
               "parse_get_qs2 " ~: "get    qstack   15   893 returns QCGet" ~: Right (QCGet QDQuantumStack 15 893) @=? (getCommand "{\"command\" : \"get_qstack\", \"parameters\" : [15, 893]}"),
 
-              "parse_get_cs1 " ~: "get classicalstack 5 3 returns QCGet" ~: Right (QCGet QDClassicalStack 5 3) @=? (getCommand "{\"command\" : \"get_cstack\", \"parameters\" : [5, 3]}"),
+              "parse_get_cs1 " ~: "get classicalstack 5 3 returns QCGet" ~: Right (QCGet QDClassicalStack 5 3) @=? (getCommand "{\"command\" : \"get_classical_stack\", \"parameters\" : [5, 3]}"),
               "parse_get_cs2 " ~: "get    classicalstack   15   893 returns QCGet" ~:
-                               Right (QCGet QDClassicalStack 15 893) @=? (getCommand "{\"command\" : \"get_cstack\", \"parameters\" : [15, 893]}"),
+                               Right (QCGet QDClassicalStack 15 893) @=? (getCommand "{\"command\" : \"get_classical_stack\", \"parameters\" : [15, 893]}"),
 
               "parse_get_d1 " ~: "get dump 5 3 returns QCGet" ~: Right (QCGet QDDump 5 3) @=? (getCommand "{\"command\" : \"get_dump\", \"parameters\" : [5, 3]}"),
               "parse_get_d2 " ~: "get    dump   15   893 returns QCGet" ~: Right (QCGet QDDump 15 893) @=? (getCommand "{\"command\" : \"get_dump\", \"parameters\" : [15, 893]}"),
 
-              "parse_get_mm " ~: "memorymap returns QCGet" ~: Right (QCGet QDMemoryMap 5 3) @=? (getCommand "{\"command\" : \"get_mmap\", \"parameters\" : [5, 3]}"),
+              "parse_get_mm " ~: "memorymap returns QCGet" ~: Right (QCGet QDMemoryMap 5 3) @=? (getCommand "{\"command\" : \"get_stack_translation\", \"parameters\" : [5, 3]}"),
 
               "parse_get_exec " ~: "code returns QCGet" ~: Right (QCGet QDExecutableCode 5 0) @=? (getCommand "{\"command\" : \"get_code\", \"parameters\" : [5, 0]}"),
               "parse_get_cpointer " ~: "codepointer returns QCGet" ~: Right (QCGet QDCodePointer 5 0) @=? (getCommand "{\"command\" : \"get_codepointer\", \"parameters\" : [5, 0]}"),

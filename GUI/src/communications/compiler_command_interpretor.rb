@@ -11,7 +11,6 @@ class CompilerCommandInterpretor
   def initialize(connection)
     @connection = connection
     self.dir = ''
-    @connection_commander = ConnectionCommander.new(connection)
   end
 
   def dir=(fname)

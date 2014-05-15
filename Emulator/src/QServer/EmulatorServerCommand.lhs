@@ -49,18 +49,18 @@ where
   getEmulatorCommand :: String -> Either String QCommand
   getEmulatorCommand s =
       case (decodeStrict $ B.pack s :: Maybe EmulatorCommand) of
-        Just (EmulatorCommand "step"             [a,b]) -> Right $ QCStep a b
-        Just (EmulatorCommand "run"              [a])   -> Right $ QCRun  a
-        Just (EmulatorCommand "get_qstack"       [a,b]) -> Right $ QCGet QDQuantumStack a b
-        Just (EmulatorCommand "get_cstack"       [a,b]) -> Right $ QCGet QDClassicalStack a b
-        Just (EmulatorCommand "get_dump"         [a,b]) -> Right $ QCGet QDDump a b
-        Just (EmulatorCommand "get_mmap"         [a,b]) -> Right $ QCGet QDMemoryMap a b
-        Just (EmulatorCommand "get_code"         [a,b]) -> Right $ QCGet QDExecutableCode a b
-        Just (EmulatorCommand "get_codepointer"  [a,b]) -> Right $ QCGet QDCodePointer a b
-        Just (EmulatorCommand "simulate"         [a])   -> Right $ QCSimulate a
-        Just (EmulatorCommand "depth_multiple"   [a])   -> Right $ QCDepthMultiple a
-        Just (EmulatorCommand "trim"             [])    -> Right $ QCTrim
-        Just (EmulatorCommand s                  prms)  -> Left $ "Unrecognized command: '" ++
+        Just (EmulatorCommand "step"                  [a,b]) -> Right $ QCStep a b
+        Just (EmulatorCommand "run"                   [a])   -> Right $ QCRun  a
+        Just (EmulatorCommand "get_qstack"            [a,b]) -> Right $ QCGet QDQuantumStack a b
+        Just (EmulatorCommand "get_classical_stack"   [a,b]) -> Right $ QCGet QDClassicalStack a b
+        Just (EmulatorCommand "get_dump"              [a,b]) -> Right $ QCGet QDDump a b
+        Just (EmulatorCommand "get_stack_translation" [a,b]) -> Right $ QCGet QDMemoryMap a b
+        Just (EmulatorCommand "get_code"              [a,b]) -> Right $ QCGet QDExecutableCode a b
+        Just (EmulatorCommand "get_codepointer"       [a,b]) -> Right $ QCGet QDCodePointer a b
+        Just (EmulatorCommand "simulate"              [a])   -> Right $ QCSimulate a
+        Just (EmulatorCommand "depth_multiple"        [a])   -> Right $ QCDepthMultiple a
+        Just (EmulatorCommand "trim"                  [])    -> Right $ QCTrim
+        Just (EmulatorCommand s                       prms)  -> Left $ "Unrecognized command: '" ++
                                                            s ++ "', parms: '"  ++ (show prms) ++"'"
         Nothing -> Left $ "Unrecognized input: " ++ s
 
