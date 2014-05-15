@@ -1,6 +1,6 @@
 \subsection{Parse Commands for the Quantum Machine Server}\label{section:quantummachineserver.parsecommand}
 \begin{code}
-module QServer.ParseServerCommand (
+module QServer.EmulatorServerCommand (
        getCommand,
        sendResult
        )

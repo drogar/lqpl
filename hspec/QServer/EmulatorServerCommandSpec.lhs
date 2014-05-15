@@ -9,7 +9,7 @@
     import Test.HUnit
 
     import QServer.Types
-    import QServer.ParseServerCommand
+    import QServer.EmulatorServerCommand
     import System.Exit
 
     expectLeftString :: Either String a -> Bool
@@ -17,7 +17,7 @@
     expectLeftString _ = False
 
     main = do
-      let ptests = describe "Parse Server Commands" $ mapM_ (makeSpec) tests
+      let ptests = describe "Emulator Server Commands" $ mapM_ (makeSpec) tests
       summary <- hspecWith defaultConfig{configFormatter=progress} ptests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess

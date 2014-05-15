@@ -30,7 +30,7 @@ import QSM.QSM
 import QSM.Simulate
 import QServer.Types
 import QServer.MachineControl
-import QServer.ParseServerCommand
+import QServer.EmulatorServerCommand
 import QServer.StackToJSON
 
 import Utility.Extras(filterNonPrintable)

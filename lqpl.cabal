@@ -60,9 +60,9 @@ Test-Suite test-all
    build-depends:    base,parsec,network,HUnit,filepath,hspec
    hs-source-dirs:   Emulator/src,Common/src,hspec
 
-Test-Suite parse-server-command-spec
+Test-Suite emulator-server-command-spec
    type:             exitcode-stdio-1.0
-   main-is:          QServer/ParseServerCommandSpec.lhs
+   main-is:          QServer/EmulatorServerCommandSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,hspec,QuickCheck,containers,aeson,
                      text,bytestring
    extensions:       CPP

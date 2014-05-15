@@ -16,7 +16,7 @@
   import QSM.BasicData
   import QSM.QSM
   import QServer.Types
-  import QServer.ParseServerCommand
+  import QServer.EmulatorServerCommand(sendResult)
 
   stepMachine ::  Int ->
                   Int ->
