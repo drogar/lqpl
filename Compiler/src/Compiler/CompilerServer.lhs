@@ -40,8 +40,6 @@
   import qualified Data.ByteString.Char8 as B
   import qualified Data.Text as DT
   import Data.Aeson
-  import Data.Attoparsec
-  import Data.Attoparsec.Number
 
   import Paths_lqpl
 

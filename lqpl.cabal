@@ -20,16 +20,16 @@ Cabal-Version:       >=1.9.2
 Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Compiler/CompilerServerSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,transformers,
-                     directory,process,unix,mtl,transformers,containers,random,aeson,attoparsec,text
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,
+                     directory,process,unix,mtl,transformers,containers,random,aeson,text
    hs-source-dirs:   Compiler/src,Common/src, hspec
    extensions:       FlexibleInstances,CPP,OverloadedStrings
 
 Test-Suite compiler-server-connection-spec
    type:             exitcode-stdio-1.0
    main-is:          Compiler/CompilerServerConnectSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,transformers,
-                     directory,process,unix,mtl,transformers,containers,aeson,attoparsec,text
+   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,
+                     directory,process,unix,mtl,transformers,containers,aeson,text
    hs-source-dirs:   Compiler/src,Common/src,hspec
    extensions:       FlexibleInstances,CPP,OverloadedStrings
 
@@ -92,14 +92,14 @@ Executable lqpl
 Executable lqpl-compiler-server
    Main-is:           Compiler/ServerMain.lhs
    Build-Depends:     containers,mtl,array,directory,filepath,base,network,transformers,parsec,
-                      hspec,aeson,bytestring,attoparsec,text
+                      hspec,aeson,bytestring,text
    extensions:        ExistentialQuantification,OverloadedStrings
    hs-source-dirs:    Compiler/src,Common/src
 
 
 Executable lqpl-emulator
    Main-is:           QServer/QServer.lhs
-   Build-Depends:     base,filepath,array,containers,network,mtl,directory,parsec,random,text,bytestring,hspec,
+   Build-Depends:     base,filepath,array,containers,network,mtl,directory,random,
                       aeson,text,bytestring
    hs-source-dirs:    Emulator/src,Common/src
    extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
