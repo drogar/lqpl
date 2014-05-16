@@ -37,14 +37,6 @@
       summary <- hspecWith defaultConfig{configFormatter=progress} tests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
-{-      data  StackDescriptor b
-    = StackZero  |
-      StackValue ! b |
-      StackClassical [ClassicalData] |
-      StackQubit [(Basis,Basis)]|
-      StackData [(Constructor,[StackAddress])]
-                deriving Show
--}
 
     jsonValues =  [(StackZero, "{\"zero\":0}"),
                    (StackValue (SZero), "{\"value\" : 0}" ),
