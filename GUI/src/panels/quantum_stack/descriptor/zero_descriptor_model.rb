@@ -8,7 +8,7 @@ class ZeroDescriptorModel < AbstractDescriptorModel
 
   def initialize(in_string = '{"zero":0}')
     jzero = JSON.parse(in_string, symbolize_names: true)
-    if jzero.has_key?(:zero)
+    if jzero.key?(:zero)
       @value = '0'
     else
       fail ModelCreateError, "Zero can not be created with #{in_string}"
