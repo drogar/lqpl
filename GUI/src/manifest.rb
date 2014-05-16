@@ -104,8 +104,7 @@ java_import java.awt.Point
   require 'utility/monkey/' + rfile
 end
 
-%w(translate_line_ends drawing duck_matcher
-   swing_runner).each do |f|
+%w(translate_line_ends drawing duck_matcher swing_runner parameter_generator).each do |f|
   require 'utility/' + f
 end
 

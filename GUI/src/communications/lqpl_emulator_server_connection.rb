@@ -4,9 +4,15 @@ EMULATOR = 'lqpl-emulator'
 
 # connect to the LQPL emulator
 class LqplEmulatorServerConnection < Connection
+  extend Forwardable
+  def_delegators :@commander, :get_code, :get_qstack, :get_stack_translation, :get_classical_stack,
+                 :get_code, :get_codepointer, :get_dump, :do_run, :do_trim, :do_simulate,
+                 :do_depth_multiple
+
   def initialize(port = 9502)
     super(port)
     @connect_to = EMULATOR
+    @commander = EmulatorCommandInterpretor.new(self)
     connect
   end
 
