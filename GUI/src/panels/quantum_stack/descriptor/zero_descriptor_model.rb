@@ -6,8 +6,13 @@ class ZeroDescriptorModel < AbstractDescriptorModel
     fail ModelCreateError, 'Zero stack should not have substacks' if substacks.size > 0
   end
 
-  def initialize(in_string = '<Zero/>')
-    @value = (ZeroPatternParser.new in_string).parsed_value
+  def initialize(in_string = '{"zero":0}')
+    jzero = JSON.parse(in_string, symbolize_names: true)
+    if jzero.has_key?(:zero)
+      @value = '0'
+    else
+      fail ModelCreateError, "Zero can not be created with #{in_string}"
+    end
   end
 
   def length
