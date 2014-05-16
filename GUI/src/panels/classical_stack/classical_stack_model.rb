@@ -11,7 +11,7 @@ class ClassicalStackModel < ApplicationModel
   def classical_stack_text
     cs = @classical_stack || []
     return '' if cs == []
-    inside = cs.map { |c| "#{c}" }.join('<br />')
+    inside = cs.map { |c| "#{ c }" }.join('<br />')
     '<html>' + inside + '</html>'
   end
 
@@ -19,8 +19,7 @@ class ClassicalStackModel < ApplicationModel
     @classical_stack
   end
 
-  def classical_stack=(xml_input)
-    cpp = ClassicalPatternParser.new xml_input
-    @classical_stack = cpp.parsed_value
+  def classical_stack=(json_input)
+    @classical_stack = JSON.parse(json_input, symbolize_names: true)[:cstack]
   end
 end

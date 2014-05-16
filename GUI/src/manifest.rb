@@ -2,6 +2,7 @@
 require 'rbconfig'
 require 'java'
 require 'config/platform'
+require 'json'
 
 Dir.glob(File.expand_path(File.dirname(__FILE__) +
   '/**/*').gsub('%20', ' ')).each do |directory|
