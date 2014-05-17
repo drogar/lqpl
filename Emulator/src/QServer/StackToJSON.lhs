@@ -120,10 +120,10 @@
 
 
   instance (Show a) => JSON (Memory a) where
-        toJSON mem = let ascs = Map.assocs mem
-                         strascs = List.map (app2of2 (List.map show)) ascs
-                         jvelts =  List.map (:[]) $ List.map (uncurry jsonValueElement) strascs
-                     in jsonObject [jsonArrayElement "memory" $ List.map jsonObject jvelts]
+        toJSON mem = let show_ins = Map.map (List.map show) mem
+--                         strascs = List.map (app2of2 (List.map show)) ascs
+--                         jvelts =  List.map (:[]) $ List.map (uncurry jsonValueElement) strascs
+                     in jsonObject [jsonValueElementFromMap show_ins]
 
 
   instance JSON NameSupply where

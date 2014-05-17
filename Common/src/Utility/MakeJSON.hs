@@ -18,6 +18,9 @@ module Utility.MakeJSON where
     jsonObject :: [String] -> String
     jsonObject elements = surroundWithBraces $ toCommaSepString elements
 
+    jsonValueElementFromMap :: (Show a, Show b) => Map.Map a b -> String
+    jsonValueElementFromMap  mapab = toCommaSepString $
+                                  Map.foldrWithKey (\k x js -> ((show k) ++ " : " ++ (show x)) : js) [] mapab
 
     jsonBareObjectFromMap :: (Show a, Show b) => Map.Map a b -> String
     jsonBareObjectFromMap mapab = surroundWithBraces $ toCommaSepString $
