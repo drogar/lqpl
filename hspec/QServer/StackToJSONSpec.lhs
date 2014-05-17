@@ -99,8 +99,8 @@
 
 
     memory :: [(Memory LazyNum, String)]
-    memory = [(Map.fromList [("ep1", [EnScope, DeScope]), ("ep2",[AddCtrl, UnCtrl])],
-               "{\"ep1\" : [\"EnScope\",\"DeScope\"], \"ep2\" : [\"AddCtrl\",\"UnCtrl\"]}")]
+    memory = [(Map.fromList [("ep1", [EnScope, QLoad "@q" 0, DeScope]), ("ep2",[AddCtrl, UnCtrl])],
+               "{\"ep1\" : [\"EnScope\",\"QLoad \\\"@q\\\" 0\",\"DeScope\"], \"ep2\" : [\"AddCtrl\",\"UnCtrl\"]}")]
 
     baseMmap :: MemoryMap
     baseMmap = [Map.fromList [("x", 1), ("x2",3)]]

@@ -4,12 +4,12 @@ class CodePointer < ApplicationModel
   attr_accessor :qpo_method
   attr_accessor :line_number
 
-  def initialize(xml_string)
-    cp_match = CodePointerParser.new xml_string
-    @qpo_method = cp_match.parsed_value[0]
-    @line_number = cp_match.parsed_value[1]
-  rescue ParserError => e
-    raise e unless xml_string == ''
+  def initialize(in_string)
+    cp_match = EnsureJSON.new(in_string).as_json
+    @qpo_method = cp_match[:codepointer][0].to_sym
+    @line_number = cp_match[:codepointer][1]
+  rescue JSON::ParserError => e
+    raise e unless in_string == ''
     @qpo_method = ''
     @line_number = 0
   end
