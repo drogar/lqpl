@@ -10,11 +10,11 @@ class ExecutingCodeModel < ApplicationModel
 
   def the_code=(in_string)
     ecp = EnsureJSON.new(in_string).as_json
-    @the_code = Hash[ecp.map do |k,v|
-                       val = []
-                       v.each_with_index { |vl, i| val << format('%3d  %s', i, vl) }
-                       [k, val]
-                     end
+    @the_code = Hash[ecp.map do |k, v|
+      val = []
+      v.each_with_index { |vl, i| val << format('%3d  %s', i, vl) }
+      [k, val]
+    end
     ]
     fail ModelCreateError, 'code xml was ill-formed' unless the_code
   end
