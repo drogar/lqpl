@@ -5,8 +5,9 @@ class StackTranslationModel < ApplicationModel
   attr_accessor :text
 
   def stack_translation=(in_mmap)
-    stp = StackTranslationParser.new in_mmap
-    @stack_translation = stp.parsed_value
+    json_stp = EnsureJSON.new(in_mmap).as_json
+
+    @stack_translation = json_stp[:memory_map]
     @reverse_translation = @stack_translation.reverse.reduce({}) do |rev_map, st_map|
       rev_map.merge! st_map.invert
     end

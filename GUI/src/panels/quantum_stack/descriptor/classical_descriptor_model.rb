@@ -12,7 +12,7 @@ class ClassicalDescriptorModel < AbstractDescriptorModel
 
   def initialize(in_string)
     fail_message = "Invalid Classical: #{in_string}"
-    json_c = JSON.parse(in_string, symbolize_names: true)
+    json_c = EnsureJSON.new(in_string).as_json
     @value = json_c[:classical]
     fail ModelCreateError, fail_message unless @value && @value.kind_of?(Array)
     @value.each do |v|

@@ -13,7 +13,7 @@ class QubitDescriptorModel < AbstractDescriptorModel
   def initialize(in_string)
     fail_message = "Invalid Qubit: #{in_string}"
 
-    json_q = JSON.parse(in_string, symbolize_names: true)
+    json_q = EnsureJSON.new(in_string).as_json
     fail ModelCreateError, fail_message unless json_q[:qubit]
     @value = json_q[:qubit].map { |q| VALID_PAIRS[q] }
     fail ModelCreateError, fail_message if @value.length == 0 || @value.length > 4

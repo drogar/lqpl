@@ -26,7 +26,7 @@ class DataDescriptorModel < AbstractDescriptorModel
 
   def initialize(in_string)
     fail_message = "Invalid Algebraic data: #{in_string}"
-    json_d = JSON.parse(in_string, symbolize_names: true)
+    json_d = EnsureJSON.new(in_string).as_json
     @value = json_d[:data]
     fail ModelCreateError, fail_message unless @value && @value.kind_of?(Array)
     @value.each do |dv|

@@ -7,7 +7,7 @@ class ZeroDescriptorModel < AbstractDescriptorModel
   end
 
   def initialize(in_string = '{"zero":0}')
-    jzero = JSON.parse(in_string, symbolize_names: true)
+    jzero = EnsureJSON.new(in_string).as_json
     if jzero.key?(:zero)
       @value = '0'
     else
