@@ -1,34 +1,43 @@
-def make_multi_sstacks(front,back,sstack,count)
-  front+"<substacks>"+(sstack*count)+"</substacks>" + back
+def make_multi_sstacks(id, diag,back,sstacks)
+  '{"qstack" : {"id": ' + id + ', "diagonal" : ' + diag + ', "substacks": [' +
+    sstacks.join(',') + '],' + back + '}}'
 end
 
-QSQBZero = "<Qstack><int>1</int><bool>True</bool>"+
-  "<substacks><Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>1.0</number></Value></Qstack></substacks>"+
-  "<Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-QSVAL5 = "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"
+def bottom_stack(id,diag, kind, count = 1)
+  '{"qstack" : {"id": ' + id + ', "diagonal" : ' + diag +
+    ', "substacks": [' + (['{"bottom":true}'] * count).join(', ') + '],' +
+    kind + '}}'
+end
 
-QSZ = "<Qstack><int>1</int><bool>True</bool><substacks></substacks><Zero/></Qstack>"
-QSQBHAD = make_multi_sstacks("<Qstack><int>1</int><bool>True</bool>",
-  "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits></Qstack>",
-  QSVAL5,4)
+NODE_ZERO = '"qnode" : {"value": 1.0}'
+NODE_VAL1 = '"qnode" : {"value": 1.0}'
+NODE_VAL5 = '"qnode" : {"value": 0.5}'
+NODE_QZZ = '"qnode" : {"qubit": ["ZZ"]}'
+NODE_QALL = '"qnode" : {"qubit": ["ZZ","ZO", "OZ", "ZZ"]}'
+NODE_CL275 = '"qnode" : {"classical":[27,5]}'
+NODE_CL2757 = '"qnode" : {"classical":[27,5,7]}'
+NODE_DATA = '"qnode" : {"data": [{"cons": "Nil", "addresses" : []}]}'
 
-QSINT = make_multi_sstacks("<Qstack><int>3</int><bool>True</bool>",
-  "<Classical><cint>27</cint><cint>5</cint></Classical></Qstack>",
-  QSVAL5,2)
 
+QSVAL1 = make_multi_sstacks('-1', 'true', NODE_ZERO, [])
+QSVAL5 = make_multi_sstacks('-1', 'true', NODE_VAL5, [])
+QSVAL5F = make_multi_sstacks('-1', 'false', NODE_VAL5, [])
 
-QSQ1R2="<Qstack><int>2</int><bool>True</bool>"+ #r
-  "<substacks><Qstack><int>1</int><bool>True</bool>"+ #q
-  "<substacks><Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
-  "<Qstack><int>-1</int><bool>False</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
-  "<Qstack><int>-1</int><bool>False</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack>"+
-  "<Qstack><int>-1</int><bool>True</bool><substacks></substacks><Value><number>0.5</number></Value></Qstack></substacks>"+
-  "<Qubits><pair><qz/><qz/></pair><pair><qz/><qo/></pair><pair><qo/><qz/></pair><pair><qo/><qo/></pair></Qubits></Qstack></substacks>"+
-  "<Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
+QSQBZero = make_multi_sstacks('1', 'true', NODE_QZZ, [QSVAL1])
 
-QB2WITHBOTTOM =  "<Qstack><int>2</int><bool>True</bool><substacks><bottom/></substacks><Qubits><pair><qz/><qz/></pair></Qubits></Qstack>"
-C1WITHBOTTOM =  "<Qstack><int>2</int><bool>True</bool><substacks><bottom/></substacks><Classical><cint>27</cint></Classical></Qstack>"
-AL1WITHBOTTOM =  "<Qstack><int>7</int><bool>False</bool><substacks><bottom/></substacks><AlgebraicData><string>Nil</string><StackAddresses></StackAddresses></AlgebraicData></Qstack>"
+QSZ = make_multi_sstacks('1', 'true', NODE_ZERO, [])
+
+QSQBHAD = make_multi_sstacks('1', 'true', NODE_QZZ,  [QSVAL5] * 4)
+
+QSINT = make_multi_sstacks('3', 'true', NODE_CL275,  [QSVAL5] * 2)
+
+QSQ1R2 = make_multi_sstacks('2', 'true', NODE_QZZ, # first r, then q
+  [make_multi_sstacks('1','true', NODE_QALL,
+    [QSVAL5,QSVAL5F,QSVAL5F,QSVAL5])])
+
+QB2WITHBOTTOM = bottom_stack('2', 'true', NODE_QZZ)
+C1WITHBOTTOM = bottom_stack('2', 'true', NODE_CL275)
+AL1WITHBOTTOM = bottom_stack('7', 'false', NODE_DATA)
 
 BOTTOMS = [QB2WITHBOTTOM,C1WITHBOTTOM,AL1WITHBOTTOM]
 
@@ -38,6 +47,4 @@ ADDRESSES=[[1,QSQBZero],[-1,QSVAL5], [2,QB2WITHBOTTOM]]
 
 DIAGS=[[true,QSQBZero], [true,QSVAL5], [false,AL1WITHBOTTOM]]
 
-QS3LEVEL = make_multi_sstacks("<Qstack><int>3</int><bool>True</bool>",
-  "<Classical><cint>27</cint><cint>5</cint><cint>7</cint></Classical></Qstack>",
-  QSQBZero,3)
+QS3LEVEL = make_multi_sstacks('3', 'true', NODE_CL2757, [QSQBZero] * 3)

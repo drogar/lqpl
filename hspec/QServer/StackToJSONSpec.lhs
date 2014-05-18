@@ -82,8 +82,13 @@
 
 
     stackBoundedJSON = [ (boundedQstack,
-                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : \"bottom\", " ++
-                  "\"qnode\" : " ++ (toJSON sqbzz) ++"}}" )]
+                  "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [{\"bottom\" : true}], " ++
+                  "\"qnode\" : " ++ (toJSON sqbzz) ++"}}" ),
+                  (QuantumStack 1 True [sub5, sub5f, sub5]  sqb3,
+                   "{\"qstack\" : {\"id\" : 1, \"diagonal\" : true, \"substacks\" : [" ++
+                   "{\"bottom\" : true}, {\"bottom\" : true}, {\"bottom\" : true}, {\"bottom\" : true}" ++
+                   "], \"qnode\" : " ++ (toJSON sqb4) ++ "}}")
+                       ]
 
     baseCstack :: ClassicalStack
     baseCstack = Stack [Left 5, Right False, Left (-1)]

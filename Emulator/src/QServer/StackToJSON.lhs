@@ -105,7 +105,8 @@
         jsonObject  [ jsonElement "qstack" $
                       jsonObject [jsonValueElement "id" (address fqs),
                                   jsonElement "diagonal" (boolForJSON $ onDiagonal fqs),
-                                  jsonValueElement "substacks" "bottom",
+                                  jsonArrayElement "substacks" $
+                                     List.map (\_ ->   jsonObject [jsonElement "bottom" "true"]) (subStacks fqs),
                                   jsonElement "qnode" (toJSON (descriptor fqs))
                                  ]
                     ]
