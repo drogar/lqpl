@@ -152,11 +152,12 @@
     toJSON (DumpCall ret ep saveC) = jsonObject [jsonElement "dump_call" $ jsonObject [
                                                                   jsonValueElement "return_label" ret,
                                                                   jsonValueElement "return_ep" ep,
-                                                                  toJSON saveC]
+                                                                  jsonElement "classical" $ toJSON saveC]
                                                 ]
     boundedToJSON 0 _ = ""
     boundedToJSON n (DumpStackSplit ret branches resultQ saveC saveNS resultNS saveMM resultMM) =
-        let jsonBranch (a,b) = jsonObject [jsonElement "qsbranch" $ boundedToJSON n a, jsonValueElement "branch_label" b]
+        let jsonBranch (a,b) = jsonObject [jsonElement "qsbranch" $ boundedToJSON n a,
+                                           jsonValueElement "branch_label" b]
         in  jsonObject [jsonElement  "dump_split" $ jsonObject [
                                      jsonValueElement "return_label" ret,
                                      jsonArrayElement "branches" $ List.map jsonBranch branches,
@@ -168,20 +169,10 @@
                                      jsonElement "result_stacktrans" $ toJSON resultMM
                                         ]
                         ]
-{-         surroundWith "DumpSplit" $ (toJSON ret) ++ (boundedListToJSON n "Branches" branches) ++ boundedToJSON n resultQ ++ toJSON saveC ++
-            (surroundWith "SaveNameSpace" $ listToJSON "ints" saveilist ++ toJSON savestackaddress) ++
-            (surroundWith "ResultNameSpace" $ listToJSON "ints" resultislist ++ toJSON resultstackaddress) ++
-            listToJSON "SavedMemoryMap"  saveMM ++ listToJSON "ResultMemoryMap"  resultMM
-            where
-              saveilist = fst saveNS
-              savestackaddress = snd saveNS
-              resultislist = fst resultNS
-              resultstackaddress = snd resultNS
--}
     boundedToJSON n  (DumpCall ret ep saveC) = jsonObject [jsonElement "dump_call" $ jsonObject [
                                                                   jsonValueElement "return_label" ret,
                                                                   jsonValueElement "return_ep" ep,
-                                                                  boundedToJSON n saveC]
+                                                                  jsonElement "classical" $ boundedToJSON n saveC]
                                                           ]
 
 

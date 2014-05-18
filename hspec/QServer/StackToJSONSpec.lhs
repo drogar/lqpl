@@ -135,32 +135,41 @@
     nameSupplies =[(baseNS, "{\"int_list\" : [1, 2, 3, 4], \"address\" : 15}")]
 
     dumps :: [(Dump LazyNum, String)]
-    dumps = [([DumpCall 3 "ep" baseCstack], "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
-                                              (toJSON baseCstack) ++ "}}]}"),
-            ([DumpStackSplit 3 [(sub5,1), (sub5, 2)] sub5 baseCstack baseNS baseNS baseMmap baseMmap],
-             "{\"dump\" : [{\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++ (toJSON sub5) ++
-             ", \"branch_label\" : 1}, {\"qsbranch\" : " ++ (toJSON sub5) ++ ", \"branch_label\" : 2}], \"qsresult\" : " ++
-             (toJSON sub5) ++ ", \"save_cstack\" : " ++ (toJSON baseCstack) ++ ", \"save_ns\" : " ++ (toJSON baseNS) ++
-             ", \"result_ns\" : " ++ (toJSON baseNS) ++ ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
-             ", \"result_stacktrans\" : " ++ (toJSON baseMmap) ++ "}}]}"),
-             ([DumpCall 3 "ep" baseCstack, DumpStackSplit 3 [(sub5,1), (sub5, 2)] sub5 baseCstack baseNS baseNS baseMmap baseMmap],
-             "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++ (toJSON baseCstack) ++
-             "}}, {\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++ (toJSON sub5) ++
-             ", \"branch_label\" : 1}, {\"qsbranch\" : " ++ (toJSON sub5) ++ ", \"branch_label\" : 2}], \"qsresult\" : " ++
-             (toJSON sub5) ++ ", \"save_cstack\" : " ++ (toJSON baseCstack) ++ ", \"save_ns\" : " ++ (toJSON baseNS) ++
-             ", \"result_ns\" : " ++ (toJSON baseNS) ++ ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
+    dumps = [([DumpCall 3 "ep" baseCstack],
+              "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
+              "\"classical\" : " ++ (toJSON baseCstack) ++ "}}]}"),
+             ([DumpStackSplit 3 [(sub5,1), (sub5, 2)] sub5 baseCstack baseNS baseNS baseMmap baseMmap],
+              "{\"dump\" : [{\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++
+              (toJSON sub5) ++ ", \"branch_label\" : 1}, {\"qsbranch\" : " ++ (toJSON sub5) ++
+              ", \"branch_label\" : 2}], \"qsresult\" : " ++ (toJSON sub5) ++ ", \"save_cstack\" : " ++
+              (toJSON baseCstack) ++ ", \"save_ns\" : " ++ (toJSON baseNS) ++ ", \"result_ns\" : " ++
+              (toJSON baseNS) ++ ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
+              ", \"result_stacktrans\" : " ++ (toJSON baseMmap) ++ "}}]}"),
+             ([DumpCall 3 "ep" baseCstack,
+               DumpStackSplit 3 [(sub5,1), (sub5, 2)] sub5 baseCstack baseNS baseNS baseMmap baseMmap],
+              "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
+              "\"classical\" : " ++ (toJSON baseCstack) ++
+              "}}, {\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++
+              (toJSON sub5) ++ ", \"branch_label\" : 1}, {\"qsbranch\" : " ++ (toJSON sub5) ++
+              ", \"branch_label\" : 2}], \"qsresult\" : " ++ (toJSON sub5) ++ ", \"save_cstack\" : " ++
+              (toJSON baseCstack) ++ ", \"save_ns\" : " ++ (toJSON baseNS) ++ ", \"result_ns\" : " ++
+              (toJSON baseNS) ++ ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
              ", \"result_stacktrans\" : " ++ (toJSON baseMmap) ++ "}}]}")]
 
 
     dumpsBounded :: [(Int, Dump LazyNum, String)]
-    dumpsBounded = [(1, [DumpCall 3 "ep" baseCstack], "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
-                                                     (boundedToJSON 1 baseCstack) ++ "}}]}"),
+    dumpsBounded = [(1, [DumpCall 3 "ep" baseCstack],
+                     "{\"dump\" : [{\"dump_call\" : {\"return_label\" : 3, \"return_ep\" : \"ep\", " ++
+                     "\"classical\" : " ++ (boundedToJSON 1 baseCstack) ++ "}}]}"),
                    (0, [DumpCall 3 "ep" baseCstack], "{\"dump\" : []}"),
-                   (1, [DumpStackSplit 3 [(sub5,1), (sub5, 2)] boundedQstack baseCstack baseNS baseNS baseMmap baseMmap],
-                    "{\"dump\" : [{\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++ (boundedToJSON 1 sub5) ++
-                    ", \"branch_label\" : 1}, {\"qsbranch\" : " ++ (boundedToJSON 1 sub5) ++ ", \"branch_label\" : 2}], \"qsresult\" : " ++
-                    (boundedToJSON 1 boundedQstack) ++ ", \"save_cstack\" : " ++ (boundedToJSON 1 baseCstack) ++ ", \"save_ns\" : " ++ (toJSON baseNS) ++
-                    ", \"result_ns\" : " ++ (toJSON baseNS) ++ ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
+                   (1, [DumpStackSplit 3 [(sub5,1), (sub5, 2)]
+                                       boundedQstack baseCstack baseNS baseNS baseMmap baseMmap],
+                    "{\"dump\" : [{\"dump_split\" : {\"return_label\" : 3, \"branches\" : [{\"qsbranch\" : " ++
+                    (boundedToJSON 1 sub5) ++     ", \"branch_label\" : 1}, {\"qsbranch\" : " ++
+                    (boundedToJSON 1 sub5) ++ ", \"branch_label\" : 2}], \"qsresult\" : " ++
+                    (boundedToJSON 1 boundedQstack) ++ ", \"save_cstack\" : " ++ (boundedToJSON 1 baseCstack) ++
+                    ", \"save_ns\" : " ++ (toJSON baseNS) ++ ", \"result_ns\" : " ++ (toJSON baseNS) ++
+                    ", \"save_stacktrans\" : " ++ (toJSON baseMmap) ++
                     ", \"result_stacktrans\" : " ++ (toJSON baseMmap) ++ "}}]}")]
 
 
@@ -185,7 +194,7 @@
       mapM_ (uncurry checkItBounded) cstacksbnd
       context "code pointers" $ mapM_ (uncurry checkIt) codepointer
       context "memory" $ mapM_ (uncurry checkIt) memory
-      context "memorymap" $ mapM_ (uncurry checkIt) mmap
+      context "stack_translation" $ mapM_ (uncurry checkIt) mmap
       context "name supply" $ mapM_ (uncurry checkIt) nameSupplies
       context "dump" $ mapM_ (uncurry checkIt) dumps
       context "bounded dump" $ mapM_ (uncurry3 checkItBoundedWithBound) dumpsBounded
