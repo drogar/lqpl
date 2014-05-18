@@ -226,8 +226,10 @@ simulate depth machineStateRef shndle =
   do
     mstate <- readIORef machineStateRef
     let qstk = quantumStack $ pickIthMS depth mstate
+    let j (a,b,c) = "[" + show a + "," +show b+ ", " + show c +"]"
     (rval,resultList) <- chooseIt (canonicalize qstk)
-    hPutStrLn shndle $ jsonObject [jsonValueElement "Simulated" rval, jsonValueArrayElement "results" resultList]
+    hPutStrLn shndle $ jsonObject [jsonValueElement "Simulated" rval,
+                                   jsonValueArrayElement "results" $ map j resultList]
 
 trim :: IORef (MachineState BaseType) ->
         Handle ->
