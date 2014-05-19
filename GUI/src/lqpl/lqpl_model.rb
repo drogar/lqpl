@@ -84,7 +84,7 @@ class LqplModel < ApplicationModel
 
   def compile(file)
     compiler_connection.compile file.get_absolute_path
-    self.messages_text = compiler_connection.success_or_fail_message(file.name)
+    self.messages_text = compiler_connection.success_or_fail_message
   end
 
   def load_and_enable!(file)

@@ -22,6 +22,7 @@ describe LqplEmulatorServerConnection do
       before :each do
         @sc = LqplEmulatorServerConnection.instance
       end
+      specify { expect(@sc.methods).to include(:send_load_from_file) }
       specify { expect(@sc.methods).to include(:get_qstack) }
       specify { expect(@sc.methods).to include(:get_stack_translation) }
       specify { expect(@sc.methods).to include(:get_classical_stack) }

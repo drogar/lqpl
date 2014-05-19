@@ -7,7 +7,7 @@ class LqplEmulatorServerConnection < Connection
   extend Forwardable
   def_delegators :@commander, :get_code, :get_qstack, :get_stack_translation, :get_classical_stack,
                  :get_code, :get_codepointer, :get_dump, :do_run, :do_trim, :do_simulate,
-                 :do_depth_multiple
+                 :do_depth_multiple, :send_load_from_file
 
   def initialize(port = 9502)
     super(port)

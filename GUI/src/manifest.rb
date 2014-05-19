@@ -109,14 +109,6 @@ end
   require 'utility/' + f
 end
 
-%w(abstract_pattern zero_pattern value_pattern abstract_list_pattern
-   qubit_pattern data_pattern classical_pattern stack_translation
-   code_pointer executing_code dump_call dump_split dump
-   quantum_stack).each do |rf|
-  require 'panels/parsers/' + rf + '_parser'
-end
-
-require 'dialogs/parsers/simulate_results_parser'
 require 'painting/canvas_size'
 require 'application_model'
 require 'panels/panel_controller'

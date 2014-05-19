@@ -1,8 +1,5 @@
 # encoding: utf-8
 
-require 'panels/dump/dump_call_model'
-require 'panels/dump/dump_split_model'
-
 # model for the Dump
 class DumpModel < ApplicationModel
   attr_accessor :dump
