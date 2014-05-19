@@ -9,7 +9,7 @@ describe ClassicalDescriptorModel do
   it 'should raise an error if passed other than a list of ints/bools' do
     expect do
       AbstractDescriptorModel.make_instance '{"classical": ["wjat"]}'
-    end.to raise_error(ModelCreateError, /classical.....wjat/)
+    end.to raise_error(ModelCreateError, /classical....wjat/)
   end
   it 'should have a length equal to the number of elements of the passed in list' do
     sd = AbstractDescriptorModel.make_instance C14

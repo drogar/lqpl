@@ -28,13 +28,12 @@ describe ClassicalDescriptorPainter do
     it 'should draw the name to the left of the point with paint_model_at_point' do
       subject.paint_model_at_point(@d.gc,Point.new(30,20)) # subtracts node size from x rl point is 20,20
       rstr = @d.bi.data(Rectangle.new(0,0,30,30))
-      check_raster_point_is_grey(rstr,18,19)
+      check_some_raster_point_is_grey(rstr,0,0,30,20)
     end
     it 'should draw the Value centered on the point with paint_value' do
       subject.paint_model_at_point(@d.gc,Point.new(20,0)) # adds 2*node size to get y real point is 20,20
       rstr = @d.bi.data(Rectangle.new(0,0,30,30))
-      check_raster_point_is_grey(rstr,19,19)
-      check_raster_point_is_grey(rstr,21,19)
+      check_some_raster_point_is_grey(rstr,0,0,21,19)
     end
 
     it 'should draw a green circle centered on the point with paint_value' do

@@ -56,6 +56,10 @@ describe EmulatorCommandInterpretor do
         expect(subject).to receive(:command).with(:run, [1])
         subject.do_run
       end
+      it 'falls through to connection with :run and [1] when called with no parms' do
+        expect(@cmp).to receive(:send_and_read_data).with('{"command":"run","parameters":[1]}')
+        subject.do_run
+      end
       it 'calls command with :run and [4] when called with 4' do
         expect(subject).to receive(:command).with(:run, [4])
         subject.do_run(4)

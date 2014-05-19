@@ -31,6 +31,7 @@ describe LqplEmulatorServerConnection do
       specify { expect(@sc.methods).to include(:get_codepointer) }
       specify { expect(@sc.methods).to include(:do_run) }
       specify { expect(@sc.methods).to include(:do_trim) }
+      specify { expect(@sc.methods).to include(:do_step) }
       specify { expect(@sc.methods).to include(:do_simulate) }
       specify { expect(@sc.methods).to include(:do_depth_multiple) }
     end

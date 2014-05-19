@@ -5,16 +5,15 @@ class QuantumStackController < PanelController
   set_view 'QuantumStackView'
 
   def update_data_from_lqpl_model(lqpl_model)
-    set_quantum_stack(lqpl_model.tree_depth_spinner,
-                      lqpl_model.recursion_spinner,
+    set_quantum_stack(lqpl_model.tree_depth_spinner.int_value,
+                      lqpl_model.recursion_spinner.int_value,
                       StackTranslationController.instance.stack_translation)
   end
 
   def set_quantum_stack(tree_depth, recursion_depth, stack_trans)
     model.stack_translation = stack_trans
     model.quantum_stack =
-      lqpl_emulator_server_connection.get_qstack(tree_depth,
-                                                 recursion_depth)
+      lqpl_emulator_server_connection.get_qstack(recursion_depth, tree_depth)
     update_view
   end
 

@@ -75,7 +75,7 @@ class CompilerCommandInterpretor
   end
 
   def qpo(code)
-    File.write(qpo_file_name, ([current_version_line] + code).join("\n"))
+    File.write(qpo_file_name, ([current_version_line] + code).join("\n")+"\n")
     nil
   end
 

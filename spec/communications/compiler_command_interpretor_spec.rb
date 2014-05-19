@@ -154,7 +154,7 @@ describe CompilerCommandInterpretor do
         subject.dir = 'whatever/some.qpl'
         subject.qpo_file_name = 'whatever/some.qpl'
         expect(subject).to receive(:current_version_line).and_return('cv1')
-        expect(File).to receive(:write).with('whatever/some.qpo', "cv1\nline1\nline2")
+        expect(File).to receive(:write).with('whatever/some.qpo', "cv1\nline1\nline2\n")
         subject.qpo(%w(line1 line2))
       end
       it 'returns nil' do

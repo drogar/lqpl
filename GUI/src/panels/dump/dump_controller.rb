@@ -6,11 +6,11 @@ class DumpController < PanelController
   set_close_action :hide
 
   def update_data_from_lqpl_model(lqpl_model)
-    update_dump(lqpl_model.tree_depth_spinner, lqpl_model.recursion_spinner)
+    update_dump(lqpl_model.tree_depth_spinner.int_value, lqpl_model.recursion_spinner.int_value)
   end
 
   def update_dump(tree_depth, recursion_level)
-    update_dump_data(lqpl_emulator_server_connection.get_dump(tree_depth, recursion_level))
+    update_dump_data(lqpl_emulator_server_connection.get_dump(recursion_level, tree_depth))
   end
 
   def update_dump_data(dump_data)

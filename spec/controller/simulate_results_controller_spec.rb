@@ -24,9 +24,9 @@ describe SimulateResultsController do
   end
 
   it 'should create a results set when given the correct input' do
-    TWOELTS = '{"Simulated" :0.73, "results": [["1", "Coin", "Heads"], ["2", "qubit", "0"]]}'
+    TWOEL = '{"Simulated" :0.73, "results": [["1", "Coin", "Heads"], ["2", "qubit", "0"]]}'
     SwingRunner::on_edt do
-      @c.set_simulate_data(TWOELTS,@st)
+      @c.set_simulate_data(TWOEL,@st)
       expect(@c.simulate_data).to eq('<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>')
     end
   end

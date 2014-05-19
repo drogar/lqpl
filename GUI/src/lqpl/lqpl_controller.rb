@@ -65,7 +65,7 @@ class LqplController < ApplicationController
 
   def file_simulate_action_performed
     SimulateResultsController.instance
-      .set_simulate_results(model.recursion_spinner,
+      .set_simulate_results(model.recursion_spinner.int_value,
                             StackTranslationController.instance.stack_translation)
     SimulateResultsController.instance.open
   end
@@ -93,7 +93,7 @@ class LqplController < ApplicationController
   end
 
   def recursion_multiplier_spinner_state_changed
-    model.update_recursion_multiplier_spinner("#{view_model.recursion_multiplier_spinner}")
+    model.update_recursion_multiplier_spinner(view_model.recursion_multiplier_spinner)
     update_all
   end
 
