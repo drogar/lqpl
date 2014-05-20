@@ -82,7 +82,9 @@ class QuantumStackPainter
     offsets = CanvasSize.compute_offsets(sub_stack_sizes(g))
     Range.new(0, @sstack_painters.size - 1).each do |i|
       paint_at_point =
-        top_point.copy_with_x_and_y_offset(offsets[i], CanvasSize.vertical_node_separation)
+        CopyPoint.copy_with_x_and_y_offset(top_point,
+                                           offsets[i],
+                                           CanvasSize.vertical_node_separation)
       paint_substack(g, i, top_point, paint_at_point)
     end
   end
