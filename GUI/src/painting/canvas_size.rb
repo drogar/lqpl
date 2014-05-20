@@ -30,10 +30,12 @@ class CanvasSize
   end
 
   def self.subtree_side_width(subtree_array, side)
-    mid = subtree_array.qpl_middle_element
-    CanvasSize.total_widths(subtree_array.qpl_partition(side)) +
+    ap_subtree_array = ArrayPartitioner.new(subtree_array)
+    mid = ap_subtree_array.qpl_middle_element
+    CanvasSize.total_widths(ap_subtree_array.qpl_partition(side)) +
       (mid ? mid.required_width(side) : 0)
   end
+
   def self.total_widths(sizes)
     sizes.reduce(0.0) { |a, e| a + e.required_width }
   end
@@ -56,19 +58,23 @@ class CanvasSize
   def self.compute_offsets(sizes)
     return [] if !sizes || sizes.length == 0
 
-    mid = sizes.qpl_middle_element
+    mid = ArrayPartitioner.new(sizes).qpl_middle_element
     CanvasSize.left_offsets(sizes, mid) + CanvasSize.right_offsets(sizes, mid)
   end
 
   def self.left_offsets(sizes, mid)
-    lefts = sizes.qpl_left_partition.tails.map { |la| -CanvasSize.width_to_right_of_head(la) }
+    lefts = ArrayPartitioner.new(sizes).qpl_left_partition_tails.map do |la|
+      -CanvasSize.width_to_right_of_head(la)
+    end
     lefts.map! { |b| b - mid.left_required_width } if mid
     lefts << 0 if mid
     lefts
   end
 
   def self.right_offsets(sizes, mid)
-    rights = sizes.qpl_right_partition.heads.map { |ra| CanvasSize.width_to_left_of_tail(ra) }
+    rights = ArrayPartitioner.new(sizes).qpl_right_partition_heads.map do |ra|
+      CanvasSize.width_to_left_of_tail(ra)
+    end
     rights.map { |r| r + (mid ? mid.right_required_width : 0) }
   end
 

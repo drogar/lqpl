@@ -101,12 +101,8 @@ java_import java.lang.System
 
 java_import java.awt.Point
 
-%w(array).each do |rfile|
-  require 'utility/monkey/' + rfile
-end
-
-%w(copy_point drawing duck_matcher ensure_json lqpl_file_chooser swing_runner
-   parameter_generator).each do |f|
+%w(array_partitioner copy_point drawing duck_matcher ensure_json
+   lqpl_file_chooser swing_runner parameter_generator).each do |f|
   require 'utility/' + f
 end
 
