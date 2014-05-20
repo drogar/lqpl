@@ -6,7 +6,8 @@ class StackTranslationController < PanelController
   set_close_action :hide
 
   def update_data_from_lqpl_model(lqpl_model)
-    update_stack_translation(lqpl_model.tree_depth_spinner.int_value, lqpl_model.recursion_spinner.int_value)
+    update_stack_translation(lqpl_model.tree_depth_spinner.int_value,
+                             lqpl_model.recursion_spinner.int_value)
   end
 
   def update_stack_translation(tree_depth, recursion_level)

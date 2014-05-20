@@ -6,7 +6,8 @@ class ClassicalStackController < PanelController
   set_close_action :hide
 
   def update_data_from_lqpl_model(lqpl_model)
-    update_classical_stack(lqpl_model.tree_depth_spinner.int_value, lqpl_model.recursion_spinner.int_value)
+    update_classical_stack(lqpl_model.tree_depth_spinner.int_value,
+                           lqpl_model.recursion_spinner.int_value)
   end
 
   def update_classical_stack(tree_depth, recursion_level)

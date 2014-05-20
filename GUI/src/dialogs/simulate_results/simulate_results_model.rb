@@ -25,8 +25,8 @@ class SimulateResultsModel
     fail ModelCreateError, 'Missing Stack Translation' if @stack_translation.nil?
     sr = EnsureJSON.new(sim_data).as_json
     @random_value_text = "Random Value: #{sr[:Simulated]}"
-    @simulate_results = sr[:results].map do |sr|
-      [@stack_translation.reverse_lookup(sr[0].to_i), sr[1], sr[2]]
+    @simulate_results = sr[:results].map do |result|
+      [@stack_translation.reverse_lookup(result[0].to_i), result[1], result[2]]
     end
   end
 end

@@ -7,7 +7,7 @@ class ClassicalDescriptorModel < AbstractDescriptorModel
   end
 
   def self.valid_classical_kind(v)
-    [Numeric, TrueClass, FalseClass].inject(false) { |a,e| a || v.kind_of?(e) }
+    [Numeric, TrueClass, FalseClass].reduce(false) { |a, e| a || v.kind_of?(e) }
   end
 
   def initialize(in_string)
