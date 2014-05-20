@@ -1,13 +1,13 @@
 # encoding: utf-8
-# TODO: change to inheritance rather than monkey.
-# change the java file chooser by adding a couple of options. Likely could be done via inheritance
-class JFileChooser
+require 'forwardable'
+# class to wrap a jfile chooser
+class LqplFileChooser
   def self.lqpl_assembled_file_opener
-    JFileChooser.opener('Load LQPO (Assembly) File', 'LQPL assembled file', 'qpo')
+    opener('Load LQPO (Assembly) File', 'LQPL assembled file', 'qpo')
   end
 
   def self.lqpl_source_file_opener
-    JFileChooser.opener('Open LQPL File for Compiling', 'LQPL source file', 'qpl')
+    opener('Open LQPL File for Compiling', 'LQPL source file', 'qpl')
   end
 
   def self.opener(title, file_description, file_extension)

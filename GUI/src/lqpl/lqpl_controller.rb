@@ -43,7 +43,7 @@ class LqplController < ApplicationController
   end
 
   def file_compile_action_performed
-    chooser = JFileChooser.lqpl_source_file_opener
+    chooser = LqplFileChooser.lqpl_source_file_opener
     if chooser.show_open_dialog(my_frame) == JFileChooser::APPROVE_OPTION
       model.compile(chooser.get_selected_file)
     else
@@ -53,7 +53,7 @@ class LqplController < ApplicationController
   end
 
   def file_load_action_performed
-    @qpl_dialog = JFileChooser.lqpl_assembled_file_opener
+    @qpl_dialog = LqplFileChooser.lqpl_assembled_file_opener
     if @qpl_dialog.show_open_dialog(nil) == JFileChooser::APPROVE_OPTION
       model.load_and_enable! @qpl_dialog.selected_file
       initialize_sub_controllers

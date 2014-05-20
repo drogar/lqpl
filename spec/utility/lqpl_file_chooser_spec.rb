@@ -1,15 +1,16 @@
 # Encoding: UTF-8
 require 'spec/spec_helper'
 
-describe JFileChooser do
+describe LqplFileChooser do
   describe 'class method opener' do
     before :each do
       SwingRunner.on_edt do
-        @j = JFileChooser.opener('a', 'b', 'c')
+        @j = LqplFileChooser.opener('a', 'b', 'c')
       end
     end
     it 'should create a JFileChooser' do
       expect(@j).not_to be_nil
+      expect(@j).to be_a(JFileChooser)
     end
     it 'should set the title to the first parameter' do
       SwingRunner.on_edt do
@@ -31,7 +32,7 @@ describe JFileChooser do
   describe 'lqpl_assembled_file_opener' do
     before :each do
       SwingRunner.on_edt do
-        @qpo = JFileChooser.lqpl_assembled_file_opener
+        @qpo = LqplFileChooser.lqpl_assembled_file_opener
       end
     end
     it 'should have a title of "Load LQPO (Assembly) File"' do
@@ -55,7 +56,7 @@ describe JFileChooser do
   describe 'lqpl_source_file_opener' do
     before :each do
       SwingRunner.on_edt do
-        @qpl = JFileChooser.lqpl_source_file_opener
+        @qpl = LqplFileChooser.lqpl_source_file_opener
       end
     end
     it 'should have a title of "Open LQPL File for Compiling"' do
@@ -68,7 +69,7 @@ describe JFileChooser do
         expect(@qpl.file_filter.description).to eq('LQPL source file')
       end
     end
-    it 'should only accept files whose extension is qpo' do
+    it 'should only accept files whose extension is qpl' do
       SwingRunner.on_edt do
         expect(@qpl.file_filter.accept(java.io.File.new('~/junk.qpl'))).to be true
         expect(@qpl.file_filter.accept(java.io.File.new('~/junk.jun'))).to be false

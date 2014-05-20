@@ -3,8 +3,8 @@ require 'spec/spec_helper'
 
 require 'GUI/src/dialogs/simulate_results/simulate_results_model'
 
-ONEELT = '{"Simulated" :0.27, "results": [["1", "Coin", "Heads"]]}'
-TWOELTS = '{"Simulated" :0.73, "results": [["1", "Coin", "Heads"], ["2", "qubit", "0"]]}'
+ONEELT = '{"Simulated" :0.27, "results": [[1, "Coin", "Heads"]]}'
+TWOELTS = '{"Simulated" :0.73, "results": [[1, "Coin", "Heads"], [2, "qubit", "0"]]}'
 
 describe SimulateResultsModel do
   subject { SimulateResultsModel.new }
@@ -13,8 +13,8 @@ describe SimulateResultsModel do
       st = double('StackTranslation', :nil? => false)
       allow(st).to receive(:reverse_lookup) do |val|
         case val
-        when '1' then '@p'
-        when '2' then '@q'
+        when 1 then '@p'
+        when 2 then '@q'
         else val
         end
       end
