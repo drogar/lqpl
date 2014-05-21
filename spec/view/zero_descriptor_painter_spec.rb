@@ -19,7 +19,8 @@ describe ZeroDescriptorPainter do
   end
   it 'should have a left equal to 1/2 the total width' do
     g = BufferedImage.new(500, 500, BufferedImage::TYPE_INT_RGB).graphics
-    expect(subject.model_paint_size(g).left_width).to eq(subject.model_paint_size(g).total_width * 0.5)
+    expect(subject.model_paint_size(g).left_width)
+      .to eq(subject.model_paint_size(g).total_width * 0.5)
   end
 
 end

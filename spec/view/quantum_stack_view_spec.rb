@@ -1,7 +1,8 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 describe QuantumStackView do
-  before (:each) do
+  before :each do
 
     SwingRunner.on_edt do
       @qsv = QuantumStackView.new

@@ -31,13 +31,15 @@ describe AbstractDescriptorPainter do
   describe 'drawing items' do
     let(:drawing_extension) { DrawingExtensions.new }
     it 'should draw the name to the left of the point with paint_name' do
-      subject.paint_name(drawing_extension.gc, Point.new(30, 20)) # subtracts node size from x rl point is 20,20
+      # subtracts node size from x rl point is 20,20
+      subject.paint_name(drawing_extension.gc, Point.new(30, 20))
       rstr = drawing_extension.bi.data(Rectangle.new(0, 0, 30, 30))
       #      check_some_raster_point_is_grey(rstr,0,0,29,29)
       check_raster_point_is_grey(rstr, 18, 19)
     end
     it 'should draw the Value centered on the point with paint_value' do
-      subject.paint_value(drawing_extension.gc, Point.new(20, 0)) # adds 2*node size to y real point is 20,20
+      # adds 2*node size to y real point is 20,20
+      subject.paint_value(drawing_extension.gc, Point.new(20, 0))
       rstr = drawing_extension.bi.data(Rectangle.new(0, 0, 30, 30))
 
       check_raster_point_is_grey(rstr, 19, 19)

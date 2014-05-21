@@ -1,7 +1,8 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 describe SimulateResultsDialog do
-  before (:each) do
+  before :each do
     SwingRunner.on_edt do
       @sr = SimulateResultsDialog.new
     end
@@ -18,7 +19,7 @@ describe SimulateResultsDialog do
   specify { expect(@sr.data_pane.components[0].components.size).to eql(2) }
   # specify {@sr.content_pane.get_layout.class.should == BoxLayout}
   context 'the random value' do
-    before (:each) do
+    before :each do
       @rv = @sr.data_pane.components[0].components[0]
     end
     specify { expect(@rv.class).to eq(Label) }
@@ -26,7 +27,7 @@ describe SimulateResultsDialog do
   end
 
   context 'the results' do
-    before (:each) do
+    before :each do
       @res = @sr.data_pane.components[0].components[1]
     end
     specify { expect(@res.class).to eq(ScrollPane) }

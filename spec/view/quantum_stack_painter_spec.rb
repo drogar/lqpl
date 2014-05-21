@@ -139,7 +139,7 @@ describe QuantumStackPainter do
   end
   describe 'sizing' do
     describe 'bottom element size' do
-      before (:each) do
+      before :each do
         @bottom_size = @qsb.bottom_element_size(@d.gc)
       end
       it 'should have a left width of 6' do
@@ -176,7 +176,8 @@ describe QuantumStackPainter do
         @qsint.model_paint_size(@d.gc).left_width > @qsint.model_paint_size(@d.gc).right_width
       end
       it 'should have a left size ~= right for the had qubit' do
-        expect((@qsval.model_paint_size(@d.gc).left_width -  @qsval.model_paint_size(@d.gc).right_width).abs).to be < 2
+        expect((@qsval.model_paint_size(@d.gc).left_width -
+          @qsval.model_paint_size(@d.gc).right_width).abs).to be < 2
       end
     end
   end

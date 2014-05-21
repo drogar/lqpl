@@ -1,8 +1,8 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 describe QuantumEmulatorMainForm do
-  before (:each) do
-
+  before :each do
     SwingRunner.on_edt do
       @qemf = QuantumEmulatorMainForm.new
     end

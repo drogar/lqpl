@@ -1,16 +1,19 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
-TESTMENU_STRUCTURE = { file: { menu_index: 0,
-                               menu_titles: %w(Load Compile Simulate),
-                               menu_enabled: [true, true, true] },
-                       view: { menu_index: 1,
-                               menu_titles: ['Hide Classical Stack', 'Hide Dump', 'Hide Executing Code', 'Hide Stack Translation'],
-                               menu_enabled: [false, false, false, false] } }
+TESTMENU_STRUCTURE = {
+  file: { menu_index: 0,
+          menu_titles: %w(Load Compile Simulate),
+          menu_enabled: [true, true, true] },
+  view: { menu_index: 1,
+          menu_titles: ['Hide Classical Stack', 'Hide Dump',
+                        'Hide Executing Code', 'Hide Stack Translation'],
+          menu_enabled: [false, false, false, false] } }
+
+# testing class to hold menu bar
 class Parent
   attr_accessor :mbar
-  def make_menu_bar(mb)
-    @mbar = mb
-  end
+  alias_method :make_menu_bar, :mbar=
 end
 
 describe LqplMenu do
@@ -38,7 +41,8 @@ describe LqplMenu do
     end
     it 'should set up two menus (when on mac)' do
       java.lang.System.set_property('apple.laf.useScreenMenuBar', 'true')
-      java.lang.System.set_property('com.drogar.testing.fest', 'false') # reset so not_on_mac, on_mac work as expected
+      java.lang.System.set_property('com.drogar.testing.fest', 'false')
+      # reset so not_on_mac, on_mac work as expected
       SwingRunner.on_edt do
         LqplMenu.new(@p)
         expect(@p.mbar.menu_count).to eq(2)
