@@ -1,6 +1,5 @@
-And /^I cancel the dialog$/ do 
+# encoding: UTF-8
+And(/^I cancel the dialog$/) do
   fc = JFileChooserFixture.new($robot) #   $qe_frame.file_chooser()
-
   fc.cancel
-
 end
