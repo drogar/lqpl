@@ -19,11 +19,11 @@ glblNotFound nm = semanticError ++ "Type, Cons or Proc " ++
                      nm ++ " not found."
 
 measureNotQubit :: String -> String -> String
-measureNotQubit nm typ 
+measureNotQubit nm typ
      = semanticError ++ " Measure requires a Qubit. The measure expression, '"++
          nm ++ "' is of type "++ typ
 
-controlNotQubit :: String -> String 
+controlNotQubit :: String -> String
 controlNotQubit clist
      = semanticError ++ " All controls must be a Qubit. The control list was " ++
          "found" ++ clist
@@ -39,16 +39,16 @@ procCallTypeError nm prmtypes exptypes
    = semanticError ++ "Call to procedure "++nm++" with non-unifiable types." ++
        " Expected Types:" ++ prmtypes ++ "; Got types "++exptypes
 
-semanticwarn = "Semantic Warning: " 
+semanticwarn = "Semantic Warning: "
 
 convertClassToLin  :: String -> String -> String
 convertClassToLin  iden expr
-    = semanticwarn ++ "Converting classical var to quantum(linear), in " 
-      ++ iden ++ " = " ++ expr 
+    = semanticwarn ++ "Converting classical var to quantum(linear), in "
+      ++ iden ++ " = " ++ expr
 
 
 unbalancedCreation :: String -> String -> String
-unbalancedCreation id qtype 
+unbalancedCreation id qtype
    = semanticwarn ++ "Unbalanced creation, discarding " ++ id ++
           " of type " ++ qtype
 idsNotUsed :: String->String -> String
@@ -57,50 +57,52 @@ idsNotUsed kind id
 
 internalerror = "Internal Compiler Error: "
 
-callinglblOnCons = internalerror ++ 
+callinglblOnCons = internalerror ++
      "Tried to create a code label for a Constructor or Type entry"
 
 addingProcToLinSt = internalerror ++
      "Tried to add a procedure to the linear symbol table."
 
 illegalMakeEntStatement :: String -> String
-illegalMakeEntStatement s = internalerror ++ 
+illegalMakeEntStatement s = internalerror ++
      "Tried to call MakeEntry on statement : " ++ s
 
 illegalMakeEntExp :: String -> String
-illegalMakeEntExp s = internalerror ++ 
+illegalMakeEntExp s = internalerror ++
      "Tried to call MakeEntry on expression : " ++ s
 
+notyetimp :: String
 notyetimp = "Feature not yet implemented: "
 
+checkQubitUsageInParms :: String
 checkQubitUsageInParms = notyetimp ++ "Checking Qubit usage in parameters."
 
 guardClauseType :: String -> String
-guardClauseType = ("Guard clause must be a classical BOOL type, not " ++ ) 
+guardClauseType = ("Guard clause must be a classical BOOL type, not " ++ )
 
 dupInList :: [String] -> String
 dupInList = ("The control list has a duplicate: " ++) . flip showList "."
 
 ctrlScopeErr :: [String]  -> WriterT CompilerLogs SemStateMonad ()
 ctrlScopeErr [] = return () ;
-ctrlScopeErr cl  = 
+ctrlScopeErr cl  =
     do tell cl
        fail $ "The controlled code has created variables which are also in the current control list: "++ showList cl "."
 
 callIllegalRets :: String -> String
-callIllegalRets nm  =   semanticError ++ "Call of " ++ nm ++ 
+callIllegalRets nm  =   semanticError ++ "Call of " ++ nm ++
                         " not allowed in expression as there is no return variable."
 
 callIllegalArgs :: String -> String
-callIllegalArgs nm =  semanticError ++ "Call of " ++ nm ++ 
+callIllegalArgs nm =  semanticError ++ "Call of " ++ nm ++
                         " called with illegal arguements."
 
 alreadyDefined :: String -> String
 alreadyDefined nm = semanticError ++"You can not redefine the variable '"++nm ++ "'. Please 'discard' it first."
 
 illegalClassicalType :: String -> String -> String
-illegalClassicalType nm typ 
-    = semanticError ++ 
+illegalClassicalType nm typ
+    = semanticError ++
       "Classical variables must be of type INT or BOOL. You tried to make '"++
       nm++"' into classical of type '"++typ++"'."
 
@@ -128,12 +130,12 @@ constructorTypeError cexp
 
 parmInFunctionNotRemoved :: String -> String
 parmInFunctionNotRemoved  str
-    = semanticError ++ "The in parameter "++ str++ 
+    = semanticError ++ "The in parameter "++ str++
       " was not used (and destroyed) in the procedure where it was defined."
 
 parmInFunctionNotCreated :: String -> String
 parmInFunctionNotCreated  str
-    = semanticError ++ "The out parameter "++ str++ 
+    = semanticError ++ "The out parameter "++ str++
       " was not created in the procedure where it was defined."
 
 

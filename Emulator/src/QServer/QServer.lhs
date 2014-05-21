@@ -30,10 +30,11 @@ import QSM.QSM
 import QSM.Simulate
 import QServer.Types
 import QServer.MachineControl
-import QServer.ParseServerCommand
-import QServer.StackToXML
+import QServer.EmulatorServerCommand
+import QServer.StackToJSON
 
 import Utility.Extras(filterNonPrintable)
+import Utility.MakeJSON
 
 \end{code}
 
@@ -159,7 +160,7 @@ sendQstack depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         qs = quantumStack bms
-    hPutStrLn shndle $  boundedToXML treedepth $ fixDiags qs
+    hPutStrLn shndle $  boundedToJSON treedepth $ fixDiags qs
 
 sendCodePointer :: Int ->  IORef (MachineState BaseType) -> Handle -> IO()
 sendCodePointer depth machineStateRef shndle =
@@ -167,7 +168,7 @@ sendCodePointer depth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         cp = instructionPointer bms
-    hPutStrLn shndle $  toXML cp
+    hPutStrLn shndle $  toJSON cp
 
 sendExecutableCode :: Int ->  IORef (MachineState BaseType) -> Handle -> IO()
 sendExecutableCode depth machineStateRef shndle =
@@ -175,7 +176,7 @@ sendExecutableCode depth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         ec = codeMem bms
-    hPutStrLn shndle $  surroundWith "Code" $ toXML ec
+    hPutStrLn shndle $  toJSON ec
 
 sendMemoryMap :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendMemoryMap depth treedepth machineStateRef shndle =
@@ -183,7 +184,7 @@ sendMemoryMap depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         mm = stackTranslation bms
-    hPutStrLn shndle $  listToXML "MMap" mm
+    hPutStrLn shndle $  toJSON mm
 
 sendClassicalStack :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendClassicalStack depth treedepth machineStateRef shndle =
@@ -191,7 +192,7 @@ sendClassicalStack depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         cs = classicalStack bms
-    hPutStrLn shndle $  toXML cs
+    hPutStrLn shndle $  toJSON cs
 
 sendDump :: Int -> Int -> IORef (MachineState BaseType) -> Handle -> IO()
 sendDump depth treedepth machineStateRef shndle =
@@ -199,7 +200,7 @@ sendDump depth treedepth machineStateRef shndle =
     mstate <- readIORef machineStateRef
     let bms =  pickIthMS  depth mstate
         d = dump bms
-    hPutStrLn shndle $  boundedToXML treedepth d
+    hPutStrLn shndle $  boundedToJSON treedepth d
 
 
 
@@ -211,11 +212,11 @@ assemble depthMult assemblyCode machineStateRef shandle =
       case  parsedAssembly of
           Left error -> do
                 putStrLn $ "Error in parse: " ++ error
-                hPutStrLn shandle $ "ERROR: " ++ error
+                hPutStrLn shandle $ sendResult ("ERROR: " ++ error)
           Right ((cnotes,trs),loadedCode) -> do
                 writeIORef machineStateRef $ (startMachine depthMult initialMachine loadedCode)
                 dumpMachine 1 machineStateRef
-                hPutStrLn shandle "Assembled"
+                hPutStrLn shandle $ sendResult "Assembled"
 
 simulate :: Int ->
             IORef (MachineState BaseType) ->
@@ -225,8 +226,10 @@ simulate depth machineStateRef shndle =
   do
     mstate <- readIORef machineStateRef
     let qstk = quantumStack $ pickIthMS depth mstate
+    let j (a,b,c) = "[" ++ a ++ "," ++ show b ++ ", " ++ show c ++ "]"
     (rval,resultList) <- chooseIt (canonicalize qstk)
-    hPutStrLn shndle $ surroundWith "Simulated" $ toXML rval ++ listToXML "results" resultList
+    hPutStrLn shndle $ jsonObject [jsonValueElement "Simulated" rval,
+                                   jsonArrayElement "results" $ List.map j resultList]
 
 trim :: IORef (MachineState BaseType) ->
         Handle ->
@@ -234,7 +237,7 @@ trim :: IORef (MachineState BaseType) ->
 trim machineStateRef shndle =
   do
     modifyIORef machineStateRef (trimMachine Nothing 0)
-    hPutStrLn shndle "trimmed"
+    hPutStrLn shndle $ sendResult "trimmed"
 
 dumpMachine ::  Int -> IORef (MachineState BaseType) -> IO()
 dumpMachine depth machineStateRef =

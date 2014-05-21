@@ -17,4 +17,4 @@ end
 end
 
 
-FailOnThreadViolationRepaintManager.install()
+#FailOnThreadViolationRepaintManager.install()

@@ -12,7 +12,6 @@ dist
 .idea
 .hpc
 *.iml
-*.lock
 tmp
 out
 GUI/testdata/**/*.qpo
@@ -24,3 +23,4 @@ lqplcode/**/*.qpo
 lqplcode/*.qpo
 coverage
 no_dist
+TAGS

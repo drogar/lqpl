@@ -1,33 +1,32 @@
-
+# encoding: utf-8
+# Model for the simulate results dialog
 class SimulateResultsModel
   attr_accessor :simulate_results
   attr_accessor :simulate_results_text
   attr_accessor :random_value_text
   attr_accessor :stack_translation
 
-  java_signature "void random_value_text(Object)"
-  def random_value_text=(whatever)
+  def random_value_text=(_)
   end
 
-  java_signature "void simulate_results_text(Object)"
-  def simulate_results_text=(whatever)
+  def simulate_results_text=(_)
   end
 
   def simulate_results_text
-    inner = (@simulate_results || []).collect {|triple| "#{triple[0]}(#{triple[1]}) = #{triple[2]}"}.join("<br />")
-    "<html>"+inner+"</html>"
+    inner = (@simulate_results || []).map { |sr| "#{sr[0]}(#{sr[1]}) = #{sr[2]}" }
+    '<html>' + inner.join('<br />') + '</html>'
   end
 
   def random_value_text
-    @random_value_text || ""
+    @random_value_text || ''
   end
 
-  java_signature "void simulate_results(Object)"
-  def simulate_results=(xml_data)
-    raise ModelCreateError, "Missing Stack Translation" if @stack_translation.nil?
-    sr = SimulateResultsParser.new xml_data
-    @random_value_text = "Random Value: "+sr.random_value
-    @simulate_results = sr.simulate_results.collect {|srs| [@stack_translation.reverse_lookup(srs[0]),srs[1],srs[2]]}
+  def simulate_results=(sim_data)
+    fail ModelCreateError, 'Missing Stack Translation' if @stack_translation.nil?
+    sr = EnsureJSON.new(sim_data).as_json
+    @random_value_text = "Random Value: #{sr[:Simulated]}"
+    @simulate_results = sr[:results].map do |result|
+      [@stack_translation.reverse_lookup(result[0].to_i), result[1], result[2]]
+    end
   end
-
 end
