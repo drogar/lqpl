@@ -3,7 +3,6 @@ require 'spec/spec_helper'
 require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
 
-
 describe DataDescriptorPainter do
   subject do
     DescriptorPainterFactory
@@ -14,6 +13,6 @@ describe DataDescriptorPainter do
   end
 
   it 'should return a Rectangle as its shape' do
-    expect(subject.my_shape(Point.new(10,10)).class).to eq(Rectangle2D::Double)
+    expect(subject.my_shape(Point.new(10, 10)).class).to eq(Rectangle2D::Double)
   end
 end

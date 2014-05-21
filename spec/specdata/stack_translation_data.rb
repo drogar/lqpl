@@ -11,5 +11,4 @@ EMPTYSTACK = '{"memory_map" :[{}]}'
 
 Q1R2 = '{"memory_map" :[{"@q":1, "@r" :2}]}'
 
-
 L3STACK = '{"memory_map" :[{"p" : 1},{"p" : 2},{"rex": 27, "p":3}]}'

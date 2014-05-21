@@ -1,4 +1,4 @@
-KVPS6='"EnScope", "QLoad \"@q\" 0", "QApply 0 Hadamard \"@q\"","QPullup \"@q\"", "EnScope","Measure \"@q\" 14 6 10"'
+KVPS6 = '"EnScope", "QLoad \"@q\" 0", "QApply 0 Hadamard \"@q\"","QPullup \"@q\"", "EnScope","Measure \"@q\" 14 6 10"'
 
 KVPAIRS_2 = '{"main": ["EnScope"], "cflip_fcdelbl0": ["EnScope","QLoad \"@q\" 0"]}'
 
