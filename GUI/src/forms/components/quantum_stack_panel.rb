@@ -13,12 +13,6 @@ class QuantumStackPanel < ScrollPane
     self.background = Color.white
   end
 
-  def preferred_size
-    layout_size = super.preferred_size
-    max = [layout_size.width, layoutSize.height].max
-    Dimension[max + 800, max + 600]
-  end
-
   def quantum_stack_painter=(qsp)
     @quantum_stack_painter = qsp
     @quantum_stack_image_label.icon = qsp.image_of_model

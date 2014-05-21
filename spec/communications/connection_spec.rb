@@ -52,6 +52,20 @@ describe Connection do
       expect { @c.connect }.to raise_error ServerProcessNotFound, /junk/
     end
   end
+
+  describe :try_connecting_to do
+    subject { Connection.instance }
+    it 'should return [] if start executable works' do
+      expect(subject).to receive(:_start_up_the_executable_in_a_process).with(:a)
+      expect(subject.try_connecting_to(:a)).to eql([])
+    end
+    it 'should return ["Unable to connect to..."] if start fails' do
+      expect(subject).to receive(:_start_up_the_executable_in_a_process)
+        .with('a').and_raise(RuntimeError)
+      expect(subject.try_connecting_to('a')).to eql(['Unable to connect to a'])
+    end
+  end
+
   context 'send and receive' do
     subject { Connection.instance }
     let(:conn) { double('c') }

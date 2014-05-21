@@ -3,6 +3,21 @@ require 'spec/spec_helper'
 
 describe ArrayPartitioner do
   subject { ArrayPartitioner }
+  describe :qpl_partion do
+    subject { ArrayPartitioner.new([1,2,3,4,5]) }
+    it 'should delegate to left partition when called with :left' do
+      expect(subject).to receive(:qpl_left_partition)
+      subject.qpl_partition(:left)
+    end
+    it 'should delegate to right partition when called with :right' do
+      expect(subject).to receive(:qpl_right_partition)
+      subject.qpl_partition(:right)
+    end
+    it 'should delegate to middle_element when not called with left or right' do
+      expect(subject).to receive(:_qpl_middle_element_as_array)
+      subject.qpl_partition(:whatever)
+    end
+  end
   describe 'qpl_left_partition' do
     it 'should get first 2 of a size four array' do
       expect(subject.new([1, 2, 3, 4]).qpl_left_partition).to eq([1, 2])
