@@ -1,5 +1,4 @@
 module Swingtown
-
   # :stopdoc:
   VERSION = '0.3.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
@@ -16,7 +15,7 @@ module Swingtown
   # they will be joined to the end of the libray path using
   # <tt>File.join</tt>.
   #
-  def self.libpath *args
+  def self.libpath(*args)
     args.empty? ? LIBPATH : ::File.join(LIBPATH, args.flatten)
   end
 
@@ -24,20 +23,18 @@ module Swingtown
   # they will be joined to the end of the path using
   # <tt>File.join</tt>.
   #
-  def self.path *args
+  def self.path(*args)
     args.empty? ? PATH : ::File.join(PATH, args.flatten)
   end
 
-
-
   def self.find_mig_jar(here)
-    java_lib_dir = File.join(here,'java')
-    mig_jar = Dir.glob("#{java_lib_dir}/*.jar").select { |f| f =~ /(miglayout-)(.+).jar$/}.first
-    raise "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
+    java_lib_dir = File.join(here, 'java')
+    mig_jar = Dir.glob("#{java_lib_dir}/*.jar").select { |f| f =~ /(miglayout-)(.+).jar$/ }.first
+    fail "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
     mig_jar
   end
 
-  def self.file_check_and_warn(which,path)
+  def self.file_check_and_warn(which, path)
     if File.exist? path
       warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
       exit
@@ -48,12 +45,11 @@ module Swingtown
 
     mig_jar = find_mig_jar(here)
 
-    file_check_and_warn("miglayout jar", "#{path}/#{mig_jar}")
+    file_check_and_warn('miglayout jar', "#{path}/#{mig_jar}")
 
-
-    FileUtils.mkdir_p path unless File.exists? path
+    FileUtils.mkdir_p path unless File.exist? path
     warn "Have mig jar at #{mig_jar}"
-    FileUtils.cp_r mig_jar, path, :verbose =>  true
+    FileUtils.cp_r mig_jar, path, verbose: true
   end
 
   def self.copy_over
@@ -63,26 +59,24 @@ module Swingtown
   end
 
   def self.copy_over_ruby(path = 'lib/ruby')
-
     here = File.dirname(File.expand_path(__FILE__))
 
-    file_check_and_warn("swingset","#{path}/swingset")
+    file_check_and_warn('swingset', "#{path}/swingset")
 
-    FileUtils.mkdir_p path unless File.exists? path
-    FileUtils.cp_r "#{here}/swingset", path, :verbose =>  true
-    FileUtils.cp_r "#{here}/swingset.rb", path, :verbose =>  true
-    FileUtils.cp_r "#{here}/swingset_utils.rb", path, :verbose =>  true
+    FileUtils.mkdir_p path unless File.exist? path
+    FileUtils.cp_r "#{here}/swingset", path, verbose: true
+    FileUtils.cp_r "#{here}/swingset.rb", path, verbose: true
+    FileUtils.cp_r "#{here}/swingset_utils.rb", path, verbose: true
   end
-
 end  # module Swingtown
 
 def check_java_lib_jar
-  java_lib_dir = File.join File.dirname( File.expand_path(__FILE__) ),  'java'
-  warn  java_lib_dir
+  java_lib_dir = File.join File.dirname(File.expand_path(__FILE__)),  'java'
+  warn java_lib_dir
 end
 # EOF
 
-if $0 == __FILE__
+if $PROGRAM_NAME == __FILE__
   check_java_lib_jar
   warn Neurogami::SwingSet.find_mig_jar "#{java_lib_dir}/*.jar"
 
