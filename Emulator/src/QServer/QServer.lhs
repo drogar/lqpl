@@ -215,7 +215,7 @@ assemble depthMult assemblyCode machineStateRef shandle =
                 hPutStrLn shandle $ sendResult ("ERROR: " ++ error)
           Right ((cnotes,trs),loadedCode) -> do
                 writeIORef machineStateRef $ (startMachine depthMult initialMachine loadedCode)
-                dumpMachine 1 machineStateRef
+                --dumpMachine 1 machineStateRef
                 hPutStrLn shandle $ sendResult "Assembled"
 
 simulate :: Int ->
