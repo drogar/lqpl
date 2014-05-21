@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 require 'spec/specdata/dump_data'

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 describe PanelController do
@@ -21,7 +22,8 @@ describe PanelController do
       end
       it "should return ClassicalStack controller for ['anything','Classical','Stack']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk Classical Stack))).to eq(ClassicalStackController)
+          expect(PanelController
+            .controller_from_name(%w(junk Classical Stack))).to eq(ClassicalStackController)
         end
       end
       it "should return Dump controller for ['anything','Dump']" do
@@ -31,17 +33,20 @@ describe PanelController do
       end
       it "should return Executable Code controller for ['anything','Executing','Code']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk Executing Code))).to eq(ExecutingCodeController)
+          expect(PanelController
+            .controller_from_name(%w(junk Executing Code))).to eq(ExecutingCodeController)
         end
       end
       it "should return QuantumStack controller for ['anything','Quantum','Stack']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk Quantum Stack))).to eq(QuantumStackController)
+          expect(PanelController
+            .controller_from_name(%w(junk Quantum Stack))).to eq(QuantumStackController)
         end
       end
       it "should return stacktranslation controller for ['anything','Stack','Translation']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk Stack Translation))).to eq(StackTranslationController)
+          expect(PanelController
+            .controller_from_name(%w(junk Stack Translation))).to eq(StackTranslationController)
         end
       end
       it "should return nil for ['anything','something']" do
