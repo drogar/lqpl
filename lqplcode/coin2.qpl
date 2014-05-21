@@ -1,0 +1,15 @@
+cflip::( ; i:Int) =
+{  q = |0>;
+   Had q;
+   measure q of
+     |0> =>
+     {
+        i = 0
+     }
+     |1> =>
+     {
+        i = 15;
+     }
+}
+main::() =
+{  aFlippedCoinHeadsOrTails = cflip()}

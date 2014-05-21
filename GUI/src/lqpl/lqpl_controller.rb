@@ -10,8 +10,8 @@ class LqplController < ApplicationController
   set_view 'LqplView'
   set_close_action :close
   DIALOGS = [AboutController,  SimulateResultsController]
-  SUBS = [QuantumStackController, ClassicalStackController, DumpController,
-          ExecutingCodeController, StackTranslationController]
+  SUBS = [StackTranslationController, ClassicalStackController, DumpController,
+          ExecutingCodeController, QuantumStackController]
   attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
 
   LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
