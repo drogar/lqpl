@@ -1,7 +1,7 @@
 require 'spec/spec_helper'
 
 describe STDialog do
-  before (:each) do
+  before :each do
     SwingRunner.on_edt do
       @sr = STDialog.new
     end
@@ -47,17 +47,15 @@ describe STDialogWithOK do
     describe 'basic construction' do
       it 'should allow setup of data pane in the init block ' do
         SwingRunner.on_edt do
-          s = STDialogWithOK.new do |d|
-           expect(d).not_to be_nil
-         end
+          STDialogWithOK.new { |d|  expect(d).not_to be_nil }
         end
       end
       it 'should setup items in the init block and the button pane' do
         SwingRunner.on_edt do
           s = STDialogWithOK.new do |d|
-           d.add(Panel.new)
-           d.add(Panel.new)
-         end
+            d.add(Panel.new)
+            d.add(Panel.new)
+          end
           expect(s.data_pane.components.size).to eql(2)
         end
       end
@@ -69,13 +67,12 @@ describe STDialogWithOK do
             p2 = Panel.new
             d.add(p2)
           end
-         # end
           expect(s.content_pane.components[1]).to eq(s.button_pane)
         end
       end
     end
     describe 'details' do
-      before (:each) do
+      before :each do
         SwingRunner.on_edt do
           @sr = STDialogWithOK.new('a title')
         end
@@ -89,14 +86,14 @@ describe STDialogWithOK do
         expect(last(@sr.content_pane.components)).to eq(@sr.button_pane)
       end
       context 'the button pane' do
-        before (:each) do
+        before :each do
           @bp = last(@sr.content_pane.components)
         end
         specify { expect(@bp.class).to eq(Panel) }
         specify { expect(@bp.components.size).to eql(1) }
         specify { expect(@bp.components[0].class).to eq(Button) }
         context 'the button' do
-          before (:each) do
+          before :each do
             @btn = @bp.components[0]
           end
           specify { expect(@sr.root_pane.default_button).to eq(@btn) }
