@@ -1,5 +1,22 @@
 require 'simplecov'
+
+SimpleCov.merge_timeout 1200
+
+
 SimpleCov.start do
+  add_filter 'GUI/spec/'
+  add_filter '/spec/'
+  add_filter '/features/'
+  add_group  'DevLib', 'GUI/devlib'
+  add_group  'Lib', 'GUI/lib'
+  add_group  'Communications', 'GUI/src/communications'
+  add_group  'Config', 'GUI/src/config'
+  add_group  'Dialogs', 'GUI/src/dialogs'
+  add_group  'Forms', 'GUI/src/forms'
+  add_group  'Main', 'GUI/src/lqpl'
+  add_group  'Painting', 'GUI/src/painting'
+  add_group  'Panels', 'GUI/src/panels'
+  add_group  'Utility', 'GUI/src/utility'
   add_filter "features"
   nocov_token = ":nocov:"
 end

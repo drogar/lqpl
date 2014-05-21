@@ -1,12 +1,14 @@
+# encoding: utf-8
 require 'singleton'
 require 'communications/connection'
 require 'communications/compiler_server_connection'
 require 'communications/lqpl_emulator_server_connection'
 
+# Java exit handler
 class ExitHandler
   include Singleton
 
-  def handleQuitRequestWith(quit_event, quit_response)
+  def handle_quit_request_with(_quit_event, quit_response)
     close_servers
     quit_response.performQuit
   end

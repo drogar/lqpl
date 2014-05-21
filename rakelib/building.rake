@@ -142,17 +142,17 @@ end
 
 tests = namespace :test do
   RSpec::Core::RakeTask.new(:spec) do |t|
-    t.pattern="GUI/spec/**/*_spec.rb"
+    t.pattern="spec/**/*_spec.rb"
     t.rspec_opts = "--color"
-    t.ruby_opts = "--1.9 -IGUI"
+    t.ruby_opts = "--debug --1.9 -IGUI"
   end
 
-  desc "Run gui specs after ensuring jar is built"
+  desc "Run GUI specs after ensuring jar is built"
   task :spec => [build[:jar]]
 
   desc "Run lqpl Compiler and Emulator tests"
   task :server_tests =>[build[:server_with_tests]] do
-    sh "runghc Setup.hs test --show-details=failures"
+    sh "runghc Setup.hs test --show-details=always"
   end
 
   desc "Run all tests"
@@ -180,7 +180,7 @@ task :clean => [build[:server_clean]]
 namespace :run do
   desc "Run lqpl, ensuring all built"
   task :lqpl => [build[:all]] do
-    sh "(cd out; java -Xmx1G -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
+    sh "(cd out; java -Xdock:name=LQPL -Xdock:icon=../GUI/icons/lqpl_icon.tiff -Xmx1G -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ',':')})"
   end
 end
 

@@ -1,4 +1,4 @@
-Compiler: Version=0.9.1
+Compiler: Version=0.9.2
 main   Start
 EnScope
     Call 0 one_to_2_fcdlbl0
@@ -15,10 +15,10 @@ EnScope
 lbl0     QDiscard @q
     CLoad 1
     QMove @c
-    SwapD   
+    SwapD
 lbl1     QDiscard @q
     Call 0 one_to_2_fcdlbl0
-    SwapD   
+    SwapD
 lbl2 DeScope
 DeScope
     Return 0
