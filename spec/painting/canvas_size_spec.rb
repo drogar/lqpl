@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 require 'GUI/src/painting/canvas_size'
 require 'GUI/src/panels/quantum_stack/quantum_stack_model'
@@ -79,7 +80,8 @@ describe CanvasSize do
         c2 = CanvasSize.new_with_measures(75, 85, 0)
         c3 = CanvasSize.new_with_measures(100, 100, 0)
         c4 = CanvasSize.new_with_measures(200, 200, 0)
-        expect(CanvasSize.width_to_left_of_tail([c1, c2, c3, c4])).to eq(60 + 99 + 75 + 85 + 100 + 100 + 200)
+        expect(CanvasSize.width_to_left_of_tail([c1, c2, c3, c4]))
+          .to eq(60 + 99 + 75 + 85 + 100 + 100 + 200)
       end
     end
     describe 'compute_offsets' do
@@ -121,7 +123,8 @@ describe CanvasSize do
         c2 = CanvasSize.new_with_measures(75, 85, 0)
         c3 = CanvasSize.new_with_measures(100, 100, 0)
         c4 = CanvasSize.new_with_measures(200, 200, 0)
-        expect(CanvasSize.compute_offsets([c1, c2, c3, c4])).to eq([-(99 + 75 + 85), -85, 100, 200 + 200])
+        expect(CanvasSize.compute_offsets([c1, c2, c3, c4]))
+          .to eq([-(99 + 75 + 85), -85, 100, 200 + 200])
       end
       it 'should be [-(1.r+2.t+3.l), -(2.r+3.l),0, (3.r), 3.t+4.l, 3.t+4.t+5.l] for 5 element' do
         c1 = CanvasSize.new_with_measures(10, 99, 0)
@@ -129,7 +132,8 @@ describe CanvasSize do
         c3 = CanvasSize.new_with_measures(80, 120, 0)
         c4 = CanvasSize.new_with_measures(200, 200, 0)
         c5 = CanvasSize.new_with_measures(60, 60, 0)
-        expect(CanvasSize.compute_offsets([c1, c2, c3, c4, c5])).to eq([-(99 + 75 + 85 + 80), -(85 + 80), 0, 120 + 200, 120 + 200 + 200 + 60])
+        expect(CanvasSize.compute_offsets([c1, c2, c3, c4, c5]))
+          .to eq([-(99 + 75 + 85 + 80), -(85 + 80), 0, 120 + 200, 120 + 200 + 200 + 60])
       end
       it 'should return an empty list for empty or nil input' do
         expect(CanvasSize.compute_offsets([])).to eq([])
@@ -158,7 +162,7 @@ describe CanvasSize do
         expect(c.right_width).to eq(0.0)
         expect(c.height).to eq(0.0)
       end
-      it 'should accept 2 number args and create an item with those as left,right and zero height' do
+      it 'should accept 2 number args and create with those as left,right and zero height' do
         c = CanvasSize.new_with_measures 2.0, 3.0
         expect(c.left_width).to eq(2.0)
         expect(c.right_width).to eq(3.0)
@@ -171,7 +175,7 @@ describe CanvasSize do
         expect(c.height).to eq(3.0)
       end
     end
-    it 'should accept an array of ducktyped CanvasSizes, partition them and use them as left, right, height' do
+    it 'should accept an array [CanvasSizes], partition  and use them as left, right, height' do
       c1 = CanvasSize.new_with_measures 100.0, 100.0, 10.0
       c2 = CanvasSize.new_with_measures 45.0, 80.0, 20.0
       c3 = CanvasSize.new_with_measures 70.0, 60.0, 20.0
@@ -183,7 +187,7 @@ describe CanvasSize do
   end
   context 'get measures' do
     context 'when sizes > mins' do
-      before (:each) do
+      before :each do
         @cs = CanvasSize.new_with_measures(70.0, 80.0, 60.0)
       end
       it 'should give 70.0 as left_width' do
@@ -210,7 +214,7 @@ describe CanvasSize do
     end
 
     context 'when sizes < mins' do
-      before (:each) do
+      before :each do
         @cs = CanvasSize.new_with_measures(20.0, 20.0, 20.0)
       end
       it 'should give 20.0 as left_width' do
@@ -238,7 +242,7 @@ describe CanvasSize do
   end
   context 'self modifies' do
     context 'max of each dimension!' do
-      before(:each) do
+      before :each do
         @smaller = CanvasSize.new_with_measures(20.0, 20.0, 20.0)
         @bigger = CanvasSize.new_with_measures(30.0, 30.0, 30.0)
       end

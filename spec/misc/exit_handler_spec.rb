@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec/spec_helper'
 
 describe ExitHandler do
@@ -13,7 +14,7 @@ describe ExitHandler do
     end
   end
   describe 'handleQuitRequestWith' do
-    before (:each) do
+    before :each do
       @qr = double('quit_response')
       expect(@qr).to receive(:performQuit)
     end
