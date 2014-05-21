@@ -1,5 +1,5 @@
 # encoding: utf-8
-LQPL_GUI_VERSION = '0.9.1'
+LQPL_GUI_VERSION = '0.9.2'
 
 ABOUT_STRING = "<html> <center>
 <strong>LQPL Emulator</strong> - Version #{LQPL_GUI_VERSION} (Experimental)
@@ -15,7 +15,7 @@ Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />
 
 LICENSE_STRING = "
 <html>
-Copyright &copy; 2006-2012, Brett G. Giles, Robin Cockett, University of Calgary<br />
+Copyright &copy; 2006-2014, Brett G. Giles, Robin Cockett, University of Calgary<br />
 All rights reserved.<br />
 <br />
 Redistribution and use in source and binary forms, with or without modification, are permitted<br />

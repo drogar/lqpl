@@ -17,10 +17,11 @@ def check_some_point_is_black(img,start_x,start_y,end_x,end_y)
 end
 
 
-def check_some_point_is_grey(img,start_x,start_y,end_x,end_y)
-  rstr = img.data(Rectangle.new(start_x,start_y,end_x+1,end_y+1))
-  check_some_raster_point_is_grey(rstr,start_x,start_y,end_x,end_y)
-end
+# Not currently used
+# def check_some_point_is_grey(img,start_x,start_y,end_x,end_y)
+#  rstr = img.data(Rectangle.new(start_x,start_y,end_x+1,end_y+1))
+#  check_some_raster_point_is_grey(rstr,start_x,start_y,end_x,end_y)
+# end
 
 
 def check_some_raster_point_is_grey(rstr,start_x,start_y,end_x,end_y)
