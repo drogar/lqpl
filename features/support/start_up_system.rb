@@ -5,10 +5,14 @@ class AppStarter < GuiQuery
   # which is the thread reserved for user interfaces.
   # FEST will call this method for us before the test.
   #
-  def execute_in_edt
+
+  # Must be named as is - alias does not work - this is a Java class call
+  # rubocop:disable Style/MethodName
+  def executeInEDT
     LqplController.instance.open # com.drogar.lqpl.Main.main([])
   end
-  alias_method :execute_in_edt, :executeInEDT
+  # rubocop:enable Style/MethodName
+
 end
 
 # module to perform specific actions of the system

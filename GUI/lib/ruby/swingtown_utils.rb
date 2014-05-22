@@ -1,3 +1,5 @@
+# Encoding: UTF-8
+# Module for swing interfaces
 module Swingtown
   # :stopdoc:
   VERSION = '0.3.0'

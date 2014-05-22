@@ -1,2 +1,8 @@
+AllCops:
+  Exclude:
+  - out/**/*
+  - dist/**/*
+  - tmp/**/*
+
 LineLength:
   Max: 100

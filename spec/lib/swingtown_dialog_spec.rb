@@ -1,3 +1,4 @@
+# Encoding: UTF-8
 require 'spec/spec_helper'
 
 describe STDialog do

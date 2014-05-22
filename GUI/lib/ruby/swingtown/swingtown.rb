@@ -1,12 +1,15 @@
+# Encoding: UTF-8
+# Swing stuff.
 module Swingtown
+  # I don't know what MiG is all about
   module MiG
+    # extend the class methods in the include
     module ClassMethods
       HERE = File.expand_path(File.dirname __FILE__)
 
       def mig_jar(glob_path = "#{HERE}/../../java/*.jar")
         warn "mig_jar #{glob_path} "
-        Dir.glob(glob_path).select { |f|
-        f =~ /(miglayout-)(.+).jar$/}.first
+        Dir.glob(glob_path).select { |f|  f =~ /(miglayout-)(.+).jar$/ }.first
       end
 
       def mig_layout
@@ -22,8 +25,9 @@ module Swingtown
       Java.net.miginfocom.swing::MigLayout.new layout_spec
     end
   end
-
+  # core swing stuff
   module Core
+    # the constants of swing
     module SwingConstants
       %w(
         BOTTOM
@@ -49,6 +53,7 @@ module Swingtown
       end
     end
 
+    # reopen java.awt.Dimension
     class Dimension
       def self.[](width, height)
         java.awt::Dimension.new width, height
@@ -73,6 +78,7 @@ module Swingtown
       end
     end
 
+    # jmenubar wrapper
     class MenuBar < Java.javax.swing.JMenuBar
       def initialize
         super
@@ -80,6 +86,7 @@ module Swingtown
       end
     end
 
+    # jmenuitem wrapper
     class MenuItem  < Java.javax.swing.JMenuItem
       def initialize
         super
@@ -87,6 +94,7 @@ module Swingtown
       end
     end
 
+    # jmenu wrapper
     class Menu  < Java.javax.swing.JMenu
       def initialize
         super
@@ -94,20 +102,16 @@ module Swingtown
       end
     end
 
+    # Font wrapper
     class SFont < Java.java.awt.Font
     end
 
     # A label  wrapper
     # See http://xxxxxxxx to understand Swing labels
     class Label < Java.javax.swing::JLabel
-      @@default_font = SFont.new('Lucida Grande', 0, 12)
-
-      def self.default_font=(default_font)
-        @@default_font = default_font
-      end
-
-      def self.default_font
-        @@default_font
+      @default_font = SFont.new('Lucida Grande', 0, 12)
+      class << self
+        attr_accessor :default_font
       end
 
       def initialize(text = nil)
@@ -126,19 +130,19 @@ module Swingtown
       end
     end
 
+    # JSpinner wrapper
     class Spinner < Java.javax.swing.JSpinner
       JINT = Java.int
-      @@spinner_cons = SpinnerNumberModel.java_class.constructor(JINT, JINT,
-                                                                 JINT, JINT)
+      SPINNER_CONS = SpinnerNumberModel.java_class.constructor(JINT, JINT, JINT, JINT)
       def self.make_new_spinner_number_model(args)
-        @@spinner_cons.new_instance(args[0], args[1], args[2], args[3])
+        SPINNER_CONS.new_instance(args[0], args[1], args[2], args[3])
       end
       def initialize
         super
       end
 
       def self.make_spinner(*args)
-        return Spinner.new unless args and args.length == 4
+        return Spinner.new unless args && args.length == 4
         spinner = Spinner.new
 
         spinner.model = make_new_spinner_number_model(args)
@@ -153,10 +157,10 @@ module Swingtown
         spinner = make_spinner
         spinner.labelize_and_add_to_container(text_for_label, container)
       end
-      def self.spinner_with_label_and_model(text_for_label, val, min, max, step, container = nil)
-        spinner = make_spinner(val, min, max, step)
+      def self.spinner_with_label_and_model(text_for_label, model)
+        spinner = make_spinner(model[:start], model[:min], model[:max], model[:increment])
 
-        spinner.labelize_and_add_to_container(text_for_label, container)
+        spinner.labelize_and_add_to_container(text_for_label, model[:container])
       end
       def make_my_label(text_for_label)
         spinlab = Label.new(text_for_label)
@@ -165,15 +169,12 @@ module Swingtown
       end
     end
 
+    # JTextField wrapper
     class TextField < Java.javax.swing.JTextField
-      @@default_font = SFont.new('Lucida Grande', 0, 12)
+      @default_font = SFont.new('Lucida Grande', 0, 12)
 
-      def self.default_font=(default_font)
-        @@default_font = default_font
-      end
-
-      def self.default_font
-        @@default_font
+      class << self
+        attr_accessor :default_font
       end
 
       def initialize(text = nil)
@@ -224,6 +225,7 @@ module Swingtown
       end
     end
 
+    # JTabbedPane wrapper
     class TabbedPane < javax.swing.JTabbedPane
       def initialize(*args)
         super(*args)
@@ -231,6 +233,7 @@ module Swingtown
       end
     end
 
+    # JScrollPane wrapper
     class ScrollPane < javax.swing.JScrollPane
       def initialize(*args)
         super(*args)
@@ -247,7 +250,8 @@ module Swingtown
                                                        height)
       end
     end
-    # A panel  wrapper
+
+    # JPanel  wrapper
     # See http://xxxxxxxx to understand Swing panels
     class Panel < javax.swing.JPanel
       def initialize
@@ -292,18 +296,30 @@ module Swingtown
       end
     end
 
+    # JDialog wrapper
     class STDialog < Java.javax.swing::JDialog
       def initialize(title = nil, do_not_yield = false)
         super()
         self.title = title if title
-        yield self if block_given? and not do_not_yield
+        yield self if block_given? && !do_not_yield
       end
     end
 
+    # Extend dialog, have an ok button
     class STDialogWithOK < STDialog
       attr_accessor :button_pane
       attr_accessor :ok_button
       attr_accessor :data_pane
+      def create_button_ok_pane(parent_pane)
+        @button_pane = Panel.new do |bp|
+          @ok_button = Button.new('OK') do |b|
+            bp.add(b)
+            root_pane.default_button = b
+          end
+          parent_pane.add(bp)
+        end
+      end
+
       def initialize(title = nil)
         super(title, false)
         root_pane.content_pane = Panel.new do |cpane|
@@ -311,13 +327,7 @@ module Swingtown
           cpane.layout = BoxLayout.new(cpane, BoxLayout::Y_AXIS)
 
           self.data_pane = Panel.new { |dp| cpane.add(dp) }
-          @button_pane = Panel.new do |bp|
-            @ok_button = Button.new('OK') do |b|
-              bp.add(b)
-              root_pane.default_button = b
-            end
-            cpane.add(bp)
-          end
+          create_button_ok_pane(cpane)
         end
         yield data_pane if block_given?
       end

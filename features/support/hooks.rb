@@ -22,8 +22,8 @@ Before('@load_recurse')do
 end
 
 After do
-  $qe_frame.close
+  $qe_frame.close if $qe_frame
   $qe_frame = nil
-  $robot.clean_up
+  $robot.clean_up if $robot
   $robot = nil
 end

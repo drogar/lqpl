@@ -20,7 +20,11 @@ end
 
 
 guard :rubocop do
-  watch(%r{.+\.rb$})
+  watch(%r{^GUI/.+\.rb$}) { |m| File.dirname(m[0]) }
+  watch(%r{^features/.+\.rb$}) { |m| File.dirname(m[0]) }
+  watch(%r{^spec/.+\.rb$}) { |m| File.dirname(m[0]) }
+  watch(%r{^rake.+\.rb$}) { |m| File.dirname(m[0]) }
+  watch(%r{^tasks/.+\.rb$}) { |m| File.dirname(m[0]) }
   watch(%r{(?:.+/)?\.rubocop\.yml$}) { |m| File.dirname(m[0]) }
 end
 

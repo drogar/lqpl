@@ -93,7 +93,7 @@ class LqplMenu
     mbar.add(menu_view)
   end
 
-    #:nocov:
+  # :nocov:
   def init_help_menu(mbar)
     not_on_mac do
       menu_help = JMenu.new('Help')
@@ -102,5 +102,5 @@ class LqplMenu
       mbar.add(menu_help)
     end
   end
-    #:nocov:
+  # :nocov:
 end
