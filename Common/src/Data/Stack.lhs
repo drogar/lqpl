@@ -5,7 +5,7 @@ The |Stack| is implemented by a |List|. Instances  of
 |Functor|, |Monad| and |MonadPlus| are defined for the type.
 %if false
 \begin{code}
-module Data.Stack 
+module Data.Stack
   ( Stack(..),
     emptyStack,push,pushM, popM, pop,fromList, toList,
     get,getM,
@@ -37,7 +37,7 @@ instance MonadPlus Stack where
 
 A variety of manipulation functions are provided, giving the standard
 push and pop functionality of a stack.
- 
+
 {\begin{singlespace}
 \begin{code}
 emptyStack :: Stack a
@@ -48,7 +48,7 @@ push a (Stack as) = Stack (a:as)
 
 pushM :: Maybe a -> Stack a -> Stack a
 pushM Nothing s = s
-pushM (Just a) s = push a s 
+pushM (Just a) s = push a s
 
 popM :: Stack a -> (Maybe a, Stack a)
 popM (Stack [] )     = (Nothing, Stack [])
@@ -67,7 +67,7 @@ popNum s = let (v,s') = popM s
 	      Just v -> (v,s')
 -}
 addn :: Int -> Stack a -> Stack a -> Stack a
-addn n (Stack e1) (Stack e2) 
+addn n (Stack e1) (Stack e2)
     = Stack (take n e1 ++ e2)
 
 {-unused
@@ -83,19 +83,17 @@ getM (Stack (a:as)) = Just a
 
 get :: Stack a -> a
 get s = let v = getM s
-        in case v of
-		   Nothing -> error "Stack is empty on get"
-		   Just v -> v
+        in fromMaybe (error "Stack is empty on get")  v
 
 
 
 stackElem :: Stack a -> Int -> a
-stackElem (Stack aelems) i 
+stackElem (Stack aelems) i
           | i >= 0 = aelems List.!! i
-          | (-i) <= length aelems  = 
+          | (-i) <= length aelems  =
               aelems List.!! (length aelems + i)
-          | otherwise =  
-              aelems List.!! 
+          | otherwise =
+              aelems List.!!
                          ((length aelems + i) `mod` length aelems)
 {- unused
 isEmpty :: Stack a -> Bool
@@ -105,9 +103,9 @@ isEmpty (Stack (a:as)) = False
 
 toList :: Stack a -> [a]
 toList (Stack a) = a
-  
+
 fromList ::[a] -> Stack a
-fromList  = Stack 
+fromList  = Stack
 
 stkfoldr :: (a->b->b) -> b -> Stack a -> b
 stkfoldr f i (Stack a) = foldr f i a

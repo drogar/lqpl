@@ -23,7 +23,7 @@
   filterNonPrintable :: String -> String
   filterNonPrintable []           =  []
   filterNonPrintable (c:rest)
-    | isPrint(c)  =  c:filterNonPrintable rest
+    | isPrint c   =  c:filterNonPrintable rest
     | otherwise   =  filterNonPrintable rest
 
 

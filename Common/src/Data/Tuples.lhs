@@ -58,10 +58,10 @@ distrib :: (a,[b]) -> [(a,b)]
 distrib (a,bs) = zip (repeat a) bs
 
 undistribR :: [(a,b)] -> ([a],b)
-undistribR abes = 
+undistribR abes =
     case unzip abes of
              (_,[]) ->  error "Can not undistribute empty result"
-             (aas, (b:_)) -> (aas,b)
-                 
+             (aas, b:_) -> (aas,b)
+
 
 \end{code}
