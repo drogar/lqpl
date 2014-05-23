@@ -42,8 +42,8 @@ module Utility.MakeJSON where
 
 
     toMultiLineString :: [String] -> String
-    toMultiLineString s = intercalate "\n" s
+    toMultiLineString s = List.intercalate "\n" s
 
 
     toCommaSepString :: [String] -> String
-    toCommaSepString s = intercalate ", " s
+    toCommaSepString s = List.intercalate ", " s

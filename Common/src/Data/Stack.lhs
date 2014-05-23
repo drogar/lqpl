@@ -13,6 +13,7 @@ module Data.Stack
 where
 import Data.List as List
 import Control.Monad
+import Data.Maybe
 \end{code}
 %endif
 
