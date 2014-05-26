@@ -1,18 +1,15 @@
 # encoding: UTF-8
+
 # class to actually start the system
 class AppStarter < GuiQuery
   # Launch the app in the Event Dispatch Thread (EDT),
   # which is the thread reserved for user interfaces.
   # FEST will call this method for us before the test.
   #
-
   # Must be named as is - alias does not work - this is a Java class call
-  # rubocop:disable Style/MethodName
   def executeInEDT
     LqplController.instance.open # com.drogar.lqpl.Main.main([])
   end
-  # rubocop:enable Style/MethodName
-
 end
 
 # module to perform specific actions of the system
