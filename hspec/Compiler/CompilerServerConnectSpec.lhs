@@ -32,8 +32,8 @@
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do
-        it ("runs on port "++default_port++" by default") $ do
-            running <- checkOpenPort default_port
+        it ("runs on port "++defaultPort++" by default") $ do
+            running <- checkOpenPort defaultPort
             if running
               then return True
               else do
@@ -42,10 +42,10 @@
                 putStrLn $ "Started - rc = "++ show rc
                 threadDelay 2000
                 putStrLn $ "Waited 2s for server to start"
-                checkOpenPort default_port
+                checkOpenPort defaultPort
       context "compiler server" $ do
         it "sends back a valid assembler code when sent a qpl program" $ do
-              hndl <- connectToServer default_port
+              hndl <- connectToServer defaultPort
               hPutStrLn hndl program_one
               hFlush hndl
               res <- hGetLine hndl
@@ -53,7 +53,7 @@
                          then Test.Hspec.Core.Success
                          else Test.Hspec.Core.Fail $ "invalid program: " ++ res
         it "sends back a 'getFirst' request when sent a program with import" $ do
-              hndl <- connectToServer default_port
+              hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
@@ -61,7 +61,7 @@
                            then Test.Hspec.Core.Success
                            else Test.Hspec.Core.Fail $ "invalid reply: " ++ res
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
-              hndl <- connectToServer default_port
+              hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl

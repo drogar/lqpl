@@ -6,6 +6,6 @@
 
   import Compiler.CompilerServer
 
-  main =  serveLog default_port commandHandler defaultLogger
+  main =  serveLog defaultPort commandHandler defaultLogger
 
 \end{code}
