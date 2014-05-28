@@ -172,17 +172,14 @@
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
-    fpDoesFileExist = \ f -> return $
-          if Just f `elem` keys imps
-            then True
-            else False,
+    fpDoesFileExist = \ f -> return (Just f `elem` keys imps),
       fpReadFile = \f -> return "",
       emptyProvider = "",
       currentFPDir = "",
       fpcombine = (++),
       getFirstFileInSearchPath = \p f ->
         if imps `haskey` Just f
-          then return $ Just (f, imps ! (Just f))
+          then return $ Just (f, imps ! Just f)
           else ioError $ userError $  "Need file "++f
       }
 
