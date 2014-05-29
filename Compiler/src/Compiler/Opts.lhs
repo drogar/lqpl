@@ -6,7 +6,7 @@ module Compiler.Opts (Flag(..),
 
 
 import System.Console.GetOpt
-import System.Exit (exitWith, ExitCode(..))
+import System.Exit (exitSuccess, ExitCode(..))
 import System.FilePath
 import System.IO
 
@@ -62,7 +62,7 @@ noErrhead ((as,_):_) = as
 
 compilerOpts :: [String] -> IO ([Flag], [(String,String,String)])
 compilerOpts argv =
-    case (getOpt Permute options argv) of
+    case getOpt Permute options argv of
              (o,n,[]  ) -> do --print (showList argv " arguments ")
                             _ <- checkForVersion o
                             _ <- checkForUsage o
@@ -81,7 +81,7 @@ compilerOpts argv =
 checkForUniqueOutOpt :: [Flag]->IO (Maybe Handle)
 checkForUniqueOutOpt flgs =
         do  let ind = findIndices isOutputFlag flgs
-            case (length ind) of
+            case length ind of
                      0 ->  return Nothing
                      1 ->  do let outfile = unOutput (flgs !! head ind)
                               case outfile of
@@ -97,26 +97,26 @@ checkForVersion :: [Flag]->IO ()
 checkForVersion opts =
         when (foldl (\b s-> (s==Vers || b)) False opts) $
              do  hPutStrLn stderr (showVersion version)
-                 exitWith ExitSuccess
+                 exitSuccess
 
 
 checkForUsage :: [Flag]->IO ()
 checkForUsage opts =
         when (foldl (\b s-> (s==HelpMe || b)) False opts) $
              do  hPutStr stderr (usageInfo usageheader options)
-                 exitWith ExitSuccess
+                 exitSuccess
 
 usageheader :: String
 usageheader = "Usage: lqpl [OPTION...] files..."
 
 addCInputs :: [Flag]->[String]->[String]
 addCInputs [] = id
-addCInputs ((Input file):fs) = (file :) . addCInputs fs
+addCInputs (Input file:fs) = (file :) . addCInputs fs
 addCInputs (_:fs) = addCInputs fs
 
 convFileName :: Maybe Handle->String->String->IO (Handle, Handle)
 convFileName outf oft s =
-        do let  start = if isSuffixOf ".qpl" s then length s - 4 else length s
+        do let  start = if ".qpl" `isSuffixOf` s then length s - 4 else length s
                 fname = take start s
                 outfile = case outf of
                                    Just _ -> ""
@@ -139,7 +139,7 @@ convFileName outf oft s =
 
 getLogLevel :: [Flag] -> Int
 getLogLevel [] = 0
-getLogLevel ((LogLevel n):_) = n
+getLogLevel (LogLevel n:_) = n
 getLogLevel (f:fs) = getLogLevel fs
 
 

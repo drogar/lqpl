@@ -33,8 +33,8 @@
     prog:: FileProvider -> Parser Program
     prog fp = do
       whiteSpace
-      p <- (dataDef >>= \a -> return [a]) <|> (procDef >>= \a -> return $ [ProcDef a]) <|> imp fp
-      rest <- (try (whiteSpace >> eof >> return [])) <|> prog fp
+      p <- (dataDef >>= \a -> return [a]) <|> (procDef >>= \a -> return  [ProcDef a]) <|> imp fp
+      rest <- try (whiteSpace >> eof >> return []) <|> prog fp
       return $ p ++ rest
 
     imp :: FileProvider -> Parser Program
@@ -49,7 +49,7 @@
       if impname `elem` fils
         then return []
         else do
-          newinp <- liftIO $ (getFirstFileInSearchPath fp) fils impname
+          newinp <- liftIO $ getFirstFileInSearchPath fp fils impname
           case newinp of
             Nothing -> parserFail $ "import not found:" ++ impname
             Just (f,contents)  -> do
@@ -105,7 +105,7 @@
         c <- constructor
         tvars <- option [] $ try $ parens $ commaSep1 typevar
         return $ Constructor c tvars
-        ) `sepBy1` (symbol "|")
+        ) `sepBy1` symbol "|"
       return $ DataDef (TypeDefinition tname tvars) cons
 
     typevar = choice [tvarBuiltIn, tvarIdentifier, tvarDeclaredType]
@@ -119,8 +119,8 @@
       tvars <- option [] $ try $ parens $ commaSep1 typevar
       return $ DeclaredType c tvars
 
-    tvarBuiltIn = try $ (try $ reserved "Qubit" >> (return QUBIT)) <|>
-      (try $ reserved "Int" >> return INT) <|> (reserved "Bool" >> return BOOL)
+    tvarBuiltIn = try $ try (reserved "Qubit" >> return QUBIT) <|>
+      try (reserved "Int" >> return INT) <|> (reserved "Bool" >> return BOOL)
 
 
     statement :: Parser Statement
@@ -241,7 +241,7 @@
 
     stmtBareCall = try $ do
       subrout <- try identifier <|> quantumGate
-      (cexps, qexps,ids)  <- option ([], [], []) $ (try callClassicalparms) <|> callParameters
+      (cexps, qexps,ids)  <- option ([], [], []) $ try callClassicalparms <|> callParameters
       return $ Call subrout cexps qexps ids []
 
     callClassicalparms = parens $ do
@@ -272,9 +272,9 @@
               , [binary "||" (Eapply Or) AssocLeft, binary "^" (Eapply Xor) AssocLeft]
               ]
 
-    binary  name fun assoc = Infix (do{ reservedOp name; return $ fun }) assoc
-    prefix  name fun       = Prefix (do{ reservedOp name; return fun })
-    postfix name fun       = Postfix (do{ reservedOp name; return fun })
+    binary  name fun = Infix (do{ reservedOp name; return fun })
+    prefix  name fun = Prefix (do{ reservedOp name; return fun })
+    postfix name fun = Postfix (do{ reservedOp name; return fun })
 
     term :: Parser Expression
     term = choice [parens expr, tcall, tIdentifer, tnum, tbool "true", tbool "false", tket, tconstructor]
@@ -339,19 +339,18 @@
             ]
 
     lqplDef :: P.GenLanguageDef String [String] IO
-    lqplDef = P.LanguageDef
-                   { P.commentStart   = "/*"
-                   , P.commentEnd     = "*/"
-                   , P.commentLine    = "//"
-                   , P.nestedComments = True
-                   , P.identStart     = lower
-                   , P.identLetter    = alphaNum <|> oneOf "_'"
-                   , P.opStart        = oneOf ""
-                   , P.opLetter       = oneOf ""
-                   , P.reservedOpNames= ops
-                   , P.reservedNames  = reserveds
-                   , P.caseSensitive  = True
-                   }
+    lqplDef = P.LanguageDef { P.commentStart   = "/*"
+                            , P.commentEnd     = "*/"
+                            , P.commentLine    = "//"
+                            , P.nestedComments = True
+                            , P.identStart     = lower
+                            , P.identLetter    = alphaNum <|> oneOf "_'"
+                            , P.opStart        = oneOf ""
+                            , P.opLetter       = oneOf ""
+                            , P.reservedOpNames= ops
+                            , P.reservedNames  = reserveds
+                            , P.caseSensitive  = True
+                            }
     lexer = P.makeTokenParser lqplDef
 
     identifier = P.identifier lexer
@@ -403,7 +402,7 @@
     constructor =
       lexeme $ try $ do
         name <- cons
-        if (name `elem` reservedTypes)
+        if name `elem` reservedTypes
           then unexpected ("Reserved Type or Constructor " ++ show name)
           else return name
 

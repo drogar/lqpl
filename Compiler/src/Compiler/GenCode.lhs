@@ -51,6 +51,20 @@ instance GenCode Iproc where
                       combineProgs ret tcode
 
 
+getCodes inCexps inQexps = do
+   eCcode <- mapM genCode inCexps -- $ reverse inCexps
+   nmsAndEQcode <-  mapM quantifyAndName $ reverse inQexps
+   let (names,eQcode) = unzip nmsAndEQcode
+   return (eCcode, names, eQcode)
+
+
+codesForCall nm inCexps inQexps frmlids outQids= do
+   (eCcode, names,eQcode) <- getCodes inCexps inQexps
+   renamesto <- doRenames (reverse names) $ fst $ snd frmlids
+   callcd <- call (length inCexps) nm
+   renamesfr <- doRenames (snd $ snd frmlids) $ List.map fst outQids
+   return (renamesto, renamesfr, eCcode, eQcode, callcd)
+
 
 instance GenCode Istmt where
 
@@ -219,19 +233,6 @@ the transform. Finally, the outputs are renamed.
 \begin{code}
 
 
- getCodes inCexps inQexps = do
-   eCcode <- mapM genCode inCexps -- $ reverse inCexps
-   nmsAndEQcode <-  mapM quantifyAndName $ reverse inQexps
-   let (names,eQcode) = unzip nmsAndEQcode
-   return (eCcode, names, eQcode)
-
-
- codesForCall nm inCexps inQexps frmlids outQids= do
-   (eCcode, names,eQcode) <- getCodes inCexpes inQexps
-   renamesto <- doRenames (reverse names) $ fst $ snd frmlids
-   callcd <- call (length inCexps) nm
-   renamesfr <- doRenames (snd $ snd frmlids) $ List.map fst outQids
-   return (renamesto, renamesfr, eCcode, eQcode)
 
  genCode (Icall (Just ut) _ _ inCexps [IrVar oldnm _] [(newnm,_)] _) --ut no out classical ids
     = case ut of
@@ -246,7 +247,7 @@ the transform. Finally, the outputs are renamed.
  genCode (Icall (Just ut) _ _ inCexps inQexps outQids _) --ut no out classical ids
     = case ut of
          (Ident _) -> return Map.empty
-         _ -> do (eCcode, names,eQcode) <- getCodes inCexpes inQexps
+         _ -> do (eCcode, names,eQcode) <- getCodes inCexps inQexps
                  aptran <- applyTransform (length inCexps) ut names
                  renames <- doRenames (reverse names) $ List.map fst outQids
                  mapM_ (removeFromPendingDiscards . fst) outQids
@@ -256,7 +257,7 @@ the transform. Finally, the outputs are renamed.
 
 
  genCode (Icall Nothing nm frmlids inCexps inQexps outQids outCids)
-     = do (renamesto, renamesfr, eCcode, eQcode) <- codesForCall nm inCexpes inQexps frmlids outQids
+     = do (renamesto, renamesfr, eCcode, eQcode, callcd) <- codesForCall nm inCexps inQexps frmlids outQids
           unsetCurrentActive
           mapM_ (removeFromPendingDiscards . fst) outQids
           return $ combineProgs (combineAllProgs eCcode) $
@@ -375,7 +376,7 @@ Can an expcall have classical parms?
 \begin{code}
 
  genCode (IrExpCall nm frmlids inCexps inQexps outQids)
-     = do (renamesto, renamesfr, eCcode, eQcode) <- codesForCall nm inCexpes inQexps frmlids outQids
+     = do (renamesto, renamesfr, eCcode, eQcode, callcd) <- codesForCall nm inCexps inQexps frmlids outQids
           setCurrentActive $ last $ snd $ snd frmlids
           mapM_ (removeFromPendingDiscards . fst) outQids
           return $ combineProgs  (combineAllProgs eCcode) $

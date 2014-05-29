@@ -144,7 +144,7 @@ inUse = insideUse . level
 
 subInArgsList :: [SymEntryLinear] ->[SymEntryLinear] -> [SymEntryLinear]
 subInArgsList [] _ = []
-subInArgsList ((SeCaseId offset name QUBIT):qs) ss
+subInArgsList (SeCaseId offset name QUBIT : qs) ss
         = (ss !!(-(1 + offset))) : subInArgsList qs ss
 subInArgsList (q:qs) ss
         = q : subInArgsList qs ss
@@ -152,7 +152,7 @@ subInArgsList (q:qs) ss
 
 argsmatch :: SymEntryGlobal->[SymEntryLinear]->Bool
 argsmatch se  =
-     Prelude.foldl (&&) True . zipWith (==) (argtypes se) . List.map qtype
+     and . zipWith (==) (argtypes se) . List.map qtype
 
 
 
@@ -457,4 +457,3 @@ setLL n = modify (\state -> state{logLevel = n})
 
 
 \end{code}
-

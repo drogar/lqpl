@@ -328,7 +328,7 @@ addConsEntry ::TypeDefinition->Constructor->
 addConsEntry  (TypeDefinition tid vids) (Constructor cid argtypes) offset
     = modSymTabGlobal (  Map.insert cid $
                          SeCons cid offset argtypes
-                         [(DeclaredType tid (List.map  TypeVariable vids))])
+                         [DeclaredType tid (List.map  TypeVariable vids)])
 
 
 addTypesToSt :: [GlobalDefinition] -> WriterT CompilerLogs SemStateMonad ()
@@ -358,7 +358,7 @@ addProcToSt (ProcDef pd) = do
   qrtypes <- gettypes $ outquantumparms pd
   crtypes <- gettypes $ outclassicalparms pd
   let   se  = SeFun  {cdlabel = cdl ,
-                      gname       = (procnm pd),
+                      gname       = procnm pd,
                       transform   = Nothing,
                       parmnames   = ((pnames inclassicalparms pd ,
                                       pnames outclassicalparms pd),
@@ -373,24 +373,21 @@ addProcToSt (ProcDef pd) = do
 
 
 instance SymTabEntry Procedure where
-  makeEntry (Procedure _ _ _ _ _ _) _    = fail addingProcToLinSt
+  makeEntry (Procedure{}) _    = fail addingProcToLinSt
 
   makeEntries (Procedure nm _ qfroms _ _ _) _  = do
     setargs 0
     makeEntriesList $ zip qfroms $ repeat Nothing
 
-instance SymTabEntry ParameterDefinition where
-  makeEntry (ParameterDefinition id typ) Nothing  = do
-    lvl <- getSemLvl
-    nargs <- gets numArgs
-    incargs
-    return (id, SeLArg (-nargs) id typ)
-  makeEntry (ParameterDefinition id t) (Just typ) = do
-    lvl <- getSemLvl
-    nargs <- gets numArgs
-    incargs
-    return (id, SeLArg (-nargs) id typ)
+paramDefinitionSymEntry id typ = do
+  lvl <- getSemLvl
+  nargs <- gets numArgs
+  incargs
+  return (id, SeLArg (-nargs) id typ)
 
+instance SymTabEntry ParameterDefinition where
+  makeEntry (ParameterDefinition id typ) Nothing  = paramDefinitionSymEntry id typ
+  makeEntry (ParameterDefinition id t) (Just typ) = paramDefinitionSymEntry id typ
 
 updateClassicalParm :: ParameterDefinition -> WriterT CompilerLogs SemStateMonad ()
 updateClassicalParm (ParameterDefinition id typ)
