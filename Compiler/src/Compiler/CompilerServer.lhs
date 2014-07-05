@@ -23,7 +23,6 @@
   import Data.Map as Map
   import Data.Maybe
 
-  import Network.Socket
   import Network.Socket as NS
   import Network.BSD
 
@@ -43,7 +42,7 @@
 
   import Paths_lqpl
 
-  default_port = "7683"
+  defaultPort = "7683"
 
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |
@@ -54,15 +53,15 @@
 
 
   data QPLFile = QPLFile {
-    file_name :: String,
-    qpl_program :: [String]
+    fileName :: String,
+    qplProgram :: [String]
   }
     deriving(Eq, Show)
 
   instance FromJSON QPLFile where
     parseJSON (Object v) =
-        QPLFile <$> v .: (DT.pack "file_name")
-                <*> v .: (DT.pack "qpl_program")
+        QPLFile <$> v .: DT.pack "file_name"
+                <*> v .: DT.pack "qpl_program"
     parseJSON _          = mzero
 
   data CompilerCommand = CompilerCommand String
@@ -70,7 +69,7 @@
 
   instance FromJSON CompilerCommand where
     parseJSON  (Object v) =
-        CompilerCommand <$> v .: (DT.pack "command")
+        CompilerCommand <$> v .: DT.pack "command"
     parseJSON _          = mzero
 
   serveLog :: String              -- ^ Port number or name;
@@ -84,10 +83,10 @@
                       (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
                       Nothing (Just port)
          let serveraddr = head addrinfos
-         putStrLn $ show serveraddr
+         print serveraddr
 
          -- Create a socket
-         sock <- socket (addrFamily serveraddr) Network.Socket.Stream defaultProtocol
+         sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
 
          -- Bind it to the address we're listening to
          bindSocket sock (addrAddress serveraddr)
@@ -117,7 +116,7 @@
             procMessages lock connsock clientaddr =
                 do connhdl <- socketToHandle connsock ReadWriteMode
                    hSetBuffering connhdl LineBuffering
-                   ref <- newIORef (Map.empty)
+                   ref <- newIORef Map.empty
                    messages <- hGetContents connhdl
                    mapM_ (handle lock  ref connhdl clientaddr) (lines messages)
                    hClose connhdl
@@ -151,45 +150,42 @@
 
   resultToJSON :: CompilerServiceStatus -> String
   resultToJSON (CS_COMPILED_SUCCESS l "") =
-    jsonObject $ [jsonValueArrayElement "qpo" (lines l)]
+    jsonObject [jsonValueArrayElement "qpo" (lines l)]
 
   resultToJSON (CS_COMPILED_SUCCESS l w) =
-    jsonObject $ [jsonValueArrayElement "qpo" (lines l),
-                  jsonValueElement "warning" w]
+    jsonObject [jsonValueArrayElement "qpo" (lines l),
+                jsonValueElement "warning" w]
 
   resultToJSON (CS_COMPILED_FAIL message) =
-    jsonObject $ [jsonValueElement "compile_fail" message]
+    jsonObject [jsonValueElement "compile_fail" message]
 
   resultToJSON (CS_NEED_FILE fileName) =
-    jsonObject $ [jsonValueElement "send_file" fileName]
+    jsonObject [jsonValueElement "send_file" fileName]
 
   resultToJSON (CS_ILLEGAL_INPUT badInput) =
-    jsonObject $ [jsonValueElement "illegal_input" badInput]
+    jsonObject [jsonValueElement "illegal_input" badInput]
 
   resultToJSON (CS_VERSION nums strs) =
-    jsonObject $ [jsonArrayElement "version_number" (Prelude.map show nums),
-                  jsonValueArrayElement "version_string" strs]
+    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums),
+                jsonValueArrayElement "version_string" strs]
 
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
-    fpDoesFileExist = \ f -> do
-          if (Just f) `elem` (keys imps)
-            then return True
-            else return False,
+    fpDoesFileExist = \ f -> return (Just f `elem` keys imps),
       fpReadFile = \f -> return "",
       emptyProvider = "",
       currentFPDir = "",
       fpcombine = (++),
-      getFirstFileInSearchPath = \p f -> do
-        if imps `haskey` (Just f)
-          then return $ Just (f, imps ! (Just f))
+      getFirstFileInSearchPath = \p f ->
+        if imps `haskey` Just f
+          then return $ Just (f, imps ! Just f)
           else ioError $ userError $  "Need file "++f
       }
 
 
-  compile_me :: Maybe String
-  compile_me = Nothing
+  compileMe :: Maybe String
+  compileMe = Nothing
 
   addProgramToIOREF :: IORef (Map (Maybe String) String) ->
                       String ->
@@ -198,7 +194,7 @@
   addProgramToIOREF ior filename statements = do
     current_files <- readIORef ior
     let files = if Map.null current_files
-                  then Map.singleton compile_me (toMultiLineString statements)
+                  then Map.singleton compileMe (toMultiLineString statements)
                   else current_files
         newFileMap = Map.singleton (Just filename) (toMultiLineString statements)
     writeIORef ior (Map.union newFileMap files)
@@ -207,13 +203,13 @@
                       String ->
                       IO CompilerServiceStatus
   compilerService ior input = do
-    let qplfile = (decodeStrict $ B.pack input :: Maybe QPLFile)
+    let qplfile = decodeStrict $ B.pack input :: Maybe QPLFile
     case qplfile of
       Just q  -> do
-        addProgramToIOREF ior (file_name q) (qpl_program q)
+        addProgramToIOREF ior (fileName q) (qplProgram q)
         tryCompiling ior
       Nothing -> do
-        let command = (decodeStrict $ B.pack input :: Maybe CompilerCommand)
+        let command = decodeStrict $ B.pack input :: Maybe CompilerCommand
         case command of
           Just (CompilerCommand "send_version") ->
              return $ CS_VERSION (versionBranch version) (versionTags version)
@@ -225,7 +221,7 @@
                   IO CompilerServiceStatus
   tryCompiling ior = do
     imps <- readIORef ior
-    let compile_file = fromJust $ Map.lookup compile_me imps
+    let compile_file = fromJust $ Map.lookup compileMe imps
     errOrTxt <- CE.try $ doCompile (fp imps) compile_file
     case errOrTxt of
       Left e    -> do
@@ -233,10 +229,10 @@
         if "Need file " == List.take 10 errString
           then return $ CS_NEED_FILE $ drop 10 errString
           else do
-            writeIORef ior (Map.empty)
+            writeIORef ior Map.empty
             return $ CS_COMPILED_FAIL $ ioeGetErrorString e
       Right (txt,logs) -> do
-            writeIORef ior (Map.empty)
+            writeIORef ior Map.empty
             return $ CS_COMPILED_SUCCESS (toMultiLineString txt) (toMultiLineString logs)
 
   doCompile :: FileProvider -> String -> IO ([String],[String])
@@ -246,7 +242,7 @@
     cd <- ioGenCode ir 0
     return (cd,cls)
 
-  haskey mp k = k `elem` (keys mp)
+  haskey mp k = k `elem` keys mp
 
 
 \end{code}

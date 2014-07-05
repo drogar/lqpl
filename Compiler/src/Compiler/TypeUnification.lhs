@@ -170,9 +170,9 @@ instanceOf varType t1 t2 un
         = instanceOfVar (getTypeVar t1) t2 un
     | isMalleableTypeVar t2
         = instanceOfVar (getTypeVar t2) t1 un
-    | isTypeVar t1 && ( not $ varType t1)       --Allow typevar when hating rigid types :)
+    | isTypeVar t1 && not (varType t1)       --Allow typevar when hating rigid types :)
         = instanceOfVar (getTypeVar t1) t2 un
-    | isTypeVar t2 && (not $ varType t2)
+    | isTypeVar t2 && not (varType t2)
         = instanceOfVar (getTypeVar t2) t1 un
     | isDeclType t1 && isDeclType t2
         = if typeId t1 == typeId t2
@@ -185,7 +185,7 @@ instanceOfVar :: Maybe Identifier -> Qtype -> Map Identifier Qtype ->
 instanceOfVar Nothing t _
     = fail $ patternMissing "instanceOfVar" "No variable" (show t)
 instanceOfVar (Just a) t un
-    = case (Map.lookup a un) of
+    = case Map.lookup a un of
            Just telse ->
                if t == telse then return un -- un' <- unify t telse un
                else do  t' <- unify t telse
@@ -266,17 +266,17 @@ containedInOrFail t1 t2
        =  semLog semLLDebug $ "Contained In or fail with tv on right " ++
           show t1 ++ show t2
    | isDeclType t1 && isDeclType t2
-       = if (getDeclTypeId t1 == getDeclTypeId t2) then
-                do  semLog semLLDebug  $ "Ciof with mapping " ++ (show t1) ++ (show t2)
+       = if getDeclTypeId t1 == getDeclTypeId t2 then
+                do  semLog semLLDebug  $ "Ciof with mapping " ++ show t1 ++ show t2
                     mapM_  (uncurry containedInOrFail) $
                             zip (getDeclTypes t1) (getDeclTypes t2)
          else  fail $ uncontainableDataType (show t1) (show t2)
    | isMalleableTypeVar t2
-       = do   semLog semLLDebug $ "Ciof with t2 malleable " ++ (show t2)
+       = do   semLog semLLDebug $ "Ciof with t2 malleable " ++ show t2
               unifyVar (fromMaybe "" $ getTypeVar t2) t1
               return ()
    | isMalleableTypeVar t1
-       = do  semLog semLLDebug $ "Ciof with t1 malleable " ++ (show t1)
+       = do  semLog semLLDebug $ "Ciof with t1 malleable " ++ show t1
              unifyVar (fromMaybe "" $ getTypeVar t1) t2
              return ()
    | otherwise = fail $ patternMissing "containedInOrFail" (show t1)  (show t2)
@@ -328,7 +328,7 @@ I'm not sure if this is usable  or needed at all anymore
 \begin{code}
 
 
-unify :: Qtype -> Qtype -> WriterT CompilerLogs SemStateMonad ( Qtype)
+unify :: Qtype -> Qtype -> WriterT CompilerLogs SemStateMonad Qtype
 unify t1 t2  | t1 == t2 = return t1
 unify t1 t2
    | ((isBaseType t1 && isBaseType t2) && (t1 /= t2))   ||
@@ -356,10 +356,10 @@ unify (DeclaredType tid ts) (DeclaredType pid ps)
 unify t1 t2  = fail $ patternMissing "unify" (show t1) (show t2)
 
 unifyVar :: Identifier -> Qtype ->
-            WriterT CompilerLogs SemStateMonad( Qtype)
+            WriterT CompilerLogs SemStateMonad Qtype
 unifyVar a t
     = do trel <- getTypeRelations
-         case (Map.lookup a trel) of
+         case Map.lookup a trel of
            Just telse -> unify t telse
            Nothing -> do addTypeRelation a t
                          return t
@@ -382,7 +382,7 @@ deriveTypes :: (Qtype -> Bool) -> Map Identifier Qtype -> [Qtype] ->
 deriveTypes vt  = mapM . deriveType vt
 
 deriveType :: (Qtype -> Bool) -> Map Identifier Qtype ->
-              Qtype -> WriterT CompilerLogs SemStateMonad(Qtype)
+              Qtype -> WriterT CompilerLogs SemStateMonad Qtype
 deriveType vt mp t
     | isDeclType t =
         do let dtypes = getDeclTypes t
@@ -399,10 +399,10 @@ deriveType vt mp t
 fixMalleables :: [Qtype] -> WriterT CompilerLogs SemStateMonad [Qtype]
 fixMalleables   = mapM fixMalleable
 
-fixMalleable :: Qtype -> WriterT CompilerLogs SemStateMonad(Qtype)
+fixMalleable :: Qtype -> WriterT CompilerLogs SemStateMonad Qtype
 fixMalleable  t@(MalleableVariable a)
     = do trmap <- getTypeRelations
-         case (Map.lookup a trmap) of
+         case Map.lookup a trmap of
             Nothing -> return t
             Just t' -> return t'
 fixMalleable  t@(DeclaredType tid tparms)

@@ -5,7 +5,7 @@
 module Main where
 
 import System.Environment (getArgs, getProgName)
-import System.IO 
+import System.IO
 import System.FilePath
 
 import Control.Monad.Writer
@@ -27,9 +27,6 @@ main = do args <- getArgs
           let tellsM = map (doCompile False o) spltfps
           tells <- mapM  execWriterT tellsM
           mapM_ putStrLn (concat tells)
-
-
-
 
 
 \end{code}

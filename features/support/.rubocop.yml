@@ -1,0 +1,8 @@
+# As of 05-26, rubocop was not finding a comment based override in the source
+# file, therefore created this to allow start_up_system.rb to define
+# executeInEDT method.
+
+MethodName:
+  Enabled: false
+
+inherit_from: ../.rubocop.yml

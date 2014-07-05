@@ -4,7 +4,7 @@ require 'spec/spec_helper'
 describe ArrayPartitioner do
   subject { ArrayPartitioner }
   describe :qpl_partion do
-    subject { ArrayPartitioner.new([1,2,3,4,5]) }
+    subject { ArrayPartitioner.new([1, 2, 3, 4, 5]) }
     it 'should delegate to left partition when called with :left' do
       expect(subject).to receive(:qpl_left_partition)
       subject.qpl_partition(:left)

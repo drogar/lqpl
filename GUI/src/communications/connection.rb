@@ -45,15 +45,16 @@ class Connection
     [@connect_to, "#{@my_path}bin/#{@connect_to}", "#{@my_path}../out/bin/#{@connect_to}"]
   end
 
+  def no_process_error
+    "There was no process found on port #{@port}. Please start '#{@connect_to}'."
+  end
+
   def connect
     errors = _make_connection
     connection_list.each do |location|
       errors = try_connecting_to location unless errors.empty?
     end
-    unless errors.empty?
-      fail ServerProcessNotFound,
-           "There was no process found on port #{@port}. Please start '#{@connect_to}'."
-    end
+    fail ServerProcessNotFound, no_process_error   unless errors.empty?
   end
 
   def try_connecting_to(location)

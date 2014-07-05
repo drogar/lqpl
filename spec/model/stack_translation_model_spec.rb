@@ -14,7 +14,8 @@ describe StackTranslationModel do
       subject.stack_translation = P1
       expect(subject.text).to eq('<html><ol><li>p=>1</li></ol></html>')
       subject.stack_translation = L3STACK
-      expect(subject.text).to eq('<html><ol><li>p=>1</li><li>p=>2</li><li>rex=>27, p=>3</li></ol></html>')
+      expect(subject.text)
+        .to eq('<html><ol><li>p=>1</li><li>p=>2</li><li>rex=>27, p=>3</li></ol></html>')
     end
     it 'should ignore direct assignment to the text attribute' do
       subject.stack_translation = P1

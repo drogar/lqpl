@@ -106,7 +106,7 @@ procIr (Procedure procnm incparms inqparms outqparms outcparms procstmts)
            pushOffset --Classical stack locns
            updateClassicalListP incparms
            updateClassicalListP outcparms
-           outentries <- mapM classicalStlookup $ List.map parmId outcparms
+           outentries <- mapM (classicalStlookup . parmId) outcparms
            --dumpst
            stsir <- stmtListIr procstmts
            checkInArgsDestroyed $ List.map (parmId . fst) inargs List.\\ List.map  fst outargs
@@ -146,6 +146,31 @@ stmtListIr (s:ss) = do
 \incsubsubsec{\haskfuncnoref{stmtIr}}
 \label{haskellfunction:stmtIr}
 \index{Compiler Functions!semantics!stmtIr}
+First, a few common functions.
+\begin{code}
+
+getCandQIR nm cexps qexps = do
+  fentry <- stgloballookup nm
+  ceirt <- mapM exprIr cexps
+  qeirt <- mapM exprIr qexps
+  let  (ceir, cetypes, cclassicals) = unzip3 ceirt
+       (qeir, qetypes, qclassicals) = unzip3 qeirt
+  return (fentry, ceir, cetypes, cclassicals, qeir, qetypes, qclassicals)
+
+
+checkDeriveAndAddEntries cetypes cclassicals qetypes fentry qids = do
+  qmpfinal <- checkCallArgs cetypes cclassicals qetypes fentry
+  dtypes <- deriveTypes isRigidTypeVar qmpfinal $ qrettypes fentry
+  addNewLinearEntries qids dtypes SeVar
+  return (qmpfinal, dtypes)
+
+removeDelsFromSymTab ids = do
+  idents <- mapM stlookup ids
+  let dels = Map.fromList $ zip ids idents
+  modSymTabLinear (`Map.difference` dels)
+  return (idents, dels)
+\end{code}
+
 This function pattern matches based upon the \hasktype{QPLstmt} constructors and
 produces the appropriate IR.
 \begin{code}
@@ -291,26 +316,20 @@ The remainder of the code checks for gross duplications such as calling the proc
 same name in the parameter list and determines if this is a recursive call.
 \begin{code}
 
-stmtIr (Call nm cexps qexps qids cids)
-    = do  semLog semLLTrace $ "iring call " ++ nm
-          fentry <- stgloballookup nm
-          ceirt <- mapM exprIr cexps
-          qeirt <- mapM exprIr qexps
-          let  (ceir, cetypes, cclassicals) = unzip3 ceirt
-               (qeir, qetypes, qclassicals) = unzip3 qeirt
-          qmpfinal <- checkCallArgs cetypes cclassicals qetypes fentry
-          dtypes <- deriveTypes isRigidTypeVar qmpfinal $ qrettypes fentry
-          addNewLinearEntries qids dtypes SeVar
-                     -- Need to actually unify based on inputs....
-          lvl <- getSemLvl
-          ctypes <- deriveTypes isRigidTypeVar qmpfinal $ crettypes fentry
-          addNewClassicalEntries [0..] cids ctypes (SeCVar lvl )
-          return [Icall (transform fentry)
-                            (callingLabel fentry)
-                            (parmnames fentry)
-                            ceir qeir
-                        (zip qids (qrettypes fentry))
-                                    (zip cids (crettypes fentry)) ]
+stmtIr (Call nm cexps qexps qids cids) = do
+  semLog semLLTrace $ "iring call " ++ nm
+  (fentry, ceir, cetypes, cclassicals, qeir, qetypes, qclassicals) <- getCandQIR nm cexps qexps
+                      -- Need to actually unify based on inputs....
+  (qmpfinal, dtypes) <- checkDeriveAndAddEntries cetypes cclassicals qetypes fentry qids
+  lvl <- getSemLvl
+  ctypes <- deriveTypes isRigidTypeVar qmpfinal $ crettypes fentry
+  addNewClassicalEntries [0..] cids ctypes (SeCVar lvl )
+  return [Icall (transform fentry)
+                (callingLabel fentry)
+                (parmnames fentry)
+                ceir qeir
+                (zip qids (qrettypes fentry))
+                (zip cids (crettypes fentry)) ]
 
 
 stmtIr (UseAssign id exp)
@@ -348,8 +367,7 @@ stmtIr (Use ids stmts)
                lindel = List.map Map.delete ids
           modSymTabLinear (List.foldl (.) id lindel)
           modSymTabClassical (List.foldl (.) id $
-                             List.map (uncurry Map.insert) $
-                             zip ids useids)
+                             zipWith Map.insert ids useids)
 --         dumpst
           stirs <- stmtListIr stmts
           setSymTabClassical stc
@@ -366,21 +384,19 @@ stmtIr (Guard gcs)
 \end{code}
 
 \begin{code}
+
+
 stmtIr (Discard ids)
     = do  semLog semLLTrace  "In discard"
           dumpst semLLDebug3
-          idents <- mapM stlookup ids
-          let dels = Map.fromList $ zip ids idents
-          modSymTabLinear (flip Map.difference dels)
+          (idents,_) <- removeDelsFromSymTab ids
           return [ Idiscard $ List.map name idents ]
 
 stmtIr (ControlledBy stmt cids)
     = do  let (ids, recontrols) = unzip $ List.map splitControl cids
           semLog semLLTrace  "Controlled by "
           if hasDuplicates ids then fail $ dupInList ids
-             else do  idents <- mapM stlookup ids
-                      let dels = Map.fromList $ zip ids idents
-                      modSymTabLinear (flip Map.difference dels)
+             else do  (idents, dels) <- removeDelsFromSymTab ids
                       istmt <- stmtIr stmt
                       semLog semLLDebug $ show dels;
                       semLog semLLDebug3 "Symbol table before control"
@@ -431,7 +447,7 @@ guardClauseIr (GuardClause e ss)
                      return (ire, irss)
             else fail $ guardClauseType  (show gct)
 
-semanticUnify :: Qtype ->  WriterT CompilerLogs SemStateMonad (Qtype)
+semanticUnify :: Qtype ->  WriterT CompilerLogs SemStateMonad Qtype
 semanticUnify
     = return
 {-
@@ -467,8 +483,8 @@ clauseListIr ctype (cclause:clauses)
 
 clauseIr ::  Qtype ->
              (CaseClause, [Statement])->
-              WriterT CompilerLogs SemStateMonad (IrCaseClause)
-clauseIr casetype ((CaseClause cid ids),stmts)
+              WriterT CompilerLogs SemStateMonad IrCaseClause
+clauseIr casetype (CaseClause cid ids,stmts)
     = do  semLog semLLTrace $ "In case clause " ++ cid
           ccentry <- stgloballookup cid
           let clausetype = head $ rettypes ccentry
@@ -500,7 +516,7 @@ clauseIr casetype ((CaseClause cid ids),stmts)
 
 noWarnRemoveIdLinear = removeIdLinear Nothing
 
-removeIdLinear :: (Maybe String) ->String ->  WriterT CompilerLogs SemStateMonad ([Istmt])
+removeIdLinear :: Maybe String ->String ->  WriterT CompilerLogs SemStateMonad [Istmt]
 removeIdLinear kind id
     = do  ste <- maybeLookup id
           case ste of
@@ -515,7 +531,7 @@ removeIdLinear kind id
              Nothing ->
                  return []
 
-removeIdListLinear :: String -> [String] ->  WriterT CompilerLogs SemStateMonad ([Istmt])
+removeIdListLinear :: String -> [String] ->  WriterT CompilerLogs SemStateMonad [Istmt]
 removeIdListLinear _ [] = return []
 removeIdListLinear kind ("_":ids)
     =  removeIdListLinear kind ids
@@ -529,7 +545,7 @@ checkCallArgs :: [Qtype] -> [Bool] -> [ Qtype]->
                  SymEntryGlobal ->
                   WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 checkCallArgs ctypes ctypsok qtypes fentry
-    = do  semLog semLLTrace $ "checking Call Args (c) "++(show ctypes)++" (q) "++(show qtypes)
+    = do  semLog semLLTrace $ "checking Call Args (c) " ++ show ctypes ++ " (q) " ++ show qtypes
           checkClassicals ctypsok
           let cargs = cargtypes fentry
           argCountOK ctypes cargs
@@ -542,7 +558,7 @@ checkCallArgs ctypes ctypsok qtypes fentry
 checkConsArgs :: [Qtype] -> SymEntryGlobal ->
                   WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 checkConsArgs  qtypes consentry
-    = do  semLog semLLTrace $ "checking Cons Args (q) "++(show qtypes)
+    = do  semLog semLLTrace $ "checking Cons Args (q) " ++ show qtypes
           let qargs = argtypes consentry
           argCountOK qtypes qargs
           cmp' <- argTypesOK isTypeVar Map.empty qtypes qargs
@@ -568,7 +584,7 @@ argTypesOK :: (Qtype -> Bool) ->Map Identifier Qtype->[Qtype] ->
               [Qtype] ->
                WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 argTypesOK vartype mp qs rs
-           = do semLog semLLDebug3 $ "checking Arg types: "++(show qs)++" to "++(show rs)
+           = do semLog semLLDebug3 $ "checking Arg types: " ++ show qs ++ " to " ++ show rs
                 instanceOfList vartype (zip qs rs) mp
 
 
@@ -611,34 +627,26 @@ exprIr ec@(Econs cid es)
                    dtype,
                    False)
 
-exprIr (Ecall nm cexps qexps qids)
-     = do  fentry <- stgloballookup nm
-           ceirt <- mapM exprIr cexps
-           qeirt <- mapM exprIr qexps
-           let  (ceir, cetypes, cclassicals) = unzip3 ceirt
-                (qeir, qetypes, qclassicals) = unzip3 qeirt
-           case (qrettypes fentry) of
-             []      -> fail $ callIllegalRets nm
-             rtypes  ->
-               do  qmpfinal <- checkCallArgs cetypes cclassicals qetypes fentry
-                   dtypes <- deriveTypes isRigidTypeVar qmpfinal $ qrettypes fentry
-                   addNewLinearEntries qids dtypes SeVar
-                   return (  IrExpCall  (callingLabel  fentry) (parmnames fentry)
-                                        ceir qeir $ zip qids rtypes,
-                             (last dtypes),
-                             False)
+exprIr (Ecall nm cexps qexps qids) = do
+    (fentry, ceir, cetypes, cclassicals, qeir, qetypes, qclassicals) <- getCandQIR nm cexps qexps
+    case qrettypes fentry of
+      []      -> fail $ callIllegalRets nm
+      rtypes  -> do
+        (qmpfinal, dtypes) <- checkDeriveAndAddEntries cetypes cclassicals qetypes fentry qids
+        return (IrExpCall (callingLabel  fentry) (parmnames fentry)
+                          ceir qeir $ zip qids rtypes,
+                          last dtypes,
+                          False)
 
 exprIr (Enum i) = return (IrNum  i, INT, True)
 exprIr (Evar id )
         = do  sentry <- lookupClassicalOrLinear id
               case sentry of
-                 Right (centry) ->
-                     return (  IrCvar id  (coffset centry)
-                                          (level centry)
-                                          (ctype centry),
-                               (ctype centry),
-                               True)
-                 Left (lentry) ->
+                 Right centry ->
+                     return (IrCvar id  (coffset centry) (level centry) (ctype centry),
+                                    ctype centry,
+                                    True)
+                 Left lentry ->
                      do noWarnRemoveIdLinear id --modSymTabLinear (Map.delete id)
                         return (  IrVar (name lentry) (qtype lentry),
                                   qtype lentry,
@@ -650,7 +658,7 @@ exprIr (Eapply op exp1 exp2 )
               unift1 <- semanticUnify ietype1
               unift2 <- semanticUnify ietype2
               if b1 && b2 && binopTypesOK op unift1 unift2
-                then  return (Apply op iexp1 iexp2, (optype op), True)
+                then  return (Apply op iexp1 iexp2, optype op, True)
                 else  fail $ "Invalid types for operation " ++
                              show op ++ ('(':show (fromEnum op)) ++ ") " ++
                              show ietype1 ++ (':':show b1) ++
@@ -686,23 +694,23 @@ applyNot fe          = return (IrNot fe)
 applyOp :: BinOp -> IrExpression -> IrExpression ->  WriterT CompilerLogs SemStateMonad IrExpression
 applyOp op (IrNum  i1) (IrNum  i2)
      = return (case op of
-                         Add -> (IrNum (i1 + i2))
-                         Sub -> (IrNum (i1 - i2))
-                         Mul -> (IrNum (i1 * i2))
-                         Div -> (IrNum (div i1  i2))
-                         Rem -> (IrNum (rem i1  i2))
-                         Mod -> (IrNum (mod i1 i2))
-                         And -> (IrNum (i1 .&. i2))
-                         Or -> (IrNum ( i1 .|. i2))
-                         Xor -> (IrNum (xor i1 i2))
-                         Opeq -> (IrBool $ i1 == i2)
-                         Opneq -> (IrBool $ i1 == i2)
-                         Oplt -> (IrBool $ i1 < i2)
-                         Opgt -> (IrBool $ i1 > i2)
-                         Ople -> (IrBool $ i1 <= i2)
-                         Opge -> (IrBool $ i1 >= i2)
-                         Oplshift -> (IrNum (shift i1 i2))
-                         Oprshift -> (IrNum (shift i1 (-i2)))
+                         Add -> IrNum (i1 + i2)
+                         Sub -> IrNum (i1 - i2)
+                         Mul -> IrNum (i1 * i2)
+                         Div -> IrNum (div i1  i2)
+                         Rem -> IrNum (rem i1  i2)
+                         Mod -> IrNum (mod i1 i2)
+                         And -> IrNum (i1 .&. i2)
+                         Or  -> IrNum ( i1 .|. i2)
+                         Xor -> IrNum (xor i1 i2)
+                         Opeq -> IrBool $ i1 == i2
+                         Opneq -> IrBool $ i1 == i2
+                         Oplt -> IrBool $ i1 < i2
+                         Opgt -> IrBool $ i1 > i2
+                         Ople -> IrBool $ i1 <= i2
+                         Opge -> IrBool $ i1 >= i2
+                         Oplshift -> IrNum (shift i1 i2)
+                         Oprshift -> IrNum (shift i1 (-i2))
                          _ -> Apply op (IrNum i1) (IrNum i2))
 
 applyOp op e1 e2 = return (Apply op e1 e2)
@@ -718,13 +726,17 @@ Its derivative function \haskfuncdef{ioMakeIr}{Compiler}{semantics}
  applies this to a base state with an empty
 symbol table.
 \begin{code}
+
+makeTypeRelations prog = do
+  programir <- progIr prog
+  te <- getTypeRelations
+  return programir
+
 makeIr :: Program -> WriterT CompilerLogs SemStateMonad Iprog
 makeIr prog
      = do  emptySymbolTables
            setSemLvl (Lvl 0 0 0 0)
-           programir <- progIr prog
-           te <- getTypeRelations
-           return programir
+           makeTypeRelations prog
 
 
 
@@ -734,9 +746,7 @@ makeIrWithLL prog ll
      = do  emptySymbolTables
            setSemLvl (Lvl 0 0 0 0)
            setLL ll
-           programir <- progIr prog
-           te <- getTypeRelations
-           return programir
+           makeTypeRelations prog
            --liftIO $ print te
            --      let pir = subProgTypes  (solve te) programir
            --   return (pir )
@@ -759,7 +769,7 @@ removeState loglevel qprogIR
             0 0 0
             Map.empty
             Map.empty [] (push 0 emptyStack) loglevel )
-        return (a,cl++(warnings s))
+        return (a,cl ++ warnings s)
 
 {-
 ioMakeIr :: Program ->Int-> WriterT CompilerLogs IO Iprog
@@ -897,7 +907,7 @@ warnDelete id
     = warnssm . unbalancedCreation id . show . qtype
 
 
-makeDiscard :: String -> SymEntryLinear ->  WriterT CompilerLogs SemStateMonad (Istmt)
+makeDiscard :: String -> SymEntryLinear ->  WriterT CompilerLogs SemStateMonad Istmt
 makeDiscard id (SeVar n t)    = return $ Idiscard [n]
 makeDiscard id _              = return $ Idiscard []
 
@@ -930,4 +940,3 @@ checkNameIsCreated  name
            Just e   -> return ()
 
 \end{code}
-

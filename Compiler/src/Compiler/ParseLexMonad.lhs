@@ -16,17 +16,17 @@ alexInputPrevChar :: AlexInput -> Char
 alexInputPrevChar (p,c,s) = c
 
 alexInputString :: AlexInput -> String
-alexInputString (p,c,(s:ss)) = s
+alexInputString (p,c,s:ss) = s
 
 
 alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
-alexGetChar ((p:ps),c,[]) = Nothing
-alexGetChar ((p:ps),c,[[]]) = Nothing
-alexGetChar ((p:ps),_,(([]):ss))  =
+alexGetChar (p:ps,c,[]) = Nothing
+alexGetChar (p:ps,c,[[]]) = Nothing
+alexGetChar (p:ps,_,[]:ss)  =
      alexGetChar (ps,' ',ss)
-alexGetChar ((p:ps),_,((c:s):ss))  =
+alexGetChar (p:ps,_,(c:s):ss)  =
     let p' = alexMove p c in p' `seq`
-         Just (c, ((p':ps), c, (s:ss)))
+         Just (c, (p':ps, c, s:ss))
 \end{code}
 
  Token positions
@@ -43,7 +43,7 @@ data AlexPosn = forall a. FileProvider a => AlexPn {alexCurrFile::a,
  address:: !Int, lineNum:: !Int, columnNum:: !Int}
 
 instance Eq AlexPosn where
-  (AlexPn a b c d) == (AlexPn a' b' c' d') = (show a)==(show a') && b==b' && c==c' && d==d'
+  (AlexPn a b c d) == (AlexPn a' b' c' d') = show a == show a' && b==b' && c==c' && d==d'
 
 instance Show AlexPosn where
   show (AlexPn a b c d) = "AlexPn(" ++ show a ++ " "++ show b ++ " "++ show c ++ " "++ show d ++")"
@@ -69,28 +69,28 @@ The Monad type
 \begin{code}
 
 data AlexState = forall a. FileProvider a => AlexState {
-        alex_pos :: [AlexPosn],  -- position at current input location
-        alex_inp :: [String],     -- the current input
-        alex_chr :: !Char,      -- the character before the input
-        alex_scd :: !Int,       -- the current startcode
-        alex_clvl :: !Int,    -- BGG The comment level depth
-        alex_cdir :: a, -- The current directory - of input file.
-        alex_imps :: [a], -- List of imported / read files.
-        alex_sdirs :: [a] -- List of search dirs for imports.
+        alexPos :: [AlexPosn],  -- position at current input location
+        alexInp :: [String],     -- the current input
+        alexChr :: !Char,      -- the character before the input
+        alexScd :: !Int,       -- the current startcode
+        alexClvl :: !Int,    -- BGG The comment level depth
+        alexCdir :: a, -- The current directory - of input file.
+        alexImps :: [a], -- List of imported / read files.
+        alexSdirs :: [a] -- List of search dirs for imports.
     }
 
 -- Compile with -funbox-strict-fields for best results!
 
 runAlex :: String -> Alex a -> IO (Either String a)
 runAlex input (Alex f)
-   =  do ares <- f AlexState {alex_pos = [alexStartPos],
-                              alex_inp = [input],
-                              alex_chr = '\n',
-                              alex_scd = 0,
-                              alex_clvl = 0,
-                              alex_cdir = currentFPDir,
-                              alex_imps = [],
-                              alex_sdirs = [currentFPDir]}
+   =  do ares <- f AlexState {alexPos = [alexStartPos],
+                              alexInp = [input],
+                              alexChr = '\n',
+                              alexScd = 0,
+                              alexClvl = 0,
+                              alexCdir = currentFPDir,
+                              alexImps = [],
+                              alexSdirs = [currentFPDir]}
          return $ case ares of
                     Left msg -> Left msg
                     Right ( _, a ) -> Right a
@@ -114,25 +114,25 @@ liftio f = Alex $ \s ->
 
 alexGetInput :: Alex AlexInput
 alexGetInput
- = Alex $ \s@AlexState{alex_pos=pos,alex_chr=c,alex_inp=inp} ->
+ = Alex $ \s@AlexState{alexPos=pos,alexChr=c,alexInp=inp} ->
         return $ Right (s, (pos,c,inp))
 
 alexGetImpDirs :: FileProvider b => Alex [b]
 alexGetImpDirs
     = Alex $  \s ->
-        return $ Right (s, (alex_sdirs s))
+        return $ Right (s, alexSdirs s)
 
 alexSetInput :: AlexInput -> Alex ()
 alexSetInput (pos,c,inp)
- = Alex $ \s -> case s{alex_pos=pos,alex_chr=c,alex_inp=inp,alex_imps=map alexCurrFile pos} of
+ = Alex $ \s -> case s{alexPos=pos,alexChr=c,alexInp=inp,alexImps=map alexCurrFile pos} of
                   s@(AlexState{}) -> return $ Right (s, ())
 
 alexAddInput :: AlexInput -> Alex ()
 alexAddInput (pos,c,inp)
- = Alex $ \s -> case s{alex_pos=pos ++ alex_pos s,
-                            alex_chr=c,
-                            alex_inp=inp ++ alex_inp s,
-                            alex_imps =  map alexCurrFile pos ++ alex_imps s} of
+ = Alex $ \s -> case s{alexPos=pos ++ alexPos s,
+                            alexChr=c,
+                            alexInp=inp ++ alexInp s,
+                            alexImps =  map alexCurrFile pos ++ alexImps s} of
                   s@(AlexState{}) -> return $ Right (s, ())
 
 --alexEOF :: Alex a
@@ -141,38 +141,38 @@ alexError :: String -> Alex a
 alexError message =
     Alex $ \s -> return $
                    Left (" Lexing Character "++
-                         show (head $ head $ alex_inp s)++
+                         show (head $ head $ alexInp s)++
                          " at line " ++
-                         show (alexLineNum $ head $ alex_pos s) ++
+                         show (alexLineNum $ head $ alexPos s) ++
                          " column " ++
-                         show (alexCharNum $ head $ alex_pos s) ++
+                         show (alexCharNum $ head $ alexPos s) ++
                          " file " ++
-                         show (alexCurrFile $ head $ alex_pos s) ++
+                         show (alexCurrFile $ head $ alexPos s) ++
                          " context: " ++
-                         take 30 (head $ alex_inp s) ++
+                         take 30 (head $ alexInp s) ++
                          "\n" ++ message)
 
 alexGetInpDir :: FileProvider b => Alex b
-alexGetInpDir =  Alex $ \s@AlexState{alex_cdir=d} ->
+alexGetInpDir =  Alex $ \s@AlexState{alexCdir=d} ->
                           return $ Right (s, d)
 
 alexGetImpFiles :: FileProvider b => Alex [b]
-alexGetImpFiles  = Alex $ \s@AlexState{alex_imps=imps} ->
+alexGetImpFiles  = Alex $ \s@AlexState{alexImps=imps} ->
                        return $ Right (s, imps)
 
 alexGetStartCode :: Alex Int
-alexGetStartCode = Alex $ \s@AlexState{alex_scd=sc} ->
+alexGetStartCode = Alex $ \s@AlexState{alexScd=sc} ->
                        return $ Right (s, sc)
 
 alexSetStartCode :: Int -> Alex ()
-alexSetStartCode sc = Alex $ \s -> return $ Right (s{alex_scd=sc}, ())
+alexSetStartCode sc = Alex $ \s -> return $ Right (s{alexScd=sc}, ())
 
 
 alexGetCommentLevel :: Alex Int
-alexGetCommentLevel = Alex $ \s@AlexState{alex_clvl=cl} -> return $ Right (s, cl)
+alexGetCommentLevel = Alex $ \s@AlexState{alexClvl=cl} -> return $ Right (s, cl)
 
 alexSetCommentLevel :: Int -> Alex ()
-alexSetCommentLevel cl = Alex $ \s -> return $ Right (s{alex_clvl=cl}, ())
+alexSetCommentLevel cl = Alex $ \s -> return $ Right (s{alexClvl=cl}, ())
 
 alexIncCommentLevel :: Alex ()
 alexIncCommentLevel  =
@@ -182,12 +182,7 @@ alexIncCommentLevel  =
 alexDecCommentLevel :: Alex ()
 alexDecCommentLevel =
     do {  cl <- alexGetCommentLevel
-        ; if cl > 0
-          then alexSetCommentLevel (cl - 1)
-          else alexSetCommentLevel 0 }
-
-
-
+        ; alexSetCommentLevel if cl > 0 then (cl - 1) else 0}
 
 
 \end{code}
@@ -220,4 +215,3 @@ instance Show Token where
      show TkTensor      = "Tensor "
      show TkImp         = "Importing"
 \end{code}
-

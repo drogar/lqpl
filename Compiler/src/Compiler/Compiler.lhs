@@ -47,7 +47,7 @@ doCompile quietMode flgs (dir, fname, fext) =
        outh <-liftIO $  openFile outpath WriteMode
        liftIO $ hPutStrLn outh compilerId
        liftIO $ mapM_ (hPutStrLn outh) proggen
-       unless quietMode $ tell $ ["Successful code generation - Stack code written to:" ++ outfile ]
+       unless quietMode $ tell ["Successful code generation - Stack code written to:" ++ outfile ]
        liftIO $ hClose outh
        return outpath
 
@@ -62,7 +62,7 @@ printCond f flags  =
 
 
 getIncludePath :: [Flag] -> [String]
-getIncludePath ((SearchDirs ss):_) =  ss
+getIncludePath (SearchDirs ss:_) =  ss
 getIncludePath [] = ["."]
 getIncludePath (_:flgs) = getIncludePath flgs
 

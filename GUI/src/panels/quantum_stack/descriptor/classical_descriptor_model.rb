@@ -15,11 +15,11 @@ class ClassicalDescriptorModel < AbstractDescriptorModel
     json_c = EnsureJSON.new(in_string).as_json
     @value = json_c[:classical]
     fail ModelCreateError, fail_message unless @value && @value.kind_of?(Array)
-    @value.each do |v|
-      unless v && ClassicalDescriptorModel.valid_classical_kind(v)
-        fail ModelCreateError, fail_message
-      end
-    end
+    fail ModelCreateError, fail_message unless @value.all? { |v| descriptor_ok?(v) }
+  end
+
+  def descriptor_ok?(descriptor)
+    descriptor && ClassicalDescriptorModel.valid_classical_kind(descriptor)
   end
 
   def length

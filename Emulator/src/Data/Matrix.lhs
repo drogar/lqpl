@@ -20,9 +20,9 @@ import Data.List
 \begin{code}
 
 type Matrix a  = [[a]]
-	     
+
 mmap :: (a ->b) -> Matrix a -> Matrix b
-mmap   =  map . map 
+mmap   =  map . map
 \end{code}
 Accessor functions |dimx, dimy| are defined to provide the matrix
  dimensions.
@@ -31,16 +31,16 @@ Accessor functions |dimx, dimy| are defined to provide the matrix
 \begin{code}
 
 dimx::Matrix a -> Int
-dimx  = length 
+dimx  = length
 
 qorder :: Matrix a -> Int
-qorder = qorder' 0 . dimx 
+qorder = qorder' 0 . dimx
 
 qorder'::Int->Int -> Int
 qorder' acc val =
      if val < 2 then acc
-	else qorder' (acc + 1) (shiftR val 1) 
- 
+	else qorder' (acc + 1) (shiftR val 1)
+
 dimy::Matrix a -> Int
 dimy [] = 0
 dimy (r:_) = length r
@@ -55,7 +55,7 @@ showMat :: (Show a) => Matrix a -> String
 showMat [] = ""
 showMat (r:rs) = showList r ('\n' : showMat  rs)
 
- 
+
 {- unused
 printMat :: (Show a) => Matrix a -> IO ()
 printMat m = putStr $ showMat m
@@ -72,17 +72,17 @@ and therefore matrix multiplication.
 gendotprod :: (c->c->c) -> (a -> b -> c) -> [a] -> [b] -> c
 gendotprod f g xs = foldr1 f . zipWith g xs
 
-genmatmul  :: (c->c->c) -> (a -> b -> c) -> 
+genmatmul  :: (c->c->c) -> (a -> b -> c) ->
               Matrix a -> Matrix b -> Matrix c
-genmatmul  f g m1 m2  
-     = transpose [[gendotprod f g a b| a <- m1] | 
+genmatmul  f g m1 m2
+     = transpose [[gendotprod f g a b| a <- m1] |
 		       b <- transpose m2]
 
 \end{code}
 \end{singlespace}
 }
 
-|indexM| is a 
+|indexM| is a
 function to retrieve the $i,j^{\mathrm{th}}$ element of the matrix.
 
 {\begin{singlespace}
@@ -94,7 +94,7 @@ indexM i j  m = (m !! i) !! j
 \end{singlespace}
 }
 
-In a quantum space, the application of a unitary transform requires 
+In a quantum space, the application of a unitary transform requires
 taking the conjugate transpose of a matrix.
 
 {\begin{singlespace}
@@ -117,18 +117,18 @@ of matrix addition below.
 
 xzipWith :: (a->b->c)->[a]->[b]->[c]
 xzipWith _ [] [] = []
-xzipWith _ [] ys 
+xzipWith _ [] ys
      = error "xzipWith: 2nd list longer"
-xzipWith _ xs [] 
+xzipWith _ xs []
      = error "xzipWith: 1st list longer"
-xzipWith f (x:xs) (y:ys) 
+xzipWith f (x:xs) (y:ys)
      = f x y : xzipWith f xs ys
 
 \end{code}
 \end{singlespace}
 }
 
-This is a 
+This is a
 standard vector |dotprod| using addition and multiplication.
 
 {\begin{singlespace}
@@ -147,15 +147,15 @@ Creation of a zero matrix, used in the definition of the numeric instance.
 
 zeromat :: (Num a)=>Int->Matrix a
 zeromat 0 = error "Invalid dimension"
-zeromat n =  [[fromInteger 0 |
+zeromat n =  [[ 0 |
 	       inner<-[1..n]] |
 	      outer<-[1..n]]
 
 idMat :: (Num a) => Int -> Matrix a
-idMat n = [[if inner == outer then fromInteger 1 else fromInteger 0 |
+idMat n = [[if inner == outer then  1 else  0 |
 	       inner<-[1..n]] |
 	      outer<-[1..n]]
-                                                                  
+
 \end{code}
 \end{singlespace}
 }
@@ -169,17 +169,17 @@ the module defines  an instance of the matrix as part of the |Num| class.
 instance (Num a)=> Num (Matrix a)  where
      (+)          = xzipWith (xzipWith (+))
      (-)          = xzipWith (xzipWith (-))
-     (*) qm1 qm2  =  [[dotprod a b| b <- transpose qm2] | 
+     (*) qm1 qm2  =  [[dotprod a b| b <- transpose qm2] |
 	                 a <-  qm1]
      negate       = mmap negate
      abs          = mmap abs
      signum       = mmap signum
-     fromInteger  = zeromat . fromInteger 
+     fromInteger  = zeromat . fromInteger
 
 mat2ToTheT :: (Num a) => Matrix a -> Int -> Matrix a
 mat2ToTheT m 0 = m
-mat2ToTheT m t 
-    | t > 0 = m' * m' 
+mat2ToTheT m t
+    | t > 0 = m' * m'
     | otherwise = error "Negative value for t in m^(2^t)"
     where m' = mat2ToTheT m (t-1)
 
@@ -189,14 +189,14 @@ mat2ToTheT m t
 
 
 
-In certain cases, functions may create matrices whose elements 
+In certain cases, functions may create matrices whose elements
 are matrices.
 
 Using our "list of lists" representation,  a function to
-parametrically combine 
-the rows of the |Matrix| creating a column vector is defined. 
-The 
-|paste| function which "pastes" matrices in a 
+parametrically combine
+the rows of the |Matrix| creating a column vector is defined.
+The
+|paste| function which "pastes" matrices in a
 side-by-side fashion is defined as
 
 {\begin{singlespace}
@@ -216,7 +216,7 @@ c&d&g&h
 }
 
 Those functions are then used
- to take a matrix of matrices of type $\alpha$ to a 
+ to take a matrix of matrices of type $\alpha$ to a
 matrix of type $\alpha$
 
 {\begin{singlespace}
@@ -225,7 +225,7 @@ tocolVector::(a->a->a)->Matrix a -> [a]
 tocolVector f m = [ foldr1 f a | a<-  m ]
 
 paste :: Matrix a -> Matrix a -> Matrix a
-paste  = zipWith (++) 
+paste  = zipWith (++)
 
 reduceM :: Matrix (Matrix a) -> Matrix a
 reduceM  = concat . tocolVector paste
@@ -246,7 +246,7 @@ tenderize matr =
        [grab 1 0 matr, grab 1 1 matr]]
 -}
 grab :: Int -> Int -> Matrix a -> Matrix a
-grab 0 0 matr =  
+grab 0 0 matr =
     take d2 $ map (take d2)  matr
         where d2 = dimy matr `div` 2
 grab 0 1 matr

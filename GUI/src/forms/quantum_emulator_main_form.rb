@@ -48,10 +48,10 @@ class QuantumEmulatorMainForm < STFrame
   end
 
   def make_a_spinner(key, options, parent)
+    model = options
+    model[:container] = parent
     send(key.to_s + '_spinner=',
-         Spinner.spinner_with_label_and_model(options[:name], options[:start],
-                                              options[:increment], options[:max],
-                                              options[:min], parent))
+         Spinner.spinner_with_label_and_model(options[:name], model))
   end
 
   def make_button_panel(cpane)

@@ -71,10 +71,10 @@ combineAllProgs  = List.foldl combineProgs Map.empty
 genProcHeader :: CodeMonad ProgramCode
 genProcHeader = do
    cpn <- getCurrentProcName
-   scode $  assem_directive_startproc cpn
+   scode $  assemDirectiveStartproc cpn
 
 genProcTrailer :: CodeMonad ProgramCode
-genProcTrailer =  scode assem_directive_endproc
+genProcTrailer =  scode assemDirectiveEndproc
 
 
 scode :: Instruction -> CodeMonad ProgramCode
@@ -134,7 +134,7 @@ reuseStackName [] = return ()
 reuseStackName ('^':nm)
     = do cgLog cgLLTrace $ " Will reuse  name  : '" ++ nm++"'."
          lbls <- gets stackNameGen
-         modify (\st -> st{stackNameGen = (reuse nm lbls)})
+         modify (\st -> st{stackNameGen = reuse nm lbls})
 
 reuseStackName _ = return ()
 
@@ -158,7 +158,7 @@ getCurrentActive = gets currentActive
 setCurrentActive :: NodeName -> CodeMonad ()
 setCurrentActive nm
      = do removeFromPendingDiscards nm
-          modify (\st -> st {currentActive = (Just nm)})
+          modify (\st -> st {currentActive = Just nm})
 
 unsetCurrentActive :: CodeMonad ()
 unsetCurrentActive = modify (\st -> st {currentActive = Nothing})
@@ -199,10 +199,10 @@ removeFromPendingDiscards nm
 
 
 minusSequence :: CodeMonad ProgramCode
-minusSequence = scode $ glue [iname_coperation,  (show Negate)]
+minusSequence = scode $ glue [inameCoperation, show Negate]
 
 classicalOp :: BinOp -> CodeMonad ProgramCode
-classicalOp = scode . glue2 iname_coperation . show
+classicalOp = scode . glue2 inameCoperation . show
 
 guardBodyCode :: Label -> [(IrExpression, [Istmt])] ->
                 (IrExpression -> CodeMonad ProgramCode) ->
@@ -227,23 +227,23 @@ guardBodyCode endlbl ((exp,stmts):morees) ec ssc
 
 useStartCode :: Label -> Label -> NodeName -> CodeMonad ProgramCode
 useStartCode bdyLabel endLabel nm
-    = scode $ glue [iname_use,  (address nm), endLabel, bdyLabel]
+    = scode $ glue [inameUse, address nm, endLabel, bdyLabel]
 
 qend :: CodeMonad ProgramCode
-qend = scode $ glue [iname_swapd, "  "]
+qend = scode $ glue [inameSwapd, "  "]
 
 destroy :: NodeName -> CodeMonad ProgramCode
-destroy  = scode . glue2 iname_delete . address
+destroy  = scode . glue2 inameDelete . address
 
 discard  :: NodeName -> CodeMonad ProgramCode
-discard   = scode . glue2 iname_discard . address
+discard   = scode . glue2 inameDiscard . address
 
 delayedUse :: NodeName -> CodeMonad (ProgramCode, ProgramCode)
 delayedUse nm
     = do lbl1 <- getLabel
          endLabel <- getLabel
          dc <- labelizeM lbl1 (discard nm)
-         use <- code [glue [iname_use, (address nm), endLabel, lbl1]]
+         use <- code [glue [inameUse, address nm, endLabel, lbl1]]
          endq <- qend
          endit <- labelizeM  endLabel descope
          escop <- enscope
@@ -260,10 +260,10 @@ measCode nm zbr obr
          lbl2 <- getLabel
          endLabel <- getLabel
          escop <- enscope
-         mscd <- code [glue [iname_measure, (address nm), endLabel, lbl1, lbl2]]
+         mscd <- code [glue [inameMeasure, address nm, endLabel, lbl1, lbl2]]
          zbrd <- blockCode zbr
          obrd <- blockCode obr
-         disc <- scode $ glue [iname_discard, (address nm)]
+         disc <- scode $ glue [inameDiscard, address nm]
          z' <-labelize lbl1  disc
          o' <- labelize lbl2  disc
          endq <- qend
@@ -279,10 +279,10 @@ measCode nm zbr obr
 
 controlDoneCode :: CodeMonad ProgramCode
 controlDoneCode = do unsetCurrentActive
-                     scode $ glue [iname_popcontrol]
+                     scode $ glue [inamePopcontrol]
 
 controlBeginCode :: CodeMonad ProgramCode
-controlBeginCode = scode $ glue [iname_pushcontrol]
+controlBeginCode = scode $ glue [inamePushcontrol]
 
 controlStartCode :: [ControlType NodeName] -> CodeMonad ProgramCode
 controlStartCode [] = error noProcName
@@ -301,17 +301,17 @@ controlVar (ZeroControl nm) =
 baseControl :: NodeName -> String -> CodeMonad ProgramCode
 baseControl nm ctyp =
     do pu <- pullup  nm
-       cc <- scode $ glue [iname_controlit, ctyp]
+       cc <- scode $ glue [inameControlit, ctyp]
        return $ combineProgs pu cc
 
 nooperation :: CodeMonad ProgramCode
-nooperation = scode iname_noop
+nooperation = scode inameNoop
 
 zeroStackCode :: CodeMonad ProgramCode
-zeroStackCode = scode $ glue [iname_zerostack]
+zeroStackCode = scode $ glue [inameZerostack]
 
 returnop :: Int->CodeMonad ProgramCode
-returnop  = scode . glue2 iname_return . show
+returnop  = scode . glue2 inameReturn . show
 
 labelize :: String -> ProgramCode -> CodeMonad ProgramCode
 labelize lbl =
@@ -332,12 +332,12 @@ blockCode cpc =
        return $ combineProgs cd dc
 
 typeToLoadIns :: Qtype -> String
-typeToLoadIns QUBIT = iname_newqubit
-typeToLoadIns INT = iname_newint
+typeToLoadIns QUBIT = inameNewqubit
+typeToLoadIns INT = inameNewint
 typeToLoadIns  t = error $ illegalTypeToLoad t
 
 notInstruction :: CodeMonad ProgramCode
-notInstruction =  scode $ glue2 iname_coperation "~"
+notInstruction =  scode $ glue2 inameCoperation "~"
 
 qnotTos :: NodeName -> CodeMonad ProgramCode
 qnotTos nm
@@ -346,16 +346,16 @@ qnotTos nm
 
 allocType :: NodeName -> ConsIdentifier -> CodeMonad ProgramCode
 allocType nm
-    = scode . glue3 iname_newdata (address nm) . ('#':)
+    = scode . glue3 inameNewdata (address nm) . ('#':)
 
 makeInt :: NodeName -> CodeMonad ProgramCode
-makeInt  = scode . glue2 iname_newint . address
+makeInt  = scode . glue2 inameNewint . address
 
 alloc :: Qtype -> [NodeName]->CodeMonad ProgramCode
 alloc _ [] = return Map.empty
 alloc t (nm:nms)
       | isBaseType t
-          = do allocate <- scode $ glue [(typeToLoadIns t), (address nm), "|0>"]
+          = do allocate <- scode $ glue [typeToLoadIns t, address nm, "|0>"]
                rest <- alloc t nms
                return $ combineProgs allocate rest
       | otherwise = fail $ illegalTypeToAllocate t
@@ -377,37 +377,37 @@ getClassicalRets (o:os)
 
 classicalPull :: Int -> CodeMonad ProgramCode
 classicalPull
-    = scode . glue2 iname_cget . show . (flip (-) 1)
+    = scode . glue2 inameCget . show . flip (-) 1
 
 
 classicalPut :: Int -> CodeMonad ProgramCode
 classicalPut
-    = scode . glue2 iname_cput . show . (flip (-) 1)
+    = scode . glue2 inameCput . show . flip (-) 1
 
 popcs :: CodeMonad ProgramCode
-popcs = scode $ glue2 iname_cpop "1"
+popcs = scode $ glue2 inameCpop "1"
 
-cload ::  (Either Int Bool) -> CodeMonad ProgramCode
+cload ::  Either Int Bool -> CodeMonad ProgramCode
 cload (Left i)
-    =  scode $ glue2 iname_loadi $ show i
+    =  scode $ glue2 inameLoadi $ show i
 
 cload (Right b)
-    =  scode $ glue2 iname_loadi $ show b
+    =  scode $ glue2 inameLoadi $ show b
 
 applyTransform :: Int -> UnitaryTransform -> [NodeName]->CodeMonad ProgramCode
 applyTransform sz ut []
     = error $ illegalTransform ut
 applyTransform sz ut (nm:_)
-    = scode $ glue3 iname_transform (show sz) $"!" ++  show ut ++ " " ++ address nm
+    = scode $ glue3 inameTransform (show sz) $"!" ++  show ut ++ " " ++ address nm
 
 trans  ::  UnitaryTransform ->  CodeMonad ProgramCode
-trans  =   scode . glue2 inamepart_put . show
+trans  =   scode . glue2 inamepartPut . show
 
 pullup :: NodeName ->
           CodeMonad ProgramCode
-pullup  = scode . glue2 iname_pullup . address
+pullup  = scode . glue2 inamePullup . address
 --    = do mybeNm <- getCurrentActive
---         let pull = glue2 iname_pullup (address nm)
+--         let pull = glue2 inamePullup (address nm)
 --         case mybeNm of
 --           Nothing -> scode pull
 --           Just anme -> if (nm == anme) then return empty
@@ -434,13 +434,13 @@ rename :: NodeName ->
           CodeMonad ProgramCode
 rename oldnm nm
     = if oldnm == nm then return Map.empty
-      else scode $ glue3  iname_rename (address oldnm) (address nm)
+      else scode $ glue3  inameRename (address oldnm) (address nm)
 
 enscope :: CodeMonad ProgramCode
-enscope  = scode iname_enscope
+enscope  = scode inameEnscope
 
 descope :: CodeMonad ProgramCode
-descope  = scode iname_descope
+descope  = scode inameDescope
 
 
 delayed :: CodeMonad ProgramCode -> CodeMonad ProgramCode
@@ -451,21 +451,21 @@ delayed cd
          return $ combineProgs code dc
 
 call :: Int -> String -> CodeMonad ProgramCode
-call cvals  =  scode . glue3 iname_call (show cvals)
+call cvals  =  scode . glue3 inameCall (show cvals)
 
 
 
 condJumpCode :: Label -> CodeMonad ProgramCode
-condJumpCode  = scode . glue2 iname_cjump
+condJumpCode  = scode . glue2 inameCjump
 
 jumpCode :: Label -> CodeMonad ProgramCode
-jumpCode  = scode . glue2 iname_jump
+jumpCode  = scode . glue2 inameJump
 
 splitCode :: NodeName -> Label ->
              [(ConsIdentifier,Label)] ->
               CodeMonad ProgramCode
 splitCode nm endLabel lis =  scode $
-                             glue [iname_split,  (address nm), endLabel, (showSplitList lis)]
+                             glue [inameSplit, address nm, endLabel, showSplitList lis]
 
 showSplitList :: [(ConsIdentifier,Label)] -> String
 showSplitList  = List.foldr  showCidLblpr ""
@@ -491,7 +491,7 @@ makeSplitCode pullOrExpression nm clauses gcode =
 binds :: [NodeName] -> CodeMonad ProgramCode
 binds [] = return Map.empty
 binds (nn:nns)
-    = do b1 <- scode $ glue2 iname_bind  (address nn)
+    = do b1 <- scode $ glue2 inameBind  (address nn)
          reuseStackName nn
          bns <- binds nns
          return $ combineProgs b1 bns
@@ -503,11 +503,11 @@ unbinds ubnm (nn:nns)
     = do (delnm, u1) <-
              if nn == "_"
                  then do nm <- getStackName
-                         cd <- scode $ glue3 iname_unbind (address ubnm) (address nm)
+                         cd <- scode $ glue3 inameUnbind (address ubnm) (address nm)
                          dc <- destroy  nm
                          unsetCurrentActive
                          return (dc, cd)
-                 else do cd <- scode $ glue3 iname_unbind (address ubnm) (address nn)
+                 else do cd <- scode $ glue3 inameUnbind (address ubnm) (address nn)
                          setCurrentActive nn
                          return (Map.empty, cd)
          (delnms,uns) <- unbinds ubnm nns
@@ -524,8 +524,8 @@ caseClauses  nm  [] _
 caseClauses   nm (cc@(IrCaseClause ci nns stms) :ccs) f
    = do lbl <- getLabel
         (discubs, ubs) <- unbinds nm nns
-        disc <- scode $ glue2 iname_discard (address nm)
-        qend <- scode iname_swapd
+        disc <- scode $ glue2 inameDiscard (address nm)
+        qend <- scode inameSwapd
         bstart <- if Map.null ubs then labelize lbl disc
                   else do lu <- labelize lbl ubs
                           return $ combineProgs lu disc

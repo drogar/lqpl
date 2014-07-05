@@ -25,13 +25,13 @@ data Perm = Perm {domain :: Int,
 %if false
 \begin{code}
 instance Eq Perm where
-    a == b = 
-        if domain a /= domain b then False
-        else [runPerm a i | i <- [0..(domain a)]] ==
-              [runPerm b i | i <- [0..(domain b)]]
-    
+    a == b =
+        not (domain a /= domain b) &&
+                [runPerm a i | i <- [0..(domain a)]] ==
+                [runPerm b i | i <- [0..(domain b)]]
+
 instance Show Perm where
-   showsPrec _ a = 
+   showsPrec _ a =
        showString (show (domain a)) . showString ":" .
        showList [(i,runPerm a i) | i <- [0..(domain a)]]
 \end{code}
@@ -46,25 +46,25 @@ elements not in the original domain.
 \begin{code}
 liftPerm :: Int -> Perm -> Perm
 liftPerm newdomain p =
-    if newdomain < domain p 
+    if newdomain < domain p
      then error "Perms can not be restricted"
      else Perm newdomain f
          where f i | i <= domain p = runPerm p i
                    | otherwise = i
 
 permuteList :: Perm -> [a] -> [a]
-permuteList p aas = [aas !! runPerm p j | 
+permuteList p aas = [aas !! runPerm p j |
                      j <- [0..(length aas - 1)]]
 
 
 
 orderFindPerm :: Int -> Int -> Perm
-orderFindPerm n 
-     = Perm (maxNum n) . aToTheKModN n 
+orderFindPerm n
+     = Perm (maxNum n) . aToTheKModN n
 
 
 numBits :: Int -> Int
-numBits = numBits' 0 
+numBits = numBits' 0
 
 numBits' :: Int -> Int -> Int
 numBits' size 0 = size
