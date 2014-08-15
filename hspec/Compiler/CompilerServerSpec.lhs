@@ -12,7 +12,7 @@
     import Network.Socket
     import System.IO
     import Data.IORef
-    import System.Cmd
+
     import System.Exit
 
     import SpecHelper
