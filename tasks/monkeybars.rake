@@ -1,20 +1,20 @@
 require 'fileutils'
 
-desc "ALL, CONTROLLER, VIEW, MODEL, UI are valid options."
+desc 'ALL, CONTROLLER, VIEW, MODEL, UI are valid options.'
 task 'generate'
-rule(/^generate/) do |t|
+rule(/^generate/) do |_t|
   ARGV[1..-1].each do |generator_command|
-    command, argument = generator_command.split "="
+    command, argument = generator_command.split '='
     case command
-    when "ALL"
+    when 'ALL'
       generate_tuple argument
-    when "VIEW"
+    when 'VIEW'
       generate_view argument
-    when "CONTROLLER"
+    when 'CONTROLLER'
       generate_controller argument
-    when "MODEL"
+    when 'MODEL'
       generate_model argument
-    when "UI"
+    when 'UI'
       generate_ui argument
 
     else
@@ -23,28 +23,27 @@ rule(/^generate/) do |t|
   end
 end
 
-def generate_tuple path
+def generate_tuple(path)
   pwd = FileUtils.pwd
   generate_controller path
 
-  FileUtils.cd pwd 
-  generate_model path
-  
   FileUtils.cd pwd
-  generate_view path, from_all = true
-  
+  generate_model path
+
+  FileUtils.cd pwd
+  generate_view path, true
+
   FileUtils.cd pwd
   generate_ui path
-
 end
 
-def generate_controller path
+def generate_controller(path)
   name = setup_directory path
   file_name = "#{name}_controller.rb"
   name = camelize name
   $stdout << "Generating controller #{name}Controller in file #{file_name}\n"
-  File.open(file_name, "w") do |controller_file|
-  controller_file << <<-ENDL
+  File.open(file_name, 'w') do |controller_file|
+    controller_file << <<-ENDL
 class #{name}Controller < ApplicationController
   set_model '#{name}Model'
   set_view '#{name}View'
@@ -54,13 +53,13 @@ end
   end
 end
 
-def generate_model path
+def generate_model(path)
   name = setup_directory path
   file_name = "#{name}_model.rb"
   name = camelize name
   $stdout << "Generating model #{name}Model in file #{file_name}\n"
-  File.open(file_name, "w") do |model_file|
-  model_file << <<-ENDL
+  File.open(file_name, 'w') do |model_file|
+    model_file << <<-ENDL
 class #{name}Model
 
 end
@@ -68,23 +67,15 @@ end
   end
 end
 
-def generate_view path, from_all = false
+def generate_view(path, from_all = false)
   name = setup_directory path
   file_name = "#{name}_view.rb"
   cname = camelize name
   $stdout << "Generating view #{cname}View in file #{file_name}\n"
-ui_require = if from_all
-      "require '#{name}/#{name}_ui'"
-               else
-                 ""
-  end
-  java_class = if from_all
-      "#{cname}Ui"
-               else
-                 "''"
-  end
-  File.open(file_name, "w") do |view_file|
-  view_file << <<-ENDL
+  ui_require = from_all ? "require '#{name}/#{name}_ui'" : ''
+  java_class = from_all ? "#{cname}Ui" : "''"
+  File.open(file_name, 'w') do |view_file|
+    view_file << <<-ENDL
 #{ui_require}
 
 class #{cname}View < ApplicationView
@@ -94,20 +85,19 @@ end
   end
 end
 
-
-def generate_ui path
+def generate_ui(path)
   name = setup_directory path
   file_name = "#{name}_ui.rb"
   name = camelize name
   $stdout << "Generating ui #{name}Ui in file #{file_name}\n"
-  File.open(file_name, "w") do |ui_file|
-  ui_file << <<-ENDL
+  File.open(file_name, 'w') do |ui_file|
+    ui_file << <<-ENDL
 
 $:.unshift 'lib/ruby'
 require 'swingset'
 
 include  Neurogami::SwingSet::Core
-  
+
 class #{name}Ui < Frame
   include  Neurogami::SwingSet::MiG
 
@@ -119,7 +109,7 @@ class #{name}Ui < Frame
   LABEL_WIDTH  = 400
   LABEL_HEIGHT = 60
 
-  # Make sure our components are available! 
+  # Make sure our components are available!
   attr_accessor :default_button, :default_label
 
   def initialize *args
@@ -127,7 +117,7 @@ class #{name}Ui < Frame
     self.minimum_width  = FRAME_WIDTH
     self.minimum_height = FRAME_HEIGHT
     set_up_components
-    default_close_operation = EXIT_ON_CLOSE 
+    default_close_operation = EXIT_ON_CLOSE
   end
 
   def set_up_components
@@ -152,10 +142,6 @@ class #{name}Ui < Frame
       b.text = "Close"
     end
 
-
-
-
-
     # Add components to panel
     component_panel.add @default_label, "gap unrelated"
     component_panel.add @default_button, "gap unrelated"
@@ -163,7 +149,7 @@ class #{name}Ui < Frame
     add component_panel
 
     @default_button.addActionListener lambda{ |e| default_button_clicked e}
-  
+
   end
 
   def default_button_clicked event
@@ -172,24 +158,21 @@ class #{name}Ui < Frame
   end
 
 end
-
-
-
-
   ENDL
   end
 end
 
-def setup_directory path
-  FileUtils.mkdir_p path.gsub("\\", "/")
+def setup_directory(path)
+  FileUtils.mkdir_p path.gsub('\\', '/')
   FileUtils.cd path
-  path.split("/").last
+  path.split('/').last
 end
 
 def camelize(name, first_letter_in_uppercase = true)
   name = name.to_s
   if first_letter_in_uppercase
-    name.gsub(/\/(.?)/) { "::" + $1.upcase }.gsub(/(^|_)(.)/) { $2.upcase }
+    name.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }
+      .gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
   else
     name[0..0] + camelize(name[1..-1])
   end

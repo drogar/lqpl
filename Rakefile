@@ -6,7 +6,7 @@ unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
   abort 'Sorry - Building LQPL requires JRuby. You are using some other ruby engine.'
 end
 
-Rubocop::RakeTask.new
+RuboCop::RakeTask.new
 
 Dir.glob('tasks/**/*.rake').each do |rake_file|
   load File.expand_path(File.dirname(__FILE__) + '/' + rake_file)

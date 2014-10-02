@@ -5,8 +5,8 @@ gem 'rake'
 gem 'monkeybars', '~>1.1'
 
 group :test, :development do
-  gem "rspec", '~> 3.0.0.beta'
-  gem "cucumber"
+  gem 'rspec', '~> 3.0.0'
+  gem 'cucumber'
   gem 'simplecov'
   gem 'flog'
   gem 'flay'
@@ -15,15 +15,14 @@ group :test, :development do
   gem 'rubocop'
   gem 'coderay'
 
-
   gem 'rspec-formatter-webkit'
   gem 'fuubar'  # rspec formatter
-  #gem 'rspec_junit_formatter'
+  # gem 'rspec_junit_formatter'
 end
 
 group :development do
-  gem "guard"
-  gem "guard-rspec"
-  gem "guard-rubocop"
-  gem "growl"
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-rubocop'
+  gem 'growl'
 end

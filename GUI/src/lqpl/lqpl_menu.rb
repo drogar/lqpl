@@ -21,7 +21,9 @@ class LqplMenu
   end
 
   def self.prepare_view_menu_actions(add_listener)
-    ['the_menu.view_classical_stack', 'the_menu.view_dump' , 'the_menu.view_executing_code',
+    ['the_menu.view_classical_stack',
+     'the_menu.view_dump',
+     'the_menu.view_executing_code',
      'the_menu.view_stack_translation'].each do |k|
       add_listener.call(type: :action, components: { k => 'view_sub_panel' })
     end

@@ -9,7 +9,7 @@ class ValueDescriptorModel < AbstractDescriptorModel
   def initialize(in_string)
     value_hash = EnsureJSON.new(in_string).as_json
     @value = value_hash[:value]
-    fail ModelCreateError, "Bad VALUE: #{in_string}" unless @value && @value.kind_of?(Numeric)
+    fail ModelCreateError, "Bad VALUE: #{in_string}" unless @value && @value.is_a?(Numeric)
     @name = nil
   end
 
