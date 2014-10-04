@@ -12,11 +12,11 @@ class LqplSubsHandler
   end
 
   def dispose_all
-    @subs.each(&dispose) if @subs
+    @subs.each(&:dispose) if @subs
   end
 
   def open
-    @subs.each(&open)
+    @subs.each(&:open)
   end
 
   def update_and_open(model)
