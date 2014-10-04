@@ -1,21 +1,23 @@
 require 'fileutils'
+require_relative 'monkey_generator'
 
 desc 'ALL, CONTROLLER, VIEW, MODEL, UI are valid options.'
 task 'generate'
 rule(/^generate/) do |_t|
   ARGV[1..-1].each do |generator_command|
     command, argument = generator_command.split '='
+    mg = MonkeyGenerator.new(argument)
     case command
     when 'ALL'
-      generate_tuple argument
+      generate_tuple mg
     when 'VIEW'
-      generate_view argument
+      mg.generate_view
     when 'CONTROLLER'
-      generate_controller argument
+      mg.generate_controller
     when 'MODEL'
-      generate_model argument
+      mg.generate_model
     when 'UI'
-      generate_ui argument
+      mg.generate_ui
 
     else
       $stdout << "Unknown generate target #{argument}"
@@ -23,157 +25,86 @@ rule(/^generate/) do |_t|
   end
 end
 
-def generate_tuple(path)
+def generate_tuple(mg)
   pwd = FileUtils.pwd
-  generate_controller path
+  mg.generate_controller
 
   FileUtils.cd pwd
-  generate_model path
+  mg.generate_model
 
   FileUtils.cd pwd
-  generate_view path, true
+  mg.generate_view true
 
   FileUtils.cd pwd
-  generate_ui path
+  mg.generate_ui
 end
 
-def generate_controller(path)
-  name = setup_directory path
-  file_name = "#{name}_controller.rb"
-  name = camelize name
-  $stdout << "Generating controller #{name}Controller in file #{file_name}\n"
-  File.open(file_name, 'w') do |controller_file|
-    controller_file << <<-ENDL
-class #{name}Controller < ApplicationController
-  set_model '#{name}Model'
-  set_view '#{name}View'
-  set_close_action :exit
-end
-  ENDL
-  end
-end
+# def generate_controller(path)
+#   name = setup_directory path
+#   file_name = "#{name}_controller.rb"
+#   name = camelize name
+#   $stdout << "Generating controller #{name}Controller in file #{file_name}\n"
+#   File.open(file_name, 'w') do |controller_file|
+#     controller_file << <<-ENDL
+#   ENDL
+#   end
+# end
 
-def generate_model(path)
-  name = setup_directory path
-  file_name = "#{name}_model.rb"
-  name = camelize name
-  $stdout << "Generating model #{name}Model in file #{file_name}\n"
-  File.open(file_name, 'w') do |model_file|
-    model_file << <<-ENDL
-class #{name}Model
+# def generate_model(path)
+#   name = setup_directory path
+#   file_name = "#{name}_model.rb"
+#   name = camelize name
+#   $stdout << "Generating model #{name}Model in file #{file_name}\n"
+#   File.open(file_name, 'w') do |model_file|
+#     model_file << <<-ENDL
+# class #{name}Model
 
-end
-  ENDL
-  end
-end
+# end
+#   ENDL
+#   end
+# end
 
-def generate_view(path, from_all = false)
-  name = setup_directory path
-  file_name = "#{name}_view.rb"
-  cname = camelize name
-  $stdout << "Generating view #{cname}View in file #{file_name}\n"
-  ui_require = from_all ? "require '#{name}/#{name}_ui'" : ''
-  java_class = from_all ? "#{cname}Ui" : "''"
-  File.open(file_name, 'w') do |view_file|
-    view_file << <<-ENDL
-#{ui_require}
+# def generate_view(path, from_all = false)
+#   name = setup_directory path
+#   file_name = "#{name}_view.rb"
+#   cname = camelize name
+#   $stdout << "Generating view #{cname}View in file #{file_name}\n"
+#   ui_require = from_all ? "require '#{name}/#{name}_ui'" : ''
+#   java_class = from_all ? "#{cname}Ui" : "''"
+#   File.open(file_name, 'w') do |view_file|
+#     view_file << <<-ENDL
+# #{ui_require}
 
-class #{cname}View < ApplicationView
-  set_java_class #{java_class}
-end
-  ENDL
-  end
-end
+# class #{cname}View < ApplicationView
+#   set_java_class #{java_class}
+# end
+#   ENDL
+#   end
+# end
 
-def generate_ui(path)
-  name = setup_directory path
-  file_name = "#{name}_ui.rb"
-  name = camelize name
-  $stdout << "Generating ui #{name}Ui in file #{file_name}\n"
-  File.open(file_name, 'w') do |ui_file|
-    ui_file << <<-ENDL
+# def generate_ui(path)
+#   name = setup_directory path
+#   file_name = "#{name}_ui.rb"
+#   name = camelize name
+#   $stdout << "Generating ui #{name}Ui in file #{file_name}\n"
+#   File.open(file_name, 'w') do |ui_file|
+#     ui_file << <<-ENDL
+#   ENDL
+#   end
+# end
 
-$:.unshift 'lib/ruby'
-require 'swingset'
+# def setup_directory(path)
+#   FileUtils.mkdir_p path.gsub('\\', '/')
+#   FileUtils.cd path
+#   path.split('/').last
+# end
 
-include  Neurogami::SwingSet::Core
-
-class #{name}Ui < Frame
-  include  Neurogami::SwingSet::MiG
-
-  mig_layout
-
-  FRAME_WIDTH  = 600
-  FRAME_HEIGHT = 130
-
-  LABEL_WIDTH  = 400
-  LABEL_HEIGHT = 60
-
-  # Make sure our components are available!
-  attr_accessor :default_button, :default_label
-
-  def initialize *args
-    super
-    self.minimum_width  = FRAME_WIDTH
-    self.minimum_height = FRAME_HEIGHT
-    set_up_components
-    default_close_operation = EXIT_ON_CLOSE
-  end
-
-  def set_up_components
-    component_panel = Panel.new
-
-    # If we were clever we would define a method that took a  single hex value, like CSS.
-    component_panel.background_color 255, 255, 255
-    component_panel.size FRAME_WIDTH, FRAME_HEIGHT
-
-    # This code uses the MiG layout manager.
-    # To learn more about MiGLayout, see:
-    #     http://www.miglayout.com/
-    component_panel.layout = mig_layout "wrap 2"
-
-    @default_label = Label.new do |l|
-      l.font = Font.new "Lucida Grande", 0, 18
-      l.minimum_dimensions LABEL_WIDTH, LABEL_HEIGHT
-      l.text = "Neurogami::SwingSet rulez!"
-    end
-
-    @default_button = Button.new do |b|
-      b.text = "Close"
-    end
-
-    # Add components to panel
-    component_panel.add @default_label, "gap unrelated"
-    component_panel.add @default_button, "gap unrelated"
-
-    add component_panel
-
-    @default_button.addActionListener lambda{ |e| default_button_clicked e}
-
-  end
-
-  def default_button_clicked event
-    puts "Our button was clicked"
-    java.lang.System.exit 0
-  end
-
-end
-  ENDL
-  end
-end
-
-def setup_directory(path)
-  FileUtils.mkdir_p path.gsub('\\', '/')
-  FileUtils.cd path
-  path.split('/').last
-end
-
-def camelize(name, first_letter_in_uppercase = true)
-  name = name.to_s
-  if first_letter_in_uppercase
-    name.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }
-      .gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
-  else
-    name[0..0] + camelize(name[1..-1])
-  end
-end
+# def camelize(name, first_letter_in_uppercase = true)
+#   name = name.to_s
+#   if first_letter_in_uppercase
+#     name.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }
+#       .gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+#   else
+#     name[0..0] + camelize(name[1..-1])
+#   end
+# end
