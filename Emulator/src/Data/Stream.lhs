@@ -10,19 +10,20 @@ module Data.Stream(Stream(..),
 import Control.Monad
 import Control.Monad.Fix
 import Control.Monad.Trans
-import Control.Monad.State 
+import Control.Monad.State
+import Control.Applicative (Applicative(..),Alternative(..))
 import Data.InfList
 
 import System.IO.Unsafe(unsafePerformIO)
 \end{code}
 %endif
 
-Although Haskell does not directly implement 
+Although Haskell does not directly implement
 co-inductive types (types which are defined by
 destructors rather than constructors),  an equivalent structure
-is definable 
-due to Haskell's laziness. As discussed in \vref{subsec:inflist}, 
-two  destructors  are required, |hd| and |tl|. To get this effect, 
+is definable
+due to Haskell's laziness. As discussed in \vref{subsec:inflist},
+two  destructors  are required, |hd| and |tl|. To get this effect,
 the type defines two
 constructors |strhd| and |strtl|. An instance of a |Stream| can then be
 defined as the tail is lazily defined and accessed.
@@ -44,7 +45,7 @@ data Stream a = Stream {strhd :: a,
 
 
 instance (Show a) => Show (Stream a) where
-     showsPrec n  = showList . takeI n 
+     showsPrec n  = showList . takeI n
      show strm = showsPrec 3 strm ""
 \end{code}
 %endif
@@ -58,15 +59,20 @@ instance Monad Stream where
      return a  = Stream a (return a)
      m >>= k   = Stream (strhd . k $ strhd m)
 	           (strtl m >>= (strtl . k))
+
+instance Applicative Stream where
+   pure  = return
+   (<*>) = ap
+
 \end{code}
 \end{singlespace}
 }
 
 %if false
-Although the |Stream| type is interesting in and of itself, 
+Although the |Stream| type is interesting in and of itself,
 practically, there is a requirement to
- combine this with another type, typically, 
-the |IO| type. The |StreamT| 
+ combine this with another type, typically,
+the |IO| type. The |StreamT|
 type becomes a monadic transformer when the type is a Monad.
 
 {\begin{singlespace}
@@ -77,27 +83,35 @@ data StreamT m a = StreamT { strhdT :: m a,
 			     strtlT :: StreamT m a}
 
 instance (Monad m)=>Functor (StreamT m) where
-     fmap f str = StreamT (do 
+     fmap f str = StreamT (do
 		       a <- strhdT str
 		       return (f a))
 		       (fmap f (strtlT str))
-		       
+
 instance (Monad m) => Monad (StreamT m) where
      return a  = StreamT (return a) (return a)
      m >>= k   = StreamT (strhdT m >>= strhdT . k )
-	          (strtlT m >>= strtlT . k) 
+	          (strtlT m >>= strtlT . k)
+
+instance (Monad m) => Applicative (StreamT m) where
+    pure  = return
+    (<*>) = ap
 
 instance (MonadPlus m) => MonadPlus (StreamT m) where
      mzero        = StreamT mzero mzero
      m `mplus` n  = StreamT (strhdT m `mplus` strhdT n)
 		     (strtlT m `mplus` strtlT n)
 
+instance (MonadPlus m) => Alternative (StreamT m) where
+   (<|>) = mplus
+   empty = mzero
+
 instance (Monad m, MonadState s m) => MonadState s (StreamT m) where
 	get   = lift get
 	put   = lift . put
 
 instance MonadTrans StreamT where
-	lift m = StreamT m (lift m) 
+	lift m = StreamT m (lift m)
 
 instance (MonadIO m) => MonadIO (StreamT m) where
 	liftIO = lift . liftIO
@@ -115,27 +129,27 @@ instance IL Stream where
       hd = strhd
       tl = strtl
       takeI 0 str = []
-      takeI n str 
+      takeI n str
 	  = strhd str : takeI (n-1) (strtl str)
-      makeInfinite  = foldr Stream (error "May only convert unending lists") 
-      
-      iterI f a 
+      makeInfinite  = foldr Stream (error "May only convert unending lists")
+
+      iterI f a
 	  = Stream a (iterI f ((strhd . f) a))
       pushI = Stream
-      sumList il 
-	  = Stream (strhd il) (fmap (+ (strhd il)) 
+      sumList il
+	  = Stream (strhd il) (fmap (+ strhd il)
 			    (sumList (strtl il)))
-      unzipI (Stream (a,b) tail) 
+      unzipI (Stream (a,b) tail)
 	  = (Stream a (fstI tail), Stream b (sndI tail))
-	    where  fstI::(Stream (a,b)) -> Stream a
+	    where  fstI::Stream (a,b) -> Stream a
                    fstI = fst . unzipI
-                   sndI::(Stream (a,b)) -> Stream b
+                   sndI::Stream (a,b) -> Stream b
 		   sndI = snd . unzipI
-      zipI (Stream a taila) (Stream b tailb) 
+      zipI (Stream a taila) (Stream b tailb)
 	  = Stream (a,b) (zipI taila tailb)
-      zipWithI f (Stream a taila) (Stream b tailb) 
+      zipWithI f (Stream a taila) (Stream b tailb)
           = Stream (f a b) (zipWithI f taila tailb)
-   
+
 \end{code}
 \end{singlespace}
 }
@@ -148,33 +162,33 @@ The instance of |IL| for  |StreamT IO| is defined.
 instance IL (StreamT IO) where
       hd  = unsafePerformIO . strhdT
       tl  = strtlT
-      takeI 0 _ 
+      takeI 0 _
           = []
-      takeI n str 
+      takeI n str
 	  = hd str : takeI (n-1) (strtlT str)
-      makeInfinite 
-          = foldr  (StreamT . return) 
+      makeInfinite
+          = foldr  (StreamT . return)
                    ( error "May only convert unending lists to infinite lists")
-      
-      iterI f a 
+
+      iterI f a
           = StreamT (return a) (iterI f ((hd . f) a))
-      pushI  
-          = StreamT . return 
-      sumList il 
-	  = StreamT (strhdT il) (fmap  (+ (hd il))
+      pushI
+          = StreamT . return
+      sumList il
+	  = StreamT (strhdT il) (fmap  (+ hd il)
 			      (sumList (strtlT il)))
-      unzipI (StreamT a tail) 
-	  = (StreamT (liftM fst a) (fstI tail), 
+      unzipI (StreamT a tail)
+	  = (StreamT (liftM fst a) (fstI tail),
 	     StreamT (liftM snd a) (sndI tail))
 	    where  fstI::StreamT IO (a,b) -> StreamT IO a
                    fstI = fst . unzipI
 		   sndI::StreamT IO (a,b) -> StreamT IO b
 		   sndI = snd . unzipI
-      zipI (StreamT a taila) (StreamT b tailb) 
+      zipI (StreamT a taila) (StreamT b tailb)
 	  = StreamT (liftM2 pr a b) (zipI taila tailb)
 	    where pr a b = (a,b)
-      zipWithI f (StreamT a taila) (StreamT b tailb) 
+      zipWithI f (StreamT a taila) (StreamT b tailb)
                = StreamT (liftM2 f a b) (zipWithI f taila tailb)
-      
+
 \end{code}
 %endif

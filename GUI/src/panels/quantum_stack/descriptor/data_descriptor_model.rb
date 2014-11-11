@@ -11,16 +11,16 @@ class DataDescriptorModel < AbstractDescriptorModel
   end
 
   def self.cons_ok(dv)
-    dv && dv[:cons]  && dv[:cons].kind_of?(String)
+    dv && dv[:cons]  && dv[:cons].is_a?(String)
   end
 
   def self.address_ok(dv)
-    dv[:addresses] && dv[:addresses].kind_of?(Array)
+    dv[:addresses] && dv[:addresses].is_a?(Array)
   end
 
   def self.address_elements_ok(dv)
     dv[:addresses].each do |a|
-      return false unless a && a.kind_of?(Integer)
+      return false unless a && a.is_a?(Integer)
     end
   end
 
@@ -28,7 +28,7 @@ class DataDescriptorModel < AbstractDescriptorModel
     fail_message = "Invalid Algebraic data: #{in_string}"
     json_d = EnsureJSON.new(in_string).as_json
     @value = json_d[:data]
-    fail ModelCreateError, fail_message unless @value && @value.kind_of?(Array)
+    fail ModelCreateError, fail_message unless @value && @value.is_a?(Array)
     @value.each do |dv|
       fail ModelCreateError, fail_message unless DataDescriptorModel.data_value_valid(dv)
     end

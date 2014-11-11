@@ -29,8 +29,7 @@ module Utility.FileProvider.FileSystem (
   getFirstFile :: [String] -> String -> IO (Maybe String)
   getFirstFile [] fname = do
     exists <- doesFileExist fname
-    if exists then return (Just  fname)
-              else return Nothing
+    return (if exists then (Just  fname) else Nothing)
   getFirstFile (d:ds) fname = do
     let fn = combine d fname
     exists <- doesFileExist fn

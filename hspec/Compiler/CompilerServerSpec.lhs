@@ -12,7 +12,7 @@
     import Network.Socket
     import System.IO
     import Data.IORef
-    import System.Cmd
+
     import System.Exit
 
     import SpecHelper
@@ -75,7 +75,7 @@
           ((decodeStrict $ B.pack program_one):: Maybe CompilerCommand) `shouldBe` Nothing
       context "compiling from ior" $ do
         it "should return success when the map has a complete program" $ do
-          writeIORef ior (singleton compile_me "qdata C = {H|T}\napp::(| ; )= {skip}")
+          writeIORef ior (singleton compileMe "qdata C = {H|T}\napp::(| ; )= {skip}")
           rc <- tryCompiling ior
           checkCompileStatus rc
       context "input commands" $ do

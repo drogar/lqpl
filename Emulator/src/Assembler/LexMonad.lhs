@@ -9,6 +9,8 @@ import Data.Word as W
 import Data.Text as T
 import Data.ByteString as BS
 import Data.Text.Encoding as TE
+import Control.Monad
+import Control.Applicative (Applicative(..))
 
 import QSM.Components.Instructions
 \end{code}
@@ -123,6 +125,13 @@ instance Monad Alex where
                             Left msg -> return $ Left msg
                             Right (s',a) -> unAlex (k a) s'
   return a = Alex $ \s -> return $ Right (s,a)
+
+instance Functor Alex where
+    fmap = liftM
+
+instance Applicative Alex where
+    pure  = return
+    (<*>) = ap
 
 liftio::IO a -> Alex a
 liftio f = Alex $ \s ->

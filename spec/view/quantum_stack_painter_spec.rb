@@ -4,7 +4,6 @@ require 'spec/specdata/quantum_stack_data'
 require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
 
-
 describe QuantumStackPainter do
   before :each do
     st = double('StackTranslation')
@@ -17,7 +16,7 @@ describe QuantumStackPainter do
       end
     end
 
-    @d=DrawingExtensions.new
+    @d = DrawingExtensions.new
     qh = QuantumStackModel.new
     qh.stack_translation = st
     qh.quantum_stack = QSQBHAD
@@ -105,32 +104,32 @@ describe QuantumStackPainter do
   end
   describe 'paint_substack' do
     it 'should put a black line at the top point to the paint point' do
-      @qsi_ss_bottom.paint_substack(@d.gc,0,Point.new(10,10),Point.new(10,30))
-      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
-      check_raster_point_is_black(rstr,10,11)
-      check_raster_point_is_black(rstr,10,20)
-      check_raster_point_is_black(rstr,10,29)
+      @qsi_ss_bottom.paint_substack(@d.gc, 0, Point.new(10, 10), Point.new(10, 30))
+      rstr = @d.bi.data(Rectangle.new(0, 0, 30, 30))
+      check_raster_point_is_black(rstr, 10, 11)
+      check_raster_point_is_black(rstr, 10, 20)
+      check_raster_point_is_black(rstr, 10, 29)
     end
   end
 
   describe 'paint_substacks' do
     it 'should put a black line at the top point to the paint point' do
-      @qsi_ss_bottom.paint_substacks(Point.new(10,10),@d.gc)
-      rstr = @d.bi.data(Rectangle.new(0,0,30,30))
-      check_raster_point_is_black(rstr,10,11)
-      check_raster_point_is_black(rstr,10,20)
-      check_raster_point_is_black(rstr,10,29)
+      @qsi_ss_bottom.paint_substacks(Point.new(10, 10), @d.gc)
+      rstr = @d.bi.data(Rectangle.new(0, 0, 30, 30))
+      check_raster_point_is_black(rstr, 10, 11)
+      check_raster_point_is_black(rstr, 10, 20)
+      check_raster_point_is_black(rstr, 10, 29)
     end
   end
   describe 'paint_model' do
     it 'should set some item to black with paint_model_at_point' do
-      @qsval.paint_model_at_point(@d.gc,Point.new(10,10))
-      check_some_point_is_black(@d.bi,0,0,20,20)
+      @qsval.paint_model_at_point(@d.gc, Point.new(10, 10))
+      check_some_point_is_black(@d.bi, 0, 0, 20, 20)
     end
 
     it 'should set some item to black with paint_model' do
       @qsval.paint_model(@d.gc)
-      check_some_point_is_black(@d.bi,0,0,40,40)
+      check_some_point_is_black(@d.bi, 0, 0, 40, 40)
     end
   end
   describe 'imageOfModel' do
@@ -140,7 +139,7 @@ describe QuantumStackPainter do
   end
   describe 'sizing' do
     describe 'bottom element size' do
-      before (:each) do
+      before :each do
         @bottom_size = @qsb.bottom_element_size(@d.gc)
       end
       it 'should have a left width of 6' do
@@ -177,7 +176,8 @@ describe QuantumStackPainter do
         @qsint.model_paint_size(@d.gc).left_width > @qsint.model_paint_size(@d.gc).right_width
       end
       it 'should have a left size ~= right for the had qubit' do
-        expect((@qsval.model_paint_size(@d.gc).left_width -  @qsval.model_paint_size(@d.gc).right_width).abs).to be < 2
+        expect((@qsval.model_paint_size(@d.gc).left_width -
+          @qsval.model_paint_size(@d.gc).right_width).abs).to be < 2
       end
     end
   end

@@ -21,7 +21,9 @@ class LqplMenu
   end
 
   def self.prepare_view_menu_actions(add_listener)
-    ['the_menu.view_classical_stack', 'the_menu.view_dump' , 'the_menu.view_executing_code',
+    ['the_menu.view_classical_stack',
+     'the_menu.view_dump',
+     'the_menu.view_executing_code',
      'the_menu.view_stack_translation'].each do |k|
       add_listener.call(type: :action, components: { k => 'view_sub_panel' })
     end
@@ -93,7 +95,7 @@ class LqplMenu
     mbar.add(menu_view)
   end
 
-    #:nocov:
+  # :nocov:
   def init_help_menu(mbar)
     not_on_mac do
       menu_help = JMenu.new('Help')
@@ -102,5 +104,5 @@ class LqplMenu
       mbar.add(menu_help)
     end
   end
-    #:nocov:
+  # :nocov:
 end

@@ -175,15 +175,15 @@
 
 
     --Checkit :: a -> String -> SpecM ()
-    checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (toJSON sd)
-    checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON 1 sd)
-    checkItBoundedWithBound bound sd res  = it ("returns "++show sd++" as '"++res++"'") $ res ~=? (boundedToJSON bound sd)
+    checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res == (toJSON sd)
+    checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res == (boundedToJSON 1 sd)
+    checkItBoundedWithBound bound sd res  = it ("returns "++show sd++" as '"++res++"'") $ res == (boundedToJSON bound sd)
 
     --checkUnbounded :: QuantumStack LazyNum -> String -> SpecM ()
-    checkUnbounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res ~=? (toJSON $ fixDiags qs)
+    checkUnbounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res == (toJSON $ fixDiags qs)
 
     --checkBounded :: QuantumStack LazyNum -> String -> SpecM ()
-    checkBounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res ~=? (boundedToJSON 1  $ fixDiags qs)
+    checkBounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res == (boundedToJSON 1  $ fixDiags qs)
 
 
     tests =  describe "StackToJSON" $ do

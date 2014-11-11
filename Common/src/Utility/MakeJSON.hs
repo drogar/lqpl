@@ -20,11 +20,11 @@ module Utility.MakeJSON where
 
     jsonValueElementFromMap :: (Show a, Show b) => Map.Map a b -> String
     jsonValueElementFromMap  mapab = toCommaSepString $
-                                  Map.foldrWithKey (\k x js -> ((show k) ++ " : " ++ (show x)) : js) [] mapab
+                                  Map.foldrWithKey (\k x js -> (show k ++ " : " ++ show x) : js) [] mapab
 
     jsonBareObjectFromMap :: (Show a, Show b) => Map.Map a b -> String
     jsonBareObjectFromMap mapab = surroundWithBraces $ toCommaSepString $
-                                  Map.foldrWithKey (\k x js -> ((show k) ++ " : " ++ (show x)) : js) [] mapab
+                                  Map.foldrWithKey (\k x js -> (show k ++ " : " ++ show x) : js) [] mapab
 
     jsonElement :: String -> String -> String
     jsonElement key val = surroundWithQuotes key ++ " : " ++ val
@@ -42,8 +42,8 @@ module Utility.MakeJSON where
 
 
     toMultiLineString :: [String] -> String
-    toMultiLineString s = concat $ List.intersperse "\n" s
+    toMultiLineString s = List.intercalate "\n" s
 
 
     toCommaSepString :: [String] -> String
-    toCommaSepString s = concat $ List.intersperse ", " s
+    toCommaSepString s = List.intercalate ", " s

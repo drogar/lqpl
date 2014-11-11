@@ -6,8 +6,9 @@ class ArrayPartitioner
   def initialize(array)
     self.array = array
   end
+
   def partion_into_left_mid_right
-    [qpl_left_partition , _qpl_middle_element_as_array, qpl_right_partition]
+    [qpl_left_partition, _qpl_middle_element_as_array, qpl_right_partition]
   end
 
   def qpl_partition(side)
