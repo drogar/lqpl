@@ -13,6 +13,7 @@ module Data.Stack
 where
 import Data.List as List
 import Control.Monad
+import Control.Applicative (Applicative(..),Alternative(..))
 import Data.Maybe
 \end{code}
 %endif
@@ -30,9 +31,20 @@ instance Monad Stack where
     m >>= k    = stkfoldr ( concStack . k) (Stack []) m
     m >> k     = stkfoldr ( concStack . const k) (Stack []) m
     fail _     = Stack []
+
 instance MonadPlus Stack where
     mzero = Stack []
     mplus (Stack a) (Stack b) = Stack (a ++ b)
+
+instance Applicative Stack where
+    pure  = return
+    (<*>) = ap
+
+instance Alternative Stack where
+    (<|>) = mplus
+    empty = mzero
+
+
 \end{code}
 \end{singlespace}
 

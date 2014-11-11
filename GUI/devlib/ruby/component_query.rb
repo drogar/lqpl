@@ -23,7 +23,7 @@ end
 # already exists.
 
 def query_class_template(class_name, method_call_name)
-  %Q(
+  %(
      class #{class_name} < ComponentQuery
        def executeInEDT
          @component.#{method_call_name}

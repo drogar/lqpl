@@ -17,12 +17,12 @@
     expectLeftString _ = False
 
     main = do
-      let ptests = describe "Emulator Server Commands" $ mapM_ (makeSpec) tests
+      let ptests = describe "Emulator Server Commands" $ mapM_ fromHUnitTest tests
       summary <- hspecWith defaultConfig{configFormatter=progress} ptests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 
-    makeSpec a = it ("hunit test: "++ show a) $ a
+--    makeSpec a = it ("hunit test: "++ show a) $ a  - Was where fromHUnitTest is now
 
     tests =  ["parseL1 " ~: "load 1 xxx returns QCLoad" ~:
                          Right (QCLoad 1 "abc") @=? (getCommand "{\"load_entry\" : 1, \"load_lines\" : [\"abc\"]}"),

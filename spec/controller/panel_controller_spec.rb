@@ -8,17 +8,17 @@ describe PanelController do
         expect(PanelController.class_name_to_sym(DumpController)).to eq(:Dump)
       end
       it 'creates a symbol of the name being the first Word in SnakeCase' do
-        class SomeThingElse ; end
+        class SomeThingElse; end
         expect(PanelController.class_name_to_sym(SomeThingElse)).to eq(:Some)
       end
     end
     describe 'controller_from_name' do
       before(:each) do
-        class ClassicalStackController < PanelController ; end
-        class DumpController < PanelController ; end
-        class ExecutingCodeController < PanelController ; end
-        class StackTranslationController < PanelController ; end
-        class QuantumStackController < PanelController ; end
+        class ClassicalStackController < PanelController; end
+        class DumpController < PanelController; end
+        class ExecutingCodeController < PanelController; end
+        class StackTranslationController < PanelController; end
+        class QuantumStackController < PanelController; end
       end
       it "should return ClassicalStack controller for ['anything','Classical','Stack']" do
         SwingRunner.on_edt do

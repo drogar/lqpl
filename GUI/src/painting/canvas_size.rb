@@ -17,7 +17,7 @@ class CanvasSize
   def self.new_from_subtree(subtree_array)
     left = CanvasSize.subtree_left_width(subtree_array)
     right = CanvasSize.subtree_right_width(subtree_array)
-    h = subtree_array.map { |cs| cs.height_with_spacing }.max
+    h = subtree_array.map(&:height_with_spacing).max
     new_with_measures(left, right, h)
   end
 

@@ -1,7 +1,7 @@
 REQUIREMENTS:
 
 lqpl_gui is written in JRuby/Java Swing. Building it will require an install
-of JRuby 1.6.7, various JRuby tools, the 1.6 JDK and ant. We recommend
+of JRuby 1.7.14.1, various JRuby tools, the 1.6 JDK and ant. We recommend
 installing rvm (Ruby Version Manager) if you are on Linux or Apple.
 
 Java and Java Tools:
@@ -14,7 +14,7 @@ JRuby and associated tools:
   Highly suggested:
     - rvm (https://rvm.beginrescueend.com) (aka rvm.io)
   Required:
-    - JRuby (version 1.7.5, using 1.9 syntax, tested)
+    - JRuby (version 1.7.14.1, using 1.9 syntax, tested)
     - Rake (Gem)
     - Bundler (Gem)
     - cucumber (Gem)

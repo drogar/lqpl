@@ -7,14 +7,14 @@ class ClassicalDescriptorModel < AbstractDescriptorModel
   end
 
   def self.valid_classical_kind(v)
-    [Numeric, TrueClass, FalseClass].reduce(false) { |a, e| a || v.kind_of?(e) }
+    [Numeric, TrueClass, FalseClass].reduce(false) { |a, e| a || v.is_a?(e) }
   end
 
   def initialize(in_string)
     fail_message = "Invalid Classical: #{in_string}"
     json_c = EnsureJSON.new(in_string).as_json
     @value = json_c[:classical]
-    fail ModelCreateError, fail_message unless @value && @value.kind_of?(Array)
+    fail ModelCreateError, fail_message unless @value && @value.is_a?(Array)
     fail ModelCreateError, fail_message unless @value.all? { |v| descriptor_ok?(v) }
   end
 

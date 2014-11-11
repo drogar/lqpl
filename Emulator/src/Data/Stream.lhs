@@ -11,6 +11,7 @@ import Control.Monad
 import Control.Monad.Fix
 import Control.Monad.Trans
 import Control.Monad.State
+import Control.Applicative (Applicative(..),Alternative(..))
 import Data.InfList
 
 import System.IO.Unsafe(unsafePerformIO)
@@ -58,6 +59,11 @@ instance Monad Stream where
      return a  = Stream a (return a)
      m >>= k   = Stream (strhd . k $ strhd m)
 	           (strtl m >>= (strtl . k))
+
+instance Applicative Stream where
+   pure  = return
+   (<*>) = ap
+
 \end{code}
 \end{singlespace}
 }
@@ -87,10 +93,18 @@ instance (Monad m) => Monad (StreamT m) where
      m >>= k   = StreamT (strhdT m >>= strhdT . k )
 	          (strtlT m >>= strtlT . k)
 
+instance (Monad m) => Applicative (StreamT m) where
+    pure  = return
+    (<*>) = ap
+
 instance (MonadPlus m) => MonadPlus (StreamT m) where
      mzero        = StreamT mzero mzero
      m `mplus` n  = StreamT (strhdT m `mplus` strhdT n)
 		     (strtlT m `mplus` strtlT n)
+
+instance (MonadPlus m) => Alternative (StreamT m) where
+   (<|>) = mplus
+   empty = mzero
 
 instance (Monad m, MonadState s m) => MonadState s (StreamT m) where
 	get   = lift get
