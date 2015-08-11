@@ -31,7 +31,7 @@ module Swingtown
 
   def self.find_mig_jar(here)
     java_lib_dir = File.join(here, 'java')
-    mig_jar = Dir.glob("#{java_lib_dir}/*.jar").select { |f| f =~ /(miglayout-)(.+).jar$/ }.first
+    mig_jar = Dir.glob("#{java_lib_dir}/*.jar").find { |f| f =~ /(miglayout-)(.+).jar$/ }
     fail "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
     mig_jar
   end
@@ -70,10 +70,10 @@ module Swingtown
     FileUtils.cp_r "#{here}/swingset.rb", path, verbose: true
     FileUtils.cp_r "#{here}/swingset_utils.rb", path, verbose: true
   end
-end  # module Swingtown
+end
 
 def check_java_lib_jar
-  java_lib_dir = File.join File.dirname(File.expand_path(__FILE__)),  'java'
+  java_lib_dir = File.join File.dirname(File.expand_path(__FILE__)), 'java'
   warn java_lib_dir
 end
 # EOF

@@ -9,11 +9,11 @@ end
 
 #:nocov:
 def on_win
-  yield if  RbConfig::CONFIG['host_os'] =~ /^win|mswin/i
+  yield if RbConfig::CONFIG['host_os'] =~ /^win|mswin/i
 end
 
 def on_linux
-  yield if  RbConfig::CONFIG['host_os'] =~ /^win|mswin/i
+  yield if RbConfig::CONFIG['host_os'] =~ /^win|mswin/i
 end
 
 def not_on_mac

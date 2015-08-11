@@ -21,7 +21,7 @@ module StartUpSystem
   end
 
   def click_menu_item(menu_hierarchy)
-    menu_item =  $qe_frame.menu_item_with_path menu_hierarchy.to_java(:string)
+    menu_item = $qe_frame.menu_item_with_path menu_hierarchy.to_java(:string)
     menu_item.click
     sleep 0.25 # needed otherwise things may close before the next check....
   end

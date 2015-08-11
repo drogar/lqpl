@@ -76,7 +76,7 @@ class ExecutingCodeView < ApplicationView
     jt.request_focus(true)
     # request_focus is a deprecated method, but otherwise the highlight
     # does not show when switching qpo_methods
-    jt.selection_start = 0  # reset to handle "use" case where we go back (loop) in the code
+    jt.selection_start = 0 # reset to handle "use" case where we go back (loop) in the code
     jt.selection_end = 0
     jt.selection_end = selection_bounds[1] if selection_bounds
     jt.selection_start = selection_bounds[0] if selection_bounds

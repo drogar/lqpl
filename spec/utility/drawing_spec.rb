@@ -27,7 +27,7 @@ describe Drawing do
   end
   describe 'draw_black_line' do
     it 'should fill in pixels on a line when drawing from 1, 1 to 1, 10 and nowhere else' do
-      @d.draw_black_line(@d.gc,  Point.new(1, 1),  Point.new(1, 10))
+      @d.draw_black_line(@d.gc, Point.new(1, 1), Point.new(1, 10))
       rstr = @d.bi.data(Rectangle.new(0, 0, 6, 11))
       check_raster_point_is_black(rstr, 1, 3)
       check_raster_point_is_black(rstr, 1, 9)
@@ -102,12 +102,12 @@ describe Drawing do
   end
   describe 'draw_colour_filled_shape' do
     it 'should fill with the requested colour' do
-      @d.draw_colour_filled_shape(@d.gc, Ellipse2D::Double.new(20,  20, 10, 10),  Color.green)
+      @d.draw_colour_filled_shape(@d.gc, Ellipse2D::Double.new(20, 20, 10, 10), Color.green)
       rstr = @d.bi.data(Rectangle.new(0, 0, 30, 30))
       check_raster_point_is_green(rstr, 25, 25)
     end
     it 'should edge with black' do
-      @d.draw_colour_filled_shape(@d.gc, Ellipse2D::Double.new(20,  20, 10, 10),  Color.green)
+      @d.draw_colour_filled_shape(@d.gc, Ellipse2D::Double.new(20, 20, 10, 10), Color.green)
       rstr = @d.bi.data(Rectangle.new(0, 0, 40, 40))
       check_raster_point_is_black(rstr, 25, 20)
     end

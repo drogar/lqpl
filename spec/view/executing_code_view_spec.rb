@@ -136,7 +136,7 @@ describe ExecutingCodeView do
   end
   describe 'set_up_tabbed_views' do
     before :each do
-      md = double('ApplicationModel', :nil? => false)
+      md = double('ApplicationModel', nil?: false)
       allow(md).to receive(:the_code).and_return(CM)
       allow(md).to receive(:the_code_pointer).and_return(CP)
       allow(md).to receive(:the_code_was_updated?).and_return(true)

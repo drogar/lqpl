@@ -51,18 +51,18 @@ class MonkeyGenerator
   end
 
   def setup_directory(path)
-    FileUtils.mkdir_p path.gsub('\\', '/')
+    FileUtils.mkdir_p path.tr('\\', '/')
     FileUtils.cd path
     path.split('/').last
   end
 
   def camelize(first_letter_in_uppercase = true)
     cname = name.to_s
-    if first_letter_in_uppercase
-      cname.gsub(/\/(.?)/) { '::' + Regexp.last_match[1].upcase }
-        .gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
-    else
-      cname[0..0] + camelize(cname[1..-1])
-    end
+    return cname[0..0] + camelize(cname[1..-1]) unless first_letter_in_uppercase
+    sub_separator_and_upcase(cname).gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
+  end
+
+  def sub_separator_and_upcase(cname)
+    cname.gsub(%r{/(.?)}) { '::' + Regexp.last_match[1].upcase }
   end
 end

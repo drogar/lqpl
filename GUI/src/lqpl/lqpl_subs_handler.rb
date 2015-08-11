@@ -8,7 +8,7 @@ class LqplSubsHandler
   attr_accessor :subs
 
   def initialize(controllers)
-    @subs = controllers.reduce([]) { |a, e|  a << e.instance }
+    @subs = controllers.reduce([]) { |a, e| a << e.instance }
   end
 
   def dispose_all

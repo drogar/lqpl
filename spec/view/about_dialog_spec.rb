@@ -32,5 +32,4 @@ describe AboutDialog do
       specify { expect(@ab.about_data_label).to eq(@lab) }
     end
   end
-
 end

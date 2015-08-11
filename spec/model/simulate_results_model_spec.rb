@@ -10,7 +10,7 @@ describe SimulateResultsModel do
   subject { SimulateResultsModel.new }
   describe 'creation' do
     before(:each) do
-      st = double('StackTranslation', :nil? => false)
+      st = double('StackTranslation', nil?: false)
       allow(st).to receive(:reverse_lookup) do |val|
         case val
         when 1 then '@p'

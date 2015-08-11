@@ -32,7 +32,7 @@ class Object
   private
 
   def get_expanded_path(path)
-    resolved_path = File.expand_path(File.dirname(__FILE__) + '/' + path.gsub('\\', '/'))
+    resolved_path = File.expand_path(File.dirname(__FILE__) + '/' + path.tr('\\', '/'))
     resolved_path.gsub!('file:', '') unless resolved_path.index('.jar!')
     resolved_path.gsub!('%20', ' ')
     resolved_path

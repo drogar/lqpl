@@ -18,8 +18,8 @@ class EmulatorCommandInterpretor
 
   def self.make_get_command(which)
     class_eval %{
-      def get_#{ which }(tree_depth = 5, recursion_depth = 1)
-        command(:get_#{ which },[tree_depth,recursion_depth])
+      def get_#{which}(tree_depth = 5, recursion_depth = 1)
+        command(:get_#{which},[tree_depth,recursion_depth])
       end
     }
   end
@@ -34,8 +34,8 @@ class EmulatorCommandInterpretor
   def self.make_do_command(which, defs = [])
     pg = ParameterGenerator.new(defs)
     class_eval %{
-      def do_#{ which }#{ pg.parameters_for_definition }
-        command(:#{ which },[#{ pg.parameters_for_calling }])
+      def do_#{which}#{pg.parameters_for_definition}
+        command(:#{which},[#{pg.parameters_for_calling}])
       end
     }
   end

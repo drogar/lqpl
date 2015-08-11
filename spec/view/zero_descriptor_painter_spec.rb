@@ -22,5 +22,4 @@ describe ZeroDescriptorPainter do
     expect(subject.model_paint_size(g).left_width)
       .to eq(subject.model_paint_size(g).total_width * 0.5)
   end
-
 end

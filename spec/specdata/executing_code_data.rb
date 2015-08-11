@@ -10,4 +10,4 @@ CMAP_6 = '{"main": [' + KVPS6 + ']}'
 
 CMAP_2x6 = '{"main": [' + KVPS6 + ', ' + KVPS6 + ']}'
 
-CMAP_2 =  KVPAIRS_2
+CMAP_2 = KVPAIRS_2

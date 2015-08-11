@@ -2,9 +2,9 @@
 # module to assist with swing frames
 module FrameAddon
   def frame_ref_var_string(frame_title)
-    return  '$qe_frame' if frame_title == 'Quantum Emulator'
+    return '$qe_frame' if frame_title == 'Quantum Emulator'
 
-    "@#{frame_title.downcase.gsub(/ /, '_')}"
+    "@#{frame_title.downcase.tr(/ /, '_')}"
   end
 
   def set_and_return_frame_fixture(frame_title)

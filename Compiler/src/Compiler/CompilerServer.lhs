@@ -46,7 +46,7 @@
 
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |
-                                CS_VERSION [Int] [String] |
+                                CS_VERSION [Int] |
                                 CS_NEED_FILE String |
                                 CS_ILLEGAL_INPUT String
     deriving (Show,Eq)
@@ -165,9 +165,8 @@
   resultToJSON (CS_ILLEGAL_INPUT badInput) =
     jsonObject [jsonValueElement "illegal_input" badInput]
 
-  resultToJSON (CS_VERSION nums strs) =
-    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums),
-                jsonValueArrayElement "version_string" strs]
+  resultToJSON (CS_VERSION nums ) =
+    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums)]
 
 
   fp :: Map (Maybe String) String -> FileProvider
@@ -212,7 +211,7 @@
         let command = decodeStrict $ B.pack input :: Maybe CompilerCommand
         case command of
           Just (CompilerCommand "send_version") ->
-             return $ CS_VERSION (versionBranch version) (versionTags version)
+             return $ CS_VERSION (versionBranch version)
           Just (CompilerCommand s) -> return $ CS_ILLEGAL_INPUT input
           Nothing -> return $ CS_ILLEGAL_INPUT input
 

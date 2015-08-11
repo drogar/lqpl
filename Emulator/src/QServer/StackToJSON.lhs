@@ -1,6 +1,5 @@
 \begin{code}
 
-  {-# LANGUAGE OverlappingInstances #-}
   module QServer.StackToJSON where
 
   import QSM.BasicData

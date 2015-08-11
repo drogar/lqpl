@@ -1,9 +1,8 @@
 require 'ant'
+$LOAD_PATH << Dir.pwd
 require 'GUI/src/version'
 require 'config/build_config'
 require 'rspec/core/rake_task'
-
-$LOAD_PATH << 'GUI'
 
 directory 'out/bin'
 directory 'out/lqpl_gui'
@@ -54,7 +53,7 @@ build = namespace :build do
   desc 'Compile java files in preparation for JAR'
   task compile: 'out/lqpl_gui' do
     ant.javac srcdir: 'GUI/src', destdir: 'out/lqpl_gui', includeAntRuntime: 'no',
-      classpath: 'GUI/lib/java/jruby-complete.jar:GUI/lib/java/monkeybars-1.1.1.jar'
+              classpath: 'GUI/lib/java/jruby-complete.jar:GUI/lib/java/monkeybars-1.1.1.jar'
   end
   desc 'Make a jar'
   task jar: ['out', 'GUI/Manifest', :compile, :copy_jruby] do
@@ -64,7 +63,6 @@ build = namespace :build do
   task all: [:jar, :server, 'out/lib/java'] do
     redist_jars.each { |jar| cp jar, 'out/lib/java/', preserve: true }
   end
-
 end
 mac = false
 case RbConfig::CONFIG['host_os']
@@ -105,7 +103,7 @@ namespace :dist do
        preserve: true
 
     redist_jars.each do |jar|
-      cp jar,  "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
+      cp jar, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
     end
     bin_dist_includes.each do |f|
       cp_r "#{f}", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
@@ -178,7 +176,6 @@ namespace :test do
       abort 'Cucumber rake task is not available. Install cucumber as a gem.'
     end
   end
-
 end
 
 task clean: [build[:server_clean]]
@@ -187,7 +184,7 @@ namespace :run do
   desc 'Run lqpl, ensuring all built'
   task lqpl: [build[:all]] do
     sh '(cd out; java -Xdock:name=LQPL -Xdock:icon=../GUI/icons/lqpl_icon.tiff -Xmx1G'\
-       " -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.gsub!(' ', ':')})"
+       " -Xms256M -jar lqpl_gui.jar -cp #{redist_jars.to_s.tr!(' ', ':')})"
   end
 end
 
