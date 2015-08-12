@@ -148,7 +148,7 @@ namespace :test do
   RSpec::Core::RakeTask.new(:spec) do |t|
     t.pattern = 'spec/**/*_spec.rb'
     t.rspec_opts = '--color'
-    t.ruby_opts = '--debug --1.9 -IGUI'
+    t.ruby_opts = '--debug -IGUI -I.'
   end
 
   desc 'Run GUI specs after ensuring jar is built'

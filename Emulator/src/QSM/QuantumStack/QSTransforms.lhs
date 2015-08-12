@@ -308,8 +308,8 @@ matByStack m q
            | isStackData q       = error $ matByStackError "Constructor" (show q)
            | isStackClassical q  = error $ matByStackError "Int" $ show m ++ show q
            | otherwise           = newVals
-           where  newVals  = genmatmul (+^+) (^*) m (stackToMat order q)
-            order    = qorder m
+           where newVals  = genmatmul (+^+) (^*) m (stackToMat order q)
+                 order    = qorder m
 \end{code}
 \end{singlespace}
 }
@@ -332,7 +332,7 @@ stackByMat q m
     | isStackClassical q  = error $ stackByMatError "Int" $ show m ++ show q
     | otherwise           =  newVals
       where newVals  = genmatmul (+^+) (*^) (stackToMat order q) m
-      order     = qorder m
+            order    = qorder m
 
 \end{code}
 \end{singlespace}
@@ -369,7 +369,7 @@ svfm :: (Quantum b) => [StackAddress]-> Int->
 
 svfm addrs n m sq
     | n == 1 && isStackQubit sq
-        = setQvalues [indexM a b m | a<-[0,1], b<-[0,1]] sq{address = qHead "svfm" addrs}
+      = setQvalues [indexM a b m | a<-[0,1], b<-[0,1]] sq{address = qHead "svfm" addrs}
     | n > 1 && isStackQubit sq
       = setQvalues [svfm (tail addrs) (n-1) (grab a b m) (val (toEnum a, toEnum b) sq)|
                     a<- [0,1], b <- [0,1]] sq
@@ -409,10 +409,10 @@ stackToMat 1 qs
        in [[a,b],[c,d]]
 
 stackToMat n qs
-    | n > 1 = reduceM theMat
+    | n > 1     = reduceM theMat
     | otherwise = error stackToMatError
-    where  theMat =  [[a,b],[c,d]]
-     [a,b,c,d] = map (stackToMat (n-1)) (qvalues qs)
+    where theMat    =  [[a,b],[c,d]]
+          [a,b,c,d] = map (stackToMat (n-1)) (qvalues qs)
 
 
 zeroMat :: (Num b) => Int -> Matrix (QuantumStack b)
