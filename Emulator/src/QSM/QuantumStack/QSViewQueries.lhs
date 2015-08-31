@@ -15,11 +15,9 @@ module QSM.QuantumStack.QSViewQueries
     )
  where
 import QSM.BasicData
-import Data.ClassicalData
-
 import QSM.QuantumStack.QSDefinition
 
-
+import Data.ClassicalData
 import Data.List
 
 
@@ -51,9 +49,6 @@ righttrees q
     | otherwise         = let ss = subStacks q
                           in drop (leftcount ss) ss
 
-
-
-
 namesAndNodes :: (Quantum b) => QuantumStack b ->
                  [(String,QuantumStack b)]
 namesAndNodes q
@@ -66,8 +61,6 @@ namesAndNodes q
         StackClassical cbts    -> zip (map showCv cbts) (subStacks q)
         StackData dbts         -> zip (map showSplitdv dbts) (subStacks q)
         _                      -> []
-    
-
 
 showSplitdv :: (Constructor,[StackAddress])
                -> String
@@ -77,4 +70,3 @@ showSplitdv (cons,sas)
 \end{code}
 \end{singlespace}
 }
-

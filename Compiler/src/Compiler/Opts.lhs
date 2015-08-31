@@ -3,8 +3,6 @@ module Compiler.Opts (Flag(..),
                  compilerOpts,
                  getLogLevel)     where
 
-
-
 import System.Console.GetOpt
 import System.Exit (exitSuccess, ExitCode(..))
 import System.FilePath
@@ -77,7 +75,6 @@ compilerOpts argv =
                             return (o, n'')
              (_,_,errs) -> ioError (userError (concat errs ++ usageInfo usageheader options))
 
-
 checkForUniqueOutOpt :: [Flag]->IO (Maybe Handle)
 checkForUniqueOutOpt flgs =
         do  let ind = findIndices isOutputFlag flgs
@@ -98,7 +95,6 @@ checkForVersion opts =
         when (foldl (\b s-> (s==Vers || b)) False opts) $
              do  hPutStrLn stderr (showVersion version)
                  exitSuccess
-
 
 checkForUsage :: [Flag]->IO ()
 checkForUsage opts =
@@ -136,11 +132,9 @@ convFileName outf oft s =
            --print "Opened for write."
            return (inhandle, outhandle)
 
-
 getLogLevel :: [Flag] -> Int
 getLogLevel [] = 0
 getLogLevel (LogLevel n:_) = n
 getLogLevel (f:fs) = getLogLevel fs
-
 
 \end{code}

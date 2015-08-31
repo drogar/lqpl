@@ -52,15 +52,11 @@ cgLLWarn = 3
 cgLLError = 2
 cgLLFail = 1
 
-
-
 progToIns :: ProgramCode -> Instructions
 progToIns = foldrWithKey progFolder []
 
 progFolder :: String -> Instructions -> Instructions -> Instructions
 progFolder s  = (++)
-
-
 
 combineProgs :: ProgramCode -> ProgramCode -> ProgramCode
 combineProgs = Map.unionWith (++)
@@ -84,8 +80,6 @@ code :: Instructions -> CodeMonad ProgramCode
 code ins
      = do cpn <- getCurrentProcName
           return $ Map.singleton cpn ins
-
-
 
 getCurrentProcName :: CodeMonad String
 getCurrentProcName = gets currentProcName
@@ -224,7 +218,6 @@ guardBodyCode endlbl ((exp,stmts):morees) ec ssc
                 combineProgs sc $
                 combineProgs jmp bypass
 
-
 useStartCode :: Label -> Label -> NodeName -> CodeMonad ProgramCode
 useStartCode bdyLabel endLabel nm
     = scode $ glue [inameUse, address nm, endLabel, bdyLabel]
@@ -249,7 +242,6 @@ delayedUse nm
          escop <- enscope
          return (combineProgs escop $ combineProgs use dc,
                  combineProgs endq endit)
-
 
 measCode :: NodeName ->
             CodeMonad ProgramCode ->
@@ -343,7 +335,6 @@ qnotTos :: NodeName -> CodeMonad ProgramCode
 qnotTos nm
   = applyTransform 0 NotGate [ nm]
 
-
 allocType :: NodeName -> ConsIdentifier -> CodeMonad ProgramCode
 allocType nm
     = scode . glue3 inameNewdata (address nm) . ('#':)
@@ -359,7 +350,6 @@ alloc t (nm:nms)
                rest <- alloc t nms
                return $ combineProgs allocate rest
       | otherwise = fail $ illegalTypeToAllocate t
-
 
 allocQubit :: NodeName -> Bitvalue -> CodeMonad ProgramCode
 allocQubit nm qv
@@ -378,7 +368,6 @@ getClassicalRets (o:os)
 classicalPull :: Int -> CodeMonad ProgramCode
 classicalPull
     = scode . glue2 inameCget . show . flip (-) 1
-
 
 classicalPut :: Int -> CodeMonad ProgramCode
 classicalPut
@@ -442,7 +431,6 @@ enscope  = scode inameEnscope
 descope :: CodeMonad ProgramCode
 descope  = scode inameDescope
 
-
 delayed :: CodeMonad ProgramCode -> CodeMonad ProgramCode
 delayed cd
     = do pushDelayedCode
@@ -452,8 +440,6 @@ delayed cd
 
 call :: Int -> String -> CodeMonad ProgramCode
 call cvals  =  scode . glue3 inameCall (show cvals)
-
-
 
 condJumpCode :: Label -> CodeMonad ProgramCode
 condJumpCode  = scode . glue2 inameCjump
@@ -496,7 +482,6 @@ binds (nn:nns)
          bns <- binds nns
          return $ combineProgs b1 bns
 
-
 unbinds :: NodeName -> [NodeName] -> CodeMonad (ProgramCode, ProgramCode)
 unbinds _ [] = return (Map.empty, Map.empty)
 unbinds ubnm (nn:nns)
@@ -519,7 +504,6 @@ caseClauses :: NodeName -> [IrCaseClause] ->
                 CodeMonad ([(ConsIdentifier,Label)],ProgramCode)
 caseClauses  nm  [] _
     =  return ([],empty)
-
 
 caseClauses   nm (cc@(IrCaseClause ci nns stms) :ccs) f
    = do lbl <- getLabel
@@ -544,12 +528,10 @@ doPendingDiscards
          discIns <- mapM destroy discs
          return $ combineAllProgs discIns
 
-
 addDelayedCode :: ProgramCode -> CodeMonad ()
 addDelayedCode cd
     = do old <- getDelayedCode
          setDelayedCode $ combineProgs cd old
-
 
 getDelayedCode :: CodeMonad ProgramCode
 getDelayedCode = gets delayedCode

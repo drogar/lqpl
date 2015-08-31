@@ -97,8 +97,6 @@ Content of a parsed program.
  filterProcs (DataDef _ _ : gds)  = filterProcs gds
  filterProcs (ProcDef pd : gds)  = pd : filterProcs gds
 
-
-
  data TypeDefinition =
      TypeDefinition {typename :: TypeIdentifier,
                      typevars :: [Identifier]}
@@ -166,7 +164,6 @@ The types of expressions stored below are:
 
 As well, we currently only allow two types of values: Integer and Double.
 
-
 \begin{code}
  data Expression =  Eapply BinOp Expression Expression
          | Eminus Expression
@@ -200,11 +197,9 @@ As well, we currently only allow two types of values: Integer and Double.
                          (showList qes  " ; " ++
                                        showList ids ")")))
 
-
   showList []       = id
   showList (e1:[])  = shows e1
   showList (e2:es)  = showList es . shows e2
-
 
 \end{code}
 The operation type is a set of enumerated values, corresponding to the
@@ -220,7 +215,6 @@ values from these to determine types.
               And | Or  | Xor | NotOp |
               Opeq | Opneq | Oplt | Opgt | Ople | Opge
         deriving (Eq, Enum)
-
 
  instance Show BinOp where
      show Add       = "+"
@@ -242,7 +236,6 @@ values from these to determine types.
      show Opge      = ">="
      show Oplshift  = "<<"
      show Oprshift  = ">>"
-
 
 \end{code}
 
@@ -277,7 +270,6 @@ a QPL program: \bit\ and \qubit.
             MalleableVariable {malVar::Identifier} |
             TypeVariable {typeVar ::Identifier}
       deriving (Eq, Show, Ord)
-
 
  isProc :: Qtype -> Bool
  isProc (Qproc _ _)  = True
@@ -373,7 +365,6 @@ Increments the block level.
 
  incUse :: Level->Level
  incUse l = l{useLevel = useLevel l + 1}
-
 
 \end{code}
 \incsubsubsec{\haskfuncnoref{decBlock}}\label{haskellfunction:decBlock}\index{Compiler Functions!lexing and parsing!decBlock}

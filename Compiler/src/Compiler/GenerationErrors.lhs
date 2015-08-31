@@ -3,13 +3,12 @@ module Compiler.GenerationErrors where
 import Compiler.IrTypes
 import Compiler.Qtypes (Qtype, UnitaryTransform)
 
-
 generationError = "Code Generation Error: "
 
-noProcName = 
+noProcName =
     generationError ++"Looking for a proc name in the procstack and it is empty."
 
-noControlStartName = 
+noControlStartName =
     generationError ++"Trying to start control but there is no name in the list passed in."
 
 illegalTypeToLoad :: Qtype -> String
@@ -27,12 +26,11 @@ illegalTransform ut =
 unableToDetermineQstackTop :: String
 unableToDetermineQstackTop = generationError ++ "Unable to determine top of the stack after code generation of expression."
 
-
 iceNoidsWithUse :: String
 iceNoidsWithUse = generationError++"Use construct with no variables."
 
 unsetTop :: IrExpression -> Istmt -> String
-unsetTop e meas = generationError ++ 
+unsetTop e meas = generationError ++
                   "Unset the stack top when generating for the expression '"++
                   show e ++"' in the statment '"++ show meas ++"'."
 \end{code}

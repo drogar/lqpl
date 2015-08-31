@@ -99,7 +99,6 @@
                                           ]
                              ]
 
-
     boundedToJSON 1 fqs =
         jsonObject  [ jsonElement "qstack" $
                       jsonObject [jsonValueElement "id" (address fqs),
@@ -124,7 +123,6 @@
 --                         strascs = List.map (app2of2 (List.map show)) ascs
 --                         jvelts =  List.map (:[]) $ List.map (uncurry jsonValueElement) strascs
                      in jsonObject [jsonValueElementFromMap show_ins]
-
 
   instance JSON NameSupply where
       toJSON (ints, i) = jsonObject [jsonValueArrayElement "int_list" ints, jsonValueElement "address" i]
@@ -173,7 +171,4 @@
                                                                   jsonValueElement "return_ep" ep,
                                                                   jsonElement "classical" $ boundedToJSON n saveC]
                                                           ]
-
-
-
 \end{code}

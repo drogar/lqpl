@@ -10,13 +10,9 @@ import System.FilePath
 
 import Control.Monad.Writer
 
-
 import Compiler.Compiler
 import Compiler.Opts
 import Compiler.BaseTypes
-
-
-
 
 import Data.Version
 import Paths_lqpl

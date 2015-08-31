@@ -25,7 +25,6 @@ module Utility.FileProvider.FileSystem (
           return (Just (filename, fcontents))
     }
 
-
   getFirstFile :: [String] -> String -> IO (Maybe String)
   getFirstFile [] fname = do
     exists <- doesFileExist fname
@@ -35,6 +34,5 @@ module Utility.FileProvider.FileSystem (
     exists <- doesFileExist fn
     if exists then return (Just fn)
               else getFirstFile ds fname
-
 
 \end{code}

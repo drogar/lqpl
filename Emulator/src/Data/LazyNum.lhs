@@ -166,7 +166,6 @@ application and unknowns.
 
      (*) x (Si) = multbyi x
 
-
      (*) (Sbop Div x1 y1) (Sbop Div x2 y2) = (x1 *x2) / (y1*y2)
 
      (*) (Sbop Div x1 y1)  x2 = (x1 *x2) / y1

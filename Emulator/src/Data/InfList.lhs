@@ -17,8 +17,6 @@ to be defined or used in other modules.
 
  module Data.InfList (IL(..)) where
 
-
-
 \end{code}
 %endif
 \subsubsection{\haskclassnoref{IL}}
@@ -94,7 +92,6 @@ lists are redefined for infinite lists.
    zipWithI :: (a -> b -> c) -> t a -> t b -> t c
    (!!!) :: t a -> Int -> a
    (!!!) il i  = hd $ dropI i il
-
 
 \end{code}
 \end{singlespace}

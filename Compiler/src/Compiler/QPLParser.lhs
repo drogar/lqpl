@@ -2,13 +2,17 @@
   module Compiler.QPLParser where
 
     import Compiler.Qtypes
+
     import Utility.FileProvider
+
     import Text.Parsec
     import Text.Parsec.Expr
     import Text.Parsec.Char
     import Text.Parsec.Pos
     import qualified Text.Parsec.Token as P
+
     import Data.Functor.Identity
+
     import Control.Monad
     import Control.Monad.IO.Class
 
@@ -22,8 +26,6 @@
       case  errOrProgram of
         Left e     -> ioError $ userError $ show e
         Right p    -> return p
-
-
 
     type Parser a = ParsecT String [String] IO a
 
@@ -64,7 +66,6 @@
               setParserState currState{stateUser = newfilss}
               --showInput "After state reset - remaining inp: "
               return rval
-
 
     -- showInput :: String -> Parser ()
     -- showInput s = do
@@ -121,7 +122,6 @@
 
     tvarBuiltIn = try $ try (reserved "Qubit" >> return QUBIT) <|>
       try (reserved "Int" >> return INT) <|> (reserved "Bool" >> return BOOL)
-
 
     statement :: Parser Statement
     statement = choice [stmtControlledBy, uncontrolledStatement]
@@ -233,7 +233,6 @@
       (cexps, qexps,ids2)  <- option ([], [], []) callParameters
       return $ Call call cexps qexps ids []
 
-
     stmtCallWithOptionalIds = try $ do
       Call call cs qs idens os <- stmtBareCall
       ids <- many identifier
@@ -316,8 +315,6 @@
         "|0>" -> return $ EQubit Zero
         "|1>" -> return $ EQubit One
 
-
-
 \end{code}
 \subsection{Tokenizer}
 \begin{code}
@@ -371,7 +368,6 @@
 
     semiSepEndBy p = sepEndBy p semi
 
-
     ket =
       lexeme $ try $ do
         char '|'
@@ -424,6 +420,5 @@
     removeLeadingSpaces :: String -> String
     removeLeadingSpaces (' ':s) = removeLeadingSpaces s
     removeLeadingSpaces s = s
-
 
 \end{code}

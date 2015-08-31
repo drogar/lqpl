@@ -10,8 +10,6 @@
 
  import Compiler.Qtypes
 
-
-
 \end{code}
 
 \begin{code}
@@ -41,7 +39,6 @@ a program. We have three possibilities. An external procedure, constructed by
         deriving (Eq, Show)
  newtype Iprog =  Iprog (Map Identifier Iproc)
       deriving (Eq, Show)
-
 
 \end{code}
 %if false
@@ -100,9 +97,6 @@ generated statements or code are needed, just space allocation.
          | IrCons ConsIdentifier [IrExpression]
          | IrNum Int
     deriving (Show,Eq)
-
-
-
 
 \end{code}
 

@@ -208,10 +208,6 @@ alexDecCommentLevel =
           then alexSetCommentLevel (cl - 1)
           else alexSetCommentLevel 0 }
 
-
-
-
-
 \end{code}
 Useful token actions
 \begin{code}
@@ -299,4 +295,3 @@ ketToBasis _ = Z
 
 
 \end{code}
-

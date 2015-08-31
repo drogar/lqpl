@@ -14,5 +14,4 @@
       fpcombine :: String -> String -> String
     }
 
-
 \end{code}

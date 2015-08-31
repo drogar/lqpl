@@ -138,7 +138,6 @@
   defaultLogger addr msg =
        putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg
 
-
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (Map (Maybe String) String)
   commandHandler prog shandle addr msg = do
@@ -168,7 +167,6 @@
   resultToJSON (CS_VERSION nums ) =
     jsonObject [jsonArrayElement "version_number" (Prelude.map show nums)]
 
-
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
     fpDoesFileExist = \ f -> return (Just f `elem` keys imps),
@@ -181,7 +179,6 @@
           then return $ Just (f, imps ! Just f)
           else ioError $ userError $  "Need file "++f
       }
-
 
   compileMe :: Maybe String
   compileMe = Nothing
@@ -215,7 +212,6 @@
           Just (CompilerCommand s) -> return $ CS_ILLEGAL_INPUT input
           Nothing -> return $ CS_ILLEGAL_INPUT input
 
-
   tryCompiling :: IORef (Map (Maybe String) String) ->
                   IO CompilerServiceStatus
   tryCompiling ior = do
@@ -242,6 +238,5 @@
     return (cd,cls)
 
   haskey mp k = k `elem` keys mp
-
 
 \end{code}

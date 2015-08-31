@@ -78,7 +78,6 @@ type becomes a monadic transformer when the type is a Monad.
 {\begin{singlespace}
 \begin{code}
 
-
 data StreamT m a = StreamT { strhdT :: m a,
            strtlT :: StreamT m a}
 
@@ -151,7 +150,6 @@ instance IL Stream where
 %if false
 The instance of |IL| for  |StreamT IO| is defined.
 \begin{code}
-
 
 instance IL (StreamT IO) where
       hd  = unsafePerformIO . strhdT

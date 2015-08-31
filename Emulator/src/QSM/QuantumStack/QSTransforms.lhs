@@ -26,9 +26,6 @@ import QSM.Components.ControlStack
 import Data.Matrix
 import Data.ClassComp
 import Data.Tuples
-
-
-
 import Data.List
 
 import Utility.Extras
@@ -96,7 +93,6 @@ controlNotTransform Full lis
     = case lis of
         [a,b,d]      -> [d,cjgtTranspose b,a]
         [a,b,c,d]    -> [d,c,b,a]
-
 
 \end{code}
 \end{singlespace}}
@@ -252,11 +248,8 @@ rhoZTransform  ctrl lis
                  LeftOnly   ->  [a,b,qsNegate c, qsNegate d]
                  Full       ->  [a, qsNegate b, qsNegate c, d]
 
-
-
 \end{code}
 \end{singlespace}}
-
 
 The Phase transform rotates the phase of the  \qubit.
 
