@@ -16,6 +16,6 @@ describe QubitDescriptorPainter do
 
   it 'should have a left  width that is more than the right width' do
     g = BufferedImage.new(500, 500, BufferedImage::TYPE_INT_RGB).graphics
-    expect(subject.model_paint_size(g).left_width).to be >  subject.model_paint_size(g).right_width
+    expect(subject.model_paint_size(g).left_width).to be > subject.model_paint_size(g).right_width
   end
 end

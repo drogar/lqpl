@@ -167,8 +167,6 @@ scalar is $0$.
 \begin{singlespace}
 \begin{code}
 
-
-
 (^*) ::(Eq b, Num b)=>  b-> QuantumStack b ->
        QuantumStack b
 b ^* _ | b == fromInteger 0 = zerostack
@@ -231,8 +229,6 @@ trimStackWithEpsilon v qs
       in if cond then zerostack
          else setSubStacks cv' qs
 
-
-
 \end{code}
 %endif
 
@@ -243,7 +239,6 @@ not the container elements themselves.
 
 \begin{code}
 
-
 descendMap :: (QuantumStack b -> QuantumStack b) ->
               QuantumStack b ->
               QuantumStack b
@@ -251,22 +246,19 @@ descendMap f qs
     | isStackLeaf qs = f qs
     | otherwise  = qApply f qs
 
-
-
 \end{code}
+
 The function |applyToFirstAddressed| searches for the
 first node matching the supplied address and then applies
 the given quantum stack endomorphism to that node.
 
 \begin{code}
 
-
-
-
 applyToFirstAddressed ::  StackAddress ->
               ( QuantumStack b -> QuantumStack b) ->
               QuantumStack b ->
               QuantumStack b
+
 applyToFirstAddressed addr f qs
     | isStackLeaf qs = f qs
     | addr == address qs = f qs
@@ -277,8 +269,6 @@ byAddress ::  StackAddress ->
               QuantumStack b ->
               QuantumStack b
 byAddress   = applyToFirstAddressed
-
-
 
 firstReaddressInStack ::   StackAddress-> StackAddress ->
                            QuantumStack b ->   QuantumStack b
@@ -356,8 +346,6 @@ bind addr theQstack@(QuantumStack _ _ _ (StackData  _))
 
 bind _ _ = error bindDataCheck
 
-
-
 \end{code}
 \end{singlespace}
 }
@@ -427,8 +415,6 @@ associateQbs   lbl0 lbl1 (qs:qss)
         StackQubit [(Z,_)]     ->  (qs,lbl0)
         StackQubit [(O,_)]     ->  (qs,lbl1)
         _      -> error measureDataCheck) : associateQbs lbl0 lbl1 qss
-
-
 
 associateCons :: Map Constructor Label->
                  [QuantumStack b] -> [(QuantumStack b, Label)]

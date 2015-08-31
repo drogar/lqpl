@@ -2,9 +2,9 @@
 \begin{code}
 
 module Compiler.TypeUnification where
+
 import Control.Monad
 import Control.Monad.Writer
-
 
 import Data.List as List
 import Data.Map as Map
@@ -154,7 +154,6 @@ rest of the program and used to replace any uses of tv0 in the future.
 
 \begin{code}
 
-
 instanceOf :: (Qtype -> Bool) ->Qtype -> Qtype -> Map Identifier Qtype ->
          WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 instanceOf varType t1 t2 un
@@ -234,8 +233,6 @@ restrictList [] mp = return mp
 restrictList (t1t2:ts) mp
     =  uncurry restrict t1t2 mp >>= restrictList ts
 
-
-
 \end{code}
 
 The |containedInOrFail| stuff is there to check that the right
@@ -280,7 +277,6 @@ containedInOrFail t1 t2
              unifyVar (fromMaybe "" $ getTypeVar t1) t2
              return ()
    | otherwise = fail $ patternMissing "containedInOrFail" (show t1)  (show t2)
-
 
 checkTypesInMapPairs :: Map String (SymEntryLinear,SymEntryLinear) ->
                         WriterT CompilerLogs SemStateMonad SymbolTableLinear
@@ -327,7 +323,6 @@ I'm not sure if this is usable  or needed at all anymore
 
 \begin{code}
 
-
 unify :: Qtype -> Qtype -> WriterT CompilerLogs SemStateMonad Qtype
 unify t1 t2  | t1 == t2 = return t1
 unify t1 t2
@@ -339,19 +334,16 @@ unify t1 t2
 unify (Qproc _ _) _   = fail noFuncTypes
 unify _ (Qproc _ _)   = fail noFuncTypes
 
-
 unify (MalleableVariable a) t --a must be a "t"
     = unifyVar a t
 
 unify t (MalleableVariable a)  -- a must be at least "t"
     = unifyVar a t
 
-
 unify (DeclaredType tid ts) (DeclaredType pid ps)
    | tid == pid = do typs <- unifyList (zip ts ps)
                      return $ DeclaredType tid typs
    | otherwise = fail $ unequalDataType tid pid
-
 
 unify t1 t2  = fail $ patternMissing "unify" (show t1) (show t2)
 

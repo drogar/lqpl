@@ -56,12 +56,9 @@ permuteList :: Perm -> [a] -> [a]
 permuteList p aas = [aas !! runPerm p j |
                      j <- [0..(length aas - 1)]]
 
-
-
 orderFindPerm :: Int -> Int -> Perm
 orderFindPerm n
      = Perm (maxNum n) . aToTheKModN n
-
 
 numBits :: Int -> Int
 numBits = numBits' 0
@@ -69,7 +66,6 @@ numBits = numBits' 0
 numBits' :: Int -> Int -> Int
 numBits' size 0 = size
 numBits' size n = numBits' (1 + size) (n `shiftR` 1)
-
 
 maxNum :: Int -> Int
 maxNum n = 2 ^ numBits n -1

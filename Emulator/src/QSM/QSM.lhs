@@ -62,8 +62,6 @@ import QSM.QuantumStack.QSTransforms
 import Data.Map as Map
 import Data.List as List
 
-
-
 import Data.ClassComp
 import Data.Stream
 import Data.Matrix
@@ -1137,7 +1135,6 @@ collapse (CMS cm ctls ip rc cscqds)
 
 pickIthMS :: (Quantum b) => Int -> MachineState b -> BMS b
 pickIthMS i = collapse . snd . hd . dropI i
-
 
 \end{code}
 \end{singlespace}

@@ -38,6 +38,6 @@ ENV['PATH'] = File.expand_path(File.dirname(__FILE__) + '/bin') +
 
 begin
   com.drogar.lqpl.Main.main([''].to_java(:string))
-rescue  => e
+rescue => e
   puts "Had a problem: #{e}"
 end

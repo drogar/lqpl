@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 Given(/^the frame "([\w\s]*)" is visible$/) do |frame_name|
-  eval "@#{frame_name.gsub(/ /, '_')} = FrameFixture.new frame_name"
+  eval "@#{frame_name.tr(/ /, '_')} = FrameFixture.new frame_name"
 end
 
 Given(/^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/) do |mitem, menu|
@@ -9,12 +9,12 @@ Given(/^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/) do |mitem, menu|
   sleep 0.25
 end
 
-And(/^I load "([\w\.]*?\....)" from the project directory "([\w\s\/]*)"$/) do |file, dir|
+And(%r{^I load "([\w\.]*?\....)" from the project directory "([\w\s\/]*)"$}) do |file, dir|
   approve_file(dir, file)
 end
 
-Then(/^"([\w\s]*?\.qpo)" should be created in the project directory "([\w\s\/]*)" and be equal to "([\w\s\.]*?\.qpo)"$/) do
-  |outfile, outdir, reference|
+file_create_matcher = %r{^"([\w\s]*?\.qpo)" should be created in the project directory "([\w\s/]*)" and be equal to "([\w\s\.]*?\.qpo)"$}
+Then(file_create_matcher) do |outfile, outdir, reference|
   the_file = File.file_in_project_subdir(outdir, outfile)
 
   expect(sleep_until_file_exists(10, the_file)).to be true

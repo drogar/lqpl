@@ -45,8 +45,8 @@ describe ExecutingCodeModel do
         subject.the_code_was_updated = true
         expect(subject.the_code_was_updated?).to be true
       end
-
     end
+
     describe 'the_code_pointer' do
       it 'should throw an exception with bad input' do
         expect { subject.the_code_pointer = 'junk' }.to raise_error JSON::ParserError, /junk/

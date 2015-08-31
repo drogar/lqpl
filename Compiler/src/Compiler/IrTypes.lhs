@@ -8,9 +8,7 @@
 
  import Data.Map as Map
 
- import Compiler.Qtypes 
-
-
+ import Compiler.Qtypes
 
 \end{code}
 
@@ -29,19 +27,18 @@ procedure. The external procedure is more complex, requiring a code label
 and a type signature in addition to the storage and list of statements.
 \incsubsubsec{\hasktypenoref{Iprog}}
 \label{haskelltype:Iprog}\index{Compiler Data Types!Intermediate Representation!Iprog}
-The \hasktypenoref{Iprog} type will hold the intermediate representation of 
+The \hasktypenoref{Iprog} type will hold the intermediate representation of
 a program. We have three possibilities. An external procedure, constructed by
-\haskcons{Iextproc}, a recursive external procedure, constructed by 
+\haskcons{Iextproc}, a recursive external procedure, constructed by
 \haskcons{Irecextproc} and a standard program, constructed by
 \haskcons{IprgBlock}.
 \CodeResetNumbers
 \begin{code}
- data Iproc = Iproc String String  [Qtype] [Qtype] 
+ data Iproc = Iproc String String  [Qtype] [Qtype]
                   [Qtype] [(Int, Qtype)]   [Istmt]
-        deriving (Eq, Show)     
+        deriving (Eq, Show)
  newtype Iprog =  Iprog (Map Identifier Iproc)
       deriving (Eq, Show)
-
 
 \end{code}
 %if false
@@ -52,10 +49,10 @@ a program. We have three possibilities. An external procedure, constructed by
 \incsubsubsec{\hasktypenoref{Istmt}}
 \label{haskelltype:Istmt}\index{Compiler Data Types!Intermediate Representation!Istmt}
 At the bottom level, practically all constructions in a QPL program can
-be represented as statements. The IR for statements closely reflects 
+be represented as statements. The IR for statements closely reflects
 the syntax tree for statements. Names of identifiers are replaced by an
 offset and level. Assignments are replaced by the \haskcons{Iassign}
-constructor. A "new" is replaced by a \haskcons{Iskip} as no 
+constructor. A "new" is replaced by a \haskcons{Iskip} as no
 generated statements or code are needed, just space allocation.
 
 \begin{code}
@@ -65,33 +62,33 @@ generated statements or code are needed, just space allocation.
             | IuseAssign NodeName (Either IrExpression IrExpression)
             | Iuse [NodeName] [Istmt]
             | Iguard [(IrExpression, [Istmt])]
-	    | Imeas  IrExpression  [Istmt]  [Istmt] 
-	    | Icase  IrExpression [IrCaseClause]
-	    | Icall (Maybe UnitaryTransform) 
-                  String  (([Identifier], [Identifier]), 
+      | Imeas  IrExpression  [Istmt]  [Istmt]
+      | Icase  IrExpression [IrCaseClause]
+      | Icall (Maybe UnitaryTransform)
+                  String  (([Identifier], [Identifier]),
                            ([Identifier], [Identifier]))
-                  [IrExpression]  
-                  [IrExpression]  
-                  [(NodeName,Qtype)] 
+                  [IrExpression]
+                  [IrExpression]
+                  [(NodeName,Qtype)]
                   [(NodeName,Qtype)]
             | Idiscard [NodeName]
-	    | Ialloc NodeName Qtype
-	    | Iblock [Istmt]
-	    | Iskip
+      | Ialloc NodeName Qtype
+      | Iblock [Istmt]
+      | Iskip
             | IzeroStack
             | IcontrolledBy [Istmt] [ControlType NodeName]
-	      deriving (Eq, Show)
+        deriving (Eq, Show)
 
- data IrCaseClause 
+ data IrCaseClause
      = IrCaseClause ConsIdentifier [NodeName] [Istmt]
-	      deriving (Eq, Show)
+        deriving (Eq, Show)
 
  data IrExpression =  Apply BinOp IrExpression IrExpression
          | IrNot IrExpression
          | IrMinus IrExpression
          | IrVar NodeName Qtype
          | IrCvar NodeName Int Level Qtype
-         | IrExpCall String   (([Identifier], [Identifier]), 
+         | IrExpCall String   (([Identifier], [Identifier]),
                            ([Identifier], [Identifier]))
                 [IrExpression]
                 [IrExpression] [(NodeName, Qtype)]
@@ -100,9 +97,6 @@ generated statements or code are needed, just space allocation.
          | IrCons ConsIdentifier [IrExpression]
          | IrNum Int
     deriving (Show,Eq)
-
-
-
 
 \end{code}
 

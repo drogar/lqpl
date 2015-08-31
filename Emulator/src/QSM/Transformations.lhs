@@ -5,7 +5,7 @@ quantum stack machine,  a number of basic transformations are defined
 and capacity for  the programmer to define their own is anticipated.
 
 Theoretically, this is not required. All unitary transformations
-effects can be approximated to within any $\epsilon > 0$ by 
+effects can be approximated to within any $\epsilon > 0$ by
 repeated applications of a few basic transformation.
 
 Practically, however, the determination of what those transforms should
@@ -17,12 +17,12 @@ be is not straightforward.
 module QSM.Transformations (Trans,
                             UnitaryOp(..),
                             getTransform,
-			    i2by2,
-			    controlled,
+          i2by2,
+          controlled,
                             notGate,
                             oneOvSqr2,
                             oneHalf,
-			    diag) 
+          diag)
     where
 import Data.Matrix
 import Data.ClassComp
@@ -30,7 +30,7 @@ import Data.Permutation
 \end{code}
 %endif
 
-The following data definition is 
+The following data definition is
  a \emph{meta-type} of unitary operations, which
 defines the operations for the quantum stack machine.
 \begin{code}
@@ -50,7 +50,7 @@ Of these above transforms, note that |Rotate| and |UM| are
 1&0\\
 0&e^{2\pi i/2^n}
 \end{bmatrix}\]
-where the $n$ controls the amount of rotation applied. The 
+where the $n$ controls the amount of rotation applied. The
 transform |UM| requires three parameters, $a,n$ and $t$. It
 creates the unitary matrix that will apply the transform
 \[ a \rightarrow x^{a 2^t} \mod n \]
@@ -66,9 +66,9 @@ the original transformation.
 Finally, the type includes
  \emph{named} transforms. These would be the transforms
 defined in a quantum assembly or linear qpl program.  At this stage,
-the type  simply tracks a name, 
+the type  simply tracks a name,
 the number of \qubit{s} and the number of integer
-parameters used by the transform. This is not currently used in the 
+parameters used by the transform. This is not currently used in the
 machine or the compiler but is expected to be essential in the future.
 \begin{code}
        DefinedOp String Int
@@ -104,10 +104,10 @@ getTransform _ Toffoli              = toffoli
 \end{code}
 %endif
 
-Transformations are simply matrices. See \vref{subsec:matrices} for 
+Transformations are simply matrices. See \vref{subsec:matrices} for
 their definition. Some of the specific matrices are shown below.
 
-The function |controlled| is used to create a controlled version of a 
+The function |controlled| is used to create a controlled version of a
 transformation, by creating a block matrix with the identity $2\times2$
 matrix in the upper left and the matrix of the subject
 transformation in the lower right.
@@ -122,13 +122,13 @@ notGate =  [[0,1],[1,0]]
 rotateGate :: (Comp b) => Int -> Trans b
 rotateGate k
     =   [[1,0],
-         [0, exp (pi * sqrtMinusOne / 
-                        (2 ** (fromInteger (toInteger k) -1)))]] 
+         [0, exp (pi * sqrtMinusOne /
+                        (2 ** (fromInteger (toInteger k) -1)))]]
 diag :: (Num a) =>Trans a -> Trans a -> Trans a
-diag tl br 
-    = [a ++ take (dimx br) (map fromInteger zeros) | 
+diag tl br
+    = [a ++ take (dimx br) (map fromInteger zeros) |
           a <-  tl] ++
-	 [ take (dimx tl)  (map fromInteger zeros) ++ a | 
+   [ take (dimx tl)  (map fromInteger zeros) ++ a |
            a <-  br]
 
 controlled :: (Comp b) =>Trans b -> Trans b
@@ -149,13 +149,13 @@ had =  [[oneOvSqr2, oneOvSqr2], [oneOvSqr2, (- oneOvSqr2)]]
 
 minusIdentity :: (Comp b) =>Trans b
 minusIdentity  =  [[-1,0],[0,-1]]
- 
+
 rhox  :: (Comp b) =>Trans b
 rhox = notGate
 
 tGate :: (Comp b) =>Trans b
 tGate =  [[1,0],[0,sqrt sqrtMinusOne]]
- 
+
 phaseGate :: (Comp b) =>Trans b
 phaseGate =  [[1,0],[0, sqrtMinusOne]]
 
@@ -163,17 +163,17 @@ i2by2 :: (Comp b) =>Trans b
 i2by2 =  [[1,0],[0,1]]
 
 rhoy:: (Comp b) =>Trans b
-rhoy =  [[0,-sqrtMinusOne],[sqrtMinusOne,0]] 
+rhoy =  [[0,-sqrtMinusOne],[sqrtMinusOne,0]]
 
 rhoz :: (Comp b) =>Trans b
 rhoz =  [[1,0],[0,-1]]
- 
+
 
 swapGate :: (Comp b) =>Trans b
 swapGate =  [[1,0,0,0],
-		   [0,0,1,0],
-		   [0,1,0,0],
-		   [0,0,0,1]]
+       [0,0,1,0],
+       [0,1,0,0],
+       [0,0,0,1]]
 
 toffoli :: (Comp b) =>Trans b
 toffoli = diag (diag i2by2 i2by2) $ controlled notGate
@@ -189,8 +189,8 @@ zeros = 0:zeros
 As transforms are represented by matrices of size $2^n \times 2^n$, it is
 possible to "lift" a permutation to this size. For example, a permutation
 on $7$ elements would be lifted to one on $8$, a permuation on $11$ would be
-lifted to one on $16$. This is used in creating the matrix for the 
-|UM| transformation. 
+lifted to one on $16$. This is used in creating the matrix for the
+|UM| transformation.
 
 \begin{singlespace}
 \begin{code}
@@ -205,8 +205,8 @@ permuteCols :: Perm -> Matrix a -> Matrix a
 permuteCols = permuteList
 
 orderFindGate ::(Num a) => Int -> Int -> Int -> Matrix a
-orderFindGate n k t 
-   = let  um::(Num a)=> Matrix a 
+orderFindGate n k t
+   = let  um::(Num a)=> Matrix a
           um = permuteCols (orderFindPerm n k) $ idMat $ (1+maxNum n)
      in mat2ToTheT um t
 -}

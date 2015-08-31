@@ -46,7 +46,7 @@
 
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |
-                                CS_VERSION [Int] [String] |
+                                CS_VERSION [Int] |
                                 CS_NEED_FILE String |
                                 CS_ILLEGAL_INPUT String
     deriving (Show,Eq)
@@ -138,7 +138,6 @@
   defaultLogger addr msg =
        putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg
 
-
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (Map (Maybe String) String)
   commandHandler prog shandle addr msg = do
@@ -165,10 +164,8 @@
   resultToJSON (CS_ILLEGAL_INPUT badInput) =
     jsonObject [jsonValueElement "illegal_input" badInput]
 
-  resultToJSON (CS_VERSION nums strs) =
-    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums),
-                jsonValueArrayElement "version_string" strs]
-
+  resultToJSON (CS_VERSION nums ) =
+    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums)]
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
@@ -182,7 +179,6 @@
           then return $ Just (f, imps ! Just f)
           else ioError $ userError $  "Need file "++f
       }
-
 
   compileMe :: Maybe String
   compileMe = Nothing
@@ -212,10 +208,9 @@
         let command = decodeStrict $ B.pack input :: Maybe CompilerCommand
         case command of
           Just (CompilerCommand "send_version") ->
-             return $ CS_VERSION (versionBranch version) (versionTags version)
+             return $ CS_VERSION (versionBranch version)
           Just (CompilerCommand s) -> return $ CS_ILLEGAL_INPUT input
           Nothing -> return $ CS_ILLEGAL_INPUT input
-
 
   tryCompiling :: IORef (Map (Maybe String) String) ->
                   IO CompilerServiceStatus
@@ -243,6 +238,5 @@
     return (cd,cls)
 
   haskey mp k = k `elem` keys mp
-
 
 \end{code}

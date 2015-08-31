@@ -62,8 +62,6 @@ combineNS :: NameSupply -> NameSupply -> NameSupply
 combineNS (nms1,sa1) (nms2,sa2)
   = (List.intersect nms1 nms2, max sa1 sa2)
 
-
-
 type StackAddress = Int
 
 type StackPointer = String
@@ -117,4 +115,3 @@ compBasisPairs  = compare
 
 \end{code}
 \end{singlespace}
-

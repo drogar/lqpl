@@ -60,22 +60,22 @@ describe AbstractDescriptorModel do
     example 'input something' do
       expect do
         AbstractDescriptorModel.make_instance 'somethng'
-      end.to  raise_error(JSON::ParserError)
+      end.to raise_error(JSON::ParserError)
     end
     example 'input ab<Zero/>' do
       expect do
         AbstractDescriptorModel.make_instance 'ab<Zero/>'
-      end.to  raise_error(JSON::ParserError)
+      end.to raise_error(JSON::ParserError)
     end
     example 'input <Alg<Qubit>' do
       expect do
         AbstractDescriptorModel.make_instance '<Alg<Qubit>'
-      end.to  raise_error(JSON::ParserError)
+      end.to raise_error(JSON::ParserError)
     end
   end
   it 'should embed the incorrect value when raising a create exception' do
     expect do
       AbstractDescriptorModel.make_instance 'somethng'
-    end.to  raise_error(JSON::ParserError, /somethng/)
+    end.to raise_error(JSON::ParserError, /somethng/)
   end
 end

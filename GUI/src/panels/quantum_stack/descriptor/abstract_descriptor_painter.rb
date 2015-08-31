@@ -56,7 +56,7 @@ class AbstractDescriptorPainter
   def model_paint_size(g)
     height  =  node_size
     valsize =  get_value_canvas_size g
-    height  += valsize.height_with_spacing if @model_element.length == 0
+    height += valsize.height_with_spacing if @model_element.length == 0
 
     right_width   =  valsize.right_required_width
     left_width    =  [half_node_size + name_width(g),
@@ -71,8 +71,7 @@ class AbstractDescriptorPainter
   end
 
   def name_width(g)
-    return get_string_size(g, "#{@model_element.name}").width +
-           node_size if @model_element.name
+    return get_string_size(g, "#{@model_element.name}").width + node_size if @model_element.name
     0
   end
 end

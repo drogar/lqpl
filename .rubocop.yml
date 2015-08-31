@@ -5,4 +5,4 @@ AllCops:
   - tmp/**/*
 
 LineLength:
-  Max: 100
+  Max: 140

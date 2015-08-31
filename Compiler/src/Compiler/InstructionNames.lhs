@@ -62,7 +62,6 @@ glue3 first second third = glue [first,second,third]
 --glue4 first second third fourth
 --    = "    "++ first ++ " " ++ second ++ " " ++ third++ " " ++ fourth
 
-
 assemDirectiveStartproc :: String -> String
 assemDirectiveStartproc  = (++ "   Start")
 

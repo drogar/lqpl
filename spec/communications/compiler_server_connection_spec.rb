@@ -34,7 +34,7 @@ describe CompilerServerConnection do
       before :each do
         @cmp = CompilerServerConnection.get_instance
       end
-      after :all  do
+      after :all do
         @cmp.close_down if @cmp
       end
       it 'connects to the lqpl-compiler process when created' do
@@ -43,5 +43,4 @@ describe CompilerServerConnection do
       end
     end
   end
-
 end

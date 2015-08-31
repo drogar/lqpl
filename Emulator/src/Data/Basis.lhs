@@ -83,11 +83,9 @@ instance Basis OurBasis where
     toggle Zero = One
     toggle One = Zero
 
-
 offdiag :: (Basis a, Show a, Num b) => [a] -> [((a,a),b)]
 offdiag basis = [((a,b), 0) |
                     a<- basis, b<-basis, a /= b]
-
 
 showQv :: (OurBasis, OurBasis) -> String
 showQv (Zero,Zero) = "00"

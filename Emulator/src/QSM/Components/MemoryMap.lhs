@@ -40,7 +40,7 @@ removed in the code.
 type MemoryMapElement = Map StackPointer StackAddress
 type MemoryMap  = [MemoryMapElement]
 
-emptyMemoryMap :: MemoryMap 
+emptyMemoryMap :: MemoryMap
 emptyMemoryMap = []
 
 \end{code}
@@ -59,8 +59,8 @@ dropScope (mme:rest) =
 
 mmshow :: MemoryMap -> String
 mmshow [] = "\nEnd of Translation"
-mmshow (mme:rest) = showString "\n Scope: " $ 
-                    showList (List.map (\ (a,b) -> a ++ "->" ++ show b) $ Map.toList mme) $ 
+mmshow (mme:rest) = showString "\n Scope: " $
+                    showList (List.map (\ (a,b) -> a ++ "->" ++ show b) $ Map.toList mme) $
                     mmshow rest
 addTranslation :: StackPointer -> StackAddress -> MemoryMap -> MemoryMap
 addTranslation sp sa []         = [Map.singleton sp sa]
@@ -75,14 +75,14 @@ mGetAddress mp (mme:items)   =  do  p <- mp
                                        Nothing  -> mGetAddress mp items
 
 getAddress :: StackPointer ->  MemoryMap ->StackAddress
-getAddress p    = runIdentity . mGetAddress (Identity p) 
+getAddress p    = runIdentity . mGetAddress (Identity p)
 
 repoint :: StackAddress -> StackAddress -> MemoryMap -> MemoryMap
 repoint old new
         = List.map (Map.map (\x -> if x == old then new else x))
 
-mGetAndRemoveAddress :: (Monad m) => m  StackPointer -> 
-                        MemoryMap -> 
+mGetAndRemoveAddress :: (Monad m) => m  StackPointer ->
+                        MemoryMap ->
                         m (MemoryMap,StackAddress)
 mGetAndRemoveAddress msp mm = do  sp <- msp
                                   return $ getAndRemoveAddress sp mm
@@ -94,36 +94,33 @@ getAndRemoveAddress  sp mm = let  sa = getAddress sp mm
 
 dropPointer :: StackPointer -> MemoryMap -> MemoryMap
 dropPointer sp [] = []
-dropPointer sp (mme:rest)  = 
+dropPointer sp (mme:rest)  =
     if Map.member sp mme then Map.delete sp mme : rest
-    else mme : dropPointer sp rest  
-
+    else mme : dropPointer sp rest
 
 dropAddress :: StackAddress -> MemoryMap -> MemoryMap
 dropAddress addr [] = []
-dropAddress addr (mme:rest)  = 
+dropAddress addr (mme:rest)  =
     let maybemme' = dropAddressFromMap addr mme
     in  case maybemme' of
            Just mme'  -> mme' : rest
-           Nothing    -> mme : dropAddress addr rest 
-
+           Nothing    -> mme : dropAddress addr rest
 
 dropAddressFromMap :: StackAddress -> MemoryMapElement ->
                       Maybe MemoryMapElement
 dropAddressFromMap = doByAddress (\ (k,_)  -> Map.delete k)
 
-
 doByAddress  :: ((StackPointer,StackAddress) -> 
                      MemoryMapElement -> a) ->
                 StackAddress -> MemoryMapElement ->
                 Maybe a
-doByAddress  f addr mme 
+doByAddress  f addr mme
     = let mmfiltered = Map.assocs $ Map.filter (addr ==)  mme
-      in if 1 <= length mmfiltered 
+      in if 1 <= length mmfiltered
              then Just $ f (qHead "doByAddress - filtered" mmfiltered) mme
              else Nothing
 
-getFirstPointer :: StackAddress -> MemoryMap -> 
+getFirstPointer :: StackAddress -> MemoryMap ->
                    Maybe StackPointer
 getFirstPointer _ [] = Nothing
 getFirstPointer addr (mme:rest)
@@ -135,7 +132,7 @@ getFirstPointer addr (mme:rest)
 
 scopeMerge :: MemoryMapElement -> MemoryMap -> MemoryMap
 scopeMerge mme [] = [mme]
-scopeMerge mme (merger:rest) = 
+scopeMerge mme (merger:rest) =
     case Map.intersection mme merger of
       inters  -> if Map.null inters then Map.union merger mme : rest
                   else inters : Map.union merger (mme Map.\\ inters) : rest
@@ -150,7 +147,7 @@ renamePointer spfrom spto mm
 reAddressingTargets :: MemoryMap -> MemoryMap -> [(StackAddress,StackAddress)]
 reAddressingTargets [] _ = []
 reAddressingTargets _ [] = []
-reAddressingTargets (mm1:rest) rhMap 
+reAddressingTargets (mm1:rest) rhMap
   | Map.null mm1 = reAddressingTargets rest rhMap
   | otherwise = Map.elems $
                 Map.mapWithKey (\k a  -> (a, getAddress k rhMap)) mm1

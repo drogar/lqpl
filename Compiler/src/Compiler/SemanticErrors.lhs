@@ -28,11 +28,9 @@ controlNotQubit clist
      = semanticError ++ " All controls must be a Qubit. The control list was " ++
          "found" ++ clist
 
-
 duplicateQubitsInCall :: String ->String
 duplicateQubitsInCall nm = semanticError ++
       " The same Qubit was used in more than one place in the call to "++nm
-
 
 procCallTypeError :: String -> String ->String -> String
 procCallTypeError nm prmtypes exptypes
@@ -45,7 +43,6 @@ convertClassToLin  :: String -> String -> String
 convertClassToLin  iden expr
     = semanticwarn ++ "Converting classical var to quantum(linear), in "
       ++ iden ++ " = " ++ expr
-
 
 unbalancedCreation :: String -> String -> String
 unbalancedCreation id qtype
@@ -137,6 +134,5 @@ parmInFunctionNotCreated :: String -> String
 parmInFunctionNotCreated  str
     = semanticError ++ "The out parameter "++ str++
       " was not created in the procedure where it was defined."
-
 
 \end{code}

@@ -8,11 +8,11 @@ class ParameterGenerator
 
   def parameters_for_calling
     return '' if @parms == []
-    (1..@parms.length).map { |i| "def#{ i }" }.join(', ')
+    (1..@parms.length).map { |i| "def#{i}" }.join(', ')
   end
 
   def parameters_for_definition
     return '' if @parms == []
-    '(' + (1..@parms.length).map { |i| "def#{ i } = #{ @parms[i - 1] }" }.join(', ') + ')'
+    '(' + (1..@parms.length).map { |i| "def#{i} = #{@parms[i - 1]}" }.join(', ') + ')'
   end
 end

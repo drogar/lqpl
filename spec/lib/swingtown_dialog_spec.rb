@@ -48,7 +48,7 @@ describe STDialogWithOK do
     describe 'basic construction' do
       it 'should allow setup of data pane in the init block ' do
         SwingRunner.on_edt do
-          STDialogWithOK.new { |d|  expect(d).not_to be_nil }
+          STDialogWithOK.new { |d| expect(d).not_to be_nil }
         end
       end
       it 'should setup items in the init block and the button pane' do

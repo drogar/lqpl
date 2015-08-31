@@ -70,14 +70,14 @@ popM (Stack (a:as))  = (Just a, Stack as)
 pop :: Stack a -> (a, Stack a)
 pop s = let (v,s') = popM s
         in case v of
-	   Nothing -> error "Stack is empty on pop"
-	   Just v -> (v,s')
+     Nothing -> error "Stack is empty on pop"
+     Just v -> (v,s')
 {-unused
 popNum :: (Num a)=>Stack a -> (a, Stack a)
 popNum s = let (v,s') = popM s
            in case v of
-	      Nothing -> (fromInteger 0, s)
-	      Just v -> (v,s')
+        Nothing -> (fromInteger 0, s)
+        Just v -> (v,s')
 -}
 addn :: Int -> Stack a -> Stack a -> Stack a
 addn n (Stack e1) (Stack e2)

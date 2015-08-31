@@ -9,7 +9,7 @@ module Swingtown
 
       def mig_jar(glob_path = "#{HERE}/../../java/*.jar")
         warn "mig_jar #{glob_path} "
-        Dir.glob(glob_path).select { |f|  f =~ /(miglayout-)(.+).jar$/ }.first
+        Dir.glob(glob_path).find { |f| f =~ /(miglayout-)(.+).jar$/ }
       end
 
       def mig_layout
@@ -48,7 +48,7 @@ module Swingtown
         TOP
         TRAILING
         VERTICAL
-        WEST).each do  |konst|
+        WEST).each do |konst|
         class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}"
       end
     end
@@ -87,7 +87,7 @@ module Swingtown
     end
 
     # jmenuitem wrapper
-    class MenuItem  < Java.javax.swing.JMenuItem
+    class MenuItem < Java.javax.swing.JMenuItem
       def initialize
         super
         yield self if block_given?
@@ -95,7 +95,7 @@ module Swingtown
     end
 
     # jmenu wrapper
-    class Menu  < Java.javax.swing.JMenu
+    class Menu < Java.javax.swing.JMenu
       def initialize
         super
         yield self if block_given?
@@ -186,13 +186,11 @@ module Swingtown
       end
 
       def minimum_dimensions(width, height)
-        self.minimum_size = java.awt::Dimension.new(width,
-                                                    height)
+        self.minimum_size = java.awt::Dimension.new(width, height)
       end
 
       def prefered_dimensions(width, height)
-        self.preferred_size =  java.awt::Dimension.new(width,
-                                                       height)
+        self.preferred_size = java.awt::Dimension.new(width, height)
       end
     end
 
@@ -205,13 +203,11 @@ module Swingtown
       end
 
       def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i,
-                                              green.to_i)
+        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java.awt::Dimension.new(width,
-                                                       height)
+        self.preferred_size = java.awt::Dimension.new(width, height)
       end
 
       def add_ordered_components(*components)
@@ -241,13 +237,11 @@ module Swingtown
       end
 
       def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i,
-                                              green.to_i)
+        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java.awt::Dimension.new(width,
-                                                       height)
+        self.preferred_size = java.awt::Dimension.new(width, height)
       end
     end
 
@@ -260,19 +254,17 @@ module Swingtown
       end
 
       def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i,
-                                              green.to_i)
+        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
       end
 
       def size(width, height)
-        self.preferred_size =  java.awt::Dimension.new(width,
-                                                       height)
+        self.preferred_size = java.awt::Dimension.new(width, height)
       end
     end
 
     # A frame  wrapper
     # See http://xxxxxxxx to understand Swing frames
-    class STFrame  < Java.javax.swing::JFrame
+    class STFrame < Java.javax.swing::JFrame
       attr_accessor :minimum_height, :minimum_width
 
       def initialize(title, options = {})
@@ -323,7 +315,6 @@ module Swingtown
       def initialize(title = nil)
         super(title, false)
         root_pane.content_pane = Panel.new do |cpane|
-
           cpane.layout = BoxLayout.new(cpane, BoxLayout::Y_AXIS)
 
           self.data_pane = Panel.new { |dp| cpane.add(dp) }

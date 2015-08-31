@@ -11,7 +11,7 @@ class ClassicalStackModel < ApplicationModel
   def classical_stack_text
     cs = @classical_stack || []
     return '' if cs == []
-    inside = cs.map { |c| "#{ c }" }.join('<br />')
+    inside = cs.map { |c| "#{c}" }.join('<br />')
     '<html>' + inside + '</html>'
   end
 

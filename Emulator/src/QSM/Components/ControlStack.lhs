@@ -20,11 +20,10 @@ import Utility.Extras
 \end{code}
 %endif
 
-
-The |ControlStack| is a higher order type, a function from 
-a list of controlled quantum stacks to a list of 
-controlled quantum stacks.  The types and data 
-constructs needed are shown 
+The |ControlStack| is a higher order type, a function from
+a list of controlled quantum stacks to a list of
+controlled quantum stacks.  The types and data
+constructs needed are shown
 in \vref{fig:controlstack}.
 
 \subsubsection{Representation details}
@@ -32,7 +31,7 @@ in \vref{fig:controlstack}.
 \begin{figure}[htbp]
 \begin{singlespace}
 \begin{code}
-type ControlStack b = 
+type ControlStack b =
      ([Controlled (QuantumStack b)],[Controlled (QuantumStack b)])
          -> ([Controlled (QuantumStack b)],[Controlled (QuantumStack b)])
 
@@ -48,12 +47,12 @@ data Controlled a
 \caption{Definition of the control stack}\label{fig:controlstack}
 \end{figure}
 
-This module also defines a |Functor| for the 
+This module also defines a |Functor| for the
 |Controlled| data modifier.
-All the functions defined on quantum stacks, with the 
+All the functions defined on quantum stacks, with the
 exception of transformations, commute with |Controlled|.
 All |Transformations| require an adjustment depending upon
-which constructor of 
+which constructor of
 |Controlled| is used.
 
 {\begin{singlespace}
@@ -73,10 +72,10 @@ unzipControl :: Controlled (a,b) -> (a, Controlled b)
 unzipControl c = (fst a, f $ snd a)
                  where (a,f) = splitcontrolled c
 
-controlledRotateInOrder :: (Quantum b) => [StackAddress] -> 
-                           Controlled (QuantumStack b) -> 
+controlledRotateInOrder :: (Quantum b) => [StackAddress] ->
+                           Controlled (QuantumStack b) ->
                            Controlled (QuantumStack b)
-controlledRotateInOrder   = fmap . rotateInOrder 
+controlledRotateInOrder   = fmap . rotateInOrder
 
 \end{code}
 \end{singlespace}}
@@ -124,10 +123,10 @@ removeControl [] cq = ([], cq)
 removeControl (f:fs) cq = (fs, fst $ f ([],cq))
 
 unControl ::  [ControlStack b]  ->
-              [ ((NameSupply, ClassicalStack, MemoryMap), 
+              [ ((NameSupply, ClassicalStack, MemoryMap),
                 (Controlled(QuantumStack b), Dump b))] ->
               ([ControlStack b],
-               [ ((NameSupply,ClassicalStack,MemoryMap), 
+               [ ((NameSupply,ClassicalStack,MemoryMap),
                  (Controlled(QuantumStack b), Dump b))])
 unControl [] lis = ([],lis)
 unControl fs lis = (fs',newlis)
@@ -142,28 +141,28 @@ unControl fs lis = (fs',newlis)
 \subsubsection{Moving items to the |ControlStack|}
 This is where the actual coding
 work is required. A function is created that
-will recreate the quantum stack with the current 
+will recreate the quantum stack with the current
 top element and pass back the new list of
  |Controlled QuantumStack|s.
 
 This is broken down into simpler pieces. The first
  delegation is to a function called |withControl| which
- operates on a list of |ControlStack| items and list 
-of |Controlled| |QuantumStack| items, returning a pair of 
+ operates on a list of |ControlStack| items and list
+of |Controlled| |QuantumStack| items, returning a pair of
 those lists. The |withControl| function also delegates
-to the function |makeControl| which creates the uncontrol 
-function and the new list when given the list of 
-quantum stacks. |withControl|  then combines that function 
-with the current one at the head of the control stack and 
+to the function |makeControl| which creates the uncontrol
+function and the new list when given the list of
+quantum stacks. |withControl|  then combines that function
+with the current one at the head of the control stack and
 returns the elements.
 
 {\begin{singlespace}
 \begin{code}
 qControl ::  (Quantum b) => Int -> [ControlStack b]  ->
-              [ ((NameSupply,ClassicalStack,MemoryMap), 
+              [ ((NameSupply,ClassicalStack,MemoryMap),
                  (Controlled(QuantumStack b), Dump b))] ->
               ([ControlStack b],
-               [ ((NameSupply,ClassicalStack,MemoryMap), 
+               [ ((NameSupply,ClassicalStack,MemoryMap),
                   (Controlled(QuantumStack b), Dump b))])
 qControl _ [] lis = ([],lis)
 qControl i fs lis = (fs',newlis)
@@ -176,7 +175,7 @@ qControl i fs lis = (fs',newlis)
 withControl ::(Quantum b) => Int->[ControlStack b] ->
                [Controlled (QuantumStack b)] ->
                ([ControlStack b], [Controlled (QuantumStack b)])
-withControl i (f:fs) qs = 
+withControl i (f:fs) qs =
     ((f . pushback . g):fs, ctrlldqs)
         where (g, ctrlldqs) = makeControl i qs
 \end{code}
@@ -190,7 +189,7 @@ the input quantum stacks.
 makeControl :: (Quantum b) => Int ->
                [Controlled (QuantumStack b)] ->
                (ControlStack b, [Controlled (QuantumStack b)])
-makeControl i qs= 
+makeControl i qs=
             let (fs, qss') = unzip $ map (mc i) qs
                 g = concatDot fs
             in (g, concat qss')
@@ -200,9 +199,9 @@ makeControl i qs=
 }
 
 
-Our base functions, |mc| and |mc'|  operate over the various types of 
+Our base functions, |mc| and |mc'|  operate over the various types of
 the quantum stack. For simple nodes, it moves that node off,
-creates a list of the sub-nodes and returns a function that 
+creates a list of the sub-nodes and returns a function that
 would paste that back onto the quantum stack. For
 data nodes, it also removes all the dependent children named
 in the constructors.
@@ -227,27 +226,27 @@ mc i (Ctrl ctype q)
 \end{singlespace}}
 
 |mc'| returns a function that "pastes" back the controlled
-data node to the sub-stacks of the node. It memoizes the 
-various pieces of data needed to accomplish its function, 
- including the |StackAddress| 
+data node to the sub-stacks of the node. It memoizes the
+various pieces of data needed to accomplish its function,
+ including the |StackAddress|
 for all types, the keys of the data values for all types and
 for constructors and the list of dependent nodes.
 
-For the |StackQubit| nodes, the returned quantum stacks 
-are controlled as per their key placement as a sub-stack. 
+For the |StackQubit| nodes, the returned quantum stacks
+are controlled as per their key placement as a sub-stack.
 The return function resets the control to its previous value.
 
 {\begin{singlespace}
 \begin{code}
-mc' :: (Quantum b) => Int -> 
+mc' :: (Quantum b) => Int ->
         (QuantumStack b -> Controlled (QuantumStack b)) ->
         QuantumStack b->
         (ControlStack b, [Controlled (QuantumStack b)])
 mc' i ctl qs@(QuantumStack _ _ _ (StackQubit _))
-    = (f, map (uncurry (controlIt i)) ascl) 
+    = (f, map (uncurry (controlIt i)) ascl)
       where ascl           =  zip fullQbs (qvalues qs)
-            f (acc, qvls)  =  (acc ++ 
-                               [ctl $ setQvalues (map uncontrolIt $ 
+            f (acc, qvls)  =  (acc ++
+                               [ctl $ setQvalues (map uncontrolIt $
                                                        take 4 qvls) qs],
                                drop 4 qvls)
 
@@ -266,23 +265,23 @@ previously.
 mc' _ ctl qs@(QuantumStack _ _ vals (StackClassical keys))
     = (f, map ctl vals)
       where f (acc, qvls) =
-                (acc ++ 
-                 [ctl $ qs{subStacks = map uncontrolIt $ 
+                (acc ++
+                 [ctl $ qs{subStacks = map uncontrolIt $
                                         take (length keys) qvls}],
                  drop (length keys) qvls)
 \end{code}
 \end{singlespace}}
 
 
-For the |StackCons| nodes, the direct processing is 
-similar to that of |StackInt|, allowing for the list 
-of dependent nodes. 
+For the |StackCons| nodes, the direct processing is
+similar to that of |StackInt|, allowing for the list
+of dependent nodes.
 
-The main difference is that controlling by a data type 
-controls by \emph{all} of the elements of that 
-data type. For example, controlling by a |List (Qubit)| 
-with 3 \qubit{}s in it will control by all of those \qubit{}s. 
-This is achieved by calling the function |controlAll| 
+The main difference is that controlling by a data type
+controls by \emph{all} of the elements of that
+data type. For example, controlling by a |List (Qubit)|
+with 3 \qubit{}s in it will control by all of those \qubit{}s.
+This is achieved by calling the function |controlAll|
 defined below.
 
 {\begin{singlespace}
@@ -291,11 +290,11 @@ mc' i ctl qs@(QuantumStack _ _ vals (StackData keys))
    = (f . pushback . g , qsres)
       where subaddrList = map snd keys
             subqs = map ctl vals
-            (g,qsres) = controlAll i subaddrList $ 
-                     zipWith  controlledRotateInOrder subaddrList subqs 
-            f (acc, qvls) = 
-                (acc ++ 
-                 [ctl (qs{subStacks = map uncontrolIt $ 
+            (g,qsres) = controlAll i subaddrList $
+                     zipWith  controlledRotateInOrder subaddrList subqs
+            f (acc, qvls) =
+                (acc ++
+                 [ctl (qs{subStacks = map uncontrolIt $
                                         take (length keys) qvls})],
                  drop (length keys) qvls)
 \end{code}
@@ -316,26 +315,26 @@ used when controlling |StackCons|
 elements. |controlAll| is passed two lists corresponding to
 the bound variables and sub-stacks each of the constructors
 of the |StackCons| element. Each of these is then passed
-in turn to |controlEach|, which will rotate up the bound 
+in turn to |controlEach|, which will rotate up the bound
 variables and control by each of them.
 
 {\begin{singlespace}
 \begin{code}
 controlAll :: (Quantum b) => Int->
-              [[StackAddress]] -> 
+              [[StackAddress]] ->
               [Controlled (QuantumStack b)]  ->
-             (ControlStack b, [Controlled (QuantumStack b)]) 
+             (ControlStack b, [Controlled (QuantumStack b)])
 
 controlAll i (addrs:[]) (q:[])
            = controlEach i addrs q
 controlAll i (addrs:addrss) (q:qs)
     = let (f',q') = controlEach i addrs q
           (f'',qs') = controlAll i addrss qs
-      in (f'' . f' , q' ++ qs') 
+      in (f'' . f' , q' ++ qs')
 
-controlEach :: (Quantum b) => Int->[StackAddress] -> 
+controlEach :: (Quantum b) => Int->[StackAddress] ->
               Controlled (QuantumStack b) ->
-             (ControlStack b, [Controlled (QuantumStack b)]) 
+             (ControlStack b, [Controlled (QuantumStack b)])
 controlEach _ [] q = (pushback,[q])
 controlEach i (addr:[]) q
     =  mc i $  fmap (rotateup addr) q
@@ -344,16 +343,16 @@ controlEach i (addr:addrs) q
     = (g, dqs)
     where (f, qs) = controlEach i [addr] q
           (gs, deepqs) = unzip $ map (controlEach i addrs) qs
-          gs' = concatDot gs 
+          gs' = concatDot gs
           dqs = concat deepqs
-          g = f . pushback . gs' 
+          g = f . pushback . gs'
 
 \end{code}
 \end{singlespace}}
 
 
-As an example, consider 
-applying a $controlled-T$ transform to the state Q, comprised of two 
+As an example, consider
+applying a $controlled-T$ transform to the state Q, comprised of two
 \qubit{}s. This gives:
 \begin{equation}
 \begin{bmatrix}I&0\\0&T\end{bmatrix}
@@ -372,10 +371,10 @@ together, ensuring there is no interference between them.
 \begin{code}
 concatDot :: [(([a],[a])->([a],[a]))] -> ([a],[a]) -> ([a],[a])
 concatDot [] (a,b)= (a,b)
-concatDot (f:gs) (_,b) = 
+concatDot (f:gs) (_,b) =
     let  (a,b') = f ([],b)
          (a',r) = concatDot gs ([],b')
-    in (a++a',r)   
+    in (a++a',r)
 
 
 \end{code}
@@ -409,9 +408,6 @@ controlIt i (a,b)
 uncontrolIt :: Controlled a -> a
 uncontrolIt (Ctrl _ a) = a
 
-
-
-
 \end{code}
 \end{singlespace}
 
@@ -425,7 +421,6 @@ idonlytr :: Controlled a -> Controlled a
 leftonlytr :: Controlled a -> Controlled a
 rightonlytr :: Controlled a -> Controlled a
 idonlytr (Ctrl _ a) = Ctrl IdentityOnly a
-
 
 leftonlytr (Ctrl IdentityOnly a) = Ctrl IdentityOnly a
 leftonlytr (Ctrl LeftOnly a) = Ctrl LeftOnly a
@@ -441,5 +436,3 @@ pushback ::([a],[a]) -> ([a],[a])
 pushback (a,b) = ([],a++b)
 \end{code}
 \end{singlespace}
-
-

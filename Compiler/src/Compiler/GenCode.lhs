@@ -1,6 +1,8 @@
 \begin{code}
 module Compiler.GenCode where
+
 import Control.Monad.State
+
 import Data.Map as Map
 import Data.Char(toLower)
 import Data.List as List
@@ -14,8 +16,6 @@ import Compiler.Qtypes
 import Data.Stack
 import Data.Tuples
 
-
-
 class GenCode a where
  genCode::a->CodeMonad ProgramCode
  genCodeList::[a]->CodeMonad ProgramCode
@@ -27,8 +27,6 @@ class GenCode a where
 instance GenCode Iprog where
  genCode (Iprog mp)
     = foldM (\i  -> liftM (Map.union i) . genCode ) Map.empty $ Prelude.map snd $ Map.toList mp
-
-
 
 instance GenCode Iproc where
  genCode (Iproc nm lbl _ _ _ crets stmts)
@@ -50,13 +48,11 @@ instance GenCode Iproc where
                       combineProgs descp $
                       combineProgs ret tcode
 
-
 getCodes inCexps inQexps = do
    eCcode <- mapM genCode inCexps -- $ reverse inCexps
    nmsAndEQcode <-  mapM quantifyAndName $ reverse inQexps
    let (names,eQcode) = unzip nmsAndEQcode
    return (eCcode, names, eQcode)
-
 
 codesForCall nm inCexps inQexps frmlids outQids= do
    (eCcode, names,eQcode) <- getCodes inCexps inQexps
@@ -64,7 +60,6 @@ codesForCall nm inCexps inQexps frmlids outQids= do
    callcd <- call (length inCexps) nm
    renamesfr <- doRenames (snd $ snd frmlids) $ List.map fst outQids
    return (renamesto, renamesfr, eCcode, eQcode, callcd)
-
 
 instance GenCode Istmt where
 
@@ -165,7 +160,6 @@ of the generated code will now be:
                  combineProgs usebdy $
                  combineProgs qendc endit
 
-
  genCode (Iuse (nm:nms) stmts)
      = do innerUse <- genCode (Iuse nms stmts)
           unsetCurrentActive
@@ -198,7 +192,6 @@ of the generated code will now be:
            mc <- measCode nm (genCode (Iblock s1)) (genCode (Iblock s2))
            return $ combineProgs pu mc
 
-
  genCode (Imeas e s1 s2)
      = do ecode <- genCode e
           nm <- getCurrentActive -- No pullup needed.
@@ -211,15 +204,12 @@ of the generated code will now be:
      = do pu <- pullup nm
           makeSplitCode pu nm clauses  (genCode :: Istmt -> CodeMonad ProgramCode)
 
-
-
  genCode (Icase e clauses)
      = do ec <- genCode e
           nm <- getCurrentActive --No pull up needed.
           case nm of
             Nothing  ->  error $ unsetTop e (Icase e clauses)
             Just nm  ->  makeSplitCode ec nm clauses (genCode :: Istmt -> CodeMonad ProgramCode)
-
 
 \end{code}
 For |Icall| we need to first calculate any classical expressions
@@ -231,8 +221,6 @@ This is follwed by the actual application of
 the transform. Finally, the outputs are renamed.
 
 \begin{code}
-
-
 
  genCode (Icall (Just ut) _ _ inCexps [IrVar oldnm _] [(newnm,_)] _) --ut no out classical ids
     = case ut of
@@ -255,7 +243,6 @@ the transform. Finally, the outputs are renamed.
                          combineProgs (combineAllProgs eQcode) $
                          combineProgs aptran renames
 
-
  genCode (Icall Nothing nm frmlids inCexps inQexps outQids outCids)
      = do (renamesto, renamesfr, eCcode, eQcode, callcd) <- codesForCall nm inCexps inQexps frmlids outQids
           unsetCurrentActive
@@ -264,7 +251,6 @@ the transform. Finally, the outputs are renamed.
                  combineProgs (combineAllProgs eQcode) $
                  combineProgs renamesto $
                  combineProgs callcd renamesfr
-
 
  genCode (Idiscard []) = return Map.empty
  genCode (Idiscard (nm:nms))
@@ -297,7 +283,6 @@ the transform. Finally, the outputs are renamed.
 
  genCode Iskip
      = return Map.empty
-
 
 quantAndName' :: IrExpression -> CodeMonad (NodeName, ProgramCode)
 quantAndName' e
@@ -367,7 +352,6 @@ instance GenCode IrExpression where
 --do  addToPendingDiscards nm
  --          return plnm
 
-
  genCode (IrCvar nn off l t)
      = classicalPull off
 
@@ -404,7 +388,6 @@ Can an expcall have classical parms?
 
 instance GenCode BinOp where
     genCode  = classicalOp
-
 
 ioGenCode :: Iprog -> Int->IO Instructions
 ioGenCode qprog loglevel

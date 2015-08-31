@@ -31,7 +31,7 @@ end
 require 'resolver'
 #:nocov:
 def monkeybars_jar(path)
-  Dir.glob(path).select { |f| f =~ /(monkeybars-)(.+).jar$/ }.first
+  Dir.glob(path).find { |f| f =~ /(monkeybars-)(.+).jar$/ }
 end
 
 case Monkeybars::Resolver.run_location
@@ -42,7 +42,7 @@ when Monkeybars::Resolver::IN_FILE_SYSTEM
   mbj =   monkeybars_jar(here + '/../lib/java/*.jar')
   #    puts "resulting mbj=#{mbj}"
   if !mbj || mbj == ''
-    mbj =  monkeybars_jar(here + '/../../../lib/java/*.jar')
+    mbj = monkeybars_jar(here + '/../../../lib/java/*.jar')
     #     puts "or is #{mbj}"
   end
   add_to_classpath mbj

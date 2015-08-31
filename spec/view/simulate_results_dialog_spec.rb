@@ -34,5 +34,4 @@ describe SimulateResultsDialog do
     specify { expect(@res.viewport.view.class).to eq(Label) }
     specify { expect(@sr.simulate_results_label).to eq(@res.viewport.view) }
   end
-
 end

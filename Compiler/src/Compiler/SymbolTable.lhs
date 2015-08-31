@@ -11,8 +11,6 @@ import Control.Monad.State
 
 import Control.Monad.Writer
 
-
-
 import Data.Char(toUpper, toLower)
 import Data.List as List  (map, concat)
 import Data.Map as Map
@@ -49,14 +47,10 @@ list of entries in a  map, with the head of the list being
 the one currently in scope.
 
 \begin{code}
-
-
-
 maybeLookup :: String->WriterT CompilerLogs SemStateMonad (Maybe SymEntryLinear)
 maybeLookup name
   = do symtab <- getSymTabLinear
        return $ Map.lookup name symtab
-
 
 maybeLookupClassical :: String->WriterT CompilerLogs SemStateMonad (Maybe SymEntryClassical)
 maybeLookupClassical name
@@ -76,7 +70,6 @@ lookupClassicalOrLinear name
                        (Just c) -> return $ Right c
                        Nothing -> fail $ notfound name
 
-
 dropWithType ::Qtype-> String->WriterT CompilerLogs SemStateMonad ([Istmt], SymEntryLinear)
 dropWithType tv id
    = do mentry <- maybeLookup id
@@ -87,16 +80,12 @@ dropWithType tv id
                         addEntry (id, ent)
                         return ([], ent) --Will be created by rename.
 
-
-
-
 classicalStlookup :: String -> WriterT CompilerLogs SemStateMonad SymEntryClassical
 classicalStlookup name = do
   sentry <- maybeLookupClassical name
   case sentry of
     (Just sent) -> return sent
     Nothing -> fail $ notfound name
-
 
 stlookup :: String->WriterT CompilerLogs SemStateMonad SymEntryLinear
 stlookup name = do
@@ -154,8 +143,6 @@ appCMod (SeFun nm dc1 (Just g) dc2 dc3 inqb outqb dc4)
 
 appCMod x = x
 
-
-
 \end{code}
 
 \incsubsec{Adding to the symbol table.}
@@ -208,19 +195,13 @@ addEntry (key, entry)
 addClassicalEntry :: (String,SymEntryClassical)->WriterT CompilerLogs SemStateMonad()
 addClassicalEntry (key, entry) = modSymTabClassical (Map.insert key entry)
 
-
-
 \end{code}
-
 
 addNewType ::Statement ->WriterT CompilerLogs SemStateMonad()
 addNewType (DataDeclaration dd)
     = addTypeEntry dd
 
 addNewType _ = return ()
-
-
-
 
 \incsubsec{\haskclassnoref{SymTabEntry}}
 \label{haskellclass:SymTabEntry}
@@ -315,7 +296,6 @@ addTypeEntry (DataDef td@(TypeDefinition tid vids) cons)
 addTypeEntry (ProcDef _)
     = return ()
 
-
 addConsEntries ::TypeDefinition->[Constructor]->
                  Int->WriterT CompilerLogs SemStateMonad ()
 addConsEntries _ [] _ = return ()
@@ -370,8 +350,6 @@ addProcToSt (ProcDef pd) = do
                       crettypes   = crtypes}
   modSymTabGlobal (Map.insert (procnm pd) se)
 
-
-
 instance SymTabEntry Procedure where
   makeEntry (Procedure{}) _    = fail addingProcToLinSt
 
@@ -406,7 +384,6 @@ addCparm id typ =  do
 
 updateClassicalListP :: [ParameterDefinition] -> WriterT CompilerLogs SemStateMonad()
 updateClassicalListP = mapM_ updateClassicalParm
-
 
 instance SymTabEntry Statement where
 
@@ -461,11 +438,9 @@ procDefCalls ::  [Statement] -> String-> Bool
 procDefCalls  block name
        = foldl (\b s->b || (statementCalls name s)) False block
 
-
 \incsubsubsec{\haskfuncnoref{statementCalls}}
 \label{haskellfunction:statementCalls}
 \index{Compiler Functions!Symbol Table!statementCalls}
-
 
 statementCalls :: String->Statement -> Bool
 statementCalls name (ProcResult _ nm _) = name == nm
@@ -506,13 +481,10 @@ gettypes = mapM gettype
 gettype :: ParameterDefinition ->WriterT CompilerLogs SemStateMonad Qtype
 gettype (ParameterDefinition _ t) =  return t
 
-
-
 callingLabel :: SymEntryGlobal -> String
 callingLabel (SeFun gnm cdl _ _ _ _ _ _)
              = mkflabel gnm cdl
 callingLabel _ = error callinglblOnCons
-
 
 varMap :: [Identifier] -> WriterT CompilerLogs SemStateMonad (Map Identifier Identifier)
 varMap [] = return Map.empty

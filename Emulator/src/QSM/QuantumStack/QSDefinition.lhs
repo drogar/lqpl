@@ -43,7 +43,6 @@ The quantum stack holds both \emph{quantum} and
 data in the quantum stack  machine.
 
 
-
 The quantum stack is a tree with a variable
 number of branches at
 each level, descriptive data at each level
@@ -130,14 +129,12 @@ consList :: StackDescriptor b -> [(Constructor,[StackAddress])]
 consList (StackData cl) = cl
 consList _ = []
 
-
 descLength :: StackDescriptor b -> Int
 descLength StackZero = 0
 descLength (StackValue _) = 0
 descLength (StackClassical cs) = length cs
 descLength (StackQubit bs) = length bs
 descLength (StackData ds) = length ds
-
 
 assertQSCorrect :: QuantumStack b -> Bool
 assertQSCorrect _ = True
@@ -170,7 +167,6 @@ instance (Show b) => Show (QuantumStack b) where
           showList (zip cads stks)  .
           showString ") ->>"
 
-
 instance (Eq b, Num b) =>  Eq (StackDescriptor b) where
     (==) StackZero StackZero = True
     (==) StackZero (StackValue b) = b == fromInteger 0
@@ -190,8 +186,6 @@ instance (Num b, Eq b) =>  Eq (QuantumStack b) where
         = (descriptor qs1 == descriptor qs2) &&
           (address qs1 == address qs2) &&
           foldl' (&&) True (zipWith (==) (subStacks qs1) (subStacks qs2))
-
-
 
 \end{code}
 \end{singlespace}
@@ -249,15 +243,10 @@ parametrize only by the coefficient type.
 \begin{singlespace}
 \begin{code}
 
-
-
 qApply :: (QuantumStack b->QuantumStack b) ->
           QuantumStack b -> QuantumStack b
 qApply g (QuantumStack nm od sstaks d)
        = QuantumStack nm od (map g sstaks) d
-
-
-
 
 qAccessor :: (Show b, Quantum b) => Basis -> Basis ->
              QuantumStack b -> QuantumStack b
@@ -275,9 +264,7 @@ qAccessor O O  qs@(QuantumStack _ diag ss (StackQubit  qbs))
     | (O,O) `elem` qbs    = snd $ head $ filter (\q -> (O,O) == fst q) $ zip qbs ss
     | otherwise           = zerostack
 
-
 qAccessor _ _ _ = error "Can not use accessor on non-qubit stack."
-
 
 zz :: (Quantum b)=> QuantumStack b -> QuantumStack b
 zz = qAccessor Z Z
@@ -308,18 +295,12 @@ val :: (Quantum b)=>(Basis,Basis) ->
        QuantumStack b
 val (a,b) = qAccessor a b
 
-
-
 setAddress  ::  StackAddress -> QuantumStack b -> QuantumStack b
 setAddress  s qs = qs{address=s}
-
 
 secondAddress :: QuantumStack b -> StackAddress
 secondAddress (QuantumStack _ _ sstacks _)
            = foldToAddress $ map address sstacks
-
-
-
 
 nodeIsStackData :: StackAddress -> QuantumStack b  -> Bool
 nodeIsStackData addr q =
@@ -332,14 +313,10 @@ descriptorsAt addr q =
     else concat $ map (descriptorsAt addr) (subStacks q)
 \end{code}
 %endif
-
-
 The accessor function |qvalues| retrieves the |QV| sub element of
 a |QuantumStack|.
 %if codeOnly || showSupportFunctionDetail
 \begin{code}
-
-
 
 qvalues :: (Quantum b)=> QuantumStack  b ->
           [QuantumStack b]
@@ -347,14 +324,12 @@ qvalues  qs@(QuantumStack _ _ _ (StackQubit _))
     = [zz qs, zo qs, oz qs, oo qs]
 qvalues  qs@(QuantumStack _ _ _ StackZero) = replicate 4 zerostack
 
-
 qvaluesDiag :: (Quantum b)=> QuantumStack  b ->
           [QuantumStack b]
 qvaluesDiag  qs@(QuantumStack _ True _ (StackQubit _))
     = [zz qs, zo qs,  oo qs]
 qvaluesDiag  qs@(QuantumStack _ True _ StackZero) = replicate 3 zerostack
 qvaluesDiag qs  = qvalues qs
-
 
 diagq :: QuantumStack b -> QuantumStack b
 diagq q = q{onDiagonal = True}
@@ -388,7 +363,6 @@ setQvalues val qs
     | otherwise = error $ "Setting qv substack incorrectly - vals = "++
                           (showList val ", qs = "++show qs)
 
-
 setSubStacks ::  (Show b,Quantum b)=> [QuantumStack b] ->
                 QuantumStack b -> QuantumStack b
 setSubStacks subs qs
@@ -403,7 +377,6 @@ setSubStacks subs qs
               let (ss, dvals') = dropzsD subs dvals
               in qs{subStacks = ss, descriptor = dvals'}
 
-
 trimSubStacks  :: (Quantum b)=>QuantumStack b->
                  QuantumStack b
 trimSubStacks  qs = setSubStacks (subStacks qs) qs
@@ -416,7 +389,6 @@ dropzsC qs bs =
        []    -> ([], StackZero)
        lis   -> let (qs', bs') = unzip lis
                 in (qs', StackClassical bs')
-
 
 dropzsD :: (Eq b, Num b) => [QuantumStack b] -> [(Constructor,[StackAddress])] ->
           ([QuantumStack b], StackDescriptor b)

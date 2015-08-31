@@ -8,7 +8,7 @@ describe QuantumStackModel do
   describe 'instance setup' do
     subject { QuantumStackModel.new }
     before :each do
-      subject.stack_translation = double('StackTranslation', :reverse_lookup => 'p', :nil? => false)
+      subject.stack_translation = double('StackTranslation', reverse_lookup: 'p', nil?: false)
     end
     it 'should give an invalid create error when created with incorrect data' do
       expect { subject.quantum_stack = 'err' }.to raise_error JSON::ParserError, /err/
@@ -28,7 +28,7 @@ describe QuantumStackModel do
         subject.quantum_stack = make_multi_sstacks('1', 'true', NODE_QZZ, [])
       end.to raise_error ModelCreateError, /must have/
     end
-    it 'should give an error when stackclassical does not have substacks'  do
+    it 'should give an error when stackclassical does not have substacks' do
       expect do
         subject.quantum_stack = make_multi_sstacks('1', 'true', NODE_CL275, [])
       end.to raise_error ModelCreateError, /should have/
@@ -42,11 +42,11 @@ describe QuantumStackModel do
       subject.quantum_stack = make_multi_sstacks('-1', 'true', NODE_VAL1, [])
       expect(subject).not_to be_bottom
     end
-    it 'should allow bottom as the construction'  do
+    it 'should allow bottom as the construction' do
       subject.quantum_stack = '{"bottom": true}'
       expect(subject).to be_bottom
     end
-    it 'should allow bottom in place of substacks'  do
+    it 'should allow bottom in place of substacks' do
       subject.quantum_stack = bottom_stack('1', 'true', NODE_QZZ)
     end
     it 'should have the same number of substacks as the length of the descriptor' do
@@ -57,7 +57,7 @@ describe QuantumStackModel do
     end
     describe 'instance method make_name' do
       before :each do
-        st = double('StackTranslation', :nil? => false)
+        st = double('StackTranslation', nil: false)
         allow(st).to receive(:reverse_lookup) do |val|
           case val
           when 1 then '@q'
@@ -91,7 +91,7 @@ describe QuantumStackModel do
   end
   it 'should assign a name for a quantum descriptor' do
     qs = QuantumStackModel.new
-    st = double('StackTranslation', :nil? => false)
+    st = double('StackTranslation', nil?: false)
     expect(st).to receive(:reverse_lookup).and_return('p')
     qs.stack_translation = st
     qs.quantum_stack = QB2WITHBOTTOM
@@ -99,7 +99,7 @@ describe QuantumStackModel do
   end
   it 'should assign names to multi-level qstacks' do
     qs = QuantumStackModel.new
-    st = double('StackTranslation', :nil? => false)
+    st = double('StackTranslation', nil?: false)
     allow(st).to receive(:reverse_lookup) do |val|
       case val
       when 1 then '@q'

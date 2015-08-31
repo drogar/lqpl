@@ -16,12 +16,15 @@ module QSM.QuantumStack.QSRotation
  where
 import QSM.QuantumStack.QSDefinition
 import QSM.QuantumStack.QSManipulation
+
 import QSM.MachineErrors
+import QSM.BasicData
+
 import Data.ClassComp
 import Data.ClassicalData
-import QSM.BasicData
 import Data.Tuples
 import Data.List
+
 import Utility.Extras
 
 
@@ -47,7 +50,6 @@ node to the top of each of the sub-stacks, then apply |pullup|.
 \begin{singlespace}
 \begin{code}
 
-
 getConstructorPointers :: (Quantum b) => QuantumStack b ->
                           QuantumStack b -> (StackAddress,StackAddress) ->
                           [(StackAddress,StackAddress)]
@@ -59,10 +61,6 @@ getConstructorPointers lftqs rgtqs (alft,argt) =
          in thisLevel ++ (concat $ map (getConstructorPointers lftqs rgtqs) thisLevel)
     else []
 
-
-
-
-
 matchAndPair :: Ord a => [(a,[b])] -> [(a,[b])] -> [(b,b)]
 matchAndPair [] _ = []
 matchAndPair _ [] = []
@@ -70,7 +68,6 @@ matchAndPair ((a,bs):rest1) ((c,ds):rest2)
  | a < c  = matchAndPair rest1 ((c,ds):rest2)
  | a > c  = matchAndPair ((a,bs):rest1) rest2
  | otherwise = (zip bs ds) ++ matchAndPair rest1 rest2
-
 
 rotateInOrder :: (Quantum b) => [StackAddress] -> QuantumStack b ->
                  QuantumStack b
@@ -138,7 +135,6 @@ pullSingle s qs
 
 pullSingle s qs = error " Pulling missed out"
 
-
 fixDiagonal :: (Quantum b) => Bool -> QuantumStack b -> QuantumStack b
 fixDiagonal a qs
     = let ss = subStacks qs
@@ -157,10 +153,6 @@ undiagonalize  qs@(QuantumStack a _ _ (StackQubit _))
     = QuantumStack a False
            (map (fixDiagonal False) (qvalues qs))
            (StackQubit fullQbs)
-
-
-
-
 
 \end{code}
 %endif
@@ -264,7 +256,6 @@ getDtypesAddrsAndQs ::Quantum b => [StackAddress] ->
                    [(StackAddress, QuantumStack b)]
 getDtypesAddrsAndQs addrs q =
     zip (filter (flip isDtype q) addrs) $ repeat q
-
 
 \end{singlespace}}
 
@@ -386,9 +377,6 @@ addable s1 s2 = isStackZero s1 ||
 (-^-) :: (Quantum b) => QuantumStack b -> QuantumStack b -> QuantumStack b
 (-^-) a b = a +^+ qsNegate b
 
-
-
-
 (+/+) :: (Quantum b) => QuantumStack b -> QuantumStack b ->
          QuantumStack b
 (+/+) qs@(QuantumStack _ _ _ StackZero) a
@@ -402,13 +390,11 @@ addable s1 s2 = isStackZero s1 ||
 (+/+) qs1@(QuantumStack _ _ _ (StackValue a))
        qs2@(QuantumStack _ _ _(StackValue b))
            =  qs1{onDiagonal = True, descriptor = StackValue (a+b)}
-
 (+/+) qs1@(QuantumStack a1 _ _ (StackQubit _)) qs2@(QuantumStack a2 _ _ (StackQubit _))
     | a1 == a2
         = setQvalues [zz qs1 +/+ zz qs2,
                       zo qs1 +^+ zo qs2,
                       oo qs1 +/+ oo qs2] (qs1{onDiagonal = True})
-
 (+/+) (QuantumStack a1 _ s1 (StackClassical cvs1)) (QuantumStack a2 _ s2 (StackClassical cvs2))
     | a1 == a2 = let (rcvs,rs) = unzip $ stackUnionWith (+/+)
                                  (zip cvs1 s1) (zip cvs2 s2)
@@ -427,7 +413,6 @@ addable s1 s2 = isStackZero s1 ||
                                   stk2'' = trimStack Nothing $ rotateup nm1' $ trimStack Nothing stk2
                              in  if addable stk1' stk2'' then stk1' +/+ stk2''
                                  else error $ badqsAdd (show stk1) (show stk2)
-
 
 (-/-) :: (Quantum b) => QuantumStack b -> QuantumStack b -> QuantumStack b
 (-/-) a b = a +/+ qsNegate b

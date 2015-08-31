@@ -7,7 +7,6 @@ import Utility.FileProvider
  The input type
 \begin{code}
 
-
 type AlexInput = ([AlexPosn],     -- current position,
                   Char,         -- previous char
                   [String])       -- current input string
@@ -17,7 +16,6 @@ alexInputPrevChar (p,c,s) = c
 
 alexInputString :: AlexInput -> String
 alexInputString (p,c,s:ss) = s
-
 
 alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
 alexGetChar (p:ps,c,[]) = Nothing
@@ -167,7 +165,6 @@ alexGetStartCode = Alex $ \s@AlexState{alexScd=sc} ->
 alexSetStartCode :: Int -> Alex ()
 alexSetStartCode sc = Alex $ \s -> return $ Right (s{alexScd=sc}, ())
 
-
 alexGetCommentLevel :: Alex Int
 alexGetCommentLevel = Alex $ \s@AlexState{alexClvl=cl} -> return $ Right (s, cl)
 
@@ -184,16 +181,13 @@ alexDecCommentLevel =
     do {  cl <- alexGetCommentLevel
         ; alexSetCommentLevel if cl > 0 then (cl - 1) else 0}
 
-
 \end{code}
 Useful token actions
 \begin{code}
 
-
 data Token
      =  TkKet String  | TkSymbol String
      | TkNumber Int
-
      | TkOperator String | TkReserved String
      | TkTransform String
      | TkTensor| TkId String
