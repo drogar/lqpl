@@ -39,7 +39,7 @@ qorder = qorder' 0 . dimx
 qorder'::Int->Int -> Int
 qorder' acc val =
      if val < 2 then acc
-	else qorder' (acc + 1) (shiftR val 1)
+  else qorder' (acc + 1) (shiftR val 1)
 
 dimy::Matrix a -> Int
 dimy [] = 0
@@ -76,7 +76,7 @@ genmatmul  :: (c->c->c) -> (a -> b -> c) ->
               Matrix a -> Matrix b -> Matrix c
 genmatmul  f g m1 m2
      = transpose [[gendotprod f g a b| a <- m1] |
-		       b <- transpose m2]
+           b <- transpose m2]
 
 \end{code}
 \end{singlespace}
@@ -148,13 +148,13 @@ Creation of a zero matrix, used in the definition of the numeric instance.
 zeromat :: (Num a)=>Int->Matrix a
 zeromat 0 = error "Invalid dimension"
 zeromat n =  [[ 0 |
-	       inner<-[1..n]] |
-	      outer<-[1..n]]
+         inner<-[1..n]] |
+        outer<-[1..n]]
 
 idMat :: (Num a) => Int -> Matrix a
 idMat n = [[if inner == outer then  1 else  0 |
-	       inner<-[1..n]] |
-	      outer<-[1..n]]
+         inner<-[1..n]] |
+        outer<-[1..n]]
 
 \end{code}
 \end{singlespace}
@@ -170,7 +170,7 @@ instance (Num a)=> Num (Matrix a)  where
      (+)          = xzipWith (xzipWith (+))
      (-)          = xzipWith (xzipWith (-))
      (*) qm1 qm2  =  [[dotprod a b| b <- transpose qm2] |
-	                 a <-  qm1]
+                   a <-  qm1]
      negate       = mmap negate
      abs          = mmap abs
      signum       = mmap signum

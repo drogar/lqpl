@@ -19,7 +19,7 @@
 >
 
 > %tokentype { Token }
-> 
+>
 > %token
 >       START    {TkStart}
 >       END      {TkEnd}
@@ -62,7 +62,7 @@
 >       ')'     {TkSymbol ")" }
 >       ','     {TkSymbol "," }
 >       KET     {TkKet $$}
->	NUM     {TkNumber $$ }
+>  NUM     {TkNumber $$ }
 >       BOOL    {TkBool $$}
 >        "+"     {TkOperator "+"}
 >        "-"     {TkOperator "-"}
@@ -147,7 +147,7 @@
 >    | CLOAD NUM {(CLoad  (Left $2), Nothing)}
 >    | CLOAD BOOL {(CLoad  (Right $2), Nothing)}
 >    | NOOPERATION {(NoOp , Nothing)}
->    
+>
 >
 > clablist :: {[((Constructor,Int),String)]}
 >   : clab clablist {$1 : $2}
@@ -182,8 +182,8 @@
 > {
 
 > happyError :: Alex a
-> happyError = Alex $ \as -> 
->      return $ Left ("Parse error at position  " ++ 
+> happyError = Alex $ \as ->
+>      return $ Left ("Parse error at position  " ++
 >                     showPosn (head $ alex_pos as)++
 >                     " '"++(head $ alex_inp as)++"'\n")
 >
@@ -191,13 +191,13 @@
 >
 >
 > parseQPA :: String->String->
->             String -> 
->             IO (Either String 
->		   (([String],Map String (Trans LazyNum)), Memory Basis ))
+>             String ->
+>             IO (Either String
+>       (([String],Map String (Trans LazyNum)), Memory Basis ))
 > parseQPA dir file s = parseProg qpa dir file s
 >
 > parseProg :: Alex a ->String->String->String -> IO (Either String a)
-> parseProg parser dir file s = 
+> parseProg parser dir file s =
 >     do res <-  unAlex parser (AlexState ([AlexPn file 0 1 1]) [s]  ' ' 0 0 dir [file] )
 >
 >        case res of
@@ -205,4 +205,3 @@
 >             Left s' -> return $ Left s'
 >
 > }
-

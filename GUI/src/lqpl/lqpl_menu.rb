@@ -62,8 +62,8 @@ class LqplMenu
   def init_file_menu(mbar)
     menu_file = JMenu.new('File')
     @file_load = JMenuItem.new('Load')
-    @file_compile =  JMenuItem.new('Compile')
-    @file_simulate =  JMenuItem.new('Simulate')
+    @file_compile = JMenuItem.new('Compile')
+    @file_simulate = JMenuItem.new('Simulate')
 
     [@file_load, @file_compile, @file_simulate].each { |fm| menu_file.add(fm) }
     #:nocov:
@@ -83,10 +83,10 @@ class LqplMenu
 
   def init_view_menu(mbar)
     menu_view = JMenu.new('View')
-    @view_classical_stack =  JMenuItem.new('Hide Classical Stack')
-    @view_dump =  JMenuItem.new('Hide Dump')
-    @view_executing_code =  JMenuItem.new('Hide Executing Code')
-    @view_stack_translation =  JMenuItem.new('Hide Stack Translation')
+    @view_classical_stack = JMenuItem.new('Hide Classical Stack')
+    @view_dump = JMenuItem.new('Hide Dump')
+    @view_executing_code = JMenuItem.new('Hide Executing Code')
+    @view_stack_translation = JMenuItem.new('Hide Stack Translation')
 
     [@view_classical_stack, @view_dump, @view_executing_code, @view_stack_translation].each do |vm|
       vm.enabled = false

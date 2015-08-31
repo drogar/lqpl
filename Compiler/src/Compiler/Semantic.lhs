@@ -86,7 +86,6 @@ used for further unification.
 
 \begin{code}
 
-
 procIr :: Procedure ->  WriterT CompilerLogs SemStateMonad Iproc
 procIr (Procedure procnm incparms inqparms outqparms outcparms procstmts)
      = do  stl<-getSymTabLinear
@@ -376,15 +375,12 @@ stmtIr (Use ids stmts)
           return [Iuse [name v |v<-ventry]
                            stirs]
 
-
-
 stmtIr (Guard gcs)
     = do  gcirs <- gcListIr gcs
           return [Iguard gcirs]
 \end{code}
 
 \begin{code}
-
 
 stmtIr (Discard ids)
     = do  semLog semLLTrace  "In discard"
@@ -508,8 +504,6 @@ clauseIr casetype (CaseClause cid ids,stmts)
           semLog semLLDebug3  "Popped after case clause"
           return (IrCaseClause cid ids $ sirs++rmirs)
 
-
-
 \end{code}
 
 \begin{code}
@@ -579,15 +573,12 @@ argCountOK   qs rs
                     fail $ (if lqs > lrs then "Too many " else "Too few ") ++
                              "arguments supplied in function call. Expected "++ show rs ++ " but got " ++ show qs
 
-
 argTypesOK :: (Qtype -> Bool) ->Map Identifier Qtype->[Qtype] ->
               [Qtype] ->
                WriterT CompilerLogs SemStateMonad (Map Identifier Qtype)
 argTypesOK vartype mp qs rs
            = do semLog semLLDebug3 $ "checking Arg types: " ++ show qs ++ " to " ++ show rs
                 instanceOfList vartype (zip qs rs) mp
-
-
 
 exprIr :: Expression ->  WriterT CompilerLogs SemStateMonad (IrExpression, Qtype, Bool)
 
@@ -738,9 +729,6 @@ makeIr prog
            setSemLvl (Lvl 0 0 0 0)
            makeTypeRelations prog
 
-
-
-
 makeIrWithLL :: Program -> Int -> WriterT CompilerLogs SemStateMonad Iprog
 makeIrWithLL prog ll
      = do  emptySymbolTables
@@ -871,10 +859,8 @@ addNewClassicalEntries offsets names types f
     = do  let entries = List.map (uncurry3 f) $ zip3 offsets names types
           mapM_ addClassicalEntry $ zip names entries
 
-
 \end{code}
 \begin{code}
-
 
 symTabMerge :: SymbolTableLinear -> SymbolTableLinear ->
                 WriterT CompilerLogs SemStateMonad ([Istmt], [Istmt], SymbolTableLinear)
@@ -911,14 +897,11 @@ makeDiscard :: String -> SymEntryLinear ->  WriterT CompilerLogs SemStateMonad I
 makeDiscard id (SeVar n t)    = return $ Idiscard [n]
 makeDiscard id _              = return $ Idiscard []
 
-
-
 \end{code}
 \begin{code}
 checkInArgsDestroyed ::[Identifier]->
                         WriterT CompilerLogs SemStateMonad ()
 checkInArgsDestroyed = mapM_ checkNameIsDestroyed
-
 
 checkNameIsDestroyed :: Identifier ->  WriterT CompilerLogs SemStateMonad()
 checkNameIsDestroyed name
@@ -930,7 +913,6 @@ checkNameIsDestroyed name
 checkOutArgsCreated ::[Identifier]->
                         WriterT CompilerLogs SemStateMonad ()
 checkOutArgsCreated = mapM_ checkNameIsCreated
-
 
 checkNameIsCreated :: Identifier ->  WriterT CompilerLogs SemStateMonad()
 checkNameIsCreated  name

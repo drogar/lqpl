@@ -28,8 +28,6 @@ value for $i$ and a conjugation operation.
 --     mag = magnitude
 --     pow i = (10.0 ^^ i) :+ 0
 
-
-
 \end{code}
 \end{singlespace}
 }

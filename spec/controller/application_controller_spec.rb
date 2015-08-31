@@ -18,5 +18,4 @@ describe ApplicationController do
       expect(l).not_to be_connected
     end
   end
-
 end

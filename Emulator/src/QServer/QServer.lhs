@@ -2,7 +2,6 @@
 \begin{code}
 module Main where
 
-
 import Assembler.AssemParser
 
 import Control.Monad (when)
@@ -22,6 +21,7 @@ import Network.BSD
 
 import Control.Concurrent
 import Control.Concurrent.MVar
+
 import System.IO
 import System.Directory
 

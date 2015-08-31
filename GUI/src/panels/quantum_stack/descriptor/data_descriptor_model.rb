@@ -11,7 +11,7 @@ class DataDescriptorModel < AbstractDescriptorModel
   end
 
   def self.cons_ok(dv)
-    dv && dv[:cons]  && dv[:cons].is_a?(String)
+    dv && dv[:cons] && dv[:cons].is_a?(String)
   end
 
   def self.address_ok(dv)

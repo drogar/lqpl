@@ -3,6 +3,7 @@
 %if false
 \begin{code}
 module Compiler.SemTypes where
+
 import Control.Monad.State
 import Control.Monad.Writer
 
@@ -32,7 +33,6 @@ Functions track their level, name, a generated code label, argument types and re
 Currently types are limited to \bit, \qubit{} and a variable length integer.
 \CodeContinueNumbers
 \begin{code}
-
 
 data SymEntryGlobal
     =  SeData {
@@ -85,7 +85,6 @@ data SymEntryLinear
              name::NodeName,
              qtype::Qtype }
      deriving (Eq,Show)
-
 
 \end{code}
 %endif
@@ -149,12 +148,9 @@ subInArgsList (SeCaseId offset name QUBIT : qs) ss
 subInArgsList (q:qs) ss
         = q : subInArgsList qs ss
 
-
 argsmatch :: SymEntryGlobal->[SymEntryLinear]->Bool
 argsmatch se  =
      and . zipWith (==) (argtypes se) . List.map qtype
-
-
 
 selectQBits :: [SymEntryLinear]->[SymEntryLinear]
 selectQBits [] = []
@@ -206,7 +202,6 @@ semLog ll output
     =  do loglev <-  gets logLevel
           when (ll <= loglev) $  tell [output]
 
-
 semLLAlways, semLLTrace, semLLDebug3, semLLDebug2, semLLDebug1, semLLDebug, semLLInfo, semLLWarn, semLLError, semLLFail :: Int
 
 semLLAlways = 0
@@ -240,7 +235,6 @@ dumpsts ll
            semLog ll "Classical SymTab"
            stabc <- getSymTabClassical
            semLog ll $ show stabc
-
 
 \end{code}
 %endif
@@ -354,7 +348,6 @@ updateSymTabGlobal s st = st{stateStabGlobal = s}
 updateSymTabClassical :: SymbolTableClassical ->SemanticState ->SemanticState
 updateSymTabClassical s st = st{stateStabClassical = s}
 
-
 modSymTabGlobal :: (SymbolTableGlobal -> SymbolTableGlobal) ->
                     WriterT CompilerLogs SemStateMonad ()
 modSymTabGlobal f
@@ -373,7 +366,6 @@ modSymTabClassical f
     =  modify (\ state -> state{stateStabClassical
                                    = f $ stateStabClassical state})
 
-
 getSymTabGlobal  ::   WriterT CompilerLogs SemStateMonad SymbolTableGlobal
 getSymTabGlobal =   gets stateStabGlobal
 
@@ -391,7 +383,6 @@ setSymTabLinear = modSymTabLinear . const
 
 setSymTabClassical  ::  SymbolTableClassical ->  WriterT CompilerLogs SemStateMonad ()
 setSymTabClassical  = modSymTabClassical . const
-
 
 inclabel  ::   WriterT CompilerLogs SemStateMonad ()
 inclabel =  modify (\ state ->

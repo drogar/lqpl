@@ -20,20 +20,20 @@ describe EmulatorCommandInterpretor do
     describe :command do
       it 'sends and receive with command == 1st parameter,  parameters = [1, 2]' do
         expect(@cmp).to receive(:send_and_read_data).with('{"command":"w","parameters":[1,2]}')
-        subject.command(:w,  [1, 2])
+        subject.command(:w, [1, 2])
       end
       it 'sends and receive with command == 1st parameter,  parameters = [1]' do
         expect(@cmp).to receive(:send_and_read_data).with('{"command":"w","parameters":[1]}')
-        subject.command(:w,  [1])
+        subject.command(:w, [1])
       end
       it 'sends and receive with command == 1st parameter,  parameters = []' do
         expect(@cmp).to receive(:send_and_read_data).with('{"command":"wat","parameters":[]}')
-        subject.command(:wat,  [])
+        subject.command(:wat, [])
       end
     end
     describe :get_qstack do
       it 'calls command with qstack,  5, 1,  when called with no parms' do
-        expect(subject).to receive(:command).with(:get_qstack,  [5, 1])
+        expect(subject).to receive(:command).with(:get_qstack, [5, 1])
         subject.get_qstack
       end
       it 'calls get command with qstack 4, 1 if passed a single 4' do
@@ -41,7 +41,7 @@ describe EmulatorCommandInterpretor do
         subject.get_qstack(4)
       end
       it 'calls get command with qstack 4, 3 if passed a 4 3' do
-        expect(subject).to receive(:command).with(:get_qstack,  [4, 3])
+        expect(subject).to receive(:command).with(:get_qstack, [4, 3])
         subject.get_qstack(4, 3)
       end
     end
@@ -65,8 +65,8 @@ describe EmulatorCommandInterpretor do
         subject.do_run(4)
       end
     end
-
   end
+
   describe 'generated methods' do
     specify { expect(subject.methods).to include(:get_qstack) }
     specify { expect(subject.methods).to include(:get_stack_translation) }

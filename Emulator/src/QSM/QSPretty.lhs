@@ -23,6 +23,4 @@ ltxPretty (StackQubit nm sb)
                ++ ltxPretty (val (One,Zero) sb) ++ "}{"
                ++ ltxPretty (val (One,One) sb) ++ "}{}"
 
-
-
 \end{code}

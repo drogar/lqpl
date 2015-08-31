@@ -30,5 +30,4 @@ describe SimulateResultsController do
       expect(@c.simulate_data).to eq('<html>@p(Coin) = Heads<br />@q(qubit) = 0</html>')
     end
   end
-
 end

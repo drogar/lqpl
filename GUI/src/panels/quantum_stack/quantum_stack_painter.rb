@@ -50,7 +50,7 @@ class QuantumStackPainter
 
   def bottom_element_size(g)
     dim = get_string_size(g, '...')
-    @preferred_size = CanvasSize.new_with_measures(dim.width * 0.5,  dim.width * 0.5,  dim.height)
+    @preferred_size = CanvasSize.new_with_measures(dim.width * 0.5, dim.width * 0.5, dim.height)
   end
 
   def model_paint_size(g)

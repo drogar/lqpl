@@ -21,9 +21,8 @@ import Compiler.Qtypes
 import Compiler.Semantic
 import Compiler.SymbolTable
 import Compiler.BaseTypes
+
 import Utility.FileProvider.FileSystem
-
-
 
 import Data.Version
 import Paths_lqpl

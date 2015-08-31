@@ -32,8 +32,6 @@ find = curry $ List.concat . maybeToList . uncurry (flip lookupMap)
 capitalize :: String->String
 capitalize = List.map toUpper
 
-
-
 \end{code}
 \incsubsec{\haskfuncnoref{uncapitalize}}
 \label{haskellfunction:uncapitalize}
@@ -43,12 +41,10 @@ capitalize = List.map toUpper
 uncapitalize :: String->String
 uncapitalize = List.map toLower
 
-
 hasDuplicates :: (Eq a)=>[a]->Bool
 hasDuplicates [] = False
 hasDuplicates (a:als)
      = elem a als || hasDuplicates als
-
 
 \end{code}
 
@@ -74,19 +70,16 @@ joinWithComma = foldl1 (\a b ->a++(',':b))
 joinWithSpace :: [String] -> String
 joinWithSpace = foldl1 (\a b ->a++(' ':b))
 
-
 joinWithString :: String->[String] -> String
 joinWithString s = joinWithSpace . Prelude.map (s++)
 
 joinWithImport :: [String]->String
 joinWithImport  = List.foldl (++) "" . Prelude.map (\s->" import "++s++"\n")
 
-
 mkflabel :: String -> String -> String
 mkflabel nm lbl
    =  if "main" == nm then nm
       else nm ++ ('_':lbl)
-
 
 merge :: [a] -> [a] -> [a]
 merge a [] = a

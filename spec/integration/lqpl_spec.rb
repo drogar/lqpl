@@ -59,7 +59,7 @@ describe LqplController do
     let(:dh) { double('dh') }
     let(:sh) { double('sh') }
     subject { @l }
-    before :each  do
+    before :each do
       subject.sub_controllers_handler = sh
       subject.dialogs_handler = dh
       allow(dh).to receive(:dispose_all)
@@ -84,6 +84,5 @@ describe LqplController do
         subject.initialize_sub_controllers
       end
     end
-
   end
 end

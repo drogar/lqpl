@@ -9,7 +9,7 @@ class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
   set_close_action :close
-  DIALOGS = [AboutController,  SimulateResultsController]
+  DIALOGS = [AboutController, SimulateResultsController]
   SUBS = [StackTranslationController, ClassicalStackController, DumpController,
           ExecutingCodeController, QuantumStackController]
   attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
@@ -47,7 +47,7 @@ class LqplController < ApplicationController
     if chooser.show_open_dialog(my_frame) == JFileChooser::APPROVE_OPTION
       model.compile(chooser.get_selected_file)
     else
-      model.messages_text  = 'Compile action cancelled.'
+      model.messages_text = 'Compile action cancelled.'
     end
     update_view
   end
@@ -58,7 +58,7 @@ class LqplController < ApplicationController
       model.load_and_enable! @qpl_dialog.selected_file
       initialize_sub_controllers
     else
-      model.messages_text =  'QPO file load cancelled.'
+      model.messages_text = 'QPO file load cancelled.'
     end
     update_view
   end
@@ -104,7 +104,7 @@ class LqplController < ApplicationController
 
   def tree_depth_spinner_state_changed
     model.tree_depth_spinner = java.lang.Integer.new(view_model.tree_depth_spinner)
-    model.messages_text =  "Tree Depth set to #{model.tree_depth_spinner}"
+    model.messages_text = "Tree Depth set to #{model.tree_depth_spinner}"
     update_all
   end
 

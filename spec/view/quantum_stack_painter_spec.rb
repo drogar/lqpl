@@ -49,8 +49,8 @@ describe QuantumStackPainter do
     qb.stack_translation = st
     qb.quantum_stack = '{"bottom":true}'
     @qbottom = QuantumStackPainter.new(qb)
-
   end
+
   describe 'substack_label_placement' do
     it 'returns :right for a single substack, index 0' do
       expect(@qsi_ss_bottom.substack_label_placement(0)).to eq(:right)

@@ -4,7 +4,7 @@
 # one by one as the offenses are removed from the code base.
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
-
+inherit_from: ../.rubocop.yml
 # Offense count: 1
 AccessorMethodName:
   Enabled: false
@@ -17,7 +17,3 @@ Eval:
 # Configuration parameters: AllowedVariables.
 GlobalVars:
   Enabled: false
-
-# Offense count: 19
-LineLength:
-  Max: 123

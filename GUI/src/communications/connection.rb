@@ -54,7 +54,7 @@ class Connection
     connection_list.each do |location|
       errors = try_connecting_to location unless errors.empty?
     end
-    fail ServerProcessNotFound, no_process_error   unless errors.empty?
+    fail ServerProcessNotFound, no_process_error unless errors.empty?
   end
 
   def try_connecting_to(location)
@@ -87,7 +87,7 @@ class Connection
         return []
       rescue Errno::ECONNREFUSED => e1
         return ["Connect refused For #{addr}, exception: #{e1}"]
-      rescue SocketError  => e
+      rescue SocketError => e
         return ["Socket error for  #{addr}, exception: #{e} "]
       end
     end
