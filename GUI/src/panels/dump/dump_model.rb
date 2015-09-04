@@ -8,8 +8,7 @@ class DumpModel < ApplicationModel
     @dump = EnsureJSON.new(in_string).as_json[:dump]
   end
 
-  def text=(_)
-  end
+  def text=(_); end
 
   def text
     inside = @dump.map do |ditem|

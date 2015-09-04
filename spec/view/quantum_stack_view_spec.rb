@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
+require 'quantum_stack_view'
 
 describe QuantumStackView do
   before :each do

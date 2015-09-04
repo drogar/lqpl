@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
 describe PanelController do
   describe 'class methods' do
     describe 'class_name_to_sym' do

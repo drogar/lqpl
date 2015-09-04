@@ -1,9 +1,6 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'spec/specdata/stack_translation_data'
-require 'GUI/src/panels/stack_translation/stack_translation_controller'
-require 'GUI/src/panels/stack_translation/stack_translation_model'
+require 'specdata/stack_translation_data'
+require 'stack_translation_controller'
+require 'stack_translation_model'
 
 describe StackTranslationController do
   before(:each) do

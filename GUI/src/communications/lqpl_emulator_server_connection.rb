@@ -1,7 +1,8 @@
 # encoding: utf-8
-require 'communications/connection'
+require 'emulator_command_interpretor'
+require 'connection'
 require 'forwardable'
-EMULATOR = 'lqpl-emulator'
+EMULATOR = 'lqpl-emulator'.freeze
 
 # connect to the LQPL emulator
 class LqplEmulatorServerConnection < Connection

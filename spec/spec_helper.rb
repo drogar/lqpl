@@ -1,5 +1,4 @@
 # Encoding: UTF-8
-
 require 'rbconfig'
 require 'java'
 require 'english'
@@ -35,9 +34,14 @@ SimpleCov.at_exit do
           covered #{SimpleCov.result.covered_lines} lines of
           #{SimpleCov.result.total_lines} for a coverage of
           %#{SimpleCov.result.covered_percent}."
-  # SwingRunner::on_edt do
-  LqplController.instance.close
-  # end
+  begin
+    # SwingRunner::on_edt do
+    LqplController.instance.close
+    # end
+  rescue NameError
+    puts("No lqpl controller defined yet")
+  end
+
   java.lang.System.exit(status)
 end
 
@@ -45,13 +49,17 @@ project_dir_array = File.expand_path(File.dirname(__FILE__)).split(File::SEPARAT
 
 project_dir = project_dir_array.reverse.drop(1).reverse.join(File::SEPARATOR)
 
-%w(src lqpl_gui lib/java lib/ruby devlib/java devlib/ruby).each do |dir|
+$LOAD_PATH << project_dir + '/GUI'
+
+%w(src lib/java lib/ruby devlib/java devlib/ruby).each do |dir|
   $LOAD_PATH << project_dir + '/GUI/' + dir
 end
-$LOAD_PATH << project_dir + '/out/lqpl_gui'
 
 # java classpath
 $CLASSPATH << project_dir + '/GUI/lib/java/jruby-complete.jar'
+$CLASSPATH << project_dir + '/GUI'
+$CLASSPATH << project_dir + '/out/lqpl_gui/'
+
 # testing jars
 %w(fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2
    fest-util-1.1.2 jcip-annotations-1.0).each do |jar|
@@ -61,7 +69,6 @@ end
 require 'fest-swing-1.2.jar'
 
 $CLASSPATH << project_dir + '/GUI/lib/java/monkeybars-1.1.1.jar'
-$CLASSPATH << project_dir + '/out/lqpl_gui'
 
 require 'fest_testing_imports'
 
@@ -69,7 +76,7 @@ TEST_QP_PATH = project_dir + '/GUI/testdata/qplprograms'
 
 require 'config/platform'
 
-require 'manifest'
+require 'config/manifest'
 
 require 'component_query'
 require 'drawing_extensions'

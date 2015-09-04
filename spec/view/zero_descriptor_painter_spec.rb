@@ -1,11 +1,10 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
+
 
 describe ZeroDescriptorPainter do
   subject do
-    DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance '{"zero":0}')
+    DescriptorPainterFactory.make_painter(DescriptorModelFactory.make_model('{"zero":0}'))
   end
   it 'should have the colour black' do
     expect(subject.my_colour).to eq(Color.black)
@@ -15,7 +14,7 @@ describe ZeroDescriptorPainter do
     ps = subject.model_paint_size(g)
     expect(ps.left_width).to eq(27.5)
     expect(ps.right_width).to eq(27.5)
-    expect(ps.height).to be > 15
+    expect(ps.height).to be >= 10.0 # TODO: Was > 15
   end
   it 'should have a left equal to 1/2 the total width' do
     g = BufferedImage.new(500, 500, BufferedImage::TYPE_INT_RGB).graphics

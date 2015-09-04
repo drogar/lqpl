@@ -1,5 +1,7 @@
 # encoding: utf-8
-# Date node painter
+require 'abstract_descriptor_painter'
+
+# Data node painter
 class DataDescriptorPainter < AbstractDescriptorPainter
   def my_colour
     Color.magenta

@@ -1,5 +1,4 @@
-# encoding: utf-8
-require 'spec/spec_helper'
+require 'emulator_command_interpretor'
 
 describe EmulatorCommandInterpretor do
   before :each do

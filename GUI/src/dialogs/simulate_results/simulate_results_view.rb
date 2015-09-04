@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'simulate_results_dialog'
+
 # view  for the simulate results dialog
 class SimulateResultsView < ApplicationView
   set_java_class SimulateResultsDialog

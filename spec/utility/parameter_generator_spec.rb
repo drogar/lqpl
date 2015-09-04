@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-
-require 'spec/spec_helper'
 
 describe ParameterGenerator do
   context 'no parameters' do

@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'lqpl_menu'
+require 'quantum_emulator_main_form'
 
 # view  for the main lqpl application
 class LqplView < ApplicationView
@@ -7,7 +8,8 @@ class LqplView < ApplicationView
 
   attr_accessor :the_menu
   attr_reader :main_view_component
-  alias_method :the_frame, :main_view_component
+  alias the_frame main_view_component
+
   map view: 'spinner_panel.visible', model: :spinner_panel_visible
   map view: 'button_panel.visible', model: :button_panel_visible
 

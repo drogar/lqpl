@@ -1,5 +1,6 @@
 # Encoding: UTF-8
 require 'json'
+require 'parameter_generator'
 # handle creation of commands for lqpl emulator
 class EmulatorCommandInterpretor
   attr_accessor :connection
@@ -24,12 +25,7 @@ class EmulatorCommandInterpretor
     }
   end
 
-  make_get_command :qstack
-  make_get_command :stack_translation
-  make_get_command :classical_stack
-  make_get_command :dump
-  make_get_command :code
-  make_get_command :codepointer
+  [:qstack, :stack_translation, :classical_stack, :dump, :code, :codepointer].each { |s| make_get_command s }
 
   def self.make_do_command(which, defs = [])
     pg = ParameterGenerator.new(defs)
@@ -40,9 +36,5 @@ class EmulatorCommandInterpretor
     }
   end
 
-  make_do_command :run, [1]
-  make_do_command :trim
-  make_do_command :step, [1, 1]
-  make_do_command :simulate, [1]
-  make_do_command :depth_multiple, [10]
+  [[:run, [1]], [:trim, []], [:step, [1, 1]], [:simulate, [1]], [:depth_multiple, [10]]].each { |s, defs| make_do_command s, defs }
 end

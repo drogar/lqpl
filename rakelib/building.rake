@@ -18,16 +18,19 @@ haskell_source_files.include('Emulator/src/Assembler/AssemLexer.hs')
 haskell_source_files.include('Emulator/src/Assembler/AssemParser.ly')
 
 build = namespace :build do
+  desc 'clean servers'
   task :server_clean do
     sh 'runghc Setup.hs clean'
     sh 'rm out/bin/lqpl*'
   end
+  desc 'config server build'
   task :server_config do
     unless uptodate?('dist/setup-config', ['lqpl.cabal'])
       sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
     end
   end
 
+  desc 'config server build with tests'
   task :server_config_with_tests do
     sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
   end
@@ -39,6 +42,7 @@ build = namespace :build do
     end
   end
 
+  desc 'Build Haskell code with tests'
   task server_with_tests: ['out/bin', :server_config_with_tests] do
     sh 'runghc Setup.hs build && runghc Setup.hs install'
   end
@@ -106,7 +110,7 @@ namespace :dist do
       cp jar, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
     end
     bin_dist_includes.each do |f|
-      cp_r "#{f}", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
+      cp_r f.to_s, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
     end
     copy_server_bin "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin/"
     $stdout << "Creating tar file: lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
@@ -117,7 +121,7 @@ namespace :dist do
   desc 'Make a source distribution'
   task source: ["out/lqpl-#{LQPL_GUI_VERSION}-source"] do
     source_dist_files.each do |gsource|
-      cp_r("#{gsource}", "out/lqpl-#{LQPL_GUI_VERSION}-source", preserve: true)
+      cp_r(gsource.to_s, "out/lqpl-#{LQPL_GUI_VERSION}-source", preserve: true)
     end
     $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-source.tgz\n"
     sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-source.tgz"\
@@ -200,7 +204,7 @@ end
 
 def copy_executable_dir(from_dir, to_dir)
   %w(lqpl lqpl-emulator lqpl-compiler-server).each do |subdir|
-    cp "#{from_dir}/#{subdir}", "#{to_dir}"
+    cp "#{from_dir}/#{subdir}", to_dir.to_s
     sh "chmod +x #{to_dir}/#{subdir}"
   end
 end

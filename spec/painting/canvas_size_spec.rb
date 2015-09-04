@@ -1,8 +1,14 @@
+<<<<<<< HEAD:spec/painting/canvas_size_spec.rb
 # encoding: UTF-8
 require 'spec/spec_helper'
 require 'GUI/src/painting/canvas_size'
 require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+=======
+require 'canvas_size'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
+>>>>>>> Get specs running again:spec/GUI/src/painter/canvas_size_spec.rb
 
 describe CanvasSize do
   describe 'Class Methods' do
@@ -94,7 +100,7 @@ describe CanvasSize do
           c1 = CanvasSize.new_with_measures(10, 99, 0)
           c2 = CanvasSize.new_with_measures(75, 85, 0)
           sizes = [c1, c2]
-          mid = ArrayPartitioner.new(sizes).qpl_middle_element
+          mid = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_middle_element
           expect(CanvasSize.left_offsets(sizes, mid)).to eq([-99])
         end
       end
@@ -103,7 +109,7 @@ describe CanvasSize do
           c1 = CanvasSize.new_with_measures(10, 99, 0)
           c2 = CanvasSize.new_with_measures(75, 85, 0)
           sizes = [c1, c2]
-          mid = ArrayPartitioner.new(sizes).qpl_middle_element
+          mid = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_middle_element
           expect(CanvasSize.right_offsets(sizes, mid)).to eq([75])
         end
       end

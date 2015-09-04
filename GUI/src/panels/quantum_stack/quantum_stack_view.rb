@@ -1,4 +1,7 @@
 # encoding: utf-8
+require 'quantum_stack_painter'
+require 'quantum_stack_form'
+
 #  drawing panel for the tree
 class QuantumStackView < ApplicationView
   set_java_class QuantumStackForm

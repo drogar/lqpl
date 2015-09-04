@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
 describe LqplEmulatorServerConnection do
   context 'creation' do
     context 'enforce singleton' do

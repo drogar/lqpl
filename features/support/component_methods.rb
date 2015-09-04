@@ -2,7 +2,7 @@
 # module to help with finding variosu Swing components
 module ComponentMethods
   def spinner_for_label(label_text, frm = $qe_frame)
-    the_label = frm.label(JLabelMatcher.with_text label_text)
+    the_label = frm.label(JLabelMatcher.with_text(label_text))
     expect(the_label).not_to be_nil
     expect(the_label).to be_edt_visible
     label_for = the_label.edt_label_for

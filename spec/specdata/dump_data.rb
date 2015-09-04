@@ -1,13 +1,13 @@
 # encoding: UTF-8
-require 'spec/specdata/quantum_stack_data'
-require 'spec/specdata/stack_translation_data'
+require 'specdata/quantum_stack_data'
+require 'specdata/stack_translation_data'
 
-DCALL = '{"dump_call": {"return_label": 3, "return_ep" : "Ret", "classical": {"cstack" : []}}}'
+DCALL = '{"dump_call": {"return_label": 3, "return_ep" : "Ret", "classical": {"cstack" : []}}}'.freeze
 
 DCALL1 = '{"dump_call": {"return_label": 7, "return_ep" : "some_method", '\
-         '"classical": {"cstack" : [5]}}}'
+         '"classical": {"cstack" : [5]}}}'.freeze
 DCALL2 = '{"dump_call": {"return_label": 7, "return_ep" : "some_method", '\
-         '"classical": {"cstack" : [5, true]}}}'
+         '"classical": {"cstack" : [5, true]}}}'.freeze
 
 DSPLIT = '{"dump_split" : {"return_label": 3, "branches" : [{"qsbranch": ' + QSVAL1 +
          ', "branch_label":1}], "qsresult": ' + QSQBZero +

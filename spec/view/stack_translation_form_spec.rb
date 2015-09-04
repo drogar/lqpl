@@ -1,5 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'stack_translation_form'
 
 describe StackTranslationForm do
   before :each do

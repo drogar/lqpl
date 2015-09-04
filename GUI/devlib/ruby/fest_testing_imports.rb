@@ -2,7 +2,7 @@
 java.lang.System.set_property('apple.laf.useScreenMenuBar', 'false')
 java.lang.System.set_property('com.drogar.testing.fest', 'true')
 
-%w(GuiActionRunner GuiQuery GuiTask  FailOnThreadViolationRepaintManager).each do |c|
+%w(GuiActionRunner GuiQuery GuiTask FailOnThreadViolationRepaintManager).each do |c|
   java_import 'org.fest.swing.edt.' + c
 end
 

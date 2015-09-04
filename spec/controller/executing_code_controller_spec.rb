@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
 describe ExecutingCodeController do
   before(:each) do
     SwingRunner.on_edt do

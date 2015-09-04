@@ -1,5 +1,4 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
+require 'simulate_results_dialog'
 
 describe SimulateResultsDialog do
   before :each do

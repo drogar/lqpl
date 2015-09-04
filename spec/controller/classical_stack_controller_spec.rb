@@ -1,8 +1,5 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'GUI/src/panels/classical_stack/classical_stack_controller'
-require 'GUI/src/panels/classical_stack/classical_stack_model'
+require 'classical_stack_controller'
+require 'classical_stack_model'
 
 describe ClassicalStackController do
   before(:each) do

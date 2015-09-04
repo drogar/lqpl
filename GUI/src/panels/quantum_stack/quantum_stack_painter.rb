@@ -1,10 +1,14 @@
 # encoding: utf-8
+require 'draw_methods'
+require 'descriptor_painter_factory'
+require 'copy_point'
+require 'canvas_size'
 
-LINE_LABEL_FONT_SIZE = 8.0
-PLACEMENTS = { -1 => :left, 0 => :right, 1 => :right }
 # paint that tree!
 class QuantumStackPainter
-  include Drawing
+  include Lqpl::Drawing::DrawMethods
+  LINE_LABEL_FONT_SIZE = 8.0
+  PLACEMENTS = { -1 => :left, 0 => :right, 1 => :right }.freeze
 
   attr_accessor :model_element
 
@@ -14,9 +18,9 @@ class QuantumStackPainter
 
   def model_element=(model)
     @model_element = model
-    @descriptor_painter =
-      DescriptorPainterFactory.make_painter(model.descriptor)
-    @sstack_painters = @model_element.substacks.map { |s| QuantumStackPainter.new(s) }
+    @descriptor_element =
+      DescriptorElementFactory.make_element(model.descriptor)
+    @sstack_elements = @model_element.substacks.map { |s| QuantumStackPainter.new(s) }
   end
 
   def image_of_model
@@ -58,11 +62,9 @@ class QuantumStackPainter
     return bottom_element_size g if model_element.bottom?
 
     @preferred_size =
-      CanvasSize.new_from_subtree(
-        @sstack_painters.map { |painter| painter.model_paint_size(g) })
+      CanvasSize.new_from_subtree(stack_elements_paint_size(g))
 
-    @preferred_size.max_of_each_dimension!(
-      @descriptor_painter.model_paint_size(g)) if @descriptor_painter
+    @preferred_size.max_of_each_dimension!(@descriptor_element.model_paint_size(g)) if @descriptor_element
 
     @preferred_size
   end
@@ -99,5 +101,11 @@ class QuantumStackPainter
 
   def sub_stack_sizes(g)
     @sstack_painters.map { |sstack_painter| sstack_painter.model_paint_size(g) }
+  end
+
+  private
+
+  def stack_elements_paint_size(g)
+    @sstack_elements.map { |element| element.model_paint_size(g) }
   end
 end

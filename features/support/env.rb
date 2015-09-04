@@ -60,7 +60,7 @@ ENV['PATH'] = "#{project_dir + '/out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 require 'fest_testing_imports'
 
-require 'manifest'
+require 'config/manifest'
 
 java_import java.util.regex.Pattern
 

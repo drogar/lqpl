@@ -1,7 +1,5 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
 
 describe AbstractDescriptorPainter do
   subject do

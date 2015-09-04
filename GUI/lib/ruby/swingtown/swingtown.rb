@@ -5,7 +5,7 @@ module Swingtown
   module MiG
     # extend the class methods in the include
     module ClassMethods
-      HERE = File.expand_path(File.dirname __FILE__)
+      HERE = File.expand_path(File.dirname(__FILE__))
 
       def mig_jar(glob_path = "#{HERE}/../../java/*.jar")
         warn "mig_jar #{glob_path} "
@@ -48,7 +48,8 @@ module Swingtown
         TOP
         TRAILING
         VERTICAL
-        WEST).each do |konst|
+        WEST
+      ).each do |konst|
         class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}"
       end
     end
@@ -73,6 +74,7 @@ module Swingtown
         super(*args)
         yield self if block_given?
       end
+
       def self.make_button_in_container(container, *args)
         new(*args) { |btn| container.add(btn) }
       end
@@ -137,6 +139,7 @@ module Swingtown
       def self.make_new_spinner_number_model(args)
         SPINNER_CONS.new_instance(args[0], args[1], args[2], args[3])
       end
+
       def initialize
         super
       end
@@ -148,20 +151,24 @@ module Swingtown
         spinner.model = make_new_spinner_number_model(args)
         spinner
       end
+
       def labelize_and_add_to_container(text_for_label, container)
         spinlab = make_my_label(text_for_label)
         container.add(spinlab) if container
         container.add(self) if container
       end
+
       def self.spinner_with_label(text_for_label, container = nil)
         spinner = make_spinner
         spinner.labelize_and_add_to_container(text_for_label, container)
       end
+
       def self.spinner_with_label_and_model(text_for_label, model)
         spinner = make_spinner(model[:start], model[:min], model[:max], model[:increment])
 
         spinner.labelize_and_add_to_container(text_for_label, model[:container])
       end
+
       def make_my_label(text_for_label)
         spinlab = Label.new(text_for_label)
         spinlab.label_for = self

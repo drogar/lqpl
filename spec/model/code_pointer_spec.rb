@@ -1,6 +1,4 @@
-# Encoding: UTF-8
-
-require 'spec/spec_helper'
+require 'code_pointer'
 
 describe CodePointer do
   describe 'creation' do
@@ -10,7 +8,7 @@ describe CodePointer do
     it 'should throw an exception with nil input' do
       expect { CodePointer.new(nil) }.to raise_error ModelCreateError, /not/
     end
-    it 'should create a bare pointer with input ''' do
+    it 'should create a bare pointer with input ""' do
       cp = CodePointer.new('')
       expect(cp.qpo_method).to eq('')
       expect(cp.line_number).to eq(0)

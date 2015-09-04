@@ -5,8 +5,8 @@
 \begin{code}
 module Data.EitherLocal
   ( module Data.Either,
-  localFromLeft,  fl2,
-  localFromRight, fr2,
+  fl2,
+  fr2,
   eLeftfun,eRightfun,eLtoRightfun)
 where
 
@@ -16,19 +16,19 @@ import Data.Either
 {\begin{singlespace}
 \begin{code}
 
-localFromLeft             :: Either a b -> a
-localFromLeft (Left a  )  = a
-localFromLeft _           = error "localFromLeft: Needed left value"
+fromLeftE             :: Either a b -> a
+fromLeftE (Left a  )  = a
+fromLeftE _           = error "fromLeftE: Needed left value"
 
 fl2      ::  Either a b -> Either a b -> (a,a)
-fl2 x y  =   (localFromLeft x, localFromLeft y)
+fl2 x y  =   (fromLeftE x, fromLeftE y)
 
-localFromRight             :: Either a b -> b
-localFromRight (Right b)   = b
-localFromRight _           = error "localFromRight: Needed right value"
+fromRightE             :: Either a b -> b
+fromRightE (Right b)   = b
+fromRightE _           = error "fromRightE: Needed right value"
 
 fr2      :: Either a b -> Either a b -> (b,b)
-fr2 x y  = (localFromRight x, localFromRight y)
+fr2 x y  = (fromRightE x, fromRightE y)
 
 
 eLeftfun    :: (a->a->a) -> Either a b -> Either a b -> Either a b

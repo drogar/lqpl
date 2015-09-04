@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-
-require 'spec/spec_helper'
 
 describe CopyPoint do
   describe 'copy_with_x_and_y_offset' do

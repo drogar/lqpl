@@ -14,7 +14,7 @@ class PanelController < ApplicationController
   end
 
   def self.controller_from_name(name_array)
-    name_array.map(&:to_sym).reduce(nil) { |a, e| a || controllers[e] }
+    name_array.map(&:to_sym).reduce(nil) { |acc, elem| acc || controllers[elem] }
   end
 
   def update_on_lqpl_model_trim

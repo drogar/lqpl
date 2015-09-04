@@ -1,5 +1,4 @@
-# encoding: utf-8
-require 'spec/spec_helper'
+require 'server_process_not_found'
 
 describe Connection do
   before :each do
@@ -9,24 +8,24 @@ describe Connection do
   after :each do
     @c.close_down
   end
-  describe '_make_connection' do
+  describe 'make_connection' do
     it 'should return [] when it actually connects' do
       @c.port = 80
       expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 80).and_return(nil)
-      expect(@c._make_connection).to eql([])
+      expect(@c.make_connection).to eql([])
     end
     it 'should return refused if trying to connect to an unused port' do
       @c.port = 20
       expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
         .and_raise(Errno::ECONNREFUSED)
-      res = @c._make_connection
+      res = @c.make_connection
       expect(res[0]).to match('Connect refused For')
     end
     it 'should return error if getting a socket error' do
       @c.port = 20
       expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
         .and_raise(SocketError)
-      res = @c._make_connection
+      res = @c.make_connection
       expect(res[0]).to match('Socket error for')
     end
   end

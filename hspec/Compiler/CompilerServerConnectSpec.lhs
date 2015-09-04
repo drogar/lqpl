@@ -1,15 +1,13 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Core(Example(..),Result(..))
+    import Test.Hspec.Core.Spec(Example(..),Result(..), FailureReason(..), ResultStatus(..))
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
-    import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
-    import Test.QuickCheck hiding (property)
+    import Test.Hspec.Contrib.HUnit
     import Test.HUnit
 
-    import Network.Socket
+    import Network.Socket hiding (defaultPort)
     import System.IO
     import System.IO.Error
     import System.Process
@@ -26,7 +24,7 @@
     import Fixture.CompilerData
 
     main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} compilerSpecs
+      summary <- hspecWithResult defaultConfig{configFormatter = Just progress} compilerSpecs
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 
@@ -50,16 +48,16 @@
               hFlush hndl
               res <- hGetLine hndl
               return $ if ((take 24 res) ==  (take 24 assembled_one))
-                         then Test.Hspec.Core.Success
-                         else Test.Hspec.Core.Fail $ "invalid program: " ++ res
+                         then Success
+                         else Failure Nothing $ Reason $ "invalid program: " ++ res
         it "sends back a 'getFirst' request when sent a program with import" $ do
               hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
               return $ if (res == getfile_command)
-                           then Test.Hspec.Core.Success
-                           else Test.Hspec.Core.Fail $ "invalid reply: " ++ res
+                           then Success
+                           else Failure Nothing $ Reason $ "invalid reply: " ++ res
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
@@ -71,9 +69,9 @@
                     hFlush hndl
                     fres <-hGetLine hndl
                     return $ if ((take 24 fres) ==  (take 24 assembled_one))
-                               then Test.Hspec.Core.Success
-                               else Test.Hspec.Core.Fail $ "invalid program after import: " ++ fres
-                 else return $ Test.Hspec.Core.Fail $ "invalid reply: " ++ res
+                               then Success
+                               else Failure Nothing $ Reason $ "invalid program after import: " ++ fres
+                 else return $ Failure Nothing $ Reason $ "invalid reply: " ++ res
 
 
     connectToServer :: String -> IO Handle
@@ -92,7 +90,7 @@
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("gethandle" ++ (ioeGetErrorString err)))
-      writable <- sIsWritable sock
+      writable <- isWritable sock
       if (writable)
         then do
           h <- socketToHandle sock ReadWriteMode
@@ -121,9 +119,9 @@
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("checkaddresses" ++ (ioeGetErrorString err)))
-      --bnd <- sIsBound sock
+      --bnd <- isBound sock
       --putStrLn $ "Socket bound? " ++ show bnd
-      writable <- sIsWritable sock
+      writable <- isWritable sock
       --putStrLn $ "Socket writable? " ++ show writable
       if (writable)
         then return (Just sock)

@@ -1,17 +1,29 @@
 # encoding: utf-8
 java_import java.awt.event.WindowEvent
-require 'dialogs/about/about_controller'
-require 'dialogs/simulate_results/simulate_results_controller'
+require 'about_controller'
+require 'simulate_results_controller'
 require 'exit_handler'
+require 'lqpl_subs_handler'
+require 'panel_controller'
+require 'stack_translation_controller'
+require 'classical_stack_controller'
+require 'dump_controller'
+require 'executing_code_controller'
+require 'quantum_stack_controller'
+require 'compiler_server_connection'
+require 'lqpl_file_chooser'
+require 'lqpl_menu'
+require 'lqpl_view'
+require 'lqpl_model'
 
 # Main controller for the main controller class
 class LqplController < ApplicationController
   set_model 'LqplModel'
   set_view 'LqplView'
   set_close_action :close
-  DIALOGS = [AboutController, SimulateResultsController]
+  DIALOGS = [AboutController, SimulateResultsController].freeze
   SUBS = [StackTranslationController, ClassicalStackController, DumpController,
-          ExecutingCodeController, QuantumStackController]
+          ExecutingCodeController, QuantumStackController].freeze
   attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
 
   LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
@@ -65,8 +77,8 @@ class LqplController < ApplicationController
 
   def file_simulate_action_performed
     SimulateResultsController.instance
-      .set_simulate_results(model.recursion_spinner.int_value,
-                            StackTranslationController.instance.stack_translation)
+                             .set_simulate_results(model.recursion_spinner.int_value,
+                                                   StackTranslationController.instance.stack_translation)
     SimulateResultsController.instance.open
   end
 

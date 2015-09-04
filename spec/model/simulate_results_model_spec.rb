@@ -1,10 +1,7 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'simulate_results_model'
 
-require 'GUI/src/dialogs/simulate_results/simulate_results_model'
-
-ONEELT = '{"Simulated" :0.27, "results": [[1, "Coin", "Heads"]]}'
-TWOELTS = '{"Simulated" :0.73, "results": [[1, "Coin", "Heads"], [2, "qubit", "0"]]}'
+ONEELT = '{"Simulated" :0.27, "results": [[1, "Coin", "Heads"]]}'.freeze
+TWOELTS = '{"Simulated" :0.73, "results": [[1, "Coin", "Heads"], [2, "qubit", "0"]]}'.freeze
 
 describe SimulateResultsModel do
   subject { SimulateResultsModel.new }

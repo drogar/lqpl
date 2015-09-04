@@ -20,7 +20,7 @@
   import System.FilePath
   import System.IO
   --import Test.Hspec
-  import Test.Hspec.Core(Example(..),Result(..))
+  import Test.Hspec.Core.Spec(Example(..),Result(..), FailureReason(..), ResultStatus(..))
 
   getTempFileName :: String -> IO(String)
   getTempFileName name = do
@@ -47,9 +47,9 @@
     evaluateExample f _ _ _=
       do
         r <- f
-        return $ if r then Test.Hspec.Core.Success else (Fail "Action was false")
+        return $ Result "" $ if r then Success else (Failure Nothing $ Reason "Action was false")
 
-  instance Example (IO Test.Hspec.Core.Result) where
+  instance Example (IO Result) where
     evaluateExample  f _ _ _ =
       do
         r <- f

@@ -30,16 +30,19 @@ class LqplMenu
   end
 
   def self.prepare_up_exit_and_about(add_listener)
-    on_mac do
-      java_import com.apple.eawt.Application
-      Application.application.about_handler = AboutController.instance
-      Application.application.quit_handler = ExitHandler.instance
-    end
+    on_mac { mac_prepare_exit_and_about }
+    not_on_mac { non_mac_prepare_exit_and_about(add_listener) }
+  end
 
-    not_on_mac do
-      { 'the_menu.file_exit' => 'file_exit', 'the_menu.help_about' => 'help_about' }.each do |k, v|
-        add_listener.call(type: :action, components: { k => v })
-      end
+  def self.mac_prepare_exit_and_about
+    java_import com.apple.eawt.Application
+    Application.application.about_handler = AboutController.instance
+    Application.application.quit_handler = ExitHandler.instance
+  end
+
+  def self.non_mac_prepare_exit_and_about(add_listener)
+    { 'the_menu.file_exit' => 'file_exit', 'the_menu.help_about' => 'help_about' }.each do |k, v|
+      add_listener.call(type: :action, components: { k => v })
     end
   end
 

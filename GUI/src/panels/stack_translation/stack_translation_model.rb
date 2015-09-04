@@ -13,8 +13,7 @@ class StackTranslationModel < ApplicationModel
     end
   end
 
-  def text=(_)
-  end
+  def text=(_); end
 
   def text
     inside = @stack_translation.reduce('') do |inner, tr_map|

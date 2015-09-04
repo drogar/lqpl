@@ -1,5 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
 
 describe EnsureJSON do
   context 'creation' do

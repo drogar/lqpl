@@ -1,12 +1,10 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
 
-QZZ = '{"qubit": ["ZZ"]}'
+QZZ = '{"qubit": ["ZZ"]}'.freeze
 describe QubitDescriptorPainter do
   subject do
-    sm = AbstractDescriptorModel.make_instance QZZ
+    sm = DescriptorModelFactory.make_model QZZ
     sm.name = 'Some long name'
     DescriptorPainterFactory.make_painter(sm)
   end

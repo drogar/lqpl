@@ -1,11 +1,9 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
 
-CDESC = '{"classical":[1,true,14]}'
-describe ClassicalDescriptorPainter do
-  subject { DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance CDESC) }
+CDESC = '{"classical":[1,true,14]}'.freeze
+describe ClassicalDescriptorElement do
+  subject { DescriptorElementFactory.make_element(DescriptorModelFactory.make_model(CDESC)) }
 
   it 'should have the colour green' do
     expect(subject.my_colour).to eq(Color.green)
@@ -16,7 +14,7 @@ describe ClassicalDescriptorPainter do
       allow(m).to receive(:name).and_return('Z')
       allow(m).to receive(:value).and_return('Z')
       allow(m).to receive(:length).and_return(0)
-      subject = DescriptorPainterFactory.make_painter(AbstractDescriptorModel.make_instance CDESC)
+      subject = DescriptorElementFactory.make_element(DescriptorModelFactory.make_model(CDESC))
       subject.model_element = m
 
       @d = DrawingExtensions.new

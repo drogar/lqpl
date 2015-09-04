@@ -16,7 +16,7 @@ end
 
 Then(/^the number spinner "([\w\s]*)" should appear and have value "(\d+)"$/) do |spinner_label, spin_value|
   spinner = spinner_for_label_should_be_visible(spinner_label)
-  expect(spinner.text).to eql("#{spin_value}")
+  expect(spinner.text).to eql(spin_value.to_s)
 end
 
 Then(/^the number spinner "([\w\s]*)" should appear$/) do |spinner_label|

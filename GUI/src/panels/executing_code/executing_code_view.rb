@@ -1,9 +1,10 @@
 # encoding: utf-8
+require 'executing_code_form'
 
-WIDTH_OF_TEXT_PANE = 60
 # View for the executing code - a tabbed vew pane
 class ExecutingCodeView < ApplicationView
   set_java_class ExecutingCodeForm
+  WIDTH_OF_TEXT_PANE = 60
 
   raw_mapping :set_up_tabbed_views, nil
 
@@ -50,7 +51,7 @@ class ExecutingCodeView < ApplicationView
   end
 
   def self.init_scroll_pane(qpo_ins)
-    JScrollPane.new(ExecutingCodeView.init_instructions_text_area qpo_ins)
+    JScrollPane.new(ExecutingCodeView.init_instructions_text_area(qpo_ins))
   end
 
   def self.init_instructions_text_area(qpo_ins)

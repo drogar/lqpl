@@ -1,7 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
+require 'quantum_stack_model'
 
 describe ValueDescriptorModel do
   it 'should successfully be created with input {value:0.5}' do
@@ -33,19 +30,19 @@ describe ValueDescriptorModel do
   end
   context 'attributes' do
     it 'should always have a length of 0' do
-      sd = AbstractDescriptorModel.make_instance '{"value":0.5}'
+      sd = DescriptorModelFactory.make_model '{"value":0.5}'
       expect(sd.length).to eql(0)
     end
     it 'should have the value in the construction string' do
-      sd = AbstractDescriptorModel.make_instance '{"value":6.25e-2}'
+      sd = DescriptorModelFactory.make_model '{"value":6.25e-2}'
       expect(sd.value).to eq(6.25e-2)
     end
     it 'should have no name' do
-      sd = AbstractDescriptorModel.make_instance '{"value":0.5}'
+      sd = DescriptorModelFactory.make_model '{"value":0.5}'
       expect(sd.name).to be_nil
     end
     it 'should return nil when asked for substack labels' do
-      sd = AbstractDescriptorModel.make_instance '{"value":0.5}'
+      sd = DescriptorModelFactory.make_model '{"value":0.5}'
       expect(sd.substack_labels).to be_nil
     end
   end

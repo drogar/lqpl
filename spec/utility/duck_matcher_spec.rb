@@ -1,5 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'duck_matcher'
 
 describe DuckMatcher do
   it 'is created from a start and stop string,  followed by a third string' do

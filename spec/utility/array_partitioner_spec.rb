@@ -1,10 +1,8 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
 
-describe ArrayPartitioner do
-  subject { ArrayPartitioner }
+describe Lqpl::Utilities::ArrayPartitioner do
+  subject { Lqpl::Utilities::ArrayPartitioner }
   describe :qpl_partion do
-    subject { ArrayPartitioner.new([1, 2, 3, 4, 5]) }
+    subject { Lqpl::Utilities::ArrayPartitioner.new([1, 2, 3, 4, 5]) }
     it 'should delegate to left partition when called with :left' do
       expect(subject).to receive(:qpl_left_partition)
       subject.qpl_partition(:left)

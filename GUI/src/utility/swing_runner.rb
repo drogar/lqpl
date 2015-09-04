@@ -9,7 +9,6 @@ class SwingRunner
     @block.call
   end
 
-  # :nocov:
   def self.on_edt(&task)
     if javax.swing.SwingUtilities.event_dispatch_thread?
       javax.swing.SwingUtilities.invoke_later SwingRunner.new(task)
@@ -17,5 +16,4 @@ class SwingRunner
       javax.swing.SwingUtilities.invoke_and_wait SwingRunner.new(task)
     end
   end
-  # :nocov:
 end

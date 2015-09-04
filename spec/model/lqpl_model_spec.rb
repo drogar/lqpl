@@ -1,6 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/lqpl/lqpl_model'
+require 'lqpl_model'
 
 describe LqplModel do
   describe 'toggle_action' do

@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'abstract_descriptor_painter'
+
 # qubit node painterl
 class QubitDescriptorPainter < AbstractDescriptorPainter
   def my_colour

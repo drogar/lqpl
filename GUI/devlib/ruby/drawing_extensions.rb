@@ -1,8 +1,9 @@
 # encoding: UTF-8
 
-# Force the drawign to start with a 4byte abgr
+require 'draw_methods'
+# Force the drawing to start with a 4byte abgr
 class DrawingExtensions
-  include Drawing
+  include Lqpl::Drawing::DrawMethods
   attr_accessor :gc
   attr_accessor :bi
   def initialize

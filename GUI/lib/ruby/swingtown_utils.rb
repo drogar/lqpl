@@ -2,7 +2,7 @@
 # Module for swing interfaces
 module Swingtown
   # :stopdoc:
-  VERSION = '0.3.0'
+  VERSION = '0.3.0'.freeze
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   # :startdoc:
@@ -32,16 +32,16 @@ module Swingtown
   def self.find_mig_jar(here)
     java_lib_dir = File.join(here, 'java')
     mig_jar = Dir.glob("#{java_lib_dir}/*.jar").find { |f| f =~ /(miglayout-)(.+).jar$/ }
-    fail "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
+    raise "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
     mig_jar
   end
 
   def self.file_check_and_warn(which, path)
-    if File.exist? path
-      warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
-      exit
-    end
+    return unless File.exist? path
+    warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
+    exit
   end
+
   def self.copy_over_mig(path = 'lib/java')
     here = File.dirname(File.expand_path(__FILE__))
 

@@ -3,6 +3,6 @@ Transform(/^be|not be$/) do |s|
   s == 'be'
 end
 
-Transform(/^\d+$/) do |c|
-  c.to_i
-end
+# rubocop:disable Style/SymbolProc
+Transform(/^\d+$/) { |c| c.to_i }
+# rubocop:enable Style/SymbolProc

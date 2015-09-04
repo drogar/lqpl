@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
 describe QuantumStackPanel do
   before :each do
     SwingRunner.on_edt do

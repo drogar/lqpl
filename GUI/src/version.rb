@@ -1,5 +1,5 @@
 # encoding: utf-8
-LQPL_GUI_VERSION = '0.9.2'
+LQPL_GUI_VERSION = '0.9.2'.freeze
 
 ABOUT_STRING = "<html> <center>
 <strong>LQPL Emulator</strong> - Version #{LQPL_GUI_VERSION} (Experimental)
@@ -11,7 +11,7 @@ ABOUT_STRING = "<html> <center>
 </table>
 <br />
 Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />
-</html>"
+</html>".freeze
 
 LICENSE_STRING = "
 <html>
@@ -61,4 +61,4 @@ lqpl includes software redistributed under:</br>
 </li>
 </ul>
 </html>
-"
+".freeze

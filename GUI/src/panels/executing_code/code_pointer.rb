@@ -15,11 +15,11 @@ class CodePointer < ApplicationModel
   end
 
   def normalize(max_plus_one)
-    if max_plus_one
-      @line_number = [[@line_number, max_plus_one - 1].min, 0].max
-    else
-      @line_number = 0
-    end
+    @line_number = if max_plus_one
+                     [[@line_number, max_plus_one - 1].min, 0].max
+                   else
+                     0
+                   end
   end
 
   def mangle_to_selection_key

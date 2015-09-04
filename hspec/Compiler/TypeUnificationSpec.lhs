@@ -1,11 +1,11 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Core(Example(..),Result(..))
+    import Test.Hspec.Core.Spec(Example(..),Result(..),FailureReason(..))
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
+    import Test.Hspec.Contrib.HUnit
     import Test.QuickCheck hiding (property)
     import Test.HUnit
 
@@ -30,7 +30,7 @@
             Map.empty [] (push 0 emptyStack) 9
 
     main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} unificationSpecs
+      summary <- hspecWithResult defaultConfig{configFormatter = Just progress} unificationSpecs
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 

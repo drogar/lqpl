@@ -1,9 +1,6 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'spec/specdata/dump_data'
-require 'GUI/src/panels/dump/dump_controller'
-require 'GUI/src/panels/dump/dump_model'
+require 'specdata/dump_data'
+require 'dump_controller'
+require 'dump_model'
 
 describe DumpController do
   before(:each) do

@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
 describe LqplSubsHandler do
   let(:c1) { double('c1') }
   let(:c2) { double('c2') }

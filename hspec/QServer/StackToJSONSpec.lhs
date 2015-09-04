@@ -4,9 +4,7 @@
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
-    import Test.HUnit
 
     import Data.Stack
     import qualified Data.List as List
@@ -34,7 +32,7 @@
     instance Quantum LazyNum
 
     main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} tests
+      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} tests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 

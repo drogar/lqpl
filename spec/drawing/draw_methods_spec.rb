@@ -1,7 +1,5 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
 
-describe Drawing do
+describe Lqpl::Drawing::DrawMethods do
   before :each do
     @d = DrawingExtensions.new
   end

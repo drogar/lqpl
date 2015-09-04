@@ -1,8 +1,8 @@
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
-guard :rspec do
-  watch(%r{^spec/.+_spec\.rb$})
+guard :rspec, cmd: 'rspec' do
+  watch(%r{^spec/(.+)_spec\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
   watch('spec/spec_helper.rb')  { 'spec' }
 
@@ -10,12 +10,6 @@ guard :rspec do
   watch(%r{^GUI/src/(.+)\.rb$})                       { |m| "spec/#{m[1]}_spec.rb" }
   watch(%r{^spec/support/(.+)\.rb$})                  { 'spec' }
   watch(%r{^GUI/src/application(.+)\.rb})             { 'spec' }
-
-  # Capybara features specs
-  # watch(%r{^app/views/(.+)/.*\.(erb|haml|slim)$})     { |m| "spec/features/#{m[1]}_spec.rb" }
-
-  # Turnip features and steps
-  # watch(%r{^spec/acceptance/(.+)\.feature$})
 end
 
 guard :rubocop do

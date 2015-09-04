@@ -9,7 +9,7 @@ class AboutController < ApplicationController
     open
   end
 
-  alias_method :handleAbout, :handle_about
+  alias handleAbout handle_about
 
   def ok_button_action_performed
     dispose

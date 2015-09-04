@@ -1,12 +1,12 @@
 # encoding: utf-8
 
-require 'panels/executing_code/code_pointer'
+require 'code_pointer'
 # model to show the executing code
 class ExecutingCodeModel < ApplicationModel
   attr_accessor :the_code
   attr_accessor :the_code_pointer
   attr_accessor :the_code_was_updated
-  alias_method :the_code_was_updated?, :the_code_was_updated
+  alias the_code_was_updated? the_code_was_updated
 
   def the_code=(in_string)
     ecp = EnsureJSON.new(in_string).as_json
@@ -16,7 +16,7 @@ class ExecutingCodeModel < ApplicationModel
       [k, val]
     end
     ]
-    fail ModelCreateError, 'code xml was ill-formed' unless the_code
+    raise ModelCreateError, 'code xml was ill-formed' unless the_code
   end
 
   def the_code_pointer=(codepointer_json)

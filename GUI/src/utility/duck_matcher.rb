@@ -30,6 +30,6 @@ class DuckMatcher
   def _matched_paired_start_stop?(md)
     @recurss += 1 if md[:strt]
     @recurss -= 1 if md[:stop]
-    @recurss == 0
+    @recurss.zero?
   end
 end

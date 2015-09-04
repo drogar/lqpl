@@ -1,5 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'dump_form'
 
 describe DumpForm do
   before :each do

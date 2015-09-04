@@ -1,14 +1,11 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'executing_code_view'
+require 'code_pointer'
 
-require 'GUI/src/panels/executing_code/executing_code_view'
-require 'GUI/src/panels/executing_code/code_pointer'
-
-QPOLINES = ['1   someline', '2 another line']
+QPOLINES = ['1   someline', '2 another line'].freeze
 CP = CodePointer.new('{"codepointer": ["m", 1]}')
-QPOLINES2 = ['1 entry 1', '2 entry 2', '3 entry 3']
+QPOLINES2 = ['1 entry 1', '2 entry 2', '3 entry 3'].freeze
 
-CM = { m: QPOLINES, s: QPOLINES2 }
+CM = { m: QPOLINES, s: QPOLINES2 }.freeze
 
 describe ExecutingCodeView do
   describe 'init_instructions_text_area' do

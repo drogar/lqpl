@@ -1,4 +1,5 @@
 AllCops:
+  TargetRubyVersion: 2.2
   Exclude:
   - out/**/*
   - dist/**/*
@@ -6,3 +7,45 @@ AllCops:
 
 LineLength:
   Max: 140
+
+  # See https://github.com/bbatsov/rubocop for details
+#
+
+Style/Alias:
+  Enabled: false # allow alias or alias_method
+
+Style/Documentation:
+  Enabled: false  # true requires documentation at the start of class or module
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GlobalVars:
+  AllowedVariables: [$qe_frame]
+
+Style/SpaceBeforeFirstArg:
+  AllowForAlignment: true  # Prefer to align args in multiple calls in a row
+
+Style/StringLiterals:
+  Enabled: false  # See recent test in http://viget.com/extend/just-use-double-quoted-ruby-strings
+
+Style/WordArray:
+  MinSize: 4
+
+Style/SignalException:
+  Enabled: false # Quit complaining about raise.
+
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma # trailing comma reduces the number of commit changes when adding to a list
+
+Metrics/ParameterLists:
+  Max: 5
+  CountKeywordArgs: false
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Max: 25
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - '**/*spec.rb'

@@ -4,9 +4,7 @@
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
     import Test.QuickCheck hiding (property)
-    import Test.HUnit
 
     import SpecHelper
 
@@ -18,7 +16,7 @@
 
 
     main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} fileProviderSpecs
+      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} fileProviderSpecs
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 
@@ -58,9 +56,8 @@
         addrinfo <- getAddrInfo Nothing (Just "localhost") (Just port)
         let serveraddr = head addrinfo
         sock <- socket (addrFamily serveraddr) Stream defaultProtocol
-        bnd <- sIsBound sock
-        writable <- sIsWritable sock
+        bnd <- isBound sock
+        writable <- isWritable sock
         return $ bnd && writable
 
 \end{code}
-

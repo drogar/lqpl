@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
 describe LqplController do
   before :each do
     SwingRunner.on_edt do

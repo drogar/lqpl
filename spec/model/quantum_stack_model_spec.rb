@@ -1,8 +1,5 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'spec/specdata/quantum_stack_data'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
+require 'specdata/quantum_stack_data'
+require 'quantum_stack_model'
 
 describe QuantumStackModel do
   describe 'instance setup' do
@@ -63,7 +60,7 @@ describe QuantumStackModel do
           when 1 then '@q'
           when 2 then '@r'
           when -1 then '-1'
-          else "#{@val}"
+          else @val.to_s
           end
         end
         subject.stack_translation = st

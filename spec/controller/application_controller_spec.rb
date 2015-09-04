@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
 describe ApplicationController do
   describe 'lqpl_emulator_server_connection' do
     before :each do

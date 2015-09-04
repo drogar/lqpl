@@ -1,12 +1,11 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Core(Example(..),Result(..))
+    import Test.Hspec.Core.Spec(Example(..),Result(..),FailureReason(..))
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
-    import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
-    import Test.QuickCheck hiding (property)
+    import Test.Hspec.Contrib.HUnit
+    import Test.QuickCheck hiding (property, Discard)
     import Test.HUnit
 
     import Text.Parsec
@@ -28,7 +27,7 @@
     import Compiler.CompilerSpecHelper
 
     main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} parserSpecs
+      summary <- hspecWithResult defaultConfig{configFormatter = Just progress} parserSpecs
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 
@@ -98,44 +97,44 @@ The Parser Specification
       context "Imports" $ do
         it "should produce a program from a single import" $
           (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f") of
-            Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
-            Right _  -> Test.Hspec.Core.Success)
+            Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $ " error: " ++ show e
+            Right _  -> Test.Hspec.Core.Spec.Success)
         it "should produce the correct parse from an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == parseResultOf "f"
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should ignore leading and trailing blanks and produce the correct parse from an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n \n") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == parseResultOf "f"
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should handle a complex program" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import g") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == parseResultOf "g"
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "g") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "g") ++ ", but got "++ show p)
         it "should continue the parse after an import" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\nap::(| ; d:Bool)= {skip}") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "f") ++ [ProcDef $ Procedure "ap" [] [] [ParameterDefinition "d" BOOL ] [] [Skip]])
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "f") ++ ", but got "++ show p)
         it "should parse multiple imports" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import f\n#Import g") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "f") ++ (parseResultOf "g"))
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "f") ++ show (parseResultOf "g") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "f") ++ show (parseResultOf "g") ++ ", but got "++ show p)
         it "should handle nested multiple imports" $
             (case (unsafePerformIO $ runParserT (exhaustParser  $ prog fpForTest) [] "" "#Import top") of
-              Left e   -> Test.Hspec.Core.Fail $  " error: " ++ show e
+              Left e   -> Test.Hspec.Core.Spec.Failure Nothing $ Reason $  " error: " ++ show e
               Right p  -> if p == ((parseResultOf "top"))
-                            then Test.Hspec.Core.Success
-                            else Test.Hspec.Core.Fail $  ": expected " ++ show (parseResultOf "top") ++ ", but got "++ show p)
+                            then Test.Hspec.Core.Spec.Success
+                            else Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": expected " ++ show (parseResultOf "top") ++ ", but got "++ show p)
         it "should only import a file once." $
           testParseResult (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f") (unsafePerformIO $ runParserT (exhaustParser $ prog fpForTest) [] "" "#Import f\n#Import f")
 
@@ -307,26 +306,26 @@ Parser spec helpers.
       symbol s
       return ()
 
-    testParseResult :: (Show a, Eq a) => Either ParseError a -> Either ParseError  a -> Test.Hspec.Core.Result
-    testParseResult (Right a) (Right b) | a == b = Test.Hspec.Core.Success
-                                      | otherwise = Test.Hspec.Core.Fail $ ": case1 " ++ show a ++ ", but case2 "++ show b
-    testParseResult (Left a) (Right b) = Test.Hspec.Core.Fail $  ": case1 " ++ show a ++ ", but case2 "++ show b
-    testParseResult (Right a) (Left b) = Test.Hspec.Core.Fail $  ": case1 " ++ show a ++ ", but case2 "++ show b
-    testParseResult (Left a) (Left b) = Test.Hspec.Core.Fail $  ": case1 " ++ show a ++ ", but case2 "++ show b
+    testParseResult :: (Show a, Eq a) => Either ParseError a -> Either ParseError  a -> Test.Hspec.Core.Spec.Result
+    testParseResult (Right a) (Right b) | a == b = Test.Hspec.Core.Spec.Success
+                                      | otherwise = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ ": case1 " ++ show a ++ ", but case2 "++ show b
+    testParseResult (Left a) (Right b) = Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": case1 " ++ show a ++ ", but case2 "++ show b
+    testParseResult (Right a) (Left b) = Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": case1 " ++ show a ++ ", but case2 "++ show b
+    testParseResult (Left a) (Left b) = Test.Hspec.Core.Spec.Failure Nothing $ Reason $  ": case1 " ++ show a ++ ", but case2 "++ show b
 
-    testParse :: Show a => String -> String -> Either ParseError  a -> Test.Hspec.Core.Result
-    testParse err t (Right t')  | t == (show t') || (show t == show t') = Test.Hspec.Core.Success
-                                      | otherwise = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show t'
-    testParse err t (Left p)  = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show p
+    testParse :: Show a => String -> String -> Either ParseError  a -> Test.Hspec.Core.Spec.Result
+    testParse err t (Right t')  | t == (show t') || (show t == show t') = Test.Hspec.Core.Spec.Success
+                                      | otherwise = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ err ++ ": expected " ++ show t ++ ", but got "++ show t'
+    testParse err t (Left p)  = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ err ++ ": expected " ++ show t ++ ", but got "++ show p
 
-    testMultipleParse :: Show a => String -> [String] -> Either ParseError [a] -> Test.Hspec.Core.Result
-    testMultipleParse err t (Right t')  | (length t == length t') && (and $ zipWith (==) t (map show t')) = Test.Hspec.Core.Success
-                                       | otherwise = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show t'
-    testMultipleParse err t (Left p)  = Test.Hspec.Core.Fail $ err ++ ": expected " ++ show t ++ ", but got "++ show p
+    testMultipleParse :: Show a => String -> [String] -> Either ParseError [a] -> Test.Hspec.Core.Spec.Result
+    testMultipleParse err t (Right t')  | (length t == length t') && (and $ zipWith (==) t (map show t')) = Test.Hspec.Core.Spec.Success
+                                       | otherwise = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ err ++ ": expected " ++ show t ++ ", but got "++ show t'
+    testMultipleParse err t (Left p)  = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ err ++ ": expected " ++ show t ++ ", but got "++ show p
 
-    --testTokenValidator :: String -> Either ParseError  () -> Test.Hspec.Core.Result
-    testTokenValidator err (Right _)   = Test.Hspec.Core.Success
-    testTokenValidator err (Left p)  = Test.Hspec.Core.Fail $ err ++ ": expected, but got "++ show p
+    --testTokenValidator :: String -> Either ParseError  () -> Test.Hspec.Core.Spec.Result
+    testTokenValidator err (Right _)   = Test.Hspec.Core.Spec.Success
+    testTokenValidator err (Left p)  = Test.Hspec.Core.Spec.Failure Nothing $ Reason $ err ++ ": expected, but got "++ show p
 
     --checkTokenValidator :: (a -> String) -> (String -> String) -> (String -> Parser ()) -> a -> SpecM ()
     checkTokenValidator mkParseString mkItString  tstTokenizer inp =
@@ -351,6 +350,6 @@ Parser spec helpers.
       inp <- getInput
       case inp of
         "" -> return r
-        _  -> parserFail $ "Parser did not use all input, remaining is '"++inp++"'."
+        _  -> parserFail $  "Parser did not use all input, remaining is '"++inp++"'."
 
 \end{code}

@@ -1,7 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
-require 'GUI/src/panels/classical_stack/classical_stack_model'
+require 'classical_stack_model'
 
 describe ClassicalStackModel do
   subject { ClassicalStackModel.new }
@@ -18,6 +15,6 @@ describe ClassicalStackModel do
   end
   it 'should return a list of the values' do
     subject.classical_stack = '{"cstack":[-27, true, 40, false]}'
-    expect(subject.to_a).to eq([(-27), true, 40, false])
+    expect(subject.to_a).to eq([-27, true, 40, false])
   end
 end

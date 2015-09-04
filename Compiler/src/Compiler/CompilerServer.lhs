@@ -22,6 +22,7 @@
   import Data.List as List
   import Data.Map as Map
   import Data.Maybe
+  import Data.Time
 
   import Network.Socket as NS
 
@@ -70,6 +71,20 @@
     parseJSON  (Object v) =
         CompilerCommand <$> v .: DT.pack "command"
     parseJSON _          = mzero
+
+  instance ToJSON AddrInfoFlag where
+    toJSON f = object [ "addressflag" .= (show f) ]
+
+  instance ToJSON AddrInfo where
+    toJSON addrinfo =
+      object [ "flags" .= toJSON (addrFlags addrinfo)]
+
+-- addrFlags :: [AddrInfoFlag]
+-- addrFamily :: Family
+-- addrSocketType :: SocketType
+-- addrProtocol :: ProtocolNumber
+-- addrAddress :: SockAddr
+-- addrCanonName :: Maybe String
 
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (Map (Maybe String) String)       -- ^ Function to handle incoming messages
@@ -134,8 +149,14 @@
 
   -- A simple logger that prints incoming packets
   defaultLogger :: Logger
-  defaultLogger addr msg =
-       putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg
+  defaultLogger addr msg = do
+    now <- getCurrentTime
+    putStrLn $ "{ \"date\": \"" ++ (timeFormatter now) ++ "\", " ++
+      " \"address\": \"" ++ show addr ++ "\", " ++
+      " \"message\": \"" ++ msg ++"\"}"
+
+    where timeformat = iso8601DateFormat (Just "%H:%M:%Q")
+          timeFormatter = formatTime defaultTimeLocale timeformat
 
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (Map (Maybe String) String)

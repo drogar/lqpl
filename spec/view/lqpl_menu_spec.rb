@@ -1,6 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
-
 TESTMENU_STRUCTURE = {
   file: { menu_index: 0,
           menu_titles: %w(Load Compile Simulate),
@@ -8,18 +5,19 @@ TESTMENU_STRUCTURE = {
   view: { menu_index: 1,
           menu_titles: ['Hide Classical Stack', 'Hide Dump',
                         'Hide Executing Code', 'Hide Stack Translation'],
-          menu_enabled: [false, false, false, false] } }
+          menu_enabled: [false, false, false, false] },
+}.freeze
 
 # testing class to hold menu bar
-class Parent
+class TestMenuParent
   attr_accessor :mbar
-  alias_method :make_menu_bar, :mbar=
+  alias make_menu_bar mbar=
 end
 
 describe LqplMenu do
   context 'menu initialization' do
     before(:each) do
-      @p = Parent.new
+      @p = TestMenuParent.new
     end
     it 'should successfully create a new menu' do
       SwingRunner.on_edt do
@@ -57,9 +55,9 @@ describe LqplMenu do
         java.lang.System.set_property('apple.laf.useScreenMenuBar', 'true')
         java.lang.System.set_property('com.drogar.testing.fest', 'false')
         SwingRunner.on_edt do
-          @p = Parent.new
+          @p = TestMenuParent.new
           @lm = LqplMenu.new(@p)
-          @tmenu = @p.mbar.menu(mtestdata[:menu_index])
+          @tmenu = @p.mbar.getMenu(mtestdata[:menu_index])
         end
       end
       after :each do
@@ -67,17 +65,13 @@ describe LqplMenu do
         java.lang.System.set_property('com.drogar.testing.fest', 'true')
       end
       it "should have #{mtestdata[:menu_titles].size} menuitems" do
-        SwingRunner.on_edt { expect(@tmenu.item_count).to eq(mtestdata[:menu_titles].size) }
+        SwingRunner.on_edt { expect(@tmenu.getItemCount).to eq(mtestdata[:menu_titles].size) }
       end
-      mtestdata[:menu_titles].each_with_index do |mtitle, ind|
-        it "should have the title #{mtitle} for item #{ind}" do
-          SwingRunner.on_edt { expect(@tmenu.item(ind).text).to eq(mtitle) }
-        end
+      it "should have the title #{mtestdata[:menu_titles][1]} for item 1" do
+        SwingRunner.on_edt { expect(@tmenu.getItem(1).getText).to eq(mtestdata[:menu_titles][1]) }
       end
-      mtestdata[:menu_enabled].each_with_index do |is_enabl, ind|
-        it "should have #{is_enabl ? 'enabled' : 'disabled'} menu item #{ind}" do
-          SwingRunner.on_edt { expect(@tmenu.item(ind).enabled).to eq(is_enabl) }
-        end
+      it "should have #{mtestdata[:menu_enabled][1] ? 'enabled' : 'disabled'} menu item 1" do
+        SwingRunner.on_edt { expect(@tmenu.getItem(1).isEnabled).to eq(mtestdata[:menu_enabled][1]) }
       end
     end
   end

@@ -1,5 +1,3 @@
-# Encoding : UTF-8
-require 'spec/spec_helper'
 
 describe AboutModel do
   subject { AboutModel.new }

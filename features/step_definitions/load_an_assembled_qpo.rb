@@ -6,7 +6,7 @@ Then(/^the main frame.s title should be "(.*?)"$/) do |the_title|
 end
 
 Then(/^the button "([\w\s]*)" should appear$/) do |button_text|
-  the_button = $qe_frame.button(JButtonMatcher.with_text button_text)
+  the_button = $qe_frame.button(JButtonMatcher.with_text(button_text))
 
   expect(the_button).not_to be_nil
   expect(the_button).to be_edt_visible
@@ -19,7 +19,7 @@ end
 
 When(/^I click the button "([\w\s]*)" (\d+) times? on the frame "([\w\s]*)"$/) do |button_text, count, frame_title|
   frame_ref = set_and_return_frame_fixture(frame_title)
-  the_button = frame_ref.button(JButtonMatcher.with_text button_text)
+  the_button = frame_ref.button(JButtonMatcher.with_text(button_text))
   count.times { |_| the_button.click }
 end
 
@@ -33,6 +33,6 @@ end
 
 Then(/^the button "([\w\s]*)" on the frame "([\w\s]*)" should be (dis|en)abled$/) do |button_text, frame_title, dis_or_en|
   frame_ref = set_and_return_frame_fixture(frame_title)
-  the_button = frame_ref.button(JButtonMatcher.with_text button_text)
+  the_button = frame_ref.button(JButtonMatcher.with_text(button_text))
   expect(the_button.edt_enabled?).to eql(dis_or_en == 'en')
 end

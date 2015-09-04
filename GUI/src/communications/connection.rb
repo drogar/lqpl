@@ -10,17 +10,16 @@ java_import java.net.URLDecoder
 class Connection
   include Singleton
 
-  LOCAL_CONNECTS = ['127.0.0.1', '::1', 'localhost']
+  LOCAL_CONNECTS = ['127.0.0.1', '::1', 'localhost'].freeze
   attr_accessor :port
   attr_accessor :connect_to
-  attr_accessor :my_path
+  attr_reader :my_path
   attr_reader :connection
 
   def initialize(port = nil)
     @port = port
     @connection = nil
     @process = nil
-    _set_up_my_path
   end
 
   def connected?
@@ -42,7 +41,7 @@ class Connection
 
   def connection_list
     # TODO: - add flag to pick order of these.
-    [@connect_to, "#{@my_path}bin/#{@connect_to}", "#{@my_path}../out/bin/#{@connect_to}"]
+    [connect_to, "#{my_path}bin/#{connect_to}", "#{my_path}../out/bin/#{connect_to}"]
   end
 
   def no_process_error
@@ -50,11 +49,19 @@ class Connection
   end
 
   def connect
-    errors = _make_connection
+    errors = make_connection
+    return if errors.empty?
+    errors = connect_to_connection_list
+    raise ServerProcessNotFound, no_process_error unless errors.empty?
+  end
+
+  def connect_to_connection_list
+    errors = []
     connection_list.each do |location|
-      errors = try_connecting_to location unless errors.empty?
+      errors = try_connecting_to location
+      break if errors.empty?
     end
-    fail ServerProcessNotFound, no_process_error unless errors.empty?
+    errors
   end
 
   def try_connecting_to(location)
@@ -80,7 +87,7 @@ class Connection
     connection.readline
   end
 
-  def _make_connection
+  def make_connection
     LOCAL_CONNECTS.each do |addr|
       begin
         @connection = TCPSocket.new addr, @port
@@ -93,24 +100,18 @@ class Connection
     end
   end
 
-  private
-
-  def _set_up_my_path
-    @my_path = File.expand_path(__FILE__)[Regexp.new(/.*?jar!/)]
-    if @my_path
-      #:nocov:
-      @my_path = @my_path[5, @my_path.length - 18]
-      # remove 'file:' from front, lqpl_gui.jar! from back
-      #:nocov:
-    else
-      @my_path = File.expand_path(File.dirname(__FILE__)) + '/../../'
-    end
+  def my_path
+    return @my_path if @my_path
+    resolver = Monkeybars::Resolver.new(location: __FILE__)
+    @mypath ||= resolver.bare_path + '/../../'
   end
+
+  private
 
   def _start_up_the_executable_in_a_process(executable)
     @process = ProcessBuilder.new(executable, '').start
     sleep 0.25
-    res2 = _make_connection
-    fail ServerProcessNotFound unless res2.empty
+    res2 = make_connection
+    raise ServerProcessNotFound unless res2.empty
   end
 end

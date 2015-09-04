@@ -4,7 +4,7 @@
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
+    import Test.Hspec.Contrib.HUnit
     import Test.QuickCheck hiding (property)
     import Test.HUnit
 
@@ -18,7 +18,7 @@
 
     main = do
       let ptests = describe "Emulator Server Commands" $ mapM_ fromHUnitTest tests
-      summary <- hspecWith defaultConfig{configFormatter=progress} ptests
+      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} ptests
       if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      else exitWith ExitSuccess
 

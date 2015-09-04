@@ -1,8 +1,8 @@
 # encoding: utf-8
-require 'spec/spec_helper'
+require 'compiler_command_interpretor'
 
 json_version = '{"version_number" : ["0", "8", "4"], "version_string" :  ["90", "98", "94"]}'
-program_one = "{\"file_name\":\"f\",\"qpl_program\":[\"qdata C = {H|T}\",\"app::(| ; )= {skip}\"]}"
+program_one = '{"file_name":"f","qpl_program":["qdata C = {H|T}","app::(| ; )= {skip}"]}'
 illegal_input = '{"illegal_input" :"badInput"}'
 describe CompilerCommandInterpretor do
   before :each do

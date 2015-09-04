@@ -1,7 +1,5 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'quantum_stack_model'
 
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
 
 describe ZeroDescriptorModel do
   it 'Should create when given no input' do

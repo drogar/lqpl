@@ -1,35 +1,32 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'quantum_stack_model'
 
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-
-QUBIT_ZZ = '{"qubit":["ZZ"]}'
-QUBIT_ZZOO = '{"qubit":["ZZ", "OO"]}'
-QUBIT_ZZZOOZOO = '{"qubit":["ZZ", "ZO", "OZ", "OO"]}'
+QUBIT_ZZ = '{"qubit":["ZZ"]}'.freeze
+QUBIT_ZZOO = '{"qubit":["ZZ", "OO"]}'.freeze
+QUBIT_ZZZOOZOO = '{"qubit":["ZZ", "ZO", "OZ", "OO"]}'.freeze
 describe QubitDescriptorModel do
   it 'should raise an error if constructed with  other than a list of Z,O pairs' do
     expect do
-      AbstractDescriptorModel.make_instance '{"qubit":["ZP"]}'
+      DescriptorModelFactory.make_model '{"qubit":["ZP"]}'
     end.to raise_error(ModelCreateError, /qubit....ZP/)
   end
   it 'should have a length equal to the number of elements of the passed in list' do
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZ
+    sd = DescriptorModelFactory.make_model QUBIT_ZZ
     expect(sd.length).to eql(1)
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZOO
+    sd = DescriptorModelFactory.make_model QUBIT_ZZOO
     expect(sd.length).to eql(2)
   end
   it 'should have the value being the list of qubit indicators in the string' do
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZZOOZOO
+    sd = DescriptorModelFactory.make_model QUBIT_ZZZOOZOO
     expect(sd.value).to eq([[0, 0], [0, 1], [1, 0], [1, 1]])
   end
   it 'should return a list of length length when asked for substack labels' do
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZ
+    sd = DescriptorModelFactory.make_model QUBIT_ZZ
     expect(sd.length).to eql(1)
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZOO
+    sd = DescriptorModelFactory.make_model QUBIT_ZZOO
     expect(sd.length).to eql(2)
   end
   it 'should have the substack_labels = list of 01 pairs in the construction string' do
-    sd = AbstractDescriptorModel.make_instance QUBIT_ZZZOOZOO
+    sd = DescriptorModelFactory.make_model QUBIT_ZZZOOZOO
     expect(sd.substack_labels).to eq(%w(00 01 10 11))
   end
   context 'class methods' do

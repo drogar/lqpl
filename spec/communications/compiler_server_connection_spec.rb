@@ -1,6 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-
 describe CompilerServerConnection do
   context 'creation' do
     context 'enforce singleton' do

@@ -1,9 +1,12 @@
 # encoding: utf-8
-# Date node model
+require 'abstract_descriptor_model'
+
+# Data node model
 class DataDescriptorModel < AbstractDescriptorModel
   def self.validate_substacks_count(substacks)
-    fail ModelCreateError,
-         'Data element on stack should have substacks' if !substacks || substacks.size == 0
+    return unless !substacks || substacks.empty?
+    raise ModelCreateError,
+          'Data element on stack should have substacks'
   end
 
   def self.data_value_valid(dv)
@@ -28,9 +31,9 @@ class DataDescriptorModel < AbstractDescriptorModel
     fail_message = "Invalid Algebraic data: #{in_string}"
     json_d = EnsureJSON.new(in_string).as_json
     @value = json_d[:data]
-    fail ModelCreateError, fail_message unless @value && @value.is_a?(Array)
+    raise ModelCreateError, fail_message unless @value && @value.is_a?(Array)
     @value.each do |dv|
-      fail ModelCreateError, fail_message unless DataDescriptorModel.data_value_valid(dv)
+      raise ModelCreateError, fail_message unless DataDescriptorModel.data_value_valid(dv)
     end
   end
 

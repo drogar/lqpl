@@ -1,18 +1,18 @@
 # encoding: UTF-8
 # handle waits within swing app
 module RaceConditions
-  def sleep_until(tries, &condition)
+  def sleep_until(tries)
     count = 0
     while count < tries
       sleep 0.25
-      return true if condition.call
+      return true if yield
       count += 1
     end
     false
   end
 
-  def sleep_until_not(tries, &condition)
-    sleep_until(tries) { !condition.call }
+  def sleep_until_not(tries)
+    sleep_until(tries) { !yield }
   end
 
   def sleep_until_file_exists(tries, file_name)

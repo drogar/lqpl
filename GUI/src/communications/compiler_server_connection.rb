@@ -1,8 +1,9 @@
 # encoding: utf-8
-require 'communications/connection'
+require 'compiler_command_interpretor'
+require 'connection'
 require 'forwardable'
 
-COMPILER_SERVER = 'lqpl-compiler-server'
+COMPILER_SERVER = 'lqpl-compiler-server'.freeze
 
 # Handle connections to the compiler server
 class CompilerServerConnection < Connection

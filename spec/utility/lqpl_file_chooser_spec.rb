@@ -1,5 +1,3 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
 
 describe LqplFileChooser do
   describe 'class method opener' do

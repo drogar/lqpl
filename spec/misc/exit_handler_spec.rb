@@ -1,5 +1,3 @@
-# encoding: UTF-8
-require 'spec/spec_helper'
 
 describe ExitHandler do
   describe 'close_servers' do

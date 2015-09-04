@@ -1,13 +1,11 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
+require 'quantum_stack_model'
+require 'quantum_stack_painter'
 
 describe DataDescriptorPainter do
   subject do
     DescriptorPainterFactory
-      .make_painter(AbstractDescriptorModel
-                    .make_instance '{"data":[{"cons": "Nil", "addresses": []}]}')
+      .make_painter(DescriptorModelFactory
+                    .make_model('{"data":[{"cons": "Nil", "addresses": []}]}'))
   end
   it 'should have the colour magenta' do
     expect(subject.my_colour).to eq(Color.magenta)

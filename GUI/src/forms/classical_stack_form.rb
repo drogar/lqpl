@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'scrollable_label'
+
 # Swing for to display the classical stack
 class ClassicalStackForm < ScrollableLabel
   attr_accessor :classical_stack_text

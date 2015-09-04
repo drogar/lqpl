@@ -1,5 +1,4 @@
-# Encoding: UTF-8
-require 'spec/spec_helper'
+require 'classical_stack_form'
 
 describe ClassicalStackForm do
   before :each do
