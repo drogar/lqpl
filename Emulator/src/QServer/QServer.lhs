@@ -17,7 +17,6 @@ import Data.Maybe (isJust, fromJust)
 import Data.Bits
 
 import Network.Socket
-import Network.BSD
 
 import Control.Concurrent
 import Control.Concurrent.MVar
@@ -40,8 +39,8 @@ import Utility.MakeJSON
 
 \begin{code}
 
-defaultPort :: String
-defaultPort = "9502"
+defaultPortToUse :: String
+defaultPortToUse = "9502"
 
 
 defaultCallDepth :: Int
@@ -51,7 +50,7 @@ defaultCallDepth = 1
 
 main:: IO()
 
-main = do serveLog defaultPort commandHandler defaultLogger
+main = do serveLog defaultPortToUse commandHandler defaultLogger
 
 serveLog :: String              -- ^ Port number or name; 9502 is default
          -> HandlerFunc  (MachineState BaseType)       -- ^ Function to handle incoming messages
@@ -69,7 +68,7 @@ serveLog port handlerfunc logger = withSocketsDo $
        sock <- socket (addrFamily serveraddr) Network.Socket.Stream defaultProtocol
 
        -- Bind it to the address we're listening to
-       bindSocket sock (addrAddress serveraddr)
+       bind sock (addrAddress serveraddr)
 
        -- Start listening for connection requests.  Maximum queue size
        -- of 2 connection requests waiting to be accepted.

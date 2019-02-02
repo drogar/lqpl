@@ -24,7 +24,6 @@
   import Data.Maybe
 
   import Network.Socket as NS
-  import Network.BSD
 
   import System.IO
   import System.IO.Error
@@ -89,7 +88,7 @@
          sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
 
          -- Bind it to the address we're listening to
-         bindSocket sock (addrAddress serveraddr)
+         bind sock (addrAddress serveraddr)
 
          -- Start listening for connection requests.  Maximum queue size
          -- of 2 connection requests waiting to be accepted.
@@ -222,7 +221,7 @@
       Left e    -> do
         let errString = ioeGetErrorString e
         if "Need file " == List.take 10 errString
-          then return $ CS_NEED_FILE $ drop 10 errString
+          then return $ CS_NEED_FILE $ List.drop 10 errString
           else do
             writeIORef ior Map.empty
             return $ CS_COMPILED_FAIL $ ioeGetErrorString e

@@ -11,7 +11,6 @@
  import Utility.ServerTypes
 
  import Network.Socket
- import Network.BSD
 
  import System.IO
 

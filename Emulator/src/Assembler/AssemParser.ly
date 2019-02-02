@@ -13,7 +13,7 @@
 > import QSM.QuantumStack.QSDefinition
 > import Data.LazyNum
 > import Data.List as List
-> import Data.Map as Map hiding ((!))
+> import Data.Map as Map hiding (map,(!))
 > }
 > %name qpa prog
 >

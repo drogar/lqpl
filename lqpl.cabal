@@ -11,7 +11,6 @@ License-file:        LICENCE
 Author:              Brett Giles, Robin Cockett
 Maintainer:          brett.giles@ucalgary.ca
 bug-reports:         mailto:brett.giles@ucalgary.ca
-Stability:           Experimental
 homepage:            http://pll.cpsc.ucalgary.ca/lqpl
 Build-Type:          Simple
 Cabal-Version:       >=1.9.2
@@ -81,6 +80,13 @@ Executable lqpl
    Build-Depends:     containers,mtl,array,directory,filepath,base,transformers,parsec,hspec
    extensions:        ExistentialQuantification
    hs-source-dirs:    Compiler/src,Common/src
+   Other-modules:     Compiler.BaseTypes,Compiler.CompSupport,Compiler.Compiler,Compiler.GenCode,
+                      Compiler.GenerationErrors,Compiler.InstructionNames,Compiler.Instructions,
+                      Compiler.IrTypes,Compiler.Opts,Compiler.QPLParser,Compiler.Qtypes,
+                      Compiler.SemTypes,Compiler.Semantic,Compiler.SemanticErrors,
+                      Compiler.SymbolTable,Compiler.SymbolTableGlobals,Compiler.TypeUnification,
+                      Compiler.UnificationErrors,Data.Stack,Data.Tuples,Paths_lqpl,Utility.Extras,
+                      Utility.FileProvider,Utility.FileProvider.FileSystem
 
 Executable lqpl-compiler-server
    Main-is:           Compiler/ServerMain.lhs
@@ -88,7 +94,13 @@ Executable lqpl-compiler-server
                       hspec,aeson,bytestring,text
    extensions:        ExistentialQuantification,OverloadedStrings
    hs-source-dirs:    Compiler/src,Common/src
-
+   Other-Modules:     Compiler.BaseTypes,Compiler.CompSupport,Compiler.CompilerServer,
+                      Compiler.GenCode,Compiler.GenerationErrors,Compiler.InstructionNames,
+                      Compiler.Instructions,Compiler.IrTypes,Compiler.QPLParser,Compiler.Qtypes,
+                      Compiler.SemTypes,Compiler.Semantic,Compiler.SemanticErrors,
+                      Compiler.SymbolTable,Compiler.SymbolTableGlobals,Compiler.TypeUnification,
+                      Compiler.UnificationErrors,Data.Stack,Data.Tuples,Paths_lqpl,Utility.Extras,
+                      Utility.FileProvider,Utility.MakeJSON,Utility.ServerTypes
 
 Executable lqpl-emulator
    Main-is:           QServer/QServer.lhs
@@ -96,16 +108,14 @@ Executable lqpl-emulator
                       aeson,text,bytestring
    hs-source-dirs:    Emulator/src,Common/src
    extensions:        FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types
-   Other-Modules:     Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
-
--- Below is the former configuration for the GTK2HS GUI. This code is still included in the distribution
--- but may not currently compile. To try it out, comment out the following lines and the lines
--- starting with 'data-dir' and 'data-files' above.
-
---Executable lqpl-hgui
---  Main-is:           Emulator/QstackGTK.lhs
---  Build-Depends:     time,old-locale,random,containers,mtl,cairo==0.12.*,filepath,glib==0.12.*,gtk==0.12.*,base,array,directory
---  hs-source-dirs:    src
---  extensions:        FlexibleInstances,MultiParamTypeClasses,TypeSynonymInstances,ExistentialQuantification,
---                     Rank2Types,ScopedTypeVariables,FlexibleContexts,KindSignatures
---  Other-Modules:     Compiler.Qparser,Compiler.Qlexer,Assembler.AssemLexer, Assembler.AssemParser, Paths_lqpl
+   Other-Modules:     Assembler.AssemLexer,Assembler.AssemParser,Assembler.LexMonad,Data.ClassComp,
+                      Data.ClassicalData,Data.Computation.BaseType,Data.EitherLocal,Data.InfList,
+                      Data.LazyNum,Data.Matrix,Data.Permutation,Data.Stack,Data.Stream,Data.Tuples,
+                      Paths_lqpl,QSM.BasicData,QSM.Components.ClassicalStack,
+                      QSM.Components.ControlStack,QSM.Components.Dump,QSM.Components.Instructions,
+                      QSM.Components.MemoryMap,QSM.MachineErrors,QSM.QSM,
+                      QSM.QuantumStack.QSDefinition,QSM.QuantumStack.QSManipulation,
+                      QSM.QuantumStack.QSRotation,QSM.QuantumStack.QSTransforms,QSM.Simulate,
+                      QSM.Transformations,QServer.EmulatorServerCommand,QServer.MachineControl,
+                      QServer.StackToJSON,QServer.Types,Utility.Extras,Utility.MakeJSON,
+                      Utility.ServerTypes

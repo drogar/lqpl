@@ -9,7 +9,6 @@
  import Data.IORef
 
  import Network.Socket
- import Network.BSD
 
  import System.IO
 

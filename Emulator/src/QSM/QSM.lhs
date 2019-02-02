@@ -481,7 +481,7 @@ qapply' i tr addr cs cq  =
                       trans           = byAddress addr $ specTrans ctype
                       cq'             = Ctrl ctype $ restore $ trans qs'
        Nothing         ->
-           let  (topn, cs')     = splitAt i $  Data.Stack.toList cs
+           let  (topn, cs')     = List.splitAt i $  Data.Stack.toList cs
                 --basetr :: (Quantum a)=> Trans a
                 basetr          = getTransform topn tr
                 basetrorder     = qorderq basetr
@@ -1062,7 +1062,7 @@ hasProc = flip Map.member
 getCode :: Memory Basis -> (EntryPoint, Label) ->
            [Instruction Basis]
 getCode mem (ep,start) =
-    drop start $ findWithDefault emptyCodeBlock ep mem
+    List.drop start $ findWithDefault emptyCodeBlock ep mem
 
 ep :: BMS b -> EntryPoint
 ep  = fst . instructionPointer
