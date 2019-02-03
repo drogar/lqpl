@@ -1,4 +1,3 @@
-# encoding: utf-8
 java_import java.awt.event.WindowEvent
 require 'about_controller'
 require 'exit_handler'
@@ -12,7 +11,7 @@ class LqplSubsHandler
   end
 
   def dispose_all
-    @subs.each(&:dispose) if @subs
+    @subs&.each(&:dispose)
   end
 
   def open

@@ -1,4 +1,3 @@
-
 describe EnsureJSON do
   context 'creation' do
     it 'accepts a string for new' do

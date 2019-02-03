@@ -47,7 +47,7 @@ SimpleCov.at_exit do
   java.lang.System.exit(status)
 end
 
-project_dir_array = File.expand_path(File.dirname(__FILE__)).split(File::SEPARATOR)
+project_dir_array = __dir__.split(File::SEPARATOR)
 
 project_dir = project_dir_array.reverse.drop(1).reverse.join(File::SEPARATOR)
 
@@ -79,7 +79,6 @@ TEST_QP_PATH = project_dir + '/GUI/testdata/qplprograms'
 require 'config/platform_configuration'
 
 require 'config/manifest'
-
 
 require 'component_query'
 require 'drawing_extensions'

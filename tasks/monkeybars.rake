@@ -25,18 +25,18 @@ rule(/^generate/) do |_t|
   end
 end
 
-def generate_tuple(mg)
+def generate_tuple(mgenerator)
   pwd = FileUtils.pwd
-  mg.generate_controller
+  mgenerator.generate_controller
 
   FileUtils.cd pwd
-  mg.generate_model
+  mgenerator.generate_model
 
   FileUtils.cd pwd
-  mg.generate_view true
+  mgenerator.generate_view true
 
   FileUtils.cd pwd
-  mg.generate_ui
+  mgenerator.generate_ui
 end
 
 # def generate_controller(path)

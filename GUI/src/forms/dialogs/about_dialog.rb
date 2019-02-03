@@ -1,4 +1,3 @@
-# encoding: utf-8
 # SWing using class for about dialog
 class AboutDialog < STDialogWithOK
   attr_accessor :about_data_label

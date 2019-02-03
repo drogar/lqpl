@@ -26,7 +26,7 @@ describe ClassicalDescriptorModel do
   end
   it 'should return substack_labels = to_s of of its classicalvalues' do
     sd = DescriptorModelFactory.make_model C1420
-    expect(sd.substack_labels).to eq(%w(14 20 true))
+    expect(sd.substack_labels).to eq(%w[14 20 true])
   end
   context 'class methods' do
     context 'validation' do

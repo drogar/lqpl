@@ -1,6 +1,5 @@
 require 'quantum_stack_model'
 
-
 describe ZeroDescriptorModel do
   it 'Should create when given no input' do
     z = ZeroDescriptorModel.new

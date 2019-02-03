@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'classical_stack_form'
 
 # classical stack

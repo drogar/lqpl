@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'quantum_stack_painter'
 require 'quantum_stack_form'
 

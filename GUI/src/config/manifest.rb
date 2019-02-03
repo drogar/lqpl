@@ -46,14 +46,16 @@ require 'application_view'
 # end
 
 ImportJava.do_imports(context: self,
-                      awt: %w(BorderLayout GridLayout Point Rectangle),
-                      swing: %w(JOptionPane JFileChooser filechooser.FileNameExtensionFilter
-                                JTextArea JScrollPane BoxLayout SpinnerNumberModel),
+                      awt: %w[BorderLayout GridLayout Point Rectangle],
+                      swing: %w[JOptionPane JFileChooser filechooser.FileNameExtensionFilter
+                                JTextArea JScrollPane BoxLayout SpinnerNumberModel],
                       lang: 'System')
 
 # for swinging
+# rubocop:disable Style/MixinUsage
 require 'swingtown'
 include Swingtown::Core
+# rubocop:enable Style/MixinUsage
 
 # end for swinging
 require 'application_model'

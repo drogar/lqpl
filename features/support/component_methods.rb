@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # module to help with finding variosu Swing components
 module ComponentMethods
   def spinner_for_label(label_text, frm = $qe_frame)

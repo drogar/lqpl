@@ -1,4 +1,3 @@
-# encoding: utf-8
 JInteger = java.lang.Integer
 
 # model for the lqpl main screen.
@@ -111,7 +110,7 @@ class LqplModel < ApplicationModel
 
   def do_step
     res = lqpl_server_connection.do_step(step_spinner.int_value, recursion_spinner.int_value)
-    enable_go! !(res =~ /executed/)
+    enable_go! res !~ /executed/
   end
 
   def update_recursion_multiplier_spinner(value)

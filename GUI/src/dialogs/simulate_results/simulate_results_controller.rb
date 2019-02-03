@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Class to control the simulate results dialog
 class SimulateResultsController < ApplicationController
   set_model 'SimulateResultsModel'

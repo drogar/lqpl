@@ -1,10 +1,7 @@
-# Encoding: UTF-8
 require 'rubocop/rake_task'
 require 'rake/clean'
 
-unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
-  abort 'Sorry - Building LQPL requires JRuby. You are using some other ruby engine.'
-end
+abort 'Sorry - Building LQPL requires JRuby. You are using some other ruby engine.' unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
 
 RuboCop::RakeTask.new
 

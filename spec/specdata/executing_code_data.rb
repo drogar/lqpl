@@ -1,4 +1,3 @@
-# encoding: UTF-8
 KVPS6 = '"EnScope", "QLoad \"@q\" 0", "QApply 0 Hadamard \"@q\"","QPullup \"@q\"",'\
         '"EnScope","Measure \"@q\" 14 6 10"'.freeze
 

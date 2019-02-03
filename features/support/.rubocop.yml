@@ -2,7 +2,7 @@
 # file, therefore created this to allow start_up_system.rb to define
 # executeInEDT method.
 
+inherit_from: ../.rubocop.yml
+
 MethodName:
   Enabled: false
-
-inherit_from: ../.rubocop.yml

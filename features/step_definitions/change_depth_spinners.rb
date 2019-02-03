@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 Given(/^I type "(\d+)" in the "(.*?)" field$/) do |val, field_name|
   spinner = spinner_for_label field_name
   spinner.enter_text_and_commit val.to_s

@@ -5,7 +5,7 @@ describe LqplEmulatorServerConnection do
         @sc = nil
       end
       after :each do
-        @sc.close_down if @sc
+        @sc&.close_down
       end
       it 'gives an error when trying to create with new' do
         expect { @sc = LqplEmulatorServerConnection.new }.to raise_error NoMethodError
@@ -37,7 +37,7 @@ describe LqplEmulatorServerConnection do
         @sc = LqplEmulatorServerConnection.get_instance
       end
       after :all do
-        @sc.close_down if @sc
+        @sc&.close_down
       end
       it 'connects to the lqpl-serv process when created' do
         @sc.connect

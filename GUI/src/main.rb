@@ -12,7 +12,7 @@ def lqpl_main
   # SwingRunner.on_edt do
   LqplController.instance.open
   # end
-rescue => e
+rescue StandardError => e
   LqplUtility::Logger.new.log_the_error(e)
 end
 

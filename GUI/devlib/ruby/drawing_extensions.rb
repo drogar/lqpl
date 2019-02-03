@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require 'draw_methods'
 # Force the drawing to start with a 4byte abgr
 class DrawingExtensions

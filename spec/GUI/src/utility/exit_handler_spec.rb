@@ -1,4 +1,3 @@
-
 describe ExitHandler do
   describe 'close_servers' do
     it 'should close the compiler server connection' do

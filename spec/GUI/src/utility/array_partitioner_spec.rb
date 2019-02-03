@@ -1,4 +1,3 @@
-
 describe Lqpl::Utilities::ArrayPartitioner do
   subject { Lqpl::Utilities::ArrayPartitioner }
   describe :qpl_partion do

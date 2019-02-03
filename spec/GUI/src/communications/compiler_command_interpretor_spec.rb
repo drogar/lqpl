@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'compiler_command_interpretor'
 
 json_version = '{"version_number" : ["0", "8", "4"], "version_string" :  ["90", "98", "94"]}'
@@ -19,7 +18,7 @@ describe CompilerCommandInterpretor do
     describe 'current_version_line' do
       it 'sends a version request and returns a string' do
         expect(@cmp).to receive(:send_and_read_data).with('{"command" : "send_version"}')
-          .and_return(json_version)
+                                                    .and_return(json_version)
         expect(subject.current_version_line).to eql('Compiler: Version=0.8.4')
       end
     end
@@ -68,7 +67,7 @@ describe CompilerCommandInterpretor do
       end
       it 'returns a json of the file' do
         expect(File).to receive(:readlines).with('f')
-          .and_return(['qdata C = {H|T}', 'app::(| ; )= {skip}'])
+                                           .and_return(['qdata C = {H|T}', 'app::(| ; )= {skip}'])
         expect(subject.read_qpl_file('f')).to eql(program_one)
       end
     end
@@ -155,17 +154,17 @@ describe CompilerCommandInterpretor do
         subject.qpo_file_name = 'whatever/some.qpl'
         expect(subject).to receive(:current_version_line).and_return('cv1')
         expect(File).to receive(:write).with('whatever/some.qpo', "cv1\nline1\nline2\n")
-        subject.qpo(%w(line1 line2))
+        subject.qpo(%w[line1 line2])
       end
       it 'returns nil' do
         allow(subject).to receive(:current_version_line).and_return('cv1')
         allow(File).to receive(:write).and_return(10)
-        expect(subject.qpo(%w(line1 line2))).to be_nil
+        expect(subject.qpo(%w[line1 line2])).to be_nil
       end
     end
     it 'parses the parameter as JSON' do
       expect(JSON).to receive(:parse).with('f', symbolize_names: true)
-        .and_return(JSON.parse(illegal_input, symbolize_names: true))
+                                     .and_return(JSON.parse(illegal_input, symbolize_names: true))
       subject.converse('f')
     end
     it 'exits if the parameter is nil without any activity' do

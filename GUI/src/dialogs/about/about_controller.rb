@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Controller for the about dialog
 class AboutController < ApplicationController
   set_model 'AboutModel'

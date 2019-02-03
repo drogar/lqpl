@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'abstract_descriptor_model'
 
 # zero note model

@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'ensure_json'
 # abstract base for the descriptor models
 class AbstractDescriptorModel < ApplicationModel

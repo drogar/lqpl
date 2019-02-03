@@ -5,7 +5,7 @@ describe CompilerServerConnection do
         @cmp = nil
       end
       after(:each) do
-        @cmp.close_down if @cmp
+        @cmp&.close_down
       end
       it 'gives an error when trying to create with "new"' do
         expect { @cmp = CompilerServerConnection.new }.to raise_error NoMethodError
@@ -32,7 +32,7 @@ describe CompilerServerConnection do
         @cmp = CompilerServerConnection.get_instance
       end
       after :all do
-        @cmp.close_down if @cmp
+        @cmp&.close_down
       end
       it 'connects to the lqpl-compiler process when created' do
         @cmp.connect

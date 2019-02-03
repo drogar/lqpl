@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'version'
 # Model for the about dialog
 class AboutModel

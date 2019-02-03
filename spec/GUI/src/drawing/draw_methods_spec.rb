@@ -1,4 +1,3 @@
-
 describe Lqpl::Drawing::DrawMethods do
   before :each do
     @d = DrawingExtensions.new

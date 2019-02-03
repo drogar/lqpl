@@ -1,4 +1,3 @@
-
 describe LqplFileChooser do
   describe 'class method opener' do
     before :each do

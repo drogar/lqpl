@@ -1,9 +1,7 @@
-# encoding: utf-8
 # Base application controller - add here for anything global
 class ApplicationController < Monkeybars::Controller
-  attr_reader :lqpl_emulator_server_connection
-
   java_signature 'Object lqpl_emulator_server_connection()'
+
   def lqpl_emulator_server_connection(connect = true)
     if connect
       @lqpl_emulator_server_connection ||= LqplEmulatorServerConnection.instance

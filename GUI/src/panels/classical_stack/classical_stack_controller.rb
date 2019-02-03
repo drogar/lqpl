@@ -1,4 +1,3 @@
-# encoding: utf-8
 # classical stack controller -
 class ClassicalStackController < PanelController
   set_model 'ClassicalStackModel'

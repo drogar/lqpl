@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'json'
 
 # handle the transmision and actions of commands from the connection
@@ -6,7 +5,7 @@ class CompilerCommandInterpretor
   attr_accessor :failure_message
   attr_reader :connection
   attr_reader :object_file_name
-  attr_accessor :dir, :qpo_file_name, :qpl_file_name
+  attr_reader :dir, :qpo_file_name, :qpl_file_name
 
   def initialize(connection)
     @connection = connection
@@ -26,7 +25,7 @@ class CompilerCommandInterpretor
   end
 
   def read_qpl_file(file_name)
-    JSON.generate('file_name'   => file_name,
+    JSON.generate('file_name' => file_name,
                   'qpl_program' => File.readlines(file_name))
   end
 

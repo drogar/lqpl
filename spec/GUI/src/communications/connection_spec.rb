@@ -17,14 +17,14 @@ describe Connection do
     it 'should return refused if trying to connect to an unused port' do
       @c.port = 20
       expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
-        .and_raise(Errno::ECONNREFUSED)
+                                        .and_raise(Errno::ECONNREFUSED)
       res = @c.make_connection
       expect(res[0]).to match('Connect refused For')
     end
     it 'should return error if getting a socket error' do
       @c.port = 20
       expect(TCPSocket).to receive(:new).with(Connection::LOCAL_CONNECTS[0], 20)
-        .and_raise(SocketError)
+                                        .and_raise(SocketError)
       res = @c.make_connection
       expect(res[0]).to match('Socket error for')
     end

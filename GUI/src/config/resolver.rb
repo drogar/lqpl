@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'pry'
 
 module Monkeybars
@@ -7,7 +6,7 @@ module Monkeybars
     IN_FILE_SYSTEM = :in_file_system
     IN_JAR_FILE = :in_jar_file
 
-    MONKEYBARS_JAR_LOCATIONS = %w(/../lib/java/*.jar /../../lib/java/*.jar /../../../lib.java/*.jar).freeze
+    MONKEYBARS_JAR_LOCATIONS = %w[/../lib/java/*.jar /../../lib/java/*.jar /../../../lib.java/*.jar].freeze
 
     attr_reader :location
 
@@ -18,7 +17,7 @@ module Monkeybars
     # Returns a const value indicating if the currently executing code is being run from the
     # file system or from within a jar file.
     def run_location
-      @run_location ||= (File.expand_path(location) =~ /\.jar\!/ ? IN_JAR_FILE : IN_FILE_SYSTEM)
+      @run_location ||= (File.expand_path(location).match?(/\.jar\!/) ? IN_JAR_FILE : IN_FILE_SYSTEM)
     end
 
     def in_file_system?
@@ -31,6 +30,7 @@ module Monkeybars
 
     def bare_path
       return location_path[5, location_path.length - 18] if in_file_system?
+
       location_path
     end
 
@@ -40,6 +40,7 @@ module Monkeybars
 
     def add_monkeybars_jar_when_in_file_system
       return unless in_file_system?
+
       add_monkeybars_jar
     end
 
@@ -60,6 +61,7 @@ module Monkeybars
 
     def pathing_add_to_classpath(path)
       return if path.nil? || path.empty?
+
       Pathing.add_to_classpath(path, file: location)
     end
   end

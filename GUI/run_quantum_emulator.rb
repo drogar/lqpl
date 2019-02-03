@@ -1,8 +1,6 @@
-# encoding: UTF-8
-
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__)) + '/lib/java'
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__)) + '/lib/ruby'
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__)) + '/devlib/ruby'
+$LOAD_PATH << __dir__ + '/lib/java'
+$LOAD_PATH << __dir__ + '/lib/ruby'
+$LOAD_PATH << __dir__ + '/devlib/ruby'
 # $LOAD_PATH << "./lqpl/lib/java"
 
 # $LOAD_PATH << "/Users/gilesb/programming/JRubyProjects/lqpl/lib/ruby"
@@ -11,9 +9,9 @@ require 'java'
 
 $CLASSPATH << '../out/lqpl_gui/'
 
-$LOAD_PATH << File.expand_path(File.dirname(__FILE__)) + '/src'
-$CLASSPATH << File.expand_path(File.dirname(__FILE__)) + '/lib/java/jruby-complete.jar'
-$CLASSPATH << File.expand_path(File.dirname(__FILE__)) + '/lib/java/monkeybars-1.1.1.jar'
+$LOAD_PATH << __dir__ + '/src'
+$CLASSPATH << __dir__ + '/lib/java/jruby-complete.jar'
+$CLASSPATH << __dir__ + '/lib/java/monkeybars-1.1.1.jar'
 # $CLASSPATH << File.expand_path(File.dirname(__FILE__))+"/out/production/lqpl_gui"
 
 # test to see if running gives edt violations
@@ -38,6 +36,6 @@ ENV['PATH'] = File.expand_path(File.dirname(__FILE__) + '/bin') +
 
 begin
   com.drogar.lqpl.Main.main([''].to_java(:string))
-rescue => e
+rescue StandardError => e
   puts "Had a problem: #{e}"
 end

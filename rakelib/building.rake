@@ -25,9 +25,7 @@ build = namespace :build do
   end
   desc 'config server build'
   task :server_config do
-    unless uptodate?('dist/setup-config', ['lqpl.cabal'])
-      sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
-    end
+    sh "runghc Setup.hs configure --user --prefix=#{abs_out}" unless uptodate?('dist/setup-config', ['lqpl.cabal'])
   end
 
   desc 'config server build with tests'
@@ -37,9 +35,7 @@ build = namespace :build do
 
   desc 'Build the Haskell Compiler and Emulator'
   task server: ['out/bin', :server_config] do
-    unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
-      sh 'runghc Setup.hs build && runghc Setup.hs install'
-    end
+    sh 'runghc Setup.hs build && runghc Setup.hs install' unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
   end
 
   desc 'Build Haskell code with tests'
@@ -164,7 +160,7 @@ namespace :test do
   end
 
   desc 'Run all tests'
-  task all: [:features, :spec, :server_tests]
+  task all: %i[features spec server_tests]
 
   begin
     require 'cucumber'
@@ -196,6 +192,7 @@ def copy_server_bin(to_dir)
   incomplete = true
   HASKELL_BIN_DIRS.each do |d|
     next unless incomplete && File.file?("#{d}/lqpl")
+
     copy_executable_dir(d, to_dir)
     incomplete = false
   end
@@ -203,7 +200,7 @@ def copy_server_bin(to_dir)
 end
 
 def copy_executable_dir(from_dir, to_dir)
-  %w(lqpl lqpl-emulator lqpl-compiler-server).each do |subdir|
+  %w[lqpl lqpl-emulator lqpl-compiler-server].each do |subdir|
     cp "#{from_dir}/#{subdir}", to_dir.to_s
     sh "chmod +x #{to_dir}/#{subdir}"
   end

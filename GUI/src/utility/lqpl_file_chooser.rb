@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'forwardable'
 # class to wrap a jfile chooser
 class LqplFileChooser

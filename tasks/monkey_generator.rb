@@ -5,7 +5,7 @@ class MonkeyGenerator
 
   def initialize(iname)
     @templates = {}
-    [:controller, :model, :ui, :view].each do |template_type|
+    %i[controller model ui view].each do |template_type|
       @templates[template_type] = File.read("tasks/mb_#{template_type}.template")
     end
     self.name = setup_directory iname
@@ -59,6 +59,7 @@ class MonkeyGenerator
   def camelize(first_letter_in_uppercase = true)
     cname = name.to_s
     return cname[0..0] + camelize(cname[1..-1]) unless first_letter_in_uppercase
+
     sub_separator_and_upcase(cname).gsub(/(^|_)(.)/) { Regexp.last_match[2].upcase }
   end
 

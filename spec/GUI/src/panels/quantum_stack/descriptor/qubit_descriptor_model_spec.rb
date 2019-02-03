@@ -27,7 +27,7 @@ describe QubitDescriptorModel do
   end
   it 'should have the substack_labels = list of 01 pairs in the construction string' do
     sd = DescriptorModelFactory.make_model QUBIT_ZZZOOZOO
-    expect(sd.substack_labels).to eq(%w(00 01 10 11))
+    expect(sd.substack_labels).to eq(%w[00 01 10 11])
   end
   context 'class methods' do
     context 'validation' do

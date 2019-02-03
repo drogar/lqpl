@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'dump_form'
 
 # View for the Dump

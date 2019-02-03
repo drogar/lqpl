@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Swing Dialog for Simulate Results
 class SimulateResultsDialog < STDialogWithOK
   attr_accessor :random_value_label

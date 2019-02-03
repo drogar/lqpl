@@ -1,4 +1,3 @@
-# encoding: utf-8
 LQPL_GUI_VERSION = '0.9.2'.freeze
 
 ABOUT_STRING = "<html> <center>

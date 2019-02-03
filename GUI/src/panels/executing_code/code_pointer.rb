@@ -1,4 +1,3 @@
-# encoding: utf-8
 # model to handle the code pointer
 class CodePointer < ApplicationModel
   attr_accessor :qpo_method
@@ -10,6 +9,7 @@ class CodePointer < ApplicationModel
     @line_number = cp_match[:codepointer][1]
   rescue JSON::ParserError => e
     raise e unless in_string == ''
+
     @qpo_method = ''
     @line_number = 0
   end

@@ -1,11 +1,10 @@
-# Encoding: UTF-8
 # Swing stuff.
 module Swingtown
   # I don't know what MiG is all about
   module MiG
     # extend the class methods in the include
     module ClassMethods
-      HERE = File.expand_path(File.dirname(__FILE__))
+      HERE = __dir__
 
       def mig_jar(glob_path = "#{HERE}/../../java/*.jar")
         warn "mig_jar #{glob_path} "
@@ -29,7 +28,7 @@ module Swingtown
   module Core
     # the constants of swing
     module SwingConstants
-      %w(
+      %w[
         BOTTOM
         CENTER
         EAST
@@ -49,8 +48,8 @@ module Swingtown
         TRAILING
         VERTICAL
         WEST
-      ).each do |konst|
-        class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}"
+      ].each do |konst|
+        class_eval "#{konst} = Java::javax::swing::SwingConstants::#{konst}", __FILE__, __LINE__
       end
     end
 
@@ -146,6 +145,7 @@ module Swingtown
 
       def self.make_spinner(*args)
         return Spinner.new unless args && args.length == 4
+
         spinner = Spinner.new
 
         spinner.model = make_new_spinner_number_model(args)
@@ -154,8 +154,8 @@ module Swingtown
 
       def labelize_and_add_to_container(text_for_label, container)
         spinlab = make_my_label(text_for_label)
-        container.add(spinlab) if container
-        container.add(self) if container
+        container&.add(spinlab)
+        container&.add(self)
       end
 
       def self.spinner_with_label(text_for_label, container = nil)
@@ -272,7 +272,7 @@ module Swingtown
     # A frame  wrapper
     # See http://xxxxxxxx to understand Swing frames
     class STFrame < Java.javax.swing::JFrame
-      attr_accessor :minimum_height, :minimum_width
+      attr_reader :minimum_height, :minimum_width
 
       def initialize(title, options = {})
         super(title)

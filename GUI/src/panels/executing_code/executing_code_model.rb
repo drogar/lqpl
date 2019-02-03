@@ -1,10 +1,8 @@
-# encoding: utf-8
-
 require 'code_pointer'
 # model to show the executing code
 class ExecutingCodeModel < ApplicationModel
-  attr_accessor :the_code
-  attr_accessor :the_code_pointer
+  attr_reader :the_code
+  attr_reader :the_code_pointer
   attr_accessor :the_code_was_updated
   alias the_code_was_updated? the_code_was_updated
 
@@ -12,7 +10,7 @@ class ExecutingCodeModel < ApplicationModel
     ecp = EnsureJSON.new(in_string).as_json
     @the_code = Hash[ecp.map do |k, v|
       val = []
-      v.each_with_index { |vl, i| val << format('%3d  %s', i, vl) }
+      v.each_with_index { |vl, i| val << format('%<line>3d  %<code>s', line: i, code: vl) }
       [k, val]
     end
     ]

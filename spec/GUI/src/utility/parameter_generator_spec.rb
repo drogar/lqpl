@@ -1,4 +1,3 @@
-
 describe ParameterGenerator do
   context 'no parameters' do
     subject { ParameterGenerator.new }

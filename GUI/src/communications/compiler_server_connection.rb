@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'compiler_command_interpretor'
 require 'connection'
 require 'forwardable'

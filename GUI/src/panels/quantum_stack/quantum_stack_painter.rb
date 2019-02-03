@@ -9,7 +9,7 @@ class QuantumStackPainter
   LINE_LABEL_FONT_SIZE = 8.0
   PLACEMENTS = { -1 => :left, 0 => :right, 1 => :right }.freeze
 
-  attr_accessor :model_element
+  attr_reader :model_element
 
   def initialize(model_element)
     self.model_element = model_element

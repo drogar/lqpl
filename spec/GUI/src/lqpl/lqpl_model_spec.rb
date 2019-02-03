@@ -15,18 +15,18 @@ describe LqplModel do
   end
   describe 'new_view_command' do
     it 'should return Hide X Y for input [Show, X, Y]' do
-      expect(LqplModel.new_view_command(%w(Show X Y))).to eq('Hide X Y')
+      expect(LqplModel.new_view_command(%w[Show X Y])).to eq('Hide X Y')
     end
     it 'should return Show X Y for input [Hide, X, Y]' do
-      expect(LqplModel.new_view_command(%w(Hide X Y))).to eq('Show X Y')
+      expect(LqplModel.new_view_command(%w[Hide X Y])).to eq('Show X Y')
     end
   end
   describe 'symbol_for_view_menu_item' do
     it 'should return :view_menu_x_text= for input [whatever,X]' do
-      expect(LqplModel.symbol_for_view_menu_item(%w(whatever X))).to eq(:view_menu_x_text=)
+      expect(LqplModel.symbol_for_view_menu_item(%w[whatever X])).to eq(:view_menu_x_text=)
     end
     it 'should return :view_menu_x_y_text= for input [whatever,X, Y]' do
-      expect(LqplModel.symbol_for_view_menu_item(%w(whatever X Y))).to eq(:view_menu_x_y_text=)
+      expect(LqplModel.symbol_for_view_menu_item(%w[whatever X Y])).to eq(:view_menu_x_y_text=)
     end
   end
   describe 'instance methods' do
@@ -46,7 +46,7 @@ describe LqplModel do
       end
       it 'sets messages_text to the result of the compile' do
         expect(subject.compiler_connection).to receive(:success_or_fail_message).with(no_args)
-          .and_return('abc')
+                                                                                .and_return('abc')
         subject.compile(file)
         expect(subject.messages_text).to eql('abc')
       end
@@ -93,9 +93,9 @@ describe LqplModel do
     end
     describe 'toggle_view_menu' do
       it 'should switch hide to show and back' do
-        subject.toggle_view_menu(%w(Hide Dump))
+        subject.toggle_view_menu(%w[Hide Dump])
         expect(subject.view_menu_dump_text).to eq('Show Dump')
-        subject.toggle_view_menu(%w(Show Dump))
+        subject.toggle_view_menu(%w[Show Dump])
         expect(subject.view_menu_dump_text).to eq('Hide Dump')
       end
     end

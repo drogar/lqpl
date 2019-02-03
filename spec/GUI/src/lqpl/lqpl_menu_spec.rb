@@ -1,11 +1,11 @@
 TESTMENU_STRUCTURE = {
   file: { menu_index: 0,
-          menu_titles: %w(Load Compile Simulate),
+          menu_titles: %w[Load Compile Simulate],
           menu_enabled: [true, true, true] },
   view: { menu_index: 1,
           menu_titles: ['Hide Classical Stack', 'Hide Dump',
                         'Hide Executing Code', 'Hide Stack Translation'],
-          menu_enabled: [false, false, false, false] },
+          menu_enabled: [false, false, false, false] }
 }.freeze
 
 # testing class to hold menu bar

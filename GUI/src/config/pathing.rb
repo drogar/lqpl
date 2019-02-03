@@ -1,4 +1,3 @@
-
 # MONKEYPATCHING!!!! adding methods to Object
 class Pathing
   def self.add_to_classpath(path, file: __FILE__)

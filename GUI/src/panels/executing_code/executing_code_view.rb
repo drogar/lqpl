@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'executing_code_form'
 
 # View for the executing code - a tabbed vew pane
@@ -29,11 +28,11 @@ class ExecutingCodeView < ApplicationView
     end
   end
 
-  def process_instructions_text(cp, qpo_ins)
+  def process_instructions_text(code_pointer, qpo_ins)
     text_len = 0
     qpo_ins.each_with_index do |ins_line, ind|
-      cp.line_number = ind
-      add_to_selection_start_and_end_map(cp, ins_line, text_len)
+      code_pointer.line_number = ind
+      add_to_selection_start_and_end_map(code_pointer, ins_line, text_len)
       text_len += 1 + ins_line.length
     end
   end
@@ -45,8 +44,8 @@ class ExecutingCodeView < ApplicationView
     code_tabbed_pane
   end
 
-  def add_to_selection_start_and_end_map(cp, ins_line, text_len)
-    @qpo_method_and_line_to_selection_start_and_end_map[cp.mangle_to_selection_key] =
+  def add_to_selection_start_and_end_map(code_pointer, ins_line, text_len)
+    @qpo_method_and_line_to_selection_start_and_end_map[code_pointer.mangle_to_selection_key] =
       [text_len, text_len + 1 + ins_line.length]
   end
 
@@ -67,6 +66,7 @@ class ExecutingCodeView < ApplicationView
 
   def highlight_the_code_pointer(code_pointer)
     return unless @qpo_method_to_tab_map[code_pointer.qpo_method]
+
     code_tabbed_pane.selected_index = @qpo_method_to_tab_map[code_pointer.qpo_method]
     selection_key = code_pointer.mangle_to_selection_key
     highlight_selection_in_view(@qpo_method_and_line_to_selection_start_and_end_map[selection_key])

@@ -1,4 +1,3 @@
-# encoding: utf-8
 #  controls the drawing of the tree to do the quantum stack
 class QuantumStackController < PanelController
   set_model 'QuantumStackModel'

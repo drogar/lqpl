@@ -1,4 +1,3 @@
-# encoding: utf-8
 java_import java.awt.event.WindowEvent
 require 'about_controller'
 require 'simulate_results_controller'
@@ -29,8 +28,8 @@ class LqplController < ApplicationController
   LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
 
   def close
-    dialogs_handler.dispose_all if dialogs_handler
-    sub_controllers_handler.dispose_all if sub_controllers_handler
+    dialogs_handler&.dispose_all
+    sub_controllers_handler&.dispose_all
     ExitHandler.instance.close_servers
     super
   end
@@ -82,8 +81,8 @@ class LqplController < ApplicationController
     SimulateResultsController.instance.open
   end
 
-  def view_sub_panel_action_performed(e)
-    command_and_sub_panel = e.action_command.scan(/\w+/)
+  def view_sub_panel_action_performed(event)
+    command_and_sub_panel = event.action_command.scan(/\w+/)
     PanelController.controller_from_name(command_and_sub_panel).instance.toggle_visibility
     model.toggle_view_menu(command_and_sub_panel)
     update_view

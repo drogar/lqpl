@@ -9,7 +9,7 @@ describe EmulatorCommandInterpretor do
   describe :send_load_from_file do
     it 'reads in a file and sends and reads a load command' do
       expect(File).to receive(:readlines).with('somefile')
-        .and_return(%w(abc 123))
+                                         .and_return(%w[abc 123])
       expect(@cmp).to receive(:send_and_read_data)
         .with('{"load_entry":1,"load_lines":["abc","123"]}')
       subject.send_load_from_file(1, 'somefile')

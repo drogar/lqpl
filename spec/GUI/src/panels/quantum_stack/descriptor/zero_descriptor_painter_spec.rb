@@ -1,7 +1,6 @@
 require 'quantum_stack_model'
 require 'quantum_stack_painter'
 
-
 describe ZeroDescriptorPainter do
   subject do
     DescriptorPainterFactory.make_painter(DescriptorModelFactory.make_model('{"zero":0}'))

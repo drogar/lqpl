@@ -1,4 +1,3 @@
-# encoding: utf-8
 class TestingFest
   attr_reader :testing
   def initialize

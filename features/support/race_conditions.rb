@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # handle waits within swing app
 module RaceConditions
   def sleep_until(tries)
@@ -6,6 +5,7 @@ module RaceConditions
     while count < tries
       sleep 0.25
       return true if yield
+
       count += 1
     end
     false

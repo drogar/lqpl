@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'abstract_descriptor_model'
 
 # qubit node model
@@ -17,6 +16,7 @@ class QubitDescriptorModel < AbstractDescriptorModel
 
     json_q = EnsureJSON.new(in_string).as_json
     raise ModelCreateError, fail_message unless json_q[:qubit]
+
     @value = json_q[:qubit].map { |q| VALID_PAIRS[q] }
     raise ModelCreateError, fail_message if @value.empty? || @value.length > 4
     raise ModelCreateError, fail_message if @value.include?(nil)

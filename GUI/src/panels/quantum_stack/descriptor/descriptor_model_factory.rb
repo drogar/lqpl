@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'ensure_json'
 require 'classical_descriptor_model'
 require 'data_descriptor_model'
@@ -14,6 +13,7 @@ class DescriptorModelFactory
     return ClassicalDescriptorModel.new json_in if json_in.key?(:classical)
     return QubitDescriptorModel.new json_in if json_in.key?(:qubit)
     return DataDescriptorModel.new json_in if json_in.key?(:data)
+
     raise ModelCreateError, in_string
   end
 end

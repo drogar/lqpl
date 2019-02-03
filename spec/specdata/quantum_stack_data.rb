@@ -1,4 +1,3 @@
-# encoding: UTF-8
 def make_multi_sstacks(id, diag, back, sstacks)
   '{"qstack" : {"id": ' + id + ', "diagonal" : ' + diag + ', "substacks": [' +
     sstacks.join(',') + '],' + back + '}}'

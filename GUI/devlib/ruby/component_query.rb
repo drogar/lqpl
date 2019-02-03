@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # query the value of a swing component
 class ComponentQuery < GuiQuery
   # Launch the query in the Event Dispatch Thread (EDT),
@@ -41,7 +40,6 @@ def define_edt_query_class(name)
     # rubocop:disable Eval
     eval query_class_template(class_name, method_call_name), TOPLEVEL_BINDING
     # rubocop:enable Eval
-
   end
 end
 

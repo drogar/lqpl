@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 Then(/^the main frame.s title should be "(.*?)"$/) do |the_title|
   ft = GuiActionRunner.execute(TitleQuery.new($qe_frame))
   expect(ft).to eql(the_title)

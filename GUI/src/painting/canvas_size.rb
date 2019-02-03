@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'array_partitioner'
 
 # calculate the sizes needed to display the tree
@@ -43,11 +42,13 @@ class CanvasSize
 
   def self.width_to_right_of_head(sizes)
     return 0.0 if !sizes || sizes.empty?
+
     sizes[0].right_required_width + CanvasSize.total_widths(sizes.drop(1))
   end
 
   def self.width_to_left_of_tail(sizes)
     return 0.0 if !sizes || sizes.empty?
+
     sizes.last.left_required_width + CanvasSize.total_widths(sizes.take(sizes.length - 1))
   end
 
@@ -92,6 +93,7 @@ class CanvasSize
   def required_width(side = nil)
     return [total_width, HORIZONTAL_NODE_SEPARATION].max unless side
     return left_required_width if side == :left
+
     right_required_width
   end
 

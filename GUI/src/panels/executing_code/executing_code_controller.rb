@@ -1,4 +1,3 @@
-# encoding: utf-8
 # controller to handle the executing code display
 class ExecutingCodeController < PanelController
   set_model 'ExecutingCodeModel'

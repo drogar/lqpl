@@ -1,4 +1,3 @@
-
 describe QuantumEmulatorMainForm do
   before :each do
     SwingRunner.on_edt do

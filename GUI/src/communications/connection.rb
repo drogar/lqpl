@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'singleton'
 require 'socket'
 
@@ -13,7 +12,6 @@ class Connection
   LOCAL_CONNECTS = ['127.0.0.1', '::1', 'localhost'].freeze
   attr_accessor :port
   attr_accessor :connect_to
-  attr_reader :my_path
   attr_reader :connection
 
   def initialize(port = nil)
@@ -28,7 +26,7 @@ class Connection
 
   def close_down
     connection.close if connected?
-    @process.destroy if @process
+    @process&.destroy
     @connection = nil
     @process = nil
   end
@@ -51,6 +49,7 @@ class Connection
   def connect
     errors = make_connection
     return if errors.empty?
+
     errors = connect_to_connection_list
     raise ServerProcessNotFound, no_process_error unless errors.empty?
   end
@@ -67,7 +66,7 @@ class Connection
   def try_connecting_to(location)
     begin
       _start_up_the_executable_in_a_process(location)
-    rescue
+    rescue StandardError
       return ['Unable to connect to ' + location]
     end
     []
@@ -89,21 +88,20 @@ class Connection
 
   def make_connection
     LOCAL_CONNECTS.each do |addr|
-      begin
-        @connection = TCPSocket.new addr, @port
-        return []
-      rescue Errno::ECONNREFUSED => e1
-        return ["Connect refused For #{addr}, exception: #{e1}"]
-      rescue SocketError => e
-        return ["Socket error for  #{addr}, exception: #{e} "]
-      end
+      @connection = TCPSocket.new addr, @port
+      return []
+    rescue Errno::ECONNREFUSED => e1
+      return ["Connect refused For #{addr}, exception: #{e1}"]
+    rescue SocketError => e
+      return ["Socket error for  #{addr}, exception: #{e} "]
     end
   end
 
   def my_path
     return @my_path if @my_path
+
     resolver = Monkeybars::Resolver.new(location: __FILE__)
-    @mypath ||= resolver.bare_path + '/../../'
+    @my_path ||= resolver.bare_path + '/../../'
   end
 
   private

@@ -1,4 +1,3 @@
-# encoding: utf-8
 # class to make sure swing components execute only on the  swing thread
 class SwingRunner
   def initialize(explicit_block = nil, &block)

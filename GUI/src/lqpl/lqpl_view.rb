@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'lqpl_menu'
 require 'quantum_emulator_main_form'
 

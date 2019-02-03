@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'simulate_results_dialog'
 
 # view  for the simulate results dialog

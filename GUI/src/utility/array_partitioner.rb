@@ -1,4 +1,3 @@
-# encoding: utf-8
 module Lqpl
   module Utilities
     # class to help partition array to assist with drawing the tree and computing sizes
@@ -15,6 +14,7 @@ module Lqpl
       def qpl_partition(side)
         return qpl_left_partition if side == :left
         return qpl_right_partition if side == :right
+
         _qpl_middle_element_as_array
       end
 

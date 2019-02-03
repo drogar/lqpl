@@ -20,35 +20,35 @@ describe PanelController do
       it "should return ClassicalStack controller for ['anything','Classical','Stack']" do
         SwingRunner.on_edt do
           expect(PanelController
-            .controller_from_name(%w(junk Classical Stack))).to eq(ClassicalStackController)
+            .controller_from_name(%w[junk Classical Stack])).to eq(ClassicalStackController)
         end
       end
       it "should return Dump controller for ['anything','Dump']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk Dump))).to eq(DumpController)
+          expect(PanelController.controller_from_name(%w[junk Dump])).to eq(DumpController)
         end
       end
       it "should return Executable Code controller for ['anything','Executing','Code']" do
         SwingRunner.on_edt do
           expect(PanelController
-            .controller_from_name(%w(junk Executing Code))).to eq(ExecutingCodeController)
+            .controller_from_name(%w[junk Executing Code])).to eq(ExecutingCodeController)
         end
       end
       it "should return QuantumStack controller for ['anything','Quantum','Stack']" do
         SwingRunner.on_edt do
           expect(PanelController
-            .controller_from_name(%w(junk Quantum Stack))).to eq(QuantumStackController)
+            .controller_from_name(%w[junk Quantum Stack])).to eq(QuantumStackController)
         end
       end
       it "should return stacktranslation controller for ['anything','Stack','Translation']" do
         SwingRunner.on_edt do
           expect(PanelController
-            .controller_from_name(%w(junk Stack Translation))).to eq(StackTranslationController)
+            .controller_from_name(%w[junk Stack Translation])).to eq(StackTranslationController)
         end
       end
       it "should return nil for ['anything','something']" do
         SwingRunner.on_edt do
-          expect(PanelController.controller_from_name(%w(junk somethin))).to be_nil
+          expect(PanelController.controller_from_name(%w[junk somethin])).to be_nil
         end
       end
     end

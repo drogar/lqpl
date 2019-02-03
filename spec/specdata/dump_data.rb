@@ -1,4 +1,3 @@
-# encoding: UTF-8
 require 'specdata/quantum_stack_data'
 require 'specdata/stack_translation_data'
 

@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'abstract_descriptor_model'
 
 # value node model
@@ -11,7 +10,8 @@ class ValueDescriptorModel < AbstractDescriptorModel
   def initialize(in_string)
     value_hash = EnsureJSON.new(in_string).as_json
     @value = value_hash[:value]
-    raise ModelCreateError, "Bad VALUE: #{in_string}" unless @value && @value.is_a?(Numeric)
+    raise ModelCreateError, "Bad VALUE: #{in_string}" unless @value&.is_a?(Numeric)
+
     @name = nil
   end
 

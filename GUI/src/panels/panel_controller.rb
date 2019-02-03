@@ -1,4 +1,3 @@
-# encoding: utf-8
 # abstract base class for the panel controllers, plus initial creation of all the
 # controllers and add them into a class variable.
 class PanelController < ApplicationController

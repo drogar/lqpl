@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 # Swing frame to display the main form with controls for running the quantum emulator
 class QuantumEmulatorMainForm < STFrame
   attr_accessor :spinner_panel, :button_panel, :step_spinner, :recursion_spinner,

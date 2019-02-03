@@ -1,7 +1,6 @@
-# encoding: utf-8
 # Class to handle the panel holding the quantum stack
 class QuantumStackPanel < ScrollPane
-  attr_accessor :quantum_stack_painter
+  attr_reader :quantum_stack_painter
   attr_accessor :quantum_stack_image_label
 
   def initialize

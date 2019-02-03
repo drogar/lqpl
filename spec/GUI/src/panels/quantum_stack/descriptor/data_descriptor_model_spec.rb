@@ -43,7 +43,7 @@ describe DataDescriptorModel do
     sd = DescriptorModelFactory.make_model DATA_NIL
     expect(sd.substack_labels).to eq(['Nil'])
     sd = DescriptorModelFactory.make_model DATA_TWO
-    expect(sd.substack_labels).to eq(%w(Nil Nil2))
+    expect(sd.substack_labels).to eq(%w[Nil Nil2])
   end
 
   it 'should have the substack_labels with constructors with addresses in brackets' do

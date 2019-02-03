@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Swing component to scrol a label
 class ScrollableLabel < STFrame
   attr_accessor :the_scrolling_label

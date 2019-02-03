@@ -1,4 +1,3 @@
-# Encoding: UTF-8
 # Module for swing interfaces
 module Swingtown
   # :stopdoc:
@@ -33,11 +32,13 @@ module Swingtown
     java_lib_dir = File.join(here, 'java')
     mig_jar = Dir.glob("#{java_lib_dir}/*.jar").find { |f| f =~ /(miglayout-)(.+).jar$/ }
     raise "Failed to find MiG layout jar to copy over from '#{java_lib_dir}'!" unless mig_jar
+
     mig_jar
   end
 
   def self.file_check_and_warn(which, path)
     return unless File.exist? path
+
     warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
     exit
   end

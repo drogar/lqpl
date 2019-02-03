@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'about_dialog'
 # view  for the about dialog
 class AboutView < ApplicationView

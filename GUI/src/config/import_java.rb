@@ -19,7 +19,7 @@ class ImportJava
   end
 
   def self.import_package(context, package, files)
-    top = :swing == package ? 'javax' : 'java'
+    top = package == :swing ? 'javax' : 'java'
     files.each do |file|
       context.instance_eval { java_import "#{top}.#{package}.#{file}" }
     end

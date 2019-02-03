@@ -1,4 +1,3 @@
-# encoding: UTF-8
 P1 =  '{"memory_map" :[{"p" : 1}]}'.freeze
 P2 =  '{"memory_map" :[{"r" : 1}]}'.freeze
 P1WITHREX27 = '{"memory_map" :[{"p" : 1, "rex": 27}]}'.freeze
