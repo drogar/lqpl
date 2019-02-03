@@ -1,3 +1,4 @@
+require 'quantum_stack_panel'
 describe QuantumStackPanel do
   before :each do
     SwingRunner.on_edt do

@@ -1,6 +1,4 @@
-# encoding: utf-8
-# require '../GUI/src/config/platform_configuration'
-require 'platform_configuration'
+require 'config/platform_configuration'
 
 describe PlatformConfiguration do
   it 'is valid' do

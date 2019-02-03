@@ -1,4 +1,4 @@
-
+require 'copy_point'
 describe CopyPoint do
   describe 'copy_with_x_and_y_offset' do
     it 'copies as is with nil offsets' do

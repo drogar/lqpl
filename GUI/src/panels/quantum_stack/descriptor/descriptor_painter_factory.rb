@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'classical_descriptor_painter'
 require 'data_descriptor_painter'
 require 'qubit_descriptor_painter'

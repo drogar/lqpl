@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'config/manifest'
 require 'utility/logger'
 require 'config/pathing'
@@ -12,7 +11,7 @@ end
 def lqpl_main
   # SwingRunner.on_edt do
   LqplController.instance.open
-# end
+  # end
 rescue => e
   LqplUtility::Logger.new.log_the_error(e)
 end

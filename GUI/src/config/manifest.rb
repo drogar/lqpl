@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'rbconfig'
 require 'java'
 require 'config/platform'
@@ -11,13 +10,12 @@ require 'pry'
 Pathing.add_all_sibling_directories_to_load_path(__FILE__)
 # for swinging
 Pathing.add_to_load_path '../lib/ruby/swingtown'
-
 Monkeybars::Resolver.new(location: __FILE__).add_monkeybars_jar_when_in_file_system
 
 require 'monkeybars'
 require 'utility/swing_runner'
-require 'controller/application_controller'
-require 'view/application_view'
+require 'application_controller'
+require 'application_view'
 
 # End of Monkeybars requires
 # ==================================================================
@@ -58,6 +56,6 @@ require 'swingtown'
 include Swingtown::Core
 
 # end for swinging
-require 'model/application_model'
+require 'application_model'
 
-require 'controller/lqpl_controller'
+require 'lqpl/lqpl_controller'

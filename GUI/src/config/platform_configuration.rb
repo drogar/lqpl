@@ -1,10 +1,8 @@
-# encoding: utf-8
-# ===============================================================================
 # Platform specific operations, feel free to remove or override any of these
 # that don't work for your platform/application
 
-require 'architecture_category'
-require 'testing_fest'
+require 'config/architecture_category'
+require 'config/testing_fest'
 
 class PlatformConfiguration
   attr_reader :arch
@@ -35,6 +33,7 @@ class PlatformConfiguration
 
   def set_menubar_if_not_testing
     return if tester.testing?
+
     on_mac do
       System.set_property('apple.laf.useScreenMenuBar', 'true')
     end

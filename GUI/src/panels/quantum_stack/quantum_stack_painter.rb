@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'draw_methods'
 require 'descriptor_painter_factory'
 require 'copy_point'
@@ -18,9 +17,8 @@ class QuantumStackPainter
 
   def model_element=(model)
     @model_element = model
-    @descriptor_element =
-      DescriptorElementFactory.make_element(model.descriptor)
-    @sstack_elements = @model_element.substacks.map { |s| QuantumStackPainter.new(s) }
+    @descriptor_painter = DescriptorPainterFactory.make_painter(model.descriptor)
+    @sstack_painters = @model_element.substacks.map { |s| QuantumStackPainter.new(s) }
   end
 
   def image_of_model
@@ -35,36 +33,35 @@ class QuantumStackPainter
     ImageIcon.new(bifull)
   end
 
-  def paint_model(g)
-    g.set_rendering_hint(RenderingHints::KEY_ANTIALIASING,
-                         RenderingHints::VALUE_ANTIALIAS_ON)
+  def paint_model(gcontext)
+    gcontext.set_rendering_hint(RenderingHints::KEY_ANTIALIASING,
+                                RenderingHints::VALUE_ANTIALIAS_ON)
 
-    d = model_paint_size(g)
-    paint_model_at_point(g, Point.new(d.left_required_width + 20.0, 20.0))
+    d = model_paint_size(gcontext)
+    paint_model_at_point(gcontext, Point.new(d.left_required_width + 20.0, 20.0))
   end
 
-  def paint_model_at_point(g, center)
+  def paint_model_at_point(gcontext, center)
     if model_element.bottom?
-      draw_text_centered_at_point(g, '...', center)
+      draw_text_centered_at_point(gcontext, '...', center)
     else
-      paint_substacks(center, g)
-      @descriptor_painter.paint_model_at_point(g, center)
+      paint_substacks(center, gcontext)
+      @descriptor_painter.paint_model_at_point(gcontext, center)
     end
   end
 
-  def bottom_element_size(g)
-    dim = get_string_size(g, '...')
+  def bottom_element_size(gcontext)
+    dim = get_string_size(gcontext, '...')
     @preferred_size = CanvasSize.new_with_measures(dim.width * 0.5, dim.width * 0.5, dim.height)
   end
 
-  def model_paint_size(g)
+  def model_paint_size(gcontext)
     return @preferred_size if @preferred_size
-    return bottom_element_size g if model_element.bottom?
+    return bottom_element_size gcontext if model_element.bottom?
 
     @preferred_size =
-      CanvasSize.new_from_subtree(stack_elements_paint_size(g))
-
-    @preferred_size.max_of_each_dimension!(@descriptor_element.model_paint_size(g)) if @descriptor_element
+      CanvasSize.new_from_subtree(stack_painters_paint_size(gcontext))
+    @preferred_size.max_of_each_dimension!(@descriptor_painter.model_paint_size(gcontext)) if @descriptor_painter
 
     @preferred_size
   end
@@ -72,6 +69,7 @@ class QuantumStackPainter
   def substack_label(index)
     d = @model_element.descriptor.substack_labels if @model_element.descriptor
     return d[index].to_s if d
+
     'Nil for model descriptor'
     # "#{@model_element.descriptor.substack_labels[index]}"
   end
@@ -80,32 +78,34 @@ class QuantumStackPainter
     PLACEMENTS[index <=> (@model_element.substacks.length - 1) * 0.5]
   end
 
-  def paint_substacks(top_point, g)
-    offsets = CanvasSize.compute_offsets(sub_stack_sizes(g))
+  def paint_substacks(top_point, gcontext)
+    offsets = CanvasSize.compute_offsets(sub_stack_sizes(gcontext))
     Range.new(0, @sstack_painters.size - 1).each do |i|
       paint_at_point =
         CopyPoint.copy_with_x_and_y_offset(top_point,
                                            offsets[i],
                                            CanvasSize.vertical_node_separation)
-      paint_substack(g, i, top_point, paint_at_point)
+      paint_substack(gcontext, i, top_point, paint_at_point)
     end
   end
 
-  def paint_substack(g, index, top_point, paint_point)
-    draw_black_line(g, top_point, paint_point)
-    draw_sized_text(g, LINE_LABEL_FONT_SIZE, substack_label(index),
+  def paint_substack(gcontext, index, top_point, paint_point)
+    draw_black_line(gcontext, top_point, paint_point)
+    draw_sized_text(gcontext, LINE_LABEL_FONT_SIZE, substack_label(index),
                     mid_point(top_point, paint_point),
                     substack_label_placement(index))
-    @sstack_painters[index].paint_model_at_point(g, paint_point)
+    @sstack_painters[index].paint_model_at_point(gcontext, paint_point)
   end
 
-  def sub_stack_sizes(g)
-    @sstack_painters.map { |sstack_painter| sstack_painter.model_paint_size(g) }
+  def sub_stack_sizes(gcontext)
+    return [] if @sstack_painters.nil?
+
+    @sstack_painters.map { |sstack_painter| sstack_painter.model_paint_size(gcontext) }
   end
 
   private
 
-  def stack_elements_paint_size(g)
-    @sstack_elements.map { |element| element.model_paint_size(g) }
+  def stack_painters_paint_size(gcontext)
+    @sstack_painters.map { |element| element.model_paint_size(gcontext) }
   end
 end

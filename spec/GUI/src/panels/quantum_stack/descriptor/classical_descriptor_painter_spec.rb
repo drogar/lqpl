@@ -2,19 +2,19 @@ require 'quantum_stack_model'
 require 'quantum_stack_painter'
 
 CDESC = '{"classical":[1,true,14]}'.freeze
-describe ClassicalDescriptorElement do
-  subject { DescriptorElementFactory.make_element(DescriptorModelFactory.make_model(CDESC)) }
+describe ClassicalDescriptorPainter do
+  subject { DescriptorPainterFactory.make_painter(DescriptorModelFactory.make_model(CDESC)) }
 
   it 'should have the colour green' do
     expect(subject.my_colour).to eq(Color.green)
   end
   describe 'painting' do
     before :each do
-      m = double('model_elelment')
+      m = double('model_element')
       allow(m).to receive(:name).and_return('Z')
       allow(m).to receive(:value).and_return('Z')
       allow(m).to receive(:length).and_return(0)
-      subject = DescriptorElementFactory.make_element(DescriptorModelFactory.make_model(CDESC))
+      subject = DescriptorPainterFactory.make_painter(DescriptorModelFactory.make_model(CDESC))
       subject.model_element = m
 
       @d = DrawingExtensions.new

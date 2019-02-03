@@ -1,4 +1,3 @@
-# Encoding: UTF-8
 require 'rbconfig'
 require 'java'
 require 'english'
@@ -14,6 +13,9 @@ SimpleCov.start do
   add_group 'Communications', 'GUI/src/communications'
   add_group 'Config', 'GUI/src/config'
   add_group 'Dialogs', 'GUI/src/dialogs'
+  add_group 'Drawing', 'GUI/src/drawing'
+  add_group 'Forms', 'GUI/src/forms'
+  add_group 'Exceptions', 'GUI/src/exceptions'
   add_group 'Forms', 'GUI/src/forms'
   add_group 'Main', 'GUI/src/lqpl'
   add_group 'Painting', 'GUI/src/painting'
@@ -51,7 +53,7 @@ project_dir = project_dir_array.reverse.drop(1).reverse.join(File::SEPARATOR)
 
 $LOAD_PATH << project_dir + '/GUI'
 
-%w(src lib/java lib/ruby devlib/java devlib/ruby).each do |dir|
+%w[src lib/java lib/ruby devlib/java devlib/ruby].each do |dir|
   $LOAD_PATH << project_dir + '/GUI/' + dir
 end
 
@@ -61,8 +63,8 @@ $CLASSPATH << project_dir + '/GUI'
 $CLASSPATH << project_dir + '/out/lqpl_gui/'
 
 # testing jars
-%w(fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2
-   fest-util-1.1.2 jcip-annotations-1.0).each do |jar|
+%w[fest-swing-1.2 fest-assert-1.2 fest-reflect-1.2
+   fest-util-1.1.2 jcip-annotations-1.0].each do |jar|
   $CLASSPATH << project_dir + '/GUI/devlib/java/' + jar + '.jar'
 end
 
@@ -74,9 +76,10 @@ require 'fest_testing_imports'
 
 TEST_QP_PATH = project_dir + '/GUI/testdata/qplprograms'
 
-require 'config/platform'
+require 'config/platform_configuration'
 
 require 'config/manifest'
+
 
 require 'component_query'
 require 'drawing_extensions'

@@ -1,14 +1,6 @@
-<<<<<<< HEAD:spec/painting/canvas_size_spec.rb
-# encoding: UTF-8
-require 'spec/spec_helper'
-require 'GUI/src/painting/canvas_size'
-require 'GUI/src/panels/quantum_stack/quantum_stack_model'
-require 'GUI/src/panels/quantum_stack/quantum_stack_painter'
-=======
 require 'canvas_size'
 require 'quantum_stack_model'
 require 'quantum_stack_painter'
->>>>>>> Get specs running again:spec/GUI/src/painter/canvas_size_spec.rb
 
 describe CanvasSize do
   describe 'Class Methods' do

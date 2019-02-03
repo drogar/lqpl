@@ -1,8 +1,7 @@
-# encoding: utf-8
 require 'singleton'
-require 'connector/connection'
-require 'connector/compiler_server_connection'
-require 'connector/lqpl_emulator_server_connection'
+require 'connection'
+require 'compiler_server_connection'
+require 'lqpl_emulator_server_connection'
 
 # Java exit handler
 class ExitHandler

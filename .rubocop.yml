@@ -35,7 +35,7 @@ Style/WordArray:
 Style/SignalException:
   Enabled: false # Quit complaining about raise.
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma # trailing comma reduces the number of commit changes when adding to a list
 
 Metrics/ParameterLists:
