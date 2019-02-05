@@ -1,6 +1,6 @@
 require 'rbconfig'
 require 'java'
-require 'config/platform'
+require 'config/platform_configuration'
 require 'json'
 require 'config/pathing'
 require 'config/resolver'

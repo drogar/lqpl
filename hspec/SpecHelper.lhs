@@ -5,11 +5,6 @@
     getTempFile,
     getTempFileWithContent,
     removeTempFile
-#if MIN_VERSION_hspec(1,1,2)
-
-#else
-    , context
-#endif
     )
   where
 
@@ -54,11 +49,5 @@
       do
         r <- f
         return r
-
-#if MIN_VERSION_hspec(1,1,2)
-
-#else
-  context = describe
-#endif
 
 \end{code}

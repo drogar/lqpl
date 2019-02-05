@@ -17,8 +17,8 @@ class ClassicalDescriptorModel < AbstractDescriptorModel
     fail_message = "Invalid Classical: #{in_string}"
     json_c = EnsureJSON.new(in_string).as_json
     @value = json_c[:classical]
-    raise ModelCreateError, fail_message unless @value&.is_a?(Array)
-    raise ModelCreateError, fail_message unless @value&.all? { |v| descriptor_ok?(v) }
+    raise ModelCreateError, fail_message unless @value && @value.is_a?(Array)
+    raise ModelCreateError, fail_message unless @value && @value.all? { |v| descriptor_ok?(v) }
   end
 
   def descriptor_ok?(descriptor)

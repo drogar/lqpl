@@ -26,7 +26,7 @@ class Connection
 
   def close_down
     connection.close if connected?
-    @process&.destroy
+    @process.destroy if @process
     @connection = nil
     @process = nil
   end
@@ -88,12 +88,14 @@ class Connection
 
   def make_connection
     LOCAL_CONNECTS.each do |addr|
-      @connection = TCPSocket.new addr, @port
-      return []
-    rescue Errno::ECONNREFUSED => e1
-      return ["Connect refused For #{addr}, exception: #{e1}"]
-    rescue SocketError => e
-      return ["Socket error for  #{addr}, exception: #{e} "]
+      begin
+        @connection = TCPSocket.new addr, @port
+        return []
+      rescue Errno::ECONNREFUSED => e1
+        return ["Connect refused For #{addr}, exception: #{e1}"]
+      rescue SocketError => e
+        return ["Socket error for  #{addr}, exception: #{e} "]
+      end
     end
   end
 

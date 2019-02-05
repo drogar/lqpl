@@ -1,7 +1,6 @@
 \begin{code}
   module Compiler.CompilerSpecHelper where
 
-
     import Utility.FileProvider
     import Utility.FileProvider.FileSystem
     import Compiler.QPLParser

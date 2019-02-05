@@ -26,14 +26,12 @@
 
 
     --checkIt :: Memory Basis -> String -> SpecM ()
-    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ res ~=? (surroundWith "Code" $ toJSON cd)
+    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $
+                         res ~=? (surroundWith "Code" $ toJSON cd)
 
     tests =  describe "StackToJSON" $ mapM_ (uncurry checkIt) jsonValues
 
 
-    main = do
-      summary <- hspecWith defaultConfig{configFormatter=progress} tests
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    main = hspec tests
 
 \end{code}

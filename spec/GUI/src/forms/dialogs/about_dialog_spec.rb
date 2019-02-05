@@ -1,3 +1,5 @@
+require 'about_dialog'
+
 describe AboutDialog do
   before :each do
     SwingRunner.on_edt do

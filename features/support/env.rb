@@ -4,22 +4,22 @@ SimpleCov.merge_timeout 1200
 
 SimpleCov.start do
   add_filter 'GUI/spec/'
-  add_filter '/spec/'
-  add_filter '/features/'
+  add_filter 'spec/'
   add_group 'DevLib', 'GUI/devlib'
   add_group 'Lib', 'GUI/lib'
   add_group 'Communications', 'GUI/src/communications'
   add_group 'Config', 'GUI/src/config'
   add_group 'Dialogs', 'GUI/src/dialogs'
+  add_group 'Drawing', 'GUI/src/drawing'
+  add_group 'Forms', 'GUI/src/forms'
+  add_group 'Exceptions', 'GUI/src/exceptions'
   add_group 'Forms', 'GUI/src/forms'
   add_group 'Main', 'GUI/src/lqpl'
   add_group 'Painting', 'GUI/src/painting'
   add_group 'Panels', 'GUI/src/panels'
   add_group 'Utility', 'GUI/src/utility'
-  add_filter 'features'
-  # rubocop:disable UselessAssignment
-  nocov_token = ':nocov:'
-  # rubocop:enable UselessAssignment
+  add_filter 'features/'
+  nocov_token ':nocov:'
 end
 
 unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
@@ -58,6 +58,8 @@ require 'monkeybars-1.1.1.jar'
 ENV['PATH'] = "#{project_dir + '/out/bin'}#{File::PATH_SEPARATOR}#{ENV['PATH']}"
 
 require 'fest_testing_imports'
+
+require 'config/platform_configuration'
 
 require 'config/manifest'
 

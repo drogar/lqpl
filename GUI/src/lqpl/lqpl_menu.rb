@@ -1,3 +1,5 @@
+require 'architecture_factory'
+
 %w[JMenuBar JMenu JMenuItem].each do |nm|
   java_import 'javax.swing.' + nm
 end
@@ -29,8 +31,9 @@ class LqplMenu
   end
 
   def self.prepare_up_exit_and_about(add_listener)
-    on_mac { mac_prepare_exit_and_about }
-    not_on_mac { non_mac_prepare_exit_and_about(add_listener) }
+    config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)
+    config.on_mac { mac_prepare_exit_and_about }
+    config.not_on_mac { non_mac_prepare_exit_and_about(add_listener) }
   end
 
   def self.mac_prepare_exit_and_about
@@ -76,7 +79,8 @@ class LqplMenu
 
   #:nocov:
   def handle_not_on_mac_file(menu_file)
-    not_on_mac do
+    config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)
+    config.not_on_mac do
       @file_exit = JMenuItem.new('Exit')
       menu_file.add(@file_exit)
     end
@@ -99,7 +103,8 @@ class LqplMenu
 
   # :nocov:
   def init_help_menu(mbar)
-    not_on_mac do
+    config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)
+    config.not_on_mac do
       menu_help = JMenu.new('Help')
       @help_about = JMenuItem.new('About')
       menu_help.add(@help_about)

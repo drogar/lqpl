@@ -11,7 +11,7 @@ class LqplSubsHandler
   end
 
   def dispose_all
-    @subs&.each(&:dispose)
+    @subs && @subs.each(&:dispose)
   end
 
   def open

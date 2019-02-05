@@ -28,8 +28,8 @@ class LqplController < ApplicationController
   LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
 
   def close
-    dialogs_handler&.dispose_all
-    sub_controllers_handler&.dispose_all
+    dialogs_handler.dispose_all if dialogs_handler
+    sub_controllers_handler.dispose_all if subs_controllers_handler
     ExitHandler.instance.close_servers
     super
   end

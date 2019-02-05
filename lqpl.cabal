@@ -20,7 +20,7 @@ Test-Suite compiler-server-spec
    type:             exitcode-stdio-1.0
    main-is:          Compiler/CompilerServerSpec.lhs
    build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,hspec-core,
-                     directory,process,unix,mtl,transformers,containers,random,aeson,text
+                     directory,process,unix,mtl,transformers,containers,random,aeson,text,time
    other-modules:    Compiler.BaseTypes, Compiler.CompSupport, Compiler.CompilerServer, Compiler.CompilerSpecHelper,
                      Compiler.GenCode, Compiler.GenerationErrors, Compiler.InstructionNames, Compiler.Instructions,
                      Compiler.IrTypes, Compiler.QPLParser, Compiler.Qtypes, Compiler.SemTypes, Compiler.Semantic,

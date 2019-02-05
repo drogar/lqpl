@@ -12,7 +12,7 @@ end
 
 Then(/^the frame "([\w\s]*)" should (be|not be) visible$/) do |frame_title, visible|
   frame_fixture = set_and_return_frame_fixture(frame_title)
-  expect(sleep_until_visibility(5, frame_fixture, visible)).to be true
+  expect(sleep_until_visibility(5, frame_fixture, (visible == 'be'))).to be true
 end
 
 When(/^I click the button "([\w\s]*)" (\d+) times? on the frame "([\w\s]*)"$/) do |button_text, count, frame_title|

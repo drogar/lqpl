@@ -1,6 +1,5 @@
 \begin{code}
   module Main where
-    import Test.Hspec.Core.Spec(Example(..),Result(..), FailureReason(..), ResultStatus(..))
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
@@ -23,55 +22,44 @@
 
     import Fixture.CompilerData
 
-    main = do
-      summary <- hspecWithResult defaultConfig{configFormatter = Just progress} compilerSpecs
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    main = hspec compilerSpecs
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do
         it ("runs on port "++defaultPort++" by default") $ do
             running <- checkOpenPort defaultPort
             if running
-              then return True
+              then running `shouldBe` True
               else do
                 putStrLn "Not found - trying to start"
                 rc <- spawnCommand "lqpl-compiler-server &"
                 putStrLn $ "Started - lqpl compiler server = "
                 threadDelay 2000
                 putStrLn $ "Waited 2s for server to start"
-                checkOpenPort defaultPort
+                checkOpenPort defaultPort `shouldReturn` True
       context "compiler server" $ do
         it "sends back a valid assembler code when sent a qpl program" $ do
               hndl <- connectToServer defaultPort
               hPutStrLn hndl program_one
               hFlush hndl
               res <- hGetLine hndl
-              return $ if ((take 24 res) ==  (take 24 assembled_one))
-                         then Success
-                         else Failure Nothing $ Reason $ "invalid program: " ++ res
+              (take 24 res) `shouldBe` (take 24 assembled_one)
         it "sends back a 'getFirst' request when sent a program with import" $ do
               hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
-              return $ if (res == getfile_command)
-                           then Success
-                           else Failure Nothing $ Reason $ "invalid reply: " ++ res
+              res `shouldBe` getfile_command
         it "successfully compiles after a 'getFirst' request when sent a valid program" $ do
               hndl <- connectToServer defaultPort
               hPutStrLn hndl program_two
               hFlush hndl
               res <- hGetLine hndl
-              if (res == getfile_command)
-                 then do
-                    hPutStrLn hndl program_one
-                    hFlush hndl
-                    fres <-hGetLine hndl
-                    return $ if ((take 24 fres) ==  (take 24 assembled_one))
-                               then Success
-                               else Failure Nothing $ Reason $ "invalid program after import: " ++ fres
-                 else return $ Failure Nothing $ Reason $ "invalid reply: " ++ res
+              res `shouldBe` getfile_command
+              hPutStrLn hndl program_one
+              hFlush hndl
+              fres <-hGetLine hndl
+              (take 24 fres) `shouldBe`  (take 24 assembled_one)
 
 
     connectToServer :: String -> IO Handle
@@ -116,7 +104,7 @@
     checkAddresses :: [AddrInfo] -> IO (Maybe Socket)
     checkAddresses [] = return (Nothing)
     checkAddresses (sa:rest) = do
-      sock <- socket (addrFamily sa) Stream defaultProtocol
+      sock <- socket
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("checkaddresses" ++ (ioeGetErrorString err)))
       --bnd <- isBound sock
