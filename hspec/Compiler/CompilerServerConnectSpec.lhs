@@ -104,7 +104,7 @@
     checkAddresses :: [AddrInfo] -> IO (Maybe Socket)
     checkAddresses [] = return (Nothing)
     checkAddresses (sa:rest) = do
-      sock <- socket
+      sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("checkaddresses" ++ (ioeGetErrorString err)))
       --bnd <- isBound sock

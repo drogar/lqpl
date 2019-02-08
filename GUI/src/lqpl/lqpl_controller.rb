@@ -29,7 +29,7 @@ class LqplController < ApplicationController
 
   def close
     dialogs_handler.dispose_all if dialogs_handler
-    sub_controllers_handler.dispose_all if subs_controllers_handler
+    sub_controllers_handler.dispose_all if sub_controllers_handler
     ExitHandler.instance.close_servers
     super
   end
