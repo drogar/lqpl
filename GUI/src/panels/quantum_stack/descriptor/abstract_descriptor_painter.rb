@@ -39,7 +39,7 @@ class AbstractDescriptorPainter
   def paint_model_at_point(gcontext, center)
     draw_colour_filled_shape(gcontext, my_shape(center), my_colour)
     paint_name(gcontext, center) if @model_element.name
-    paint_value(gcontext, center) if @model_element.empty?
+    paint_value(gcontext, center) if @model_element.scalar?
   end
 
   def paint_name(gcontext, center)
@@ -55,7 +55,7 @@ class AbstractDescriptorPainter
   def model_paint_size(gcontext)
     height  =  node_size
     valsize =  get_value_canvas_size gcontext
-    height += valsize.height_with_spacing if @model_element.empty?
+    height += valsize.height_with_spacing if @model_element.scalar?
 
     right_width   =  valsize.right_required_width
     left_width    =  [half_node_size + name_width(gcontext),

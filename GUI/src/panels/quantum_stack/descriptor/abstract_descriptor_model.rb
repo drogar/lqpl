@@ -12,7 +12,7 @@ class AbstractDescriptorModel < ApplicationModel
     nil
   end
 
-  def empty?
-    false # TODO: Where are we using this???
+  def scalar?
+    false
   end
 end

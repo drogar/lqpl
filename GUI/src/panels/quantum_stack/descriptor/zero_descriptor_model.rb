@@ -20,4 +20,8 @@ class ZeroDescriptorModel < AbstractDescriptorModel
   def length
     0
   end
+
+  def scalar?
+    true
+  end
 end

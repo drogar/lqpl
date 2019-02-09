@@ -1,6 +1,5 @@
 require 'abstract_descriptor_model'
 
-# abstract base for the descriptor models
 class ClassicalDescriptorModel < AbstractDescriptorModel
   def self.validate_substacks_count(substacks)
     return unless !substacks || substacks.empty?
