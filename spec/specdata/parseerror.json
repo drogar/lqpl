@@ -1,0 +1,105 @@
+{
+  "qstack": {
+    "id": -1,
+    "diagonal": false,
+    "substacks": [],
+    "qnode": {
+      "value": (0.5 / sqrt(2.0))
+    }
+  }
+}, {
+  "qstack": {
+    "id": -1,
+    "diagonal": false,
+    "substacks": [],
+    "qnode": {
+      "value": (0.5 / sqrt(2.0))
+    }
+  }
+}],
+"qnode": {
+  "qubit": ["ZZ", "ZO"]
+}
+}
+}, {
+  "qstack": {
+    "id": 2,
+    "diagonal": false,
+    "substacks": [{
+      "qstack": {
+        "id": -1,
+        "diagonal": false,
+        "substacks": [],
+        "qnode": {
+          "value": (0.5 / sqrt(2.0))
+        }
+      }
+    }, {
+      "qstack": {
+        "id": -1,
+        "diagonal": false,
+        "substacks": [],
+        "qnode": {
+          "value": (0.5 / sqrt(2.0))
+        }
+      }
+    }],
+    "qnode": {
+      "qubit": ["ZZ", "OZ"]
+    }
+  }
+}, {
+  "qstack": {
+    "id": 2,
+    "diagonal": true,
+    "substacks": [{
+        "qstack": {
+          "id": -1,
+          "diagonal": true,
+          "substacks": [],
+          "qnode": {
+            "value": 0.25
+          }
+        }
+      },
+      {
+        "qstack": {
+          "id": -1,
+          "diagonal": false,
+          "substacks": [],
+          "qnode": {
+            "value": 0.25
+          }
+        }
+      },
+      {
+        "qstack": {
+          "id": -1,
+          "diagonal": false,
+          "substacks": [],
+          "qnode": {
+            "value": 0.25
+          }
+        }
+      },
+      {
+        "qstack": {
+          "id": -1,
+          "diagonal": true,
+          "substacks": [],
+          "qnode": {
+            "value": 0.25
+          }
+        }
+      }
+    ],
+    "qnode": {
+      "qubit": ["ZZ", "ZO", "OZ", "OO"]
+    }
+  }
+}],
+"qnode": {
+  "qubit": ["ZZ", "ZO", "OZ", "OO"]
+}
+}
+}
