@@ -354,7 +354,7 @@ This allows us to compute a numeric value for any
  approx (Si)                    = 0:+1
  approx (Sbop Plus p1 p2)       = approx p1 + approx p2
  approx (Sfun (ExpToThe b) p)   = approx p ** approx b
- approx (Sfun (LogBase b) p)    = logBase (approx p) (approx b)
+ approx (Sfun (LogBase b) p)    = logBase (approx b) (approx p)
  approx (Sfun Log a)            = log (approx a)
  approx (Svar _)                = 1.0
  approx (Sfun SquareRoot p)     = sqrt(approx p)

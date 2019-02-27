@@ -28,22 +28,22 @@
 
     import System.Exit
 
-
-    instance Quantum LazyNum
-
-    main = do
-      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} tests
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    main = hspec $ do
+      tests
+--      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} tests
+  --    if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+    --                                 else exitWith ExitSuccess
 
     jsonValues =  [(StackZero, "{\"zero\":0}"),
-                   (StackValue (SZero), "{\"value\" : 0}" ),
+                   (StackValue (SZero), "{\"value\" : 0.0}" ),
+                   (StackValue (Sfun (LogBase 10) 100), "{\"value\" : 2.0}"),
+                   (StackValue (Sbop Div (Snum 0.5) (Sfun SquareRoot (Snum 2.0))), "{\"value\" : 0.35355339059327373}"),
                    (StackClassical [Left 1, Right True], "{\"classical\" : [1, true]}"),
                    (StackQubit [(Z,Z), (Z,O), (O,Z), (O,O)], "{\"qubit\" : [\"ZZ\", \"ZO\", \"OZ\", \"OO\"]}"),
                    (StackData [("Cons", [1,4]), ("Nil",[])],
                                 "{\"data\" : [{\"cons\" : \"Cons\", \"addresses\" : [1, 4]}, {\"cons\" : \"Nil\", \"addresses\" : []}]}")]
 
-    sub5 = QuantumStack (-1) True [] (StackValue (Snum 0.5))
+    sub5 = QuantumStack (-1) True [] (StackValue (Sfun (LogBase 10) 100))
     sub5f = QuantumStack (-1) False [] (StackValue (Snum 0.5))
 
     sqbzz :: StackDescriptor LazyNum
@@ -172,19 +172,33 @@
 
 
 
-    --Checkit :: a -> String -> SpecM ()
-    checkIt sd res = it ("returns "++show sd++" as '"++res++"'") $ res == (toJSON sd)
-    checkItBounded sd res = it ("returns "++show sd++" as '"++res++"'") $ res == (boundedToJSON 1 sd)
-    checkItBoundedWithBound bound sd res  = it ("returns "++show sd++" as '"++res++"'") $ res == (boundedToJSON bound sd)
+    --checkit :: a -> String -> Spec
+    checkIt sd res =
+        it ("returns "++show sd++" as '"++res++"'") $ do
+           toJSON sd `shouldBe` res
+
+    --checkitBounded :: a -> String -> Spec
+    checkItBounded sd res =
+        it ("returns "++show sd++" as '"++res++"'") $ do
+           (boundedToJSON 1 sd) `shouldBe` res
+    checkItBoundedWithBound bound sd res  =
+        it ("returns "++show sd++" as '"++res++"'") $ do
+           (boundedToJSON bound sd) `shouldBe` res
 
     --checkUnbounded :: QuantumStack LazyNum -> String -> SpecM ()
-    checkUnbounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res == (toJSON $ fixDiags qs)
+    checkUnbounded qs res =
+       it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ do
+          (toJSON $ fixDiags qs) `shouldBe` res
 
     --checkBounded :: QuantumStack LazyNum -> String -> SpecM ()
-    checkBounded qs res = it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ res == (boundedToJSON 1  $ fixDiags qs)
+    checkBounded qs res =
+       it ("returns "++show (fixDiags qs)++" as '"++res++"'") $ do
+          (boundedToJSON 1  $ fixDiags qs) `shouldBe` res
 
 
     tests =  describe "StackToJSON" $ do
+      it "handles a qstack" $ do
+        (toJSON sub5) `shouldBe` "{\"qstack\" : { \"id\" : -1, \"diagonal\" : true, \"substacks\" : [], \"qnode\" : { \"value\" : 2.0}}}"
       mapM_ (uncurry checkIt) jsonValues
       context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
       context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON

@@ -1,12 +1,11 @@
-LQPL_GUI_VERSION = '0.9.2'.freeze
+LQPL_GUI_VERSION = '0.9.2.1'.freeze
 
 ABOUT_STRING = "<html> <center>
 <strong>LQPL Emulator</strong> - Version #{LQPL_GUI_VERSION} (Experimental)
 </center> <br />
 <table>
 <tr><td>Contributers:</td><td> Robin Cockett (robin@ucalgary.ca)</td></tr>
-<tr><td>&nbsp;</td><td> Brett Giles (brett.giles@ucalgary.ca)</td></tr>
-<tr><td>&nbsp;</td><td>Rajika Kumarasiri</td></tr>
+<tr><td>&nbsp;</td><td> Brett Giles (brett.giles@drogar.com)</td></tr>
 </table>
 <br />
 Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />
@@ -14,7 +13,7 @@ Website:  http://pll.cpsc.ucalgary.ca/lqpl<br />
 
 LICENSE_STRING = "
 <html>
-Copyright &copy; 2006-2014, Brett G. Giles, Robin Cockett, University of Calgary<br />
+Copyright &copy; 2006-2019, Brett G. Giles, Robin Cockett, University of Calgary<br />
 All rights reserved.<br />
 <br />
 Redistribution and use in source and binary forms, with or without modification, are permitted<br />

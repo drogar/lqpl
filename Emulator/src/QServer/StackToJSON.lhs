@@ -4,6 +4,7 @@
 
   import QSM.BasicData
   import Data.ClassicalData
+  import Data.Complex (realPart)
   import QSM.QuantumStack.QSDefinition
   import QSM.QuantumStack.QSManipulation
   import Data.Stack as Stack
@@ -11,14 +12,13 @@
   import qualified Data.List as List
   import Data.Tuples
   import Data.Tuple
+  import Data.Computation.BaseType
   import Data.LazyNum
   import QSM.Components.ClassicalStack
   import QSM.Components.Dump
   import QSM.Components.Instructions
   import QSM.Components.MemoryMap
   import Utility.MakeJSON
-
-  --instance Quantum LazyNum
 
   fixDiags:: Quantum b => QuantumStack b -> QuantumStack b
   fixDiags stk =
@@ -37,8 +37,8 @@
     let (qs',bs') = discardZeros qs bs
     in if isStackZero q then (qs',bs') else ((q:qs'),(b:bs'))
 
-  surroundWith :: String->String -> String
-  surroundWith tag item = '<':tag++">"++item++"</"++tag++">"
+  --surroundWith :: String->String -> String
+  --surroundWith tag item = '<':tag++">"++item++"</"++tag++">"
 
   class JSON a where
     toJSON :: a -> String
@@ -72,9 +72,9 @@
   stripBasis (O,O) = "OO"
 
 
-  instance (Show b) => JSON (StackDescriptor b) where
+  instance JSON (StackDescriptor BaseType) where
     toJSON StackZero = jsonObject ["\"zero\":0"]
-    toJSON (StackValue b) = jsonObject [jsonValueElement "value" b]
+    toJSON (StackValue b) = jsonObject [jsonValueElement "value" $ realPart $ approximate b]
     toJSON (StackClassical cs) = jsonObject [jsonArrayElement "classical" (List.map stripClassical cs)]
     toJSON (StackQubit basis) = jsonObject [jsonValueArrayElement "qubit" (List.map stripBasis basis)]
     toJSON (StackData constructors) =
@@ -90,7 +90,7 @@
   instance JSON MemoryMap where
       toJSON mm = jsonObject [jsonArrayElement "memory_map" $ List.map jsonBareObjectFromMap mm]
 
-  instance (Show b)=> JSON (QuantumStack b) where
+  instance JSON (QuantumStack BaseType) where
     toJSON fqs = jsonObject  [ jsonElement "qstack" $
                                jsonObject [jsonValueElement "id" (address fqs),
                                            jsonElement "diagonal" (boolForJSON $ onDiagonal fqs),
@@ -127,11 +127,11 @@
   instance JSON NameSupply where
       toJSON (ints, i) = jsonObject [jsonValueArrayElement "int_list" ints, jsonValueElement "address" i]
 
-  instance (Show b) => JSON (Dump b) where
+  instance JSON (Dump BaseType) where
     toJSON = listToJSON "dump"
     boundedToJSON n = boundedListToJSON n "dump"
 
-  instance (Show b)=> JSON (DumpElement b) where
+  instance JSON (DumpElement BaseType) where
     toJSON (DumpStackSplit ret branches resultQ saveC saveNS resultNS saveMM resultMM) =
         let jsonBranch (a,b) = jsonObject [jsonElement "qsbranch" $ toJSON a, jsonValueElement "branch_label" b]
         in  jsonObject [jsonElement  "dump_split" $ jsonObject [

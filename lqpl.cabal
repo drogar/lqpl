@@ -92,11 +92,14 @@ Test-Suite stack-to-json-spec
    main-is:          QServer/StackToJSONSpec.lhs
    build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,hspec-core,array,
                      hspec,directory,unix,process,QuickCheck,hspec-contrib
-   other-modules:    Data.ClassComp, Data.ClassicalData, Data.EitherLocal, Data.LazyNum, Data.Matrix,
-                     Data.Permutation, Data.Stack, Data.Tuples, QSM.BasicData, QSM.Components.ClassicalStack,
-                     QSM.Components.Dump, QSM.Components.Instructions, QSM.Components.MemoryMap, QSM.MachineErrors,
-                     QSM.QuantumStack.QSDefinition, QSM.QuantumStack.QSManipulation, QSM.Transformations,
-                     QServer.StackToJSON, SpecHelper, Utility.Extras, Utility.MakeJSON
+   other-modules:    Data.ClassComp, Data.ClassicalData, Data.Computation.BaseType,
+                     Data.EitherLocal, Data.InfList, Data.LazyNum, Data.Matrix, Data.Permutation, Data.Stack,
+                     Data.Stream, Data.Tuples, QSM.BasicData, QSM.Components.ClassicalStack,
+                     QSM.Components.ControlStack, QSM.Components.Dump, QSM.Components.Instructions,
+                     QSM.Components.MemoryMap, QSM.MachineErrors, QSM.QSM, QSM.QuantumStack.QSDefinition,
+                     QSM.QuantumStack.QSManipulation, QSM.QuantumStack.QSRotation,
+                     QSM.QuantumStack.QSTransforms, QSM.Transformations, QServer.StackToJSON,
+                     SpecHelper, Utility.Extras, Utility.MakeJSON
    extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,
                      ScopedTypeVariables, FlexibleContexts,KindSignatures,Rank2Types,CPP
    hs-source-dirs:   Emulator/src,Common/src,hspec
