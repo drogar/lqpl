@@ -14,95 +14,31 @@ bug-reports:         mailto:brett.giles@ucalgary.ca
 homepage:            http://pll.cpsc.ucalgary.ca/lqpl
 Build-Type:          Simple
 Cabal-Version:       >=1.9.2
---data-dir:            src
---data-files:          glade/qstack.glade
-Test-Suite compiler-server-spec
+
+Test-Suite spec
    type:             exitcode-stdio-1.0
-   main-is:          Compiler/CompilerServerSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,hspec-core,
-                     directory,process,unix,mtl,transformers,containers,random,aeson,text,time
+   main-is:          Spec.hs
+   build-depends:    aeson,array,base,bytestring,containers,directory,filepath,hspec,hspec-contrib,hspec-core,
+                     HUnit,mtl,network,parsec,process,QuickCheck,random,text,time,transformers,unix
    other-modules:    Compiler.BaseTypes, Compiler.CompSupport, Compiler.CompilerServer, Compiler.CompilerSpecHelper,
                      Compiler.GenCode, Compiler.GenerationErrors, Compiler.InstructionNames, Compiler.Instructions,
                      Compiler.IrTypes, Compiler.QPLParser, Compiler.Qtypes, Compiler.SemTypes, Compiler.Semantic,
                      Compiler.SemanticErrors, Compiler.SymbolTable, Compiler.SymbolTableGlobals, Compiler.TypeUnification,
-                     Compiler.UnificationErrors, Data.Stack, Data.Tuples, Fixture.CompilerData, Paths_lqpl, SpecHelper,
-                     Utility.Extras, Utility.FileProvider, Utility.FileProvider.FileSystem, Utility.MakeJSON,
-                     Utility.ServerTypes
-   hs-source-dirs:   Compiler/src,Common/src, hspec
-   extensions:       FlexibleInstances,CPP,OverloadedStrings
-
-Test-Suite compiler-server-connection-spec
-   type:             exitcode-stdio-1.0
-   main-is:          Compiler/CompilerServerConnectSpec.lhs
-   build-depends:    base,parsec,network,HUnit,hspec,filepath,QuickCheck,bytestring,hspec-core,time,directory,process,unix,mtl,transformers,containers,aeson,text,hspec-contrib,array,bytestring
-   other-modules:    Compiler.BaseTypes, Compiler.CompSupport, Compiler.CompilerServer, Compiler.GenCode,
-                     Compiler.GenerationErrors, Compiler.InstructionNames, Compiler.Instructions, Compiler.IrTypes,
-                     Compiler.QPLParser, Compiler.Qtypes, Compiler.SemTypes, Compiler.Semantic,
-                     Compiler.SemanticErrors, Compiler.SymbolTable, Compiler.SymbolTableGlobals, Compiler.TypeUnification,
-                     Compiler.UnificationErrors, Data.Stack, Data.Tuples, Fixture.CompilerData, Paths_lqpl, SpecHelper,
-                     Utility.Extras, Utility.FileProvider, Utility.MakeJSON, Utility.ServerTypes
-   hs-source-dirs:   Compiler/src,Common/src,hspec
-   extensions:       FlexibleInstances,CPP,OverloadedStrings
-
-Test-Suite lqpl-parser-spec
-   type:             exitcode-stdio-1.0
-   main-is:          Compiler/QPLParserSpec.lhs
-   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process,hspec-core,hspec-contrib
-   other-modules:    Compiler.CompilerSpecHelper, Compiler.QPLParser, Compiler.Qtypes, SpecHelper,
-                     Utility.FileProvider, Utility.FileProvider.FileSystem
-   hs-source-dirs:   Compiler/src,Common/src,hspec
-   extensions:       CPP
-
-Test-Suite type-unification-spec
-   type:             exitcode-stdio-1.0
-   main-is:          Compiler/TypeUnificationSpec.lhs
-   build-depends:    base,parsec,HUnit,hspec,QuickCheck,transformers,filepath,directory,unix,process,hspec-core,
-                     containers,mtl,hspec-contrib
-   other-modules:    Compiler.BaseTypes, Compiler.IrTypes, Compiler.Qtypes, Compiler.SemTypes,
-                     Compiler.TypeUnification, Compiler.UnificationErrors, Data.Stack, Data.Tuples, SpecHelper
-   hs-source-dirs:   Compiler/src,Common/src,hspec
-   extensions:       CPP
-
-Test-Suite utility-file-spec
-   type:             exitcode-stdio-1.0
-   main-is:          Utility/FileProviderSpec.lhs
-   build-depends:    hspec,QuickCheck,base,directory,filepath,network,parsec,process,hspec-core,unix
-   other-modules:    SpecHelper, Utility.FileProvider, Utility.FileProvider.FileSystem
-   hs-source-dirs:   Compiler/src,Common/src,hspec
-   extensions:       FlexibleInstances,CPP
-
-Test-Suite test-all
-   type:             exitcode-stdio-1.0
-   main-is:          Tests/RunTests.lhs
-   other-modules:    Data.ClassComp, Data.LazyNum, Tests.Data.TestLazyNum, Utility.Extras, Utility.TestExtras
-   build-depends:    base,parsec,network,HUnit,filepath,hspec-core,hspec,hspec-contrib
-   hs-source-dirs:   Emulator/src,Common/src,hspec
-
-Test-Suite emulator-server-command-spec
-   type:             exitcode-stdio-1.0
-   main-is:          QServer/EmulatorServerCommandSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,hspec,hspec-core,QuickCheck,containers,aeson,
-                     text,bytestring,hspec-contrib
-   other-modules:    QServer.EmulatorServerCommand, QServer.Types, Utility.MakeJSON, Utility.ServerTypes
-   extensions:       CPP
-   hs-source-dirs:   Emulator/src,Common/src,hspec
-
-Test-Suite stack-to-json-spec
-   type:             exitcode-stdio-1.0
-   main-is:          QServer/StackToJSONSpec.lhs
-   build-depends:    base,parsec,network,HUnit,filepath,mtl,containers,hspec-core,array,
-                     hspec,directory,unix,process,QuickCheck,hspec-contrib
-   other-modules:    Data.ClassComp, Data.ClassicalData, Data.Computation.BaseType,
-                     Data.EitherLocal, Data.InfList, Data.LazyNum, Data.Matrix, Data.Permutation, Data.Stack,
-                     Data.Stream, Data.Tuples, QSM.BasicData, QSM.Components.ClassicalStack,
+                     Compiler.UnificationErrors, Data.ClassComp, Data.ClassicalData, Data.Computation.BaseType, Data.EitherLocal, Data.InfList, Data.LazyNum, Data.Matrix, Data.Permutation, Data.Stack,
+                     Data.Stream, Data.Tuples, Fixture.CompilerData, Paths_lqpl, QSM.BasicData, QSM.Components.ClassicalStack,
                      QSM.Components.ControlStack, QSM.Components.Dump, QSM.Components.Instructions,
                      QSM.Components.MemoryMap, QSM.MachineErrors, QSM.QSM, QSM.QuantumStack.QSDefinition,
                      QSM.QuantumStack.QSManipulation, QSM.QuantumStack.QSRotation,
                      QSM.QuantumStack.QSTransforms, QSM.Transformations, QServer.StackToJSON,
-                     SpecHelper, Utility.Extras, Utility.MakeJSON
-   extensions:       TypeSynonymInstances,FlexibleInstances,MultiParamTypeClasses,ExistentialQuantification,
-                     ScopedTypeVariables, FlexibleContexts,KindSignatures,Rank2Types,CPP
-   hs-source-dirs:   Emulator/src,Common/src,hspec
+                     SpecHelper,
+                     Utility.Extras, Utility.FileProvider, Utility.FileProvider.FileSystem, Utility.MakeJSON,
+                     Utility.ServerTypes,QServer.EmulatorServerCommand, QServer.Types, Utility.MakeJSON, Utility.ServerTypes,
+                     Compiler.CompilerServerConnectSpec,Compiler.CompilerServerSpec,Compiler.QPLParserSpec,Compiler.TypeUnificationSpec,
+                     QServer.CodeToJSONSpec,QServer.EmulatorServerCommandSpec,QServer.StackToJSONSpec,Utility.FileProviderSpec
+   hs-source-dirs:   Compiler/src,Common/src,Emulator/src,hspec
+   extensions:       FlexibleInstances,TypeSynonymInstances,MultiParamTypeClasses,Rank2Types,
+                     ExistentialQuantification,OverloadedStrings,ExtendedDefaultRules,FlexibleContexts,
+                     CPP
 
 Executable lqpl
    Main-is:           Compiler/Main.lhs

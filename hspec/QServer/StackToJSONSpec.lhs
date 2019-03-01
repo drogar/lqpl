@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module QServer.StackToJSONSpec(spec) where
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
@@ -28,8 +28,9 @@
 
     import System.Exit
 
-    main = hspec $ do
-      tests
+    spec = tests
+    -- main = hspec $ do
+      -- tests
 --      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} tests
   --    if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
     --                                 else exitWith ExitSuccess
@@ -198,7 +199,7 @@
 
     tests =  describe "StackToJSON" $ do
       it "handles a qstack" $ do
-        (toJSON sub5) `shouldBe` "{\"qstack\" : { \"id\" : -1, \"diagonal\" : true, \"substacks\" : [], \"qnode\" : { \"value\" : 2.0}}}"
+        (toJSON sub5) `shouldBe` "{\"qstack\" : {\"id\" : -1, \"diagonal\" : true, \"substacks\" : [], \"qnode\" : {\"value\" : 2.0}}}"
       mapM_ (uncurry checkIt) jsonValues
       context "unbounded qstack" $ mapM_ (uncurry checkUnbounded) stackJSON
       context "bounded qstack" $ mapM_ (uncurry checkBounded) stackBoundedJSON

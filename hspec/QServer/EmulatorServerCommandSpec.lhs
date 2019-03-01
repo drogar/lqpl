@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module QServer.EmulatorServerCommandSpec(spec) where
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
@@ -16,11 +16,13 @@
     expectLeftString (Left _)  = True
     expectLeftString _ = False
 
-    main = do
-      let ptests = describe "Emulator Server Commands" $ mapM_ fromHUnitTest tests
-      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} ptests
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    spec = describe "Emulator Server Commands" $ mapM_ fromHUnitTest tests
+
+    -- main = do
+      -- let ptests = describe "Emulator Server Commands" $ mapM_ fromHUnitTest tests
+      -- summary <- hspecWithResult defaultConfig{configFormatter=Just progress} ptests
+      -- if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+         --                            else exitWith ExitSuccess
 
 --    makeSpec a = it ("hunit test: "++ show a) $ a  - Was where fromHUnitTest is now
 

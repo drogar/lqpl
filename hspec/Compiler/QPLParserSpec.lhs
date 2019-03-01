@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module Compiler.QPLParserSpec(spec) where
     import Test.Hspec.Core.Spec(Example(..),Result(..),FailureReason(..))
     import Test.Hspec
     import Test.Hspec.Runner
@@ -26,7 +26,8 @@
 
     import Compiler.CompilerSpecHelper
 
-    main = hspec parserSpecs
+    spec = parserSpecs
+    -- main = hspec parserSpecs
       -- summary <- hspecWithResult defaultConfig{configFormatter = Just progress} parserSpecs
       -- if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
                                      --else exitWith ExitSuccess

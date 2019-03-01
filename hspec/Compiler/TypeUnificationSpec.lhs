@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module Compiler.TypeUnificationSpec(spec) where
     import Test.Hspec.Core.Spec(Example(..),Result(..),FailureReason(..))
     import Test.Hspec
     import Test.Hspec.Runner
@@ -29,10 +29,11 @@
             Map.empty
             Map.empty [] (push 0 emptyStack) 9
 
-    main = do
-      summary <- hspecWithResult defaultConfig{configFormatter = Just progress} unificationSpecs
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    spec = unificationSpecs
+    -- main = do
+      -- summary <- hspecWithResult defaultConfig{configFormatter = Just progress} unificationSpecs
+      -- if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+         --                            else exitWith ExitSuccess
 
     runinstanceOf whichtv tv1 tv2 = do
       return $ evalStateT (liftM fst $ runWriterT $ instanceOf whichtv tv1 tv2 (Map.singleton "b" INT)) startsemstate

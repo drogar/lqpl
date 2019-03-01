@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module Utility.FileProviderSpec(spec) where
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
@@ -15,10 +15,12 @@
     import Utility.FileProvider.FileSystem
 
 
-    main = do
-      summary <- hspecWithResult defaultConfig{configFormatter=Just progress} fileProviderSpecs
-      if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
-                                     else exitWith ExitSuccess
+    spec = fileProviderSpecs
+
+    -- main = do
+      -- summary <- hspecWithResult defaultConfig{configFormatter=Just progress} fileProviderSpecs
+      -- if summaryFailures summary > 0 then exitWith (ExitFailure $ summaryFailures summary)
+      --                                     else exitWith ExitSuccess
 
     fileProviderSpecs = describe "FileProvider" $ do
       context "filesystem provider class implementation" $ do

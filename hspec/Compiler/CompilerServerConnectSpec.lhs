@@ -1,5 +1,5 @@
 \begin{code}
-  module Main where
+  module Compiler.CompilerServerConnectSpec(spec) where
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
@@ -22,7 +22,8 @@
 
     import Fixture.CompilerData
 
-    main = hspec compilerSpecs
+    spec = compilerSpecs
+    -- main = hspec compilerSpecs
 
     compilerSpecs = describe "compiler" $ do
       context "startup" $ do

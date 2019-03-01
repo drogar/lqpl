@@ -37,9 +37,6 @@
     let (qs',bs') = discardZeros qs bs
     in if isStackZero q then (qs',bs') else ((q:qs'),(b:bs'))
 
-  --surroundWith :: String->String -> String
-  --surroundWith tag item = '<':tag++">"++item++"</"++tag++">"
-
   class JSON a where
     toJSON :: a -> String
     listToJSON :: String -> [a] -> String

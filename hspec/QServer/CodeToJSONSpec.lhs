@@ -1,13 +1,9 @@
 \begin{code}
-  module Main where
+  module QServer.CodeToJSONSpec(spec) where
     import Test.Hspec
     import Test.Hspec.Runner
     import Test.Hspec.Formatters
     import Test.Hspec.QuickCheck
-    import Test.Hspec.HUnit
-    import Test.QuickCheck hiding (property)
-    import Test.HUnit
-
 
     import SpecHelper
 
@@ -22,16 +18,17 @@
 
     jsonValues :: [(Memory Basis, String)]
     jsonValues =  [(Map.singleton "main" [QDelete "q", QPullup "r"],
-                  "{\"code\":[\"main\":[\"QDelete\":\"q\",\"QPullup\":\"r\"]]}")]
+                  "{\"main\" : [\"QDelete\" : \"q\",\"QPullup\" : \"r\"]}")]
 
 
     --checkIt :: Memory Basis -> String -> SpecM ()
-    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $
-                         res ~=? (surroundWith "Code" $ toJSON cd)
+    checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ do
+                         toJSON cd `shouldBe` res
 
-    tests =  describe "StackToJSON" $ mapM_ (uncurry checkIt) jsonValues
+    tests =  describe "Stack - CodeToJSON" $ mapM_ (uncurry checkIt) jsonValues
 
 
-    main = hspec tests
+    spec = tests
+    -- main = hspec tests
 
 \end{code}
