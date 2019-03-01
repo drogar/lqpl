@@ -10,6 +10,7 @@ import Data.Text as T
 import Data.ByteString as BS
 import Data.Text.Encoding as TE
 import Control.Monad
+import qualified Control.Monad.Fail as Fail
 import Control.Applicative (Applicative(..))
 
 import QSM.Components.Instructions
@@ -125,6 +126,10 @@ instance Monad Alex where
                             Left msg -> return $ Left msg
                             Right (s',a) -> unAlex (k a) s'
   return a = Alex $ \s -> return $ Right (s,a)
+  fail = Fail.fail
+
+instance Fail.MonadFail Alex where
+  fail s = Alex $ \st -> return $ Left s
 
 instance Functor Alex where
     fmap = liftM
