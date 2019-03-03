@@ -1,30 +1,30 @@
 \begin{code}
-module StackFunctions where
+module Tests.StackFunctions where
 
-import QSM.QSM
+import Lqpl.QSM.QSM
 
-import QSM.BasicData
-import QSM.MachineErrors
-import QSM.Transformations
+import Lqpl.QSM.BasicData
+import Lqpl.QSM.MachineErrors
+import Lqpl.QSM.Transformations
 
-import QSM.Components.ClassicalStack
-import QSM.Components.ControlStack
-import QSM.Components.Dump
-import QSM.Components.Instructions
-import QSM.Components.MemoryMap
+import Lqpl.QSM.Components.ClassicalStack
+import Lqpl.QSM.Components.ControlStack
+import Lqpl.QSM.Components.Dump
+import Lqpl.QSM.Components.Instructions
+import Lqpl.QSM.Components.MemoryMap
 
-import QSM.QuantumStack.QSDefinition
-import QSM.QuantumStack.QSManipulation
-import QSM.QuantumStack.QSRotation
-import QSM.QuantumStack.QSTransforms
+import Lqpl.QSM.QuantumStack.QSDefinition
+import Lqpl.QSM.QuantumStack.QSManipulation
+import Lqpl.QSM.QuantumStack.QSRotation
+import Lqpl.QSM.QuantumStack.QSTransforms
 
-import Data.LazyNum
-import Data.ClassComp
-import Data.Matrix
+import Lqpl.Data.LazyNum
+import Lqpl.Data.ClassComp
+import Lqpl.Data.Matrix
 import Data.Map as Map
 import Data.List as List
-import Data.Stream
-import Data.InfList
+import Lqpl.Data.Stream
+import Lqpl.Data.InfList
 
 instance Quantum LazyNum
 
