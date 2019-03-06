@@ -79,13 +79,13 @@
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("gethandle" ++ (ioeGetErrorString err)))
-      writable <- isWritable sock
-      if (writable)
-        then do
+      thePort <- socketPortSafe sock
+      case thePort of
+        Just _ -> do
           h <- socketToHandle sock ReadWriteMode
           hSetBuffering h LineBuffering
           return (Just h)
-        else getHandle rest
+        Nothing -> getHandle rest
 
     ignoreIOError err =
       do let a = ioeGetErrorString err
@@ -108,11 +108,8 @@
       sock <- socket (addrFamily sa) Stream defaultProtocol
       setSocketOption sock KeepAlive 1
       catch (connect sock (addrAddress sa)) ignoreIOError --putStrLn ("checkaddresses" ++ (ioeGetErrorString err)))
-      --bnd <- isBound sock
-      --putStrLn $ "Socket bound? " ++ show bnd
-      writable <- isWritable sock
-      --putStrLn $ "Socket writable? " ++ show writable
-      if (writable)
-        then return (Just sock)
-        else checkAddresses rest
+      thePort <- socketPortSafe sock
+      case thePort of
+        Just _  -> return (Just sock)
+        Nothing -> checkAddresses rest
 \end{code}

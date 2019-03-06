@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1733bd3ce5cf026fcc02fa257c9d82f85446398b4c64a69f6afc2b651cc030b0
+-- hash: a4e6966df1dc3091a4dfdaddd20cf826cea5a75fb9cfa1370e51b96502ddda48
 
 name:           lqpl-emulator
 version:        0.9.2
@@ -23,7 +23,6 @@ library
       Lqpl.Assembler.AssemLexer
       Lqpl.Assembler.AssemParser
       Lqpl.Assembler.LexMonad
-      Lqpl.Data.Basis
       Lqpl.Data.ClassComp
       Lqpl.Data.ClassicalData
       Lqpl.Data.Computation.BaseType

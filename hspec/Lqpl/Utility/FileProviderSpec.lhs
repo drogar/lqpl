@@ -58,8 +58,9 @@
         addrinfo <- getAddrInfo Nothing (Just "localhost") (Just port)
         let serveraddr = head addrinfo
         sock <- socket (addrFamily serveraddr) Stream defaultProtocol
-        bnd <- isBound sock
-        writable <- isWritable sock
-        return $ bnd && writable
+        thePort <- socketPortSafe sock
+        return $ case thePort of
+                   Just _  -> True
+                   Nothing -> False
 
 \end{code}
