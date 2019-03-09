@@ -25,7 +25,7 @@
     spec = compilerSpecs
     -- main = hspec compilerSpecs
 
-    compilerSpecs = describe "compiler" $ do
+    compilerSpecs = describe "compiler server connection" $ do
       context "startup" $ do
         it ("runs on port "++defaultPort++" by default") $ do
             running <- checkOpenPort defaultPort
