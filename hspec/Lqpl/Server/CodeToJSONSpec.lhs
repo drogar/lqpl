@@ -23,7 +23,8 @@
 
     --checkIt :: Memory Basis -> String -> SpecM ()
     checkIt cd res = it ("returns "++show cd++" as '"++res++"'") $ do
-                         toJSON cd `shouldBe` res
+                        pendingWith "Need to change code to json first"
+                        toJSON cd `shouldBe` res
 
     tests =  describe "Stack - CodeToJSON" $ mapM_ (uncurry checkIt) jsonValues
 
