@@ -154,8 +154,8 @@ module Swingtown
 
       def labelize_and_add_to_container(text_for_label, container)
         spinlab = make_my_label(text_for_label)
-        container.add(spinlab) if container
-        container.add(self) if container
+        container&.add(spinlab)
+        container&.add(self)
       end
 
       def self.spinner_with_label(text_for_label, container = nil)
