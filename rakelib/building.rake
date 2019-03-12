@@ -8,7 +8,7 @@ directory 'out/bin'
 directory 'out/lqpl_gui'
 directory 'out/lib/java'
 
-abs_out = File.absolute_path('out')
+# abs_out = File.absolute_path('out')
 redist_jars = FileList.new('GUI/lib/java/*')
 
 haskell_source_files = FileList.new('Common/src/**/*hs')
@@ -20,27 +20,27 @@ haskell_source_files.include('Emulator/src/Assembler/AssemParser.ly')
 build = namespace :build do
   desc 'clean servers'
   task :server_clean do
-    sh 'runghc Setup.hs clean'
+    sh 'stack clean'
     sh 'rm out/bin/lqpl*'
   end
-  desc 'config server build'
-  task :server_config do
-    sh "runghc Setup.hs configure --user --prefix=#{abs_out}" unless uptodate?('dist/setup-config', ['lqpl.cabal'])
-  end
+  # desc 'config server build'
+  # task :server_config do
+  #   sh "runghc Setup.hs configure --user --prefix=#{abs_out}" unless uptodate?('dist/setup-config', ['lqpl.cabal'])
+  # end
 
-  desc 'config server build with tests'
-  task :server_config_with_tests do
-    sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
-  end
+  # desc 'config server build with tests'
+  # task :server_config_with_tests do
+  #   sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
+  # end
 
   desc 'Build the Haskell Compiler and Emulator'
-  task server: ['out/bin', :server_config] do
-    sh 'runghc Setup.hs build && runghc Setup.hs install' unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
+  task server: ['out/bin'] do
+    sh 'stack build --copy-bins && cp ~/.local/bin/lqpl* out/bin/' unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
   end
 
   desc 'Build Haskell code with tests'
-  task server_with_tests: ['out/bin', :server_config_with_tests] do
-    sh 'runghc Setup.hs build && runghc Setup.hs install'
+  task server_with_tests: ['out/bin'] do
+    sh 'stack test'
   end
 
   desc 'Copy JRuby files in preparation for JAR'
