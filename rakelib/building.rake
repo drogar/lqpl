@@ -38,10 +38,10 @@ build = namespace :build do
     sh 'stack build --copy-bins && cp ~/.local/bin/lqpl* out/bin/' unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
   end
 
-  desc 'Build Haskell code with tests'
-  task server_with_tests: ['out/bin'] do
-    sh 'stack test'
-  end
+  # desc 'Build Haskell code with tests'
+  # task server_with_tests: ['out/bin'] do
+  #    sh 'stack test'
+  # end
 
   desc 'Copy JRuby files in preparation for JAR'
   task copy_jruby: 'out/lqpl_gui' do
@@ -155,8 +155,8 @@ namespace :test do
   task spec: [build[:jar]]
 
   desc 'Run lqpl Compiler and Emulator tests'
-  task server_tests: [build[:server_with_tests]] do
-    sh 'runghc Setup.hs test --show-details=always'
+  task :server_tests do
+    sh "stack test --dump-logs --test-arguments='--format=progress --color'"
   end
 
   desc 'Run all tests'
