@@ -24,3 +24,4 @@ lqplcode/*.qpo
 coverage
 no_dist
 TAGS
+.stack-work

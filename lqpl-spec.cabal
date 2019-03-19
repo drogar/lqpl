@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 04ee01c36b11026f089e66a2b3eea9efa967dfa468f2785551d0cf4071362f54
+-- hash: d0c2c4cb78d9225960ebd25b62567a08609e2544f835ffda95fca9b7fa0be707
 
 name:           lqpl-spec
 version:        0.9.2
@@ -17,7 +19,6 @@ license:        BSD3
 license-file:   LICENCE
 tested-with:    GHC
 build-type:     Simple
-cabal-version:  >= 1.10
 
 test-suite spec
   type: exitcode-stdio-1.0
@@ -60,6 +61,6 @@ test-suite spec
     , parsec
     , process
     , unix
-  build-tools:
-      hspec-discover
+  build-tool-depends:
+      hspec-discover:hspec-discover
   default-language: Haskell2010

@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 282fe8af2767af743e1bbf57d98e8e50b8be91ae4f23cb95356b8e22e370fd24
+-- hash: 1d18c30d061b6f0248cd461cf97b20ff17ae5a0f2c3a13ec89ea01c7da84fec5
 
 name:           lqpl-compiler-server
 version:        0.9.2
@@ -15,7 +17,6 @@ maintainer:     brett.giles@ucalgary.ca
 license:        BSD3
 tested-with:    GHC
 build-type:     Simple
-cabal-version:  >= 1.10
 
 library
   exposed-modules:
