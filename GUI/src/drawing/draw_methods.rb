@@ -1,16 +1,10 @@
-%w[AlphaComposite BasicStroke Color Dimension Font Point Rectangle RenderingHints font.TextAttribute image.BufferedImage].each do |name|
-  java_import "java.awt.#{name}"
-end
+ImportJava.do_imports(context: self,
+                      awt: %w[AlphaComposite BasicStroke Color Dimension Font Point Rectangle RenderingHints
+                              font.TextAttribute geom.Dimension2D geom.Line2D geom.Ellipse2D geom.Rectangle2D image.BufferedImage],
+                      swing: %w[ImageIcon])
 
-%w[Dimension2D Line2D Ellipse2D Rectangle2D].each do |name|
-  java_import "java.awt.geom.#{name}"
-end
-
-%w[AttributedString AttributedCharacterIterator].each do |name|
-  java_import "java.text.#{name}"
-end
-
-java_import javax.swing.ImageIcon
+java_import java.text.AttributedString
+java_import java.text.AttributedCharacterIterator
 
 module Lqpl
   module Drawing
@@ -21,41 +15,48 @@ module Lqpl
       end
 
       def mid_point(point1, point2)
-        Point.new((point1.x + point2.x) / 2, (point1.y + point2.y) / 2)
+        Point.new(averagex(point1, point2), averagey(point1, point2))
       end
 
-      def draw_sized_text(gcontext, size, text, point, reference)
+      def get_x_for_reference(reference, width, base_x)
+        base_x - width * (reference == :left ? 1 : 0.5)
+      end
+
+      def make_attributed_text(text, size)
         atext = AttributedString.new(text)
         atext.add_attribute(TextAttribute::SIZE, size, 0, text.length)
-        case reference
-        when :left then draw_text_to_left_of_point(gcontext, atext.iterator, Point.new(point.x, point.y))
-        when :right then draw_text_to_right_of_point(gcontext, atext.iterator, point)
-        else draw_text_centered_at_point(gcontext, atext.iterator, point)
-        end
+        atext
       end
 
-      def draw_text_to_left_of_point(gcontext, text, point)
-        text_bounds = get_string_size(gcontext, text)
-        gcontext.draw_string(text, point.x - text_bounds.width, point.y)
-      end
+      def get_text_position(gcontext, reference, atext, point)
+        return point if reference == :right
 
-      def draw_text_to_right_of_point(gcontext, text, point)
-        gcontext.draw_string(text, point.x, point.y)
-      end
-
-      def draw_text_centered_at_point(gcontext, text, point)
-        text_bounds = get_string_size(gcontext, text)
-        gcontext.draw_string(text, point.x - (text_bounds.width * 0.5), point.y)
+        text_bounds = get_string_size(gcontext, atext.iterator)
+        Point.new(get_x_for_reference(reference, text_bounds.width, point.x), point.y)
       end
 
       def get_string_size(gcontext, text)
         case text
         when AttributedCharacterIterator then
-          # this_font = gcontext.font.java_send :deriveFont, [Java::float], 8.0
-          this_font = gcontext.font.derive_font(Font::PLAIN, 8.0)
-          this_font.get_string_bounds(text, 0, text.end_index, gcontext.font_render_context)
+          get_plain_font_string_size(gcontext, text)
         else gcontext.font.get_string_bounds(text, gcontext.font_render_context)
         end
+      end
+
+      def get_plain_font_string_size(gcontext, text)
+        this_font = gcontext.font.derive_font(Font::PLAIN, 8.0)
+        this_font.get_string_bounds(text, 0, text.end_index, gcontext.font_render_context)
+      end
+
+      def draw_sized_text(gcontext, size, text, point, reference)
+        atext = make_attributed_text(text, size)
+        draw_point = get_text_position(gcontext, reference, atext, point)
+
+        draw_text_starting_at_point(gcontext, atext.iterator, draw_point)
+      end
+
+      def draw_text_starting_at_point(gcontext, text, point)
+        gcontext.draw_string(text, point.x, point.y)
       end
 
       def draw_black_line(gcontext, from, to)
@@ -65,10 +66,20 @@ module Lqpl
       end
 
       def draw_colour_filled_shape(gcontext, shape, fill_colour)
-        gcontext.color = fill_colour
+        gcontext.set_color(fill_colour)
         gcontext.fill shape
-        gcontext.color = Color.black
+        gcontext.set_color(Color.black)
         gcontext.draw shape
+      end
+
+      private
+
+      def averagex(point1, point2)
+        (point1.x + point2.x) / 2
+      end
+
+      def averagey(point1, point2)
+        (point1.y + point2.y) / 2
       end
     end
   end

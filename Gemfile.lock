@@ -131,7 +131,7 @@ GEM
       unicode-display_width (~> 1.4.0)
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
-    ruby_parser (3.13.0)
+    ruby_parser (3.13.1)
       sexp_processor (~> 4.9)
     rubyzip (1.2.2)
     s4t-utils (1.0.4)
@@ -179,3 +179,6 @@ DEPENDENCIES
   simplecov
   swingset!
   syntax
+
+BUNDLED WITH
+   2.0.1
