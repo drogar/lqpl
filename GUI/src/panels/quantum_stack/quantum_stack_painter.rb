@@ -22,14 +22,8 @@ class QuantumStackPainter
   end
 
   def image_of_model
-    bistart = BufferedImage.new(10, 10, BufferedImage::TYPE_4BYTE_ABGR)
-    gstart = bistart.create_graphics
-    image_size = model_paint_size(gstart)
-    bifull = BufferedImage.new(image_size.required_width + 40,
-                               image_size.height + 40,
-                               BufferedImage::TYPE_4BYTE_ABGR)
-    g = bifull.create_graphics
-    paint_model(g)
+    graphic_context = icon_graphics_context(image_size)
+    paint_model(graphic_context)
     ImageIcon.new(bifull)
   end
 
@@ -75,12 +69,16 @@ class QuantumStackPainter
   end
 
   def substack_label_placement(index)
-    PLACEMENTS[index <=> (@model_element.substacks.length - 1) * 0.5]
+    PLACEMENTS[index <=> placement_index]
+  end
+
+  def placement_index
+    (@model_element.substacks.length - 1) * 0.5
   end
 
   def paint_substacks(top_point, gcontext)
-    offsets = CanvasSize.compute_offsets(sub_stack_sizes(gcontext))
-    Range.new(0, @sstack_painters.size - 1).each do |i|
+    offsets = compute_offsets(gcontext)
+    paint_range.each do |i|
       paint_at_point =
         CopyPoint.copy_with_x_and_y_offset(top_point,
                                            offsets[i],
@@ -105,7 +103,28 @@ class QuantumStackPainter
 
   private
 
+  def paint_range
+    Range.new(0, @sstack_painters.size - 1)
+  end
+
+  def compute_offsets(graphic_context)
+    CanvasSize.compute_offsets(sub_stack_sizes(graphic_context))
+  end
+
   def stack_painters_paint_size(gcontext)
     @sstack_painters.map { |element| element.model_paint_size(gcontext) }
+  end
+
+  def image_size
+    bistart = BufferedImage.new(10, 10, BufferedImage::TYPE_4BYTE_ABGR)
+    gstart = bistart.create_graphics
+    model_paint_size(gstart)
+  end
+
+  def icon_graphics_context(size)
+    bifull = BufferedImage.new(size.required_width + 40,
+                               size.height + 40,
+                               BufferedImage::TYPE_4BYTE_ABGR)
+    bifull.create_graphics
   end
 end

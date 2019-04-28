@@ -5,13 +5,17 @@ class CodePointer < ApplicationModel
 
   def initialize(in_string)
     cp_match = EnsureJSON.new(in_string).as_json
-    @qpo_method = cp_match[:codepointer][0].to_sym
-    @line_number = cp_match[:codepointer][1]
+    initialize_method_and_line(cp_match)
   rescue JSON::ParserError => e
     raise e unless in_string == ''
 
     @qpo_method = ''
     @line_number = 0
+  end
+
+  def initialize_method_and_line(cp_match)
+    @qpo_method = cp_match[:codepointer][0].to_sym
+    @line_number = cp_match[:codepointer][1]
   end
 
   def normalize(max_plus_one)

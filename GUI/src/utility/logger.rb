@@ -24,7 +24,11 @@ module LqplUtility
     end
 
     def write_log_file(exception)
-      File.open('lqplEmulatorError.log', 'w') { |f| f.puts exception.to_s + "\n" + exception.backtrace.join("\n") }
+      File.open('lqplEmulatorError.log', 'w') { |f| f.puts exception_to_string(exception) }
+    end
+
+    def exception_to_string(exception)
+      exception.to_s + "\n" + exception.backtrace.join("\n")
     end
 
     def show_error_dialog(title, message)

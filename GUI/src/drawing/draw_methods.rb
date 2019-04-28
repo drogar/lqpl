@@ -32,6 +32,11 @@ module Lqpl
         return point if reference == :right
 
         text_bounds = get_string_size(gcontext, atext.iterator)
+
+        point_with_x_shifted(reference, text_bounds.width, point)
+      end
+
+      def point_with_x_shifted(reference, width, point)
         Point.new(get_x_for_reference(reference, text_bounds.width, point.x), point.y)
       end
 
@@ -57,6 +62,16 @@ module Lqpl
 
       def draw_text_starting_at_point(gcontext, text, point)
         gcontext.draw_string(text, point.x, point.y)
+      end
+
+      def draw_text_centered_at_point(gcontext, text, point)
+        draw_point = get_text_position(gcontext, :centered, text, point)
+        draw_text_starting_at_point(gcontext, text, draw_point)
+      end
+
+      def draw_text_to_left_of_point(gcontext, text, point)
+        draw_point = get_text_position(gcontext, :left, text, point)
+        draw_text_starting_at_point(gcontext, text, draw_point)
       end
 
       def draw_black_line(gcontext, from, to)

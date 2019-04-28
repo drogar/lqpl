@@ -29,9 +29,13 @@ module Monkeybars
     end
 
     def bare_path
-      return location_path[5, location_path.length - 18] if in_file_system?
+      return location_path_file_substring if in_file_system?
 
       location_path
+    end
+
+    def location_path_file_substring
+      location_path[5, location_path.length - 18]
     end
 
     def location_path

@@ -28,11 +28,15 @@ class EmulatorCommandInterpretor
 
   def self.make_do_command(which, defs = [])
     pg = ParameterGenerator.new(defs)
-    class_eval %{
-      def do_#{which}#{pg.parameters_for_definition}
-        command(:#{which},[#{pg.parameters_for_calling}])
+    class_eval string_for_do_command(which, pg), __FILE__, __LINE__
+  end
+
+  def self.string_for_do_command(which, parm_generator)
+    %{
+      def do_#{which}#{parm_generator.parameters_for_definition}
+        command(:#{which},[#{parm_generator.parameters_for_calling}])
       end
-    }, __FILE__, __LINE__ - 4
+    }
   end
 
   [[:run, [1]], [:trim, []], [:step, [1, 1]], [:simulate, [1]], [:depth_multiple, [10]]].each { |s, defs| make_do_command s, defs }

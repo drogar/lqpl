@@ -24,11 +24,7 @@ class QuantumStackModel < ApplicationModel
     @substacks = []
     return if bottom?
 
-    the_stack = qpp[:qstack]
-    @stackaddress = the_stack[:id]
-    @on_diagonal = the_stack[:diagonal]
-    @substacks = make_substacks(the_stack)
-    self.descriptor = the_stack[:qnode]
+    save_values_from_stack(qpp[:qstack])
   end
 
   def make_substacks(qs_json)
@@ -53,5 +49,14 @@ class QuantumStackModel < ApplicationModel
     nm += "(#{@stackaddress})" if nm != @stackaddress.to_s && formatting == :use_stack_address
     nm = '' if nm == '-1'
     nm
+  end
+
+  private
+
+  def save_values_from_stack(the_stack)
+    @stackaddress = the_stack[:id]
+    @on_diagonal = the_stack[:diagonal]
+    @substacks = make_substacks(the_stack)
+    self.descriptor = the_stack[:qnode]
   end
 end

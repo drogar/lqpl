@@ -16,9 +16,9 @@ class StackTranslationModel < ApplicationModel
   def text
     inside = @stack_translation.reduce('') do |inner, tr_map|
       line = (tr_map.map { |kv| "#{kv[0]}=>#{kv[1]}" }).join(', ')
-      inner + '<li>' + line + '</li>'
+      "#{inner}<li>#{line}</li>"
     end
-    '<html><ol>' + inside + '</ol></html>'
+    "<html><ol>#{inside}</ol></html>"
   end
 
   def reverse_lookup(val)

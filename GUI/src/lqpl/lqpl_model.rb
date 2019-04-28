@@ -73,7 +73,11 @@ class LqplModel < ApplicationModel
   end
 
   def self.new_view_command(current_command)
-    toggle_action(current_command[0]) + ' ' + current_command[1, current_command.size - 1].join(' ')
+    toggle_action(current_command[0]) + ' ' + last_elements_of_command(current_command)
+  end
+
+  def self.last_elements_of_command(command)
+    command[1, command.size - 1].join(' ')
   end
 
   def self.symbol_for_view_menu_item(current_command)
@@ -92,15 +96,23 @@ class LqplModel < ApplicationModel
   end
 
   def load_file(file_path)
-    lqpl_server_connection.send_load_from_file(recursion_multiplier_spinner.int_value,
+    lqpl_server_connection.send_load_from_file(recursion_depth,
                                                file_path)
-    lqpl_server_connection.do_depth_multiple(recursion_multiplier_spinner.int_value)
+    lqpl_server_connection.do_depth_multiple(recursion_depth)
+  end
+
+  def recurision_depth
+    recursion_multiplier_spinner.int_value
   end
 
   def update_recursion_spinner(value)
-    self.recursion_spinner = java.lang.Integer.new(value)
+    initialize_recursion_spinner(value)
     self.messages_text = "Recursion Depth set to #{recursion_spinner}"
     enable_go!(true)
+  end
+
+  def initialize_recursion_spinner(value)
+    self.recursion_spinner = JInteger.new(value)
   end
 
   def execute
@@ -114,9 +126,8 @@ class LqplModel < ApplicationModel
   end
 
   def update_recursion_multiplier_spinner(value)
-    self.recursion_multiplier_spinner =
-      java.lang.Integer.new(value)
-    lqpl_server_connection.do_depth_multiple(recursion_multiplier_spinner.int_value)
+    self.recursion_multiplier_spinner = JInteger.new(value)
+    lqpl_server_connection.do_depth_multiple(recursion_depth)
     self.messages_text = "Recursion Multiplier set to #{recursion_multiplier_spinner}"
     enable_go!(true)
   end

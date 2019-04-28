@@ -17,15 +17,19 @@ class ExecutingCodeView < ApplicationView
 
   def create_tabbed_views(code_map)
     code_tab_pane = reset_tabbed_panes_and_maps
-    i = 0
     cp = CodePointer.new ''
-    code_map.each do |qpo_method, qpo_ins|
-      code_tab_pane.add_tab(qpo_method.to_s, ExecutingCodeView.init_scroll_pane(qpo_ins))
-      @qpo_method_to_tab_map[qpo_method] = i
-      cp.qpo_method = qpo_method
-      process_instructions_text(cp, qpo_ins)
-      i += 1
+    code_map.each_with_index do |qpo_method_and_ins, i|
+      create_a_tabbed_view(qpo_method_and_ins, code_tab_pane, cp, i)
     end
+  end
+
+  def create_a_tabbed_view(qpo_method_and_ins, code_tab_pane, code_pointer, index)
+    qpo_method = qpo_method_and_ins[0]
+    qpo_ins = qpo_method_and_ins[1]
+    code_tab_pane.add_tab(qpo_method.to_s, ExecutingCodeView.init_scroll_pane(qpo_ins))
+    @qpo_method_to_tab_map[qpo_method] = index
+    code_pointer.qpo_method = qpo_method
+    process_instructions_text(code_pointer, qpo_ins)
   end
 
   def process_instructions_text(code_pointer, qpo_ins)
@@ -73,13 +77,27 @@ class ExecutingCodeView < ApplicationView
   end
 
   def highlight_selection_in_view(selection_bounds)
-    jt = code_tabbed_pane.selected_component.viewport.view
+    jt = code_tab_selection_view
     jt.request_focus(true)
     # request_focus is a deprecated method, but otherwise the highlight
     # does not show when switching qpo_methods
-    jt.selection_start = 0 # reset to handle "use" case where we go back (loop) in the code
-    jt.selection_end = 0
-    jt.selection_end = selection_bounds[1] if selection_bounds
-    jt.selection_start = selection_bounds[0] if selection_bounds
+    reset_selection(jt)
+    set_selection_to_bounds(jt, selection_bounds[0], selection_bounds[1]) if selection_bounds
+  end
+
+  private
+
+  def code_tab_selection_view
+    code_tabbed_pane.selected_component.viewport.view
+  end
+
+  def reset_selection(current_selection)
+    current_selection.selection_start = 0 # reset to handle "use" case where we go back (loop) in the code
+    current_selection.selection_end = 0
+  end
+
+  def set_selection_to_bounds(current_selection, start, finish)
+    current_selection.selection_start = start
+    current_selection.selection_end = finish
   end
 end

@@ -37,9 +37,14 @@ class LqplMenu
   end
 
   def self.mac_prepare_exit_and_about
+    app = import_and_return_eawt_application
+    app.about_handler = AboutController.instance
+    app.quit_handler = ExitHandler.instance
+  end
+
+  def self.import_and_return_eawt_application
     java_import com.apple.eawt.Application
-    Application.application.about_handler = AboutController.instance
-    Application.application.quit_handler = ExitHandler.instance
+    Application.application
   end
 
   def self.non_mac_prepare_exit_and_about(add_listener)
@@ -56,25 +61,32 @@ class LqplMenu
 
   def initialize(parent)
     self.mbar = JMenuBar.new
-    init_file_menu mbar
-    init_view_menu mbar
-    init_help_menu mbar
-
+    init_menus(mbar)
     parent.make_menu_bar(mbar)
     mbar.visible = true
   end
 
+  def init_menus(mbar)
+    init_file_menu mbar
+    init_view_menu mbar
+    init_help_menu mbar
+  end
+
   def init_file_menu(mbar)
     menu_file = JMenu.new('File')
+    add_file_menu_items(menu_file)
+    #:nocov:
+    handle_not_on_mac_file(menu_file)
+    #:nocov:
+    mbar.add(menu_file)
+  end
+
+  def add_file_menu_items(menu_file)
     @file_load = JMenuItem.new('Load')
     @file_compile = JMenuItem.new('Compile')
     @file_simulate = JMenuItem.new('Simulate')
 
     [@file_load, @file_compile, @file_simulate].each { |fm| menu_file.add(fm) }
-    #:nocov:
-    handle_not_on_mac_file(menu_file)
-    #:nocov:
-    mbar.add(menu_file)
   end
 
   #:nocov:
@@ -89,6 +101,11 @@ class LqplMenu
 
   def init_view_menu(mbar)
     menu_view = JMenu.new('View')
+    add_view_menu_items(menu_view)
+    mbar.add(menu_view)
+  end
+
+  def add_view_menu_items(menu_view)
     @view_classical_stack = JMenuItem.new('Hide Classical Stack')
     @view_dump = JMenuItem.new('Hide Dump')
     @view_executing_code = JMenuItem.new('Hide Executing Code')
@@ -98,9 +115,7 @@ class LqplMenu
       vm.enabled = false
       menu_view.add(vm)
     end
-    mbar.add(menu_view)
   end
-
   # :nocov:
   def init_help_menu(mbar)
     config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)

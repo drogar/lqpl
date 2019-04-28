@@ -1,8 +1,10 @@
 # Abstract painter base
 class AbstractDescriptorPainter
   include Lqpl::Drawing::DrawMethods
-
   attr_accessor :model_element
+
+  EMPTY_NAME_WIDTH = 0
+
   def initialize(model)
     @model_element = model
   end
@@ -16,8 +18,8 @@ class AbstractDescriptorPainter
   end
 
   def my_shape(point)
-    Ellipse2D::Double.new(point.x - half_node_size,
-                          point.y - half_node_size,
+    Ellipse2D::Double.new(my_shape_x(point),
+                          my_shape_y(point),
                           node_size,
                           node_size)
   end
@@ -44,22 +46,27 @@ class AbstractDescriptorPainter
 
   def paint_name(gcontext, center)
     draw_text_to_left_of_point(gcontext, @model_element.name.to_s,
-                               Point.new(center.x - node_size, center.y))
+                               paint_name_base_point(center))
+  end
+
+  def paint_name_base_point(point)
+    Point.new(point.x - node_size, point.y)
   end
 
   def paint_value(gcontext, center)
     draw_text_centered_at_point(gcontext, @model_element.value.to_s,
-                                Point.new(center.x, center.y + 2 * node_size))
+                                paint_value_base_point(center))
+  end
+
+  def paint_value_base_point(point)
+    Point.new(point.x, point.y + 2 * node_size)
   end
 
   def model_paint_size(gcontext)
-    height  =  node_size
-    valsize =  get_value_canvas_size gcontext
-    height += valsize.height_with_spacing if @model_element.scalar?
-
-    right_width   =  valsize.right_required_width
-    left_width    =  [half_node_size + name_width(gcontext),
-                      valsize.left_required_width].max
+    valsize = get_value_canvas_size gcontext
+    height = model_paint_height(valsize)
+    right_width = valsize.right_required_width
+    left_width = model_left_width(gcontext, valsize)
 
     CanvasSize.new_with_measures(left_width, right_width, height)
   end
@@ -72,6 +79,26 @@ class AbstractDescriptorPainter
   def name_width(gcontext)
     return get_string_size(gcontext, @model_element.name.to_s).width + node_size if @model_element.name
 
-    0
+    EMPTY_NAME_WIDTH
+  end
+
+  private
+
+  def my_shape_x(point)
+    point.x - half_node_size
+  end
+
+  def my_shape_y(point)
+    point.y - half_node_size
+  end
+
+  def model_left_width(gcontext, valsize)
+    [half_node_size + name_width(gcontext), valsize.left_required_width].max
+  end
+
+  def model_paint_height(valsize)
+    height  =  node_size
+    height += valsize.height_with_spacing if @model_element.scalar?
+    height
   end
 end

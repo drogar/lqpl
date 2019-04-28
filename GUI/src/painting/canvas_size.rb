@@ -41,15 +41,23 @@ class CanvasSize
   end
 
   def self.width_to_right_of_head(sizes)
-    return 0.0 if !sizes || sizes.empty?
+    return 0.0 if undefined_sizes(sizes)
 
     sizes[0].right_required_width + CanvasSize.total_widths(sizes.drop(1))
   end
 
   def self.width_to_left_of_tail(sizes)
-    return 0.0 if !sizes || sizes.empty?
+    return 0.0 if undefined_sizes(sizes)
 
-    sizes.last.left_required_width + CanvasSize.total_widths(sizes.take(sizes.length - 1))
+    sizes.last.left_required_width + CanvasSize.total_widths(sizes.sizes_drop_last)
+  end
+
+  def self.undefined_sizes(sizes)
+    !sizes || sizes.empty?
+  end
+
+  def self.sizes_drop_last(sizes)
+    sizes.take(sizes.length - 1)
   end
 
   # computes offsets for painting the substacks.
@@ -58,7 +66,7 @@ class CanvasSize
   # No sizes -> nothing to return
   # handle having a midpoint = equals size 0
   def self.compute_offsets(sizes)
-    return [] if !sizes || sizes.empty?
+    return [] if undefined_sizes(sizes)
 
     mid = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_middle_element
     CanvasSize.left_offsets(sizes, mid) + CanvasSize.right_offsets(sizes, mid)
@@ -68,8 +76,15 @@ class CanvasSize
     lefts = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_left_partition_tails.map do |la|
       -CanvasSize.width_to_right_of_head(la)
     end
-    lefts.map! { |b| b - mid.left_required_width } if mid
-    lefts << 0 if mid
+    left_offsets_detail(lefts, mid)
+  end
+
+  def self.left_offsets_detail(lefts, mid)
+    if mid
+      mid_left_width = mid.left_required_width
+      lefts.map! { |w| w - mid_left_width }
+      lefts << 0
+    end
     lefts
   end
 

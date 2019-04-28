@@ -13,6 +13,16 @@ class ParameterGenerator
   def parameters_for_definition
     return '' if @parms == []
 
-    '(' + (1..@parms.length).map { |i| "def#{i} = #{@parms[i - 1]}" }.join(', ') + ')'
+    '(' + joined_parameter_strings + ')'
+  end
+
+  private
+
+  def joined_parameter_strings
+    (1..@parms.length).map { |i| definition_parameter_string(i) }.join(', ')
+  end
+
+  def definition_parameter_string(index)
+    "def#{index} = #{@parms[index - 1]}"
   end
 end

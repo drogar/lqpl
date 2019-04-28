@@ -8,12 +8,18 @@ class Pathing
     monkeybars_resolve
 
     ImportJava.do_imports(context: context,
-                          awt: %w[BorderLayout GridLayout Point Rectangle],
+                          awt: %w[BorderLayout GridLayout Point Rectangle event.WindowEvent],
                           swing: %w[JOptionPane JFileChooser filechooser.FileNameExtensionFilter
                                     JTextArea JScrollPane BoxLayout SpinnerNumberModel],
                           lang: 'System')
     swingstart
   end
+
+  LQPL_REQUIRES = %w[application_model about_controller simulate_results_controller
+                     exit_handler lqpl_subs_handler panel_controller stack_translation_controller
+                     classical_stack_controller_controller executing_code_controller
+                     quantum_stack_controller compiler_server_connection lqpl_file_chooser
+                     lqpl_menu lqpl_view lqpl_model lqpl_controller].freeze
 
   def self.base_requires
     require 'rbconfig'
@@ -66,8 +72,7 @@ class Pathing
   end
 
   def self.lqpl_requires
-    require 'application_model'
-    require 'lqpl/lqpl_controller'
+    LQPL_REQUIRES.each { |ruby_file| require ruby_file }
   end
 
   def self.add_to_classpath(path, file: __FILE__)
