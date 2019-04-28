@@ -1,3 +1,5 @@
+require 'array_partitioner'
+
 describe Lqpl::Utilities::ArrayPartitioner do
   subject { Lqpl::Utilities::ArrayPartitioner }
   describe :qpl_partion do
@@ -132,6 +134,47 @@ describe Lqpl::Utilities::ArrayPartitioner do
 
     it 'gives [[1], [1, 2], [1, 2, 3]] for [1, 2, 3]' do
       expect(subject.new([1, 2, 3]).heads).to eq([[1], [1, 2], [1, 2, 3]])
+    end
+  end
+
+  describe 'empty_checks' do
+    describe 'empty?' do
+      it 'is true for an empty array' do
+        expect(subject.new([]).empty?).to be true
+      end
+      it 'is not true for a non-empty array' do
+        expect(subject.new([1]).empty?).to be false
+        expect(subject.new([1, 2, 3]).empty?).to be false
+        expect(subject.new([1, 2]).empty?).to be false
+      end
+    end
+    describe 'left_empty?' do
+      it 'is true for an empty array' do
+        expect(subject.new([]).left_empty?).to be true
+      end
+      it 'is true when the array has a single element' do
+        expect(subject.new([1]).left_empty?).to be true
+      end
+      it 'is not true for two or more elements' do
+        expect(subject.new([1, 2, 3]).left_empty?).to be false
+        expect(subject.new([1, 2]).left_empty?).to be false
+        expect(subject.new([1, 2, 3, 8, 9, 4]).left_empty?).to be false
+        expect(subject.new([1, 2, 9, 8, 7]).left_empty?).to be false
+      end
+    end
+    describe 'right_empty?' do
+      it 'is true for an empty array' do
+        expect(subject.new([]).right_empty?).to be true
+      end
+      it 'is true for an single element array' do
+        expect(subject.new([1]).right_empty?).to be true
+      end
+      it 'is not true for a two or more element array' do
+        expect(subject.new([1, 2]).right_empty?).to be false
+        expect(subject.new([1, 2, 3]).right_empty?).to be false
+        expect(subject.new([1, 2, 3, 8, 9, 4]).right_empty?).to be false
+        expect(subject.new([1, 2, 9, 8, 7]).right_empty?).to be false
+      end
     end
   end
 end

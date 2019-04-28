@@ -34,13 +34,13 @@ class LqplView < ApplicationView
     view_menu_stack_translation_text: 'the_menu.view_stack_translation.text'
   }.freeze
 
-  model_view_mapper(MODEL_TO_VIEW_MAP)
-
   raw_mapping :set_title, nil
 
   def self.model_view_mapper(map_of_model_to_view)
     map_of_model_to_view.each { |model, view| map view: view, model: model }
   end
+
+  model_view_mapper(MODEL_TO_VIEW_MAP)
 
   def load(*)
     @the_menu = LqplMenu.new(self)

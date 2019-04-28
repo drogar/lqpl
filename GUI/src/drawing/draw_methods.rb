@@ -37,7 +37,7 @@ module Lqpl
       end
 
       def point_with_x_shifted(reference, width, point)
-        Point.new(get_x_for_reference(reference, text_bounds.width, point.x), point.y)
+        Point.new(get_x_for_reference(reference, width, point.x), point.y)
       end
 
       def get_string_size(gcontext, text)

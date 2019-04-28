@@ -22,6 +22,18 @@ module Lqpl
         array[0, array_half_length]
       end
 
+      def empty?
+        array.empty?
+      end
+
+      def left_empty?
+        array.length <= 1
+      end
+
+      def right_empty?
+        array.length <= 1
+      end
+
       def qpl_left_partition_tails
         ArrayPartitioner.new(qpl_left_partition).tails
       end

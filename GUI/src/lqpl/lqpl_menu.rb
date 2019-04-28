@@ -116,6 +116,7 @@ class LqplMenu
       menu_view.add(vm)
     end
   end
+
   # :nocov:
   def init_help_menu(mbar)
     config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)

@@ -17,7 +17,7 @@ class Pathing
 
   LQPL_REQUIRES = %w[application_model about_controller simulate_results_controller
                      exit_handler lqpl_subs_handler panel_controller stack_translation_controller
-                     classical_stack_controller_controller executing_code_controller
+                     classical_stack_controller dump_controller executing_code_controller
                      quantum_stack_controller compiler_server_connection lqpl_file_chooser
                      lqpl_menu lqpl_view lqpl_model lqpl_controller].freeze
 

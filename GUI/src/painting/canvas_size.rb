@@ -1,4 +1,4 @@
-require 'array_partitioner'
+require 'size_computer'
 
 # calculate the sizes needed to display the tree
 class CanvasSize
@@ -15,84 +15,12 @@ class CanvasSize
   end
 
   def self.new_from_subtree(subtree_array)
-    left = CanvasSize.subtree_left_width(subtree_array)
-    right = CanvasSize.subtree_right_width(subtree_array)
-    h = subtree_array.map(&:height_with_spacing).max
-    new_with_measures(left, right, h)
+    size_computer = SizeComputer.new(subtree_array)
+    new_with_measures(size_computer.left, size_computer.right, size_computer.height)
   end
 
-  def self.subtree_left_width(subtree_array)
-    subtree_side_width(subtree_array, :left)
-  end
-
-  def self.subtree_right_width(subtree_array)
-    subtree_side_width(subtree_array, :right)
-  end
-
-  def self.subtree_side_width(subtree_array, side)
-    ap_subtree_array = Lqpl::Utilities::ArrayPartitioner.new(subtree_array)
-    mid = ap_subtree_array.qpl_middle_element
-    CanvasSize.total_widths(ap_subtree_array.qpl_partition(side)) +
-      (mid ? mid.required_width(side) : 0)
-  end
-
-  def self.total_widths(sizes)
-    sizes.reduce(0.0) { |acc, elem| acc + elem.required_width }
-  end
-
-  def self.width_to_right_of_head(sizes)
-    return 0.0 if undefined_sizes(sizes)
-
-    sizes[0].right_required_width + CanvasSize.total_widths(sizes.drop(1))
-  end
-
-  def self.width_to_left_of_tail(sizes)
-    return 0.0 if undefined_sizes(sizes)
-
-    sizes.last.left_required_width + CanvasSize.total_widths(sizes.sizes_drop_last)
-  end
-
-  def self.undefined_sizes(sizes)
-    !sizes || sizes.empty?
-  end
-
-  def self.sizes_drop_last(sizes)
-    sizes.take(sizes.length - 1)
-  end
-
-  # computes offsets for painting the substacks.
-  # sum up the sizes from point to midpoint to get offsets (-ve to left, +ve to right)
-  # special cases:
-  # No sizes -> nothing to return
-  # handle having a midpoint = equals size 0
-  def self.compute_offsets(sizes)
-    return [] if undefined_sizes(sizes)
-
-    mid = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_middle_element
-    CanvasSize.left_offsets(sizes, mid) + CanvasSize.right_offsets(sizes, mid)
-  end
-
-  def self.left_offsets(sizes, mid)
-    lefts = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_left_partition_tails.map do |la|
-      -CanvasSize.width_to_right_of_head(la)
-    end
-    left_offsets_detail(lefts, mid)
-  end
-
-  def self.left_offsets_detail(lefts, mid)
-    if mid
-      mid_left_width = mid.left_required_width
-      lefts.map! { |w| w - mid_left_width }
-      lefts << 0
-    end
-    lefts
-  end
-
-  def self.right_offsets(sizes, mid)
-    rights = Lqpl::Utilities::ArrayPartitioner.new(sizes).qpl_right_partition_heads.map do |ra|
-      CanvasSize.width_to_left_of_tail(ra)
-    end
-    rights.map { |r| r + (mid ? mid.right_required_width : 0) }
+  def self.compute_offsets(subtree_array)
+    SizeComputer.new(subtree_array).compute_offsets
   end
 
   def initialize_with_measures(left, right, height)
