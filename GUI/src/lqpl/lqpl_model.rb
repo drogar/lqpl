@@ -1,14 +1,10 @@
 JInteger = java.lang.Integer
-
 # model for the lqpl main screen.
 class LqplModel < ApplicationModel
-  attr_accessor :spinner_panel_visible, :button_panel_visible, :step_spinner, :recursion_spinner,
-                :recursion_multiplier_spinner, :tree_depth_spinner, :go_enabled, :step_enabled,
-                :messages_text, :view_menu_classical_stack_enabled, :view_menu_dump_enabled,
-                :view_menu_executing_code_enabled, :view_menu_stack_translation_enabled,
-                :view_menu_classical_stack_text, :view_menu_dump_text, :frame_title,
-                :view_menu_executing_code_text, :view_menu_stack_translation_text,
-                :compiler_connection, :lqpl_server_connection
+  attr_accessor :spinner_panel_visible, :button_panel_visible, :step_spinner, :recursion_spinner, :recursion_multiplier_spinner, :tree_depth_spinner,
+                :go_enabled, :step_enabled, :messages_text, :view_menu_classical_stack_enabled, :view_menu_dump_enabled, :view_menu_executing_code_enabled,
+                :view_menu_stack_translation_enabled, :view_menu_classical_stack_text, :view_menu_dump_text, :frame_title, :view_menu_executing_code_text,
+                :view_menu_stack_translation_text, :compiler_connection, :lqpl_server_connection
 
   def initialize
     init_panels
@@ -19,8 +15,7 @@ class LqplModel < ApplicationModel
   end
 
   def init_panels
-    @spinner_panel_visible = false
-    @button_panel_visible = false
+    @spinner_panel_visible = @button_panel_visible = false
   end
 
   def init_spinners
@@ -49,10 +44,8 @@ class LqplModel < ApplicationModel
   end
 
   def enable_view_menu_items(value = true)
-    self.view_menu_stack_translation_enabled = value
-    self.view_menu_dump_enabled = value
-    self.view_menu_executing_code_enabled = value
-    self.view_menu_classical_stack_enabled = value
+    me = self
+    me.view_menu_stack_translation_enabled = me.view_menu_dump_enabled = me.view_menu_executing_code_enabled = me.view_menu_classical_stack_enabled = value
   end
 
   def enable_buttons!(base_file_name)
@@ -64,8 +57,7 @@ class LqplModel < ApplicationModel
   end
 
   def enable_go!(value)
-    self.go_enabled = value
-    self.step_enabled = value
+    self.go_enabled = self.step_enabled = value
   end
 
   def self.toggle_action(current)
@@ -96,8 +88,7 @@ class LqplModel < ApplicationModel
   end
 
   def load_file(file_path)
-    lqpl_server_connection.send_load_from_file(recursion_depth,
-                                               file_path)
+    lqpl_server_connection.send_load_from_file(recursion_depth, file_path)
     lqpl_server_connection.do_depth_multiple(recursion_depth)
   end
 
