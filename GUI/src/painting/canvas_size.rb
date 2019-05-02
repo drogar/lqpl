@@ -16,7 +16,8 @@ class CanvasSize
 
   def self.new_from_subtree(subtree_array)
     size_computer = SizeComputer.new(subtree_array)
-    new_with_measures(size_computer.left, size_computer.right, size_computer.height)
+    new_with_measures(size_computer.left_width,
+                      size_computer.right_width, size_computer.height)
   end
 
   def self.compute_offsets(subtree_array)

@@ -22,9 +22,11 @@ class QuantumStackPainter
   end
 
   def image_of_model
-    graphic_context = icon_graphics_context(image_size)
+    image_buffer = icon_image_buffer(image_size)
+    graphic_context = image_buffer.create_graphics
+
     paint_model(graphic_context)
-    ImageIcon.new(bifull)
+    ImageIcon.new(image_buffer)
   end
 
   def paint_model(gcontext)
@@ -121,10 +123,9 @@ class QuantumStackPainter
     model_paint_size(gstart)
   end
 
-  def icon_graphics_context(size)
-    bifull = BufferedImage.new(size.required_width + 40,
-                               size.height + 40,
-                               BufferedImage::TYPE_4BYTE_ABGR)
-    bifull.create_graphics
+  def icon_image_buffer(size)
+    BufferedImage.new(size.required_width + 40,
+                      size.height + 40,
+                      BufferedImage::TYPE_4BYTE_ABGR)
   end
 end

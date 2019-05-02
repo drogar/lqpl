@@ -21,9 +21,15 @@ class DuckMatcher
       return candidate_match(input, current_position, match_data) if matched_paired_start_stop?(match_data)
 
       current_position += match_data.end(0)
-      match_data = new_match_date(input, current_position)
+      match_data = new_match_data(input, current_position)
     end
     nil
+  end
+
+  def matched_paired_start_stop?(match_data)
+    @recurss += 1 if match_data[:strt]
+    @recurss -= 1 if match_data[:stop]
+    @recurss.zero?
   end
 
   private
@@ -34,11 +40,5 @@ class DuckMatcher
 
   def new_match_data(input, start)
     matchss.match input[Range.new(start, -1)]
-  end
-
-  def matched_paired_start_stop?(match_data)
-    @recurss += 1 if match_data[:strt]
-    @recurss -= 1 if match_data[:stop]
-    @recurss.zero?
   end
 end

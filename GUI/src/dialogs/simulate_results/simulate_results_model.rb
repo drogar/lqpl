@@ -1,3 +1,4 @@
+require 'ensure_json'
 # Model for the simulate results dialog
 class SimulateResultsModel
   attr_reader :simulate_results
@@ -22,11 +23,13 @@ class SimulateResultsModel
     @simulate_results = map_sim_results(sim_results)
   end
 
-  private
-
   def random_value_text=(sim_results)
     @random_value_text = "Random Value: #{sim_results[:Simulated]}"
+  rescue Exception
+    @random_value_text = ''
   end
+
+  private
 
   def map_sim_results(sim_results)
     sim_results[:results].map do |result|

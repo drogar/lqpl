@@ -31,9 +31,18 @@ module Lqpl
       def get_text_position(gcontext, reference, atext, point)
         return point if reference == :right
 
-        text_bounds = get_string_size(gcontext, atext.iterator)
+        text_bounds = get_string_size(gcontext, self_or_iterator(atext))
 
         point_with_x_shifted(reference, text_bounds.width, point)
+      end
+
+      def self_or_iterator(text)
+        case text
+        when AttributedString
+          text.iterator
+        else
+          text
+        end
       end
 
       def point_with_x_shifted(reference, width, point)
