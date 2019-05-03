@@ -23,7 +23,7 @@ describe CanvasSize do
           .to eq(CanvasSize.node_separation(:vertical))
       end
     end
-   end
+  end
   describe 'initialization' do
     describe 'explicit measures class init' do
       it 'should accept 0 args and create an item with 0 left,right,height' do

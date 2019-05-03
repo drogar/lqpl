@@ -25,7 +25,7 @@ class SimulateResultsModel
 
   def random_value_text=(sim_results)
     @random_value_text = "Random Value: #{sim_results[:Simulated]}"
-  rescue Exception
+  rescue StandardError
     @random_value_text = ''
   end
 
