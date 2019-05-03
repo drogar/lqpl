@@ -17,7 +17,7 @@ module Swingtown
   # <tt>File.join</tt>.
   #
   def self.libpath(*args)
-    args.empty? ? LIBPATH : ::File.join(LIBPATH, args.flatten)
+    add_to_constant_path(LIBPATH, args)
   end
 
   # Returns the lpath for the module. If any arguments are given,
@@ -25,7 +25,11 @@ module Swingtown
   # <tt>File.join</tt>.
   #
   def self.path(*args)
-    args.empty? ? PATH : ::File.join(PATH, args.flatten)
+    add_to_constant_path(PATH, args)
+  end
+
+  def self.add_to_constant_path(constant, *args)
+    args.empty? ? constant : ::File.join(constant, args.flatten)
   end
 
   def self.find_mig_jar(here)
