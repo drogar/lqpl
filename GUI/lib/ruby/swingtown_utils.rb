@@ -32,6 +32,12 @@ module Swingtown
     args.empty? ? constant : ::File.join(constant, args.flatten)
   end
 
+  def self.copy_over
+    require 'fileutils'
+    copy_over_ruby
+    copy_over_mig
+  end
+
   def self.find_mig_jar(here)
     java_lib_dir = File.join(here, 'java')
     mig_jar = Dir.glob("#{java_lib_dir}/*.jar").find { |f| f =~ /(miglayout-)(.+).jar$/ }
@@ -40,11 +46,10 @@ module Swingtown
     mig_jar
   end
 
-  def self.file_check_and_warn(which, path)
-    return unless File.exist? path
-
-    warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
-    exit
+  def self.check_java_lib_jar
+    java_lib_dir = File.join File.dirname(File.expand_path(__FILE__)), 'java'
+    warn java_lib_dir
+    java_lib_dir
   end
 
   def self.copy_over_mig(path = 'lib/java')
@@ -59,12 +64,6 @@ module Swingtown
     FileUtils.cp_r mig_jar, path, verbose: true
   end
 
-  def self.copy_over
-    require 'fileutils'
-    copy_over_ruby
-    copy_over_mig
-  end
-
   def self.copy_over_ruby(path = 'lib/ruby')
     here = File.dirname(File.expand_path(__FILE__))
 
@@ -75,16 +74,19 @@ module Swingtown
     FileUtils.cp_r "#{here}/swingset.rb", path, verbose: true
     FileUtils.cp_r "#{here}/swingset_utils.rb", path, verbose: true
   end
+
+  def self.file_check_and_warn(which, path)
+    return unless File.exist? path
+
+    warn "The #{which} file(s) already exists. Remove/rename it/them, and try again."
+    exit
+  end
 end
 
-def check_java_lib_jar
-  java_lib_dir = File.join File.dirname(File.expand_path(__FILE__)), 'java'
-  warn java_lib_dir
-end
 # EOF
-
+# :nocov:
 if $PROGRAM_NAME == __FILE__
-  check_java_lib_jar
+  Swingtown.check_java_lib_jar
   warn Neurogami::SwingSet.find_mig_jar "#{java_lib_dir}/*.jar"
-
 end
+# :nocov:

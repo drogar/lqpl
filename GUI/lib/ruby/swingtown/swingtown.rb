@@ -53,10 +53,10 @@ module Swingtown
       end
     end
 
-    # reopen java.awt.Dimension
-    class Dimension
+    # reopen java.awt.Dimension - did not use, commenting out
+    class Dimensional < Java.java.awt.Dimension
       def self.[](width, height)
-        java.awt::Dimension.new width, height
+        new(width, height)
       end
     end
 
@@ -109,25 +109,29 @@ module Swingtown
 
     # A label  wrapper
     # See http://xxxxxxxx to understand Swing labels
-    class Label < Java.javax.swing::JLabel
+    class Label < Java.javax.swing.JLabel
       @default_font = SFont.new('Lucida Grande', 0, 12)
       class << self
         attr_accessor :default_font
       end
 
       def initialize(text = nil)
-        super
+        if text.nil?
+          super('')
+        else
+          super(text.to_s)
+        end
         self.text = text.to_s if text
         self.font = Label.default_font
         yield self if block_given?
       end
 
       def minimum_dimensions(width, height)
-        self.minimum_size = java.awt::Dimension.new width, height
+        self.minimum_size = java.awt.Dimension.new width, height
       end
 
-      def prefered_dimensions(width, height)
-        self.prefered_size = java.awt::Dimension.new width, height
+      def preferred_dimensions(width, height)
+        self.preferred_size = java.awt.Dimension.new width, height
       end
     end
 
@@ -135,6 +139,7 @@ module Swingtown
     class Spinner < Java.javax.swing.JSpinner
       JINT = Java.int
       SPINNER_CONS = SpinnerNumberModel.java_class.constructor(JINT, JINT, JINT, JINT)
+      attr_accessor :label
       def self.make_new_spinner_number_model(args)
         SPINNER_CONS.new_instance(args[0], args[1], args[2], args[3])
       end
@@ -156,22 +161,25 @@ module Swingtown
         spinlab = make_my_label(text_for_label)
         container&.add(spinlab)
         container&.add(self)
+        self
       end
 
       def self.spinner_with_label(text_for_label, container = nil)
         spinner = make_spinner
         spinner.labelize_and_add_to_container(text_for_label, container)
+        spinner
       end
 
-      def self.spinner_with_label_and_model(text_for_label, model)
-        spinner = make_spinner(model[:start], model[:min], model[:max], model[:increment])
+      def self.spinner_with_label_and_model(text_for_label, model_hash)
+        spinner = make_spinner(model_hash[:start], model_hash[:min], model_hash[:max], model_hash[:increment])
 
-        spinner.labelize_and_add_to_container(text_for_label, model[:container])
+        spinner.labelize_and_add_to_container(text_for_label, model_hash[:container])
       end
 
       def make_my_label(text_for_label)
         spinlab = Label.new(text_for_label)
         spinlab.label_for = self
+        self.label = spinlab
         spinlab
       end
     end
@@ -196,7 +204,7 @@ module Swingtown
         self.minimum_size = java.awt::Dimension.new(width, height)
       end
 
-      def prefered_dimensions(width, height)
+      def preferred_dimensions(width, height)
         self.preferred_size = java.awt::Dimension.new(width, height)
       end
     end
@@ -209,8 +217,8 @@ module Swingtown
         yield self if block_given?
       end
 
-      def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
+      def background_color(red, green, blue)
+        self.background = java.awt::Color.new(red.to_i, green.to_i, blue.to_i)
       end
 
       def size(width, height)
@@ -243,8 +251,8 @@ module Swingtown
         yield self if block_given?
       end
 
-      def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
+      def background_color(red, green, blue)
+        self.background = java.awt::Color.new(red.to_i, green.to_i, blue.to_i)
       end
 
       def size(width, height)
@@ -260,8 +268,8 @@ module Swingtown
         yield self if block_given?
       end
 
-      def background_color(red, blue, green)
-        self.background = java.awt::Color.new(red.to_i, blue.to_i, green.to_i)
+      def background_color(red, green, blue)
+        self.background = java.awt::Color.new(red.to_i, green.to_i, blue.to_i)
       end
 
       def size(width, height)
@@ -280,18 +288,17 @@ module Swingtown
         yield self if block_given?
       end
 
-      def define_minimum_size(width, height)
-        self.minimum_size = java.awt::Dimension.new(width, height)
+      def minimum_dimensions(width, height)
+        self.minimum_size = java.awt::Dimension.new(@minimum_width = width,
+                                                    @minimum_height = height)
       end
 
       def minimum_height=(height)
-        define_minimum_size(@minimum_width.to_i,
-                            @minimum_height = height.to_i)
+        minimum_dimensions(@minimum_width.to_i, @minimum_height = height.to_i)
       end
 
       def minimum_width=(width)
-        define_minimum_size(@minimum_width = width.to_i,
-                            @minimum_height.to_i)
+        minimum_dimensions(@minimum_width = width.to_i, @minimum_height.to_i)
       end
     end
 

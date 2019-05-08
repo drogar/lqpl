@@ -22,7 +22,7 @@ SimpleCov.start do
   add_group 'Panels', 'GUI/src/panels'
   add_group 'Utility', 'GUI/src/utility'
   add_filter 'features/'
-  nocov_token ':nocov:'
+  nocov_token 'nocov'
 end
 
 # Override at_exit so that rspec actually terminates properly.
