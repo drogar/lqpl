@@ -75,9 +75,7 @@ class LqplMenu
   def init_file_menu(mbar)
     menu_file = JMenu.new('File')
     add_file_menu_items(menu_file)
-    #:nocov:
     handle_not_on_mac_file(menu_file)
-    #:nocov:
     mbar.add(menu_file)
   end
 
@@ -89,7 +87,6 @@ class LqplMenu
     [@file_load, @file_compile, @file_simulate].each { |fm| menu_file.add(fm) }
   end
 
-  #:nocov:
   def handle_not_on_mac_file(menu_file)
     config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)
     config.not_on_mac do
@@ -97,7 +94,6 @@ class LqplMenu
       menu_file.add(@file_exit)
     end
   end
-  #:nocov:
 
   def init_view_menu(mbar)
     menu_view = JMenu.new('View')
@@ -117,7 +113,6 @@ class LqplMenu
     end
   end
 
-  # :nocov:
   def init_help_menu(mbar)
     config = PlatformConfiguration.new(ArchitectureFactory.architecture_category)
     config.not_on_mac do
@@ -127,5 +122,4 @@ class LqplMenu
       mbar.add(menu_help)
     end
   end
-  # :nocov:
 end
