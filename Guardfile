@@ -1,24 +1,23 @@
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
-guard :rspec, cmd: 'rspec' do
-  watch(%r{^spec/(.+)_spec\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
-  watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch('spec/spec_helper.rb')  { 'spec' }
+# guard :rspec, cmd: 'rspec' do
+# watch(%r{^spec/(.+)_spec\.rb$})           { |m| "spec/#{m[1]}_spec.rb" }
+#  watch('spec/spec_helper.rb')              { 'spec' }
 
-  # Rails example
-  watch(%r{^GUI/src/(.+)\.rb$})                       { |m| "spec/#{m[1]}_spec.rb" }
-  watch(%r{^spec/support/(.+)\.rb$})                  { 'spec' }
-  watch(%r{^GUI/src/application(.+)\.rb})             { 'spec' }
-end
+# Rails example
+#  watch(%r{^GUI/(.+)\.rb$})                 { |m| "spec/GUI/#{m[1]}_spec.rb" }
+#  watch(%r{^spec/support/(.+)\.rb$})        { 'spec' }
+#  watch(%r{^GUI/src/application(.+)\.rb})   { 'spec' }
+# end
 
 guard :rubocop do
-  watch(%r{^GUI/.+\.rb$}) { |m| File.dirname(m[0]) }
-  watch(%r{^features/.+\.rb$}) { |m| File.dirname(m[0]) }
-  watch(%r{^spec/.+\.rb$}) { |m| File.dirname(m[0]) }
-  watch(/^rake.+\.rb$/) { |m| File.dirname(m[0]) }
-  watch(%r{^tasks/.+\.rb$}) { |m| File.dirname(m[0]) }
-  watch(/(?:.+\})?\.rubocop\.yml$/) { |m| File.dirname(m[0]) }
+  watch(%r{^GUI/.+\.rb$})            { |m| File.dirname(m[0]) }
+  watch(%r{^features/.+\.rb$})       { |m| File.dirname(m[0]) }
+  watch(%r{^spec/.+\.rb$})           { |m| File.dirname(m[0]) }
+  watch(/^rake.+\.rb$/)              { |m| File.dirname(m[0]) }
+  watch(%r{^tasks/.+\.rb$})          { |m| File.dirname(m[0]) }
+  watch(/(?:.+\})?\.rubocop\.yml$/)  { |m| File.dirname(m[0]) }
 end
 
 notification :tmux,
