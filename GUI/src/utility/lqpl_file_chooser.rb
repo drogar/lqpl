@@ -20,7 +20,7 @@ class LqplFileChooser
   def self.open_and_compile(frame, model)
     chooser = lqpl_source_file_opener
     if chooser.show_open_dialog(frame) == JFileChooser::APPROVE_OPTION
-      model.compile(chooser.get_selected_file)
+      model.compile(chooser.selected_file)
     else
       model.messages_text = 'Compile action cancelled.'
     end

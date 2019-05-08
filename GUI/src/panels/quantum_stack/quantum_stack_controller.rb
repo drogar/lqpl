@@ -9,14 +9,16 @@ class QuantumStackController < PanelController
                       StackTranslationController.instance.stack_translation)
   end
 
+  def update_on_lqpl_model_trim
+    true
+  end
+
+  private
+
   def set_quantum_stack(tree_depth, recursion_depth, stack_trans)
     model.stack_translation = stack_trans
     model.quantum_stack =
       lqpl_emulator_server_connection.get_qstack(recursion_depth, tree_depth)
     update_view
-  end
-
-  def update_on_lqpl_model_trim
-    true
   end
 end
