@@ -85,7 +85,7 @@ describe LqplController do
   end
   describe :file_simulate_action_performed do
     let(:src) { double('SimulateResultsController') }
-    let(:stc) { double('StackTranslationController')}
+    let(:stc) { double('StackTranslationController') }
     before(:each) do
       allow(SimulateResultsController).to receive(:instance) { src }
       allow(StackTranslationController).to receive(:instance) { stc }

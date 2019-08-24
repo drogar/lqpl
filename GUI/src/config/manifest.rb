@@ -1,4 +1,4 @@
-require 'config/pathing'
+require_relative 'pathing'
 Pathing.requires_and_imports_for_lqpl(self)
 
 # for swinging

@@ -7,7 +7,6 @@ class DataDescriptorPainter < AbstractDescriptorPainter
   end
 
   def my_shape(point)
-    Rectangle2D::Double.new(my_shape_x(point), my_shape_y(point),
-                            node_size, node_size)
+    Rectangle2D::Double.new(my_shape_x(point), my_shape_y(point), node_size, node_size)
   end
 end

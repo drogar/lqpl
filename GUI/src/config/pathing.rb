@@ -1,16 +1,17 @@
+require 'java'
 # Set up requires and imports
 class Pathing
   def self.requires_and_imports_for_lqpl(context)
-    base_requires
     add_all_sibling_directories_to_load_path(__FILE__)
     # for swinging
-    add_to_load_path '../lib/ruby/swingtown'
+    add_to_load_path '../../lib/ruby/'
+    add_to_load_path '../../lib/ruby/swingtown/'
+    add_to_load_path '..'
+    base_requires
     monkeybars_resolve
 
-    ImportJava.do_imports(context: context,
-                          awt: %w[BorderLayout GridLayout Point Rectangle event.WindowEvent],
-                          swing: %w[JOptionPane JFileChooser filechooser.FileNameExtensionFilter
-                                    JTextArea JScrollPane BoxLayout SpinnerNumberModel],
+    ImportJava.do_imports(context: context, awt: %w[BorderLayout GridLayout Point Rectangle event.WindowEvent],
+                          swing: %w[JOptionPane JFileChooser filechooser.FileNameExtensionFilter JTextArea JScrollPane BoxLayout SpinnerNumberModel],
                           lang: 'System')
     swingstart
   end
@@ -22,12 +23,10 @@ class Pathing
                      lqpl_menu lqpl_view lqpl_model lqpl_controller].freeze
 
   def self.base_requires
-    require 'rbconfig'
-    require 'java'
-    require 'config/platform_configuration'
+    require 'platform_configuration'
     require 'json'
-    require 'config/resolver'
-    require 'config/import_java'
+    require 'resolver'
+    require 'import_java'
     require 'pry'
   end
 
@@ -72,11 +71,14 @@ class Pathing
   end
 
   def self.lqpl_requires
+    add_to_classpath 'out/lqpl_gui.jar'
+    add_to_classpath 'out/'
+
     LQPL_REQUIRES.each { |ruby_file| require ruby_file }
   end
 
-  def self.add_to_classpath(path, file: __FILE__)
-    $CLASSPATH << get_expanded_path(path, file: file) unless $CLASSPATH.include?(get_expanded_path(path, file: file))
+  def self.add_to_classpath(path)
+    $CLASSPATH << get_expanded_path_no_file(path) unless $CLASSPATH.include?(get_expanded_path_no_file(path))
   end
 
   #:nocov:#
@@ -109,7 +111,20 @@ class Pathing
   end
 
   def self.file_path(path, file)
-    File.expand_path(File.dirname(file) + '/' + path.tr('\\', '/'))
+    transformed = File.dirname(file) + '/' + path.tr('\\', '/')
+    File.expand_path(transformed)
+  end
+
+  def self.get_expanded_path_no_file(path)
+    resolved_path = file_path_no_file(path)
+    remove_file_prefixes(resolved_path)
+    unpercent_spaces(resolved_path)
+    resolved_path
+  end
+
+  def self.file_path_no_file(path)
+    transformed = path.tr('\\', '/')
+    File.expand_path(transformed)
   end
 
   def self.remove_file_prefixes(path)

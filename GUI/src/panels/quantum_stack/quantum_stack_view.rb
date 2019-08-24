@@ -7,7 +7,6 @@ class QuantumStackView < ApplicationView
   raw_mapping :make_quantum_stack_painter, nil
 
   def make_quantum_stack_painter(model, _transfer)
-    quantum_stack_panel.quantum_stack_painter =
-      QuantumStackPainter.new(model)
+    quantum_stack_panel.quantum_stack_painter = QuantumStackPainter.new(model)
   end
 end

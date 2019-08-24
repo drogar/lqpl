@@ -1,4 +1,3 @@
-require 'swingtown_utils'
 describe Swingtown do
   describe 'constants' do
     it 'sets the VERSION to 0.3.0' do

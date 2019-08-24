@@ -58,15 +58,13 @@ module Monkeybars
       #    puts npath
       MONKEYBARS_JAR_LOCATIONS.each do |mb_path|
         pathing_add_to_classpath(monkeybars_jar(location_path + mb_path))
-        #    puts "resulting mbj=#{mbj}"
-        #     puts "or is #{mbj}"
       end
     end
 
     def pathing_add_to_classpath(path)
       return if path.nil? || path.empty?
 
-      Pathing.add_to_classpath(path, file: location)
+      Pathing.add_to_classpath(path)
     end
   end
 end

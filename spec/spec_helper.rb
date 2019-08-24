@@ -1,4 +1,4 @@
-require 'rbconfig'
+require_relative '../GUI/src/config/manifest'
 require 'java'
 require 'english'
 require 'simplecov'
@@ -70,19 +70,18 @@ end
 
 require 'fest-swing-1.2.jar'
 
-$CLASSPATH << project_dir + '/GUI/lib/java/monkeybars-1.1.1.jar'
+# $CLASSPATH << project_dir + '/GUI/lib/java/monkeybars-3.3.3.jar'
 
 require 'fest_testing_imports'
 
 TEST_QP_PATH = project_dir + '/GUI/testdata/qplprograms'
 
-require 'config/platform_configuration'
-
-require 'config/manifest'
+# require 'config/platform_configuration'
 
 require 'component_query'
 require 'drawing_extensions'
 require 'raster_queries'
+
 RSpec.configure do |conf|
   conf.mock_with :rspec do |c|
     c.syntax = :expect

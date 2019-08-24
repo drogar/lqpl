@@ -296,7 +296,7 @@ describe Swingtown do
       end
     end
   end
-    describe STDialog do
+  describe STDialog do
     before :each do
       SwingRunner.on_edt { @sr = STDialog.new }
     end
