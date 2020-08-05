@@ -133,7 +133,7 @@ GEM
     ruby_dep (1.5.0)
     ruby_parser (3.13.1)
       sexp_processor (~> 4.9)
-    rubyzip (1.2.2)
+    rubyzip (2.3.0)
     s4t-utils (1.0.4)
       hoe (>= 1.3.0)
     sexp_processor (4.12.0)
