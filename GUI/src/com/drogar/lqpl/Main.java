@@ -34,14 +34,15 @@ public class Main
     try{
       java.io.InputStream ins = Main.class.getClassLoader().getResourceAsStream("run_configuration");
       if (ins == null ) {
-        //System.err.println("Did not find configuration file 'run_configuration', using defaults.");
+          //System.err.println("Did not find configuration file 'run_configuration', using defaults.");
       } else {
         config_data = getConfigFileContents(ins);
+        System.err.println("Set config data");
       }
     }
     catch(IOException ioe)
     {
-      System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
+        //System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
     }
     catch(java.lang.NullPointerException npe)
     {
@@ -54,6 +55,7 @@ public class Main
             mainRubyFile = parts[1].replaceAll(" ", "");
         }
     }
+
     runtime.evalScriptlet("require '" + mainRubyFile + "'");
   }
   catch (Exception e) {

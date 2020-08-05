@@ -1,4 +1,4 @@
-require_relative '../GUI/src/config/manifest'
+# require_relative '../GUI/src/config/manifest'
 require 'java'
 require 'english'
 require 'simplecov'
@@ -57,6 +57,7 @@ $LOAD_PATH << project_dir + '/GUI'
   $LOAD_PATH << project_dir + '/GUI/' + dir
 end
 
+
 # java classpath
 $CLASSPATH << project_dir + '/GUI/lib/java/jruby-complete.jar'
 $CLASSPATH << project_dir + '/GUI'
@@ -78,9 +79,9 @@ TEST_QP_PATH = project_dir + '/GUI/testdata/qplprograms'
 
 # require 'config/platform_configuration'
 
-require 'component_query'
-require 'drawing_extensions'
-require 'raster_queries'
+#    require 'component_query'
+#    require 'drawing_extensions'
+#    require 'raster_queries'
 
 RSpec.configure do |conf|
   conf.mock_with :rspec do |c|

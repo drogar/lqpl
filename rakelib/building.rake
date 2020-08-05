@@ -1,6 +1,6 @@
 require 'ant'
 $LOAD_PATH << Dir.pwd
-require 'GUI/src/version'
+require 'GUI/src/lqpl_version'
 require 'config/build_config'
 require 'rspec/core/rake_task'
 
@@ -79,9 +79,9 @@ when /linux/i # Linux specific code
 end
 
 directory 'out'
-directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin"
-directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java"
-directory "out/lqpl-#{LQPL_GUI_VERSION}-source"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source"
 
 directory 'out/LQPLEmulator.app/Contents/MacOS'
 directory 'out/LQPLEmulator.app/Contents/PkgInfo'
@@ -96,32 +96,32 @@ namespace :dist do
   EXCLUDE_FROM_SOURCE_DIST.each { |exf| source_dist_files.exclude(exf) }
 
   desc "Make a #{tech} binary distribution"
-  task binary: ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin",
-                "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",
+  task binary: ["out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin",
+                "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java",
                 build[:all]] do
-    cp 'out/lqpl_gui.jar', "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",
+    cp 'out/lqpl_gui.jar', "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/",
        preserve: true
 
     redist_jars.each do |jar|
-      cp jar, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
+      cp jar, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
     end
     bin_dist_includes.each do |f|
-      cp_r f.to_s, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
+      cp_r f.to_s, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
     end
-    copy_server_bin "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin/"
-    $stdout << "Creating tar file: lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
-    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz "\
-       " lqpl-#{LQPL_GUI_VERSION}-bin-#{tech})"
+    copy_server_bin "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin/"
+    $stdout << "Creating tar file: lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}.tgz "\
+       " lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech})"
   end
 
   desc 'Make a source distribution'
-  task source: ["out/lqpl-#{LQPL_GUI_VERSION}-source"] do
+  task source: ["out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source"] do
     source_dist_files.each do |gsource|
-      cp_r(gsource.to_s, "out/lqpl-#{LQPL_GUI_VERSION}-source", preserve: true)
+      cp_r(gsource.to_s, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source", preserve: true)
     end
-    $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-source.tgz\n"
-    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-source.tgz"\
-       " lqpl-#{LQPL_GUI_VERSION}-source)"
+    $stdout << "Creating tar file: out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source.tgz\n"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source.tgz"\
+       " lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source)"
   end
 
   if mac
