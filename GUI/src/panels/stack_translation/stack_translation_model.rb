@@ -1,8 +1,6 @@
-# encoding: utf-8
 # model for the stack translation display
 class StackTranslationModel < ApplicationModel
-  attr_accessor :stack_translation
-  attr_accessor :text
+  attr_reader :stack_translation
 
   def stack_translation=(in_mmap)
     json_stp = EnsureJSON.new(in_mmap).as_json
@@ -13,15 +11,14 @@ class StackTranslationModel < ApplicationModel
     end
   end
 
-  def text=(_)
-  end
+  def text=(_unused); end
 
   def text
     inside = @stack_translation.reduce('') do |inner, tr_map|
       line = (tr_map.map { |kv| "#{kv[0]}=>#{kv[1]}" }).join(', ')
-      inner + '<li>' + line + '</li>'
+      "#{inner}<li>#{line}</li>"
     end
-    '<html><ol>' + inside + '</ol></html>'
+    "<html><ol>#{inside}</ol></html>"
   end
 
   def reverse_lookup(val)

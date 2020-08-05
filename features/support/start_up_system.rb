@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 # class to actually start the system
 class AppStarter < GuiQuery
   # Launch the app in the Event Dispatch Thread (EDT),

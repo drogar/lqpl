@@ -14,7 +14,7 @@ JRuby and associated tools:
   Highly suggested:
     - rvm (https://rvm.beginrescueend.com) (aka rvm.io)
   Required:
-    - JRuby (version 1.7.14.1, using 1.9 syntax, tested)
+    - JRuby (version 9000, using 2.2 syntax, tested)
     - Rake (Gem)
     - Bundler (Gem)
     - cucumber (Gem)
@@ -28,10 +28,6 @@ Apple:
     - Install rvm as noted above and then use it to install JRuby as per the
       documentation at the site. This will also install the gems Rake and
       Bundler.
-    - Ensure JRuby is using 1.9 level syntax by either
-            'export JRUBY_OPTS="--1.9"'
-      or setting up an rvm hook as per the documentation at
-            https://rvm.io/interpreters/jruby/
     - To do actual development, you need to install the monkeybars gem - but
       not the version at rubygems. So, add the source gems.neurogami.com to
       your gem sources list with "gem source -a http://gems.neurogami.com"

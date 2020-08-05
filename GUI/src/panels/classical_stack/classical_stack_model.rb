@@ -1,17 +1,15 @@
-# encoding: utf-8
 # classical stack model
 # Currently just an html dump
 class ClassicalStackModel < ApplicationModel
-  attr_accessor :classical_stack_text
-  attr_accessor :classical_stack
+  attr_reader :classical_stack
 
-  def classical_stack_text=(_)
-  end
+  def classical_stack_text=(_unused); end
 
   def classical_stack_text
     cs = @classical_stack || []
     return '' if cs == []
-    inside = cs.map { |c| "#{c}" }.join('<br />')
+
+    inside = cs.map(&:to_s).join('<br />')
     '<html>' + inside + '</html>'
   end
 

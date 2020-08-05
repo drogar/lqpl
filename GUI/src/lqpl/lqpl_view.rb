@@ -1,5 +1,5 @@
-# encoding: utf-8
 require 'lqpl_menu'
+require 'quantum_emulator_main_form'
 
 # view  for the main lqpl application
 class LqplView < ApplicationView
@@ -7,31 +7,40 @@ class LqplView < ApplicationView
 
   attr_accessor :the_menu
   attr_reader :main_view_component
-  alias_method :the_frame, :main_view_component
-  map view: 'spinner_panel.visible', model: :spinner_panel_visible
-  map view: 'button_panel.visible', model: :button_panel_visible
+  alias the_frame main_view_component
 
-  map view: 'step_spinner.model.value', model: :step_spinner
-  map view: 'recursion_spinner.model.value', model: :recursion_spinner
-  map view: 'recursion_multiplier_spinner.model.value', model: :recursion_multiplier_spinner
-  map view: 'tree_depth_spinner.model.value', model: :tree_depth_spinner
+  MODEL_TO_VIEW_MAP = {
+    spinner_panel_visible: 'spinner_panel.visible',
+    button_panel_visible: 'button_panel.visible',
 
-  map view: 'messages_text_area.text', model: :messages_text
+    step_spinner: 'step_spinner.model.value',
+    recursion_spinner: 'recursion_spinner.model.value',
+    recursion_multiplier_spinner: 'recursion_multiplier_spinner.model.value',
+    tree_depth_spinner: 'tree_depth_spinner.model.value',
 
-  map view: 'step_button.enabled', model: :step_enabled
-  map view: 'go_button.enabled', model: :go_enabled
+    messages_text: 'messages_text_area.text',
 
-  map view: 'the_menu.view_classical_stack.enabled', model: :view_menu_classical_stack_enabled
-  map view: 'the_menu.view_dump.enabled', model: :view_menu_dump_enabled
-  map view: 'the_menu.view_executing_code.enabled', model: :view_menu_executing_code_enabled
-  map view: 'the_menu.view_stack_translation.enabled', model: :view_menu_stack_translation_enabled
+    step_enabled: 'step_button.enabled',
+    go_enabled: 'go_button.enabled',
 
-  map view: 'the_menu.view_classical_stack.text', model: :view_menu_classical_stack_text
-  map view: 'the_menu.view_dump.text', model: :view_menu_dump_text
-  map view: 'the_menu.view_executing_code.text', model: :view_menu_executing_code_text
-  map view: 'the_menu.view_stack_translation.text', model: :view_menu_stack_translation_text
+    view_menu_classical_stack_enabled: 'the_menu.view_classical_stack.enabled',
+    view_menu_dump_enabled: 'the_menu.view_dump.enabled',
+    view_menu_executing_code_enabled: 'the_menu.view_executing_code.enabled',
+    view_menu_stack_translation_enabled: 'the_menu.view_stack_translation.enabled',
+
+    view_menu_classical_stack_text: 'the_menu.view_classical_stack.text',
+    view_menu_dump_text: 'the_menu.view_dump.text',
+    view_menu_executing_code_text: 'the_menu.view_executing_code.text',
+    view_menu_stack_translation_text: 'the_menu.view_stack_translation.text'
+  }.freeze
 
   raw_mapping :set_title, nil
+
+  def self.model_view_mapper(map_of_model_to_view)
+    map_of_model_to_view.each { |model, view| map view: view, model: model }
+  end
+
+  model_view_mapper(MODEL_TO_VIEW_MAP)
 
   def load(*)
     @the_menu = LqplMenu.new(self)

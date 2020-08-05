@@ -1,21 +1,27 @@
-# encoding: utf-8
+require 'abstract_descriptor_model'
+
 # zero note model
 class ZeroDescriptorModel < AbstractDescriptorModel
   def self.validate_substacks_count(substacks)
     return unless substacks
-    fail ModelCreateError, 'Zero stack should not have substacks' if substacks.size > 0
+    raise ModelCreateError, 'Zero stack should not have substacks' unless substacks.empty?
   end
 
   def initialize(in_string = '{"zero":0}')
     jzero = EnsureJSON.new(in_string).as_json
     if jzero.key?(:zero)
       @value = '0'
-    else
-      fail ModelCreateError, "Zero can not be created with #{in_string}"
+      return
     end
+
+    raise ModelCreateError, "Zero can not be created with #{in_string}"
   end
 
   def length
     0
+  end
+
+  def scalar?
+    true
   end
 end

@@ -1,6 +1,5 @@
-# encoding: utf-8
 java_import java.awt.event.WindowEvent
-require 'dialogs/about/about_controller'
+require 'about_controller'
 require 'exit_handler'
 
 # Handle the dialogs in lqpl
@@ -8,11 +7,11 @@ class LqplSubsHandler
   attr_accessor :subs
 
   def initialize(controllers)
-    @subs = controllers.reduce([]) { |a, e| a << e.instance }
+    @subs = controllers.reduce([]) { |acc, elem| acc << elem.instance }
   end
 
   def dispose_all
-    @subs.each(&:dispose) if @subs
+    @subs&.each(&:dispose)
   end
 
   def open

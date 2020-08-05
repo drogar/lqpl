@@ -1,0 +1,36 @@
+name:                lqpl-compiler
+version:             0.9.2
+stability:           Experimental
+synopsis:            Compiler and Emulator for Linear-QPL
+description:         A command-line compiler, a server based compiler and a server based emulator
+                     for Linear-QPL. LQPL is a functional quantum programming language that allows
+                     experimenting with and visualizing the effects of quantum algorithms.
+tested-with:         GHC
+license:             BSD3
+author:              Brett Giles, Robin Cockett
+maintainer:          brett.giles@ucalgary.ca
+bug-reports:         mailto:brett.giles@ucalgary.ca
+homepage:            http://pll.cpsc.ucalgary.ca/lqpl
+build-type:          Simple
+
+library:
+  dependencies:
+    - base
+    - containers
+    - filepath
+    - lqpl-common
+    - mtl
+    - parsec
+
+  source-dirs:
+    - lib
+
+executable:
+   main:           Lqpl/Compiler/Main.lhs
+   dependencies:
+     - base
+     - lqpl-compiler
+     - mtl
+
+   source-dirs:
+     - src

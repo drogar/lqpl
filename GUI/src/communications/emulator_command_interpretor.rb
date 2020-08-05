@@ -1,5 +1,5 @@
-# Encoding: UTF-8
 require 'json'
+require 'parameter_generator'
 # handle creation of commands for lqpl emulator
 class EmulatorCommandInterpretor
   attr_accessor :connection
@@ -21,28 +21,23 @@ class EmulatorCommandInterpretor
       def get_#{which}(tree_depth = 5, recursion_depth = 1)
         command(:get_#{which},[tree_depth,recursion_depth])
       end
-    }
+    }, __FILE__, __LINE__ - 4
   end
 
-  make_get_command :qstack
-  make_get_command :stack_translation
-  make_get_command :classical_stack
-  make_get_command :dump
-  make_get_command :code
-  make_get_command :codepointer
+  %i[qstack stack_translation classical_stack dump code codepointer].each { |s| make_get_command s }
 
   def self.make_do_command(which, defs = [])
     pg = ParameterGenerator.new(defs)
-    class_eval %{
-      def do_#{which}#{pg.parameters_for_definition}
-        command(:#{which},[#{pg.parameters_for_calling}])
+    class_eval string_for_do_command(which, pg), __FILE__, __LINE__
+  end
+
+  def self.string_for_do_command(which, parm_generator)
+    %{
+      def do_#{which}#{parm_generator.parameters_for_definition}
+        command(:#{which},[#{parm_generator.parameters_for_calling}])
       end
     }
   end
 
-  make_do_command :run, [1]
-  make_do_command :trim
-  make_do_command :step, [1, 1]
-  make_do_command :simulate, [1]
-  make_do_command :depth_multiple, [10]
+  [[:run, [1]], [:trim, []], [:step, [1, 1]], [:simulate, [1]], [:depth_multiple, [10]]].each { |s, defs| make_do_command s, defs }
 end

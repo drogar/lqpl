@@ -1,15 +1,12 @@
-# encoding: utf-8
-
 # model for the Dump
 class DumpModel < ApplicationModel
-  attr_accessor :dump
+  attr_reader :dump
 
   def dump=(in_string)
     @dump = EnsureJSON.new(in_string).as_json[:dump]
   end
 
-  def text=(_)
-  end
+  def text=(_unused); end
 
   def text
     inside = @dump.map do |ditem|

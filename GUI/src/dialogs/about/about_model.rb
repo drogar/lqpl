@@ -1,10 +1,9 @@
-# encoding: utf-8
-require 'version'
+require 'lqpl_version'
 # Model for the about dialog
 class AboutModel
   attr_accessor :about_text
 
   def initialize
-    @about_text = ABOUT_STRING
+    @about_text = LqplVersion::ABOUT_STRING
   end
 end

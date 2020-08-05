@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Swing Dialog for Simulate Results
 class SimulateResultsDialog < STDialogWithOK
   attr_accessor :random_value_label
@@ -7,12 +6,18 @@ class SimulateResultsDialog < STDialogWithOK
   def initialize
     super('Simulate Results')
     self.bounds = Rectangle.new(50, 110, 200, 100)
-    Panel.new do |datap|
-      datap.layout = BoxLayout.new(datap, BoxLayout::Y_AXIS)
-      @random_value_label = make_rv_label(datap)
-      make_scroll_panel(datap)
-      data_pane.add(datap)
-    end
+    Panel.new { |panelref| initialize_panel(panelref) }
+  end
+
+  def initialize_panel(panelref)
+    panelref.layout = panel_layout(panelref)
+    @random_value_label = make_rv_label(panelref)
+    make_scroll_panel(panelref)
+    data_pane.add(panelref)
+  end
+
+  def panel_layout(panelref)
+    BoxLayout.new(panelref, BoxLayout::Y_AXIS)
   end
 
   def make_rv_label(cpanel)

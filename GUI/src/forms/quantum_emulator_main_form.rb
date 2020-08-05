@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Swing frame to display the main form with controls for running the quantum emulator
 class QuantumEmulatorMainForm < STFrame
   attr_accessor :spinner_panel, :button_panel, :step_spinner, :recursion_spinner,
@@ -9,8 +8,7 @@ class QuantumEmulatorMainForm < STFrame
                recursion: { name: 'Recursion Depth', start: 1, increment: 1, max: 100_000, min: 1 },
                tree_depth: { name: 'Tree Depth', start: 4, increment: 1, max: 100, min: 1 },
                recursion_multiplier: { name: 'Recursion Multiplier', start: 10, increment: 1,
-                                       max: 100_000, min: 1 }
-             }
+                                       max: 100_000, min: 1 } }.freeze
 
   def initialize
     super('Quantum Emulator')

@@ -24,28 +24,25 @@ public class Main
   }
   public static void main(String[] args) throws Exception
   {
-    String[] real_args;
-    real_args = new String[1];
-    real_args[0] = "--1.9";
+    try {
     System.setProperty("com.apple.mrj.application.apple.menu.about.name", "LQPL Emulator");
     RubyInstanceConfig config = new RubyInstanceConfig();
 
-    config.setArgv(real_args);
-    config.setCompatVersion(org.jruby.CompatVersion.RUBY1_9);
     setRuntime(JavaEmbedUtils.initialize(new ArrayList(0), config));
     String mainRubyFile = "main";
     ArrayList<String> config_data = new ArrayList<String>();
     try{
       java.io.InputStream ins = Main.class.getClassLoader().getResourceAsStream("run_configuration");
       if (ins == null ) {
-        //System.err.println("Did not find configuration file 'run_configuration', using defaults.");
+          //System.err.println("Did not find configuration file 'run_configuration', using defaults.");
       } else {
         config_data = getConfigFileContents(ins);
+        System.err.println("Set config data");
       }
     }
     catch(IOException ioe)
     {
-      System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
+        //System.err.println("Error loading run configuration file 'run_configuration', using defaults: " + ioe);
     }
     catch(java.lang.NullPointerException npe)
     {
@@ -58,7 +55,13 @@ public class Main
             mainRubyFile = parts[1].replaceAll(" ", "");
         }
     }
-      runtime.evalScriptlet("require '" + mainRubyFile + "'");
+
+    runtime.evalScriptlet("require '" + mainRubyFile + "'");
+  }
+  catch (Exception e) {
+    System.err.println("got exception " + e);
+    Thread.dumpStack();
+  }
   }
 
   public static URL getResource(String path) {

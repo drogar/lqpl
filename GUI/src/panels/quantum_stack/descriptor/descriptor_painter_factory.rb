@@ -1,4 +1,8 @@
-# encoding: utf-8
+require 'classical_descriptor_painter'
+require 'data_descriptor_painter'
+require 'qubit_descriptor_painter'
+require 'value_descriptor_painter'
+require 'zero_descriptor_painter'
 # factory to create the data descriptor's painter
 class DescriptorPainterFactory
   def self.make_painter(model)

@@ -1,4 +1,3 @@
-# encoding: utf-8
 # controller for the stack translation panel
 class StackTranslationController < PanelController
   set_model 'StackTranslationModel'

@@ -1,9 +1,7 @@
-# encoding: UTF-8
-
-def get_sample_data_at_point(rstr, x, y)
+def get_sample_data_at_point(rstr, point_x, point_y)
   s = []
   [0, 1, 2, 3].each do |i|
-    s << rstr.getSample(x, y, i)
+    s << rstr.getSample(point_x, point_y, i)
   end
   s
 end
@@ -29,25 +27,25 @@ def check_some_raster_point_is_grey(rstr, start_x, start_y, end_x, end_y)
   expect(xs.any? { |x| ys.any? { |y| get_sample_data_at_point(rstr, x, y)[3] > 50 } }).to be true
 end
 
-def check_raster_point_is_black(rstr, x, y)
-  s = get_sample_data_at_point(rstr, x, y)
+def check_raster_point_is_black(rstr, point_x, point_y)
+  s = get_sample_data_at_point(rstr, point_x, point_y)
 
   expect(s[3]).to eql(255)
 end
 
-def check_raster_point_is_grey(rstr, x, y)
-  s = get_sample_data_at_point(rstr, x, y)
+def check_raster_point_is_grey(rstr, point_x, point_y)
+  s = get_sample_data_at_point(rstr, point_x, point_y)
 
   expect(s[3]).to be > 50
 end
 
-def check_raster_point_is_white(rstr, x, y)
-  s = get_sample_data_at_point(rstr, x, y)
+def check_raster_point_is_white(rstr, point_x, point_y)
+  s = get_sample_data_at_point(rstr, point_x, point_y)
   expect(s[3]).to eql(0)
 end
 
-def check_raster_point_is_green(rstr, x, y)
-  s = get_sample_data_at_point(rstr, x, y)
+def check_raster_point_is_green(rstr, point_x, point_y)
+  s = get_sample_data_at_point(rstr, point_x, point_y)
   check_point_is_green(s)
 end
 

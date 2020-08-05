@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Swing component to display the executing code
 class ExecutingCodeForm < STFrame
   attr_accessor :code_tabbed_pane

@@ -1,10 +1,9 @@
-# encoding: UTF-8
 KVPS6 = '"EnScope", "QLoad \"@q\" 0", "QApply 0 Hadamard \"@q\"","QPullup \"@q\"",'\
-        '"EnScope","Measure \"@q\" 14 6 10"'
+        '"EnScope","Measure \"@q\" 14 6 10"'.freeze
 
-KVPAIRS_2 = '{"main": ["EnScope"], "cflip_fcdelbl0": ["EnScope","QLoad \"@q\" 0"]}'
+KVPAIRS_2 = '{"main": ["EnScope"], "cflip_fcdelbl0": ["EnScope","QLoad \"@q\" 0"]}'.freeze
 
-CMAP_SINGLE = '{"main": ["EnScope"]}'
+CMAP_SINGLE = '{"main": ["EnScope"]}'.freeze
 
 CMAP_6 = '{"main": [' + KVPS6 + ']}'
 

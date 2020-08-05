@@ -1,7 +1,5 @@
-# encoding: UTF-8
-
 Given(/^the frame "([\w\s]*)" is visible$/) do |frame_name|
-  eval "@#{frame_name.tr(/ /, '_')} = FrameFixture.new frame_name"
+  eval "@#{frame_name.tr(/ /, '_')} = FrameFixture.new frame_name", binding, __FILE__, __LINE__
 end
 
 Given(/^I select "([a-zA-Z\s]*)" from the "([a-zA-Z]*)" menu$/) do |mitem, menu|

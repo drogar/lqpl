@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # class to help choos a file fixture
 class JFileChooserFixture
   def project_sub_directory(dir_string)

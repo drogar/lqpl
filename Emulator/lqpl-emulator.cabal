@@ -1,0 +1,90 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 154f7ef0c0e1c2d9fbf0fcc06d09658112b4f00fa16cad9dfd7d7324d1089a92
+
+name:           lqpl-emulator
+version:        0.9.2
+synopsis:       Compiler and Emulator for Linear-QPL
+description:    A command-line compiler, a server based compiler and a server based emulator for Linear-QPL. LQPL is a functional quantum programming language that allows experimenting with and visualizing the effects of quantum algorithms.
+stability:      Experimental
+homepage:       http://pll.cpsc.ucalgary.ca/lqpl
+bug-reports:    mailto:brett.giles@ucalgary.ca
+author:         Brett Giles, Robin Cockett
+maintainer:     brett.giles@ucalgary.ca
+license:        BSD3
+tested-with:    GHC
+build-type:     Simple
+
+library
+  exposed-modules:
+      Lqpl.Assembler.AssemLexer
+      Lqpl.Assembler.AssemParser
+      Lqpl.Assembler.LexMonad
+      Lqpl.Data.ClassComp
+      Lqpl.Data.ClassicalData
+      Lqpl.Data.Computation.BaseType
+      Lqpl.Data.EitherLocal
+      Lqpl.Data.InfList
+      Lqpl.Data.LazyNum
+      Lqpl.Data.Matrix
+      Lqpl.Data.Permutation
+      Lqpl.Data.Stream
+      Lqpl.QSM.BasicData
+      Lqpl.QSM.Components.ClassicalStack
+      Lqpl.QSM.Components.ControlStack
+      Lqpl.QSM.Components.Dump
+      Lqpl.QSM.Components.Instructions
+      Lqpl.QSM.Components.MemoryMap
+      Lqpl.QSM.MachineErrors
+      Lqpl.QSM.QSM
+      Lqpl.QSM.QuantumStack.QSDefinition
+      Lqpl.QSM.QuantumStack.QSManipulation
+      Lqpl.QSM.QuantumStack.QSRotation
+      Lqpl.QSM.QuantumStack.QSTransforms
+      Lqpl.QSM.QuantumStack.QSViewQueries
+      Lqpl.QSM.QuantumStack.QSXML
+      Lqpl.QSM.QuantumStack.QuantumStack
+      Lqpl.QSM.Simulate
+      Lqpl.QSM.Transformations
+      Lqpl.Server.EmulatorServerCommand
+      Lqpl.Server.MachineControl
+      Lqpl.Server.Server
+      Lqpl.Server.StackToJSON
+      Lqpl.Server.Types
+  other-modules:
+      Paths_lqpl_emulator
+  hs-source-dirs:
+      lib
+  build-depends:
+      aeson
+    , array
+    , base
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , lqpl-common
+    , mtl
+    , network
+    , random
+    , text
+  build-tools:
+      alex
+    , happy
+  default-language: Haskell2010
+
+executable lqpl-emulator
+  main-is: Lqpl/EmulatorServer.lhs
+  other-modules:
+      Paths_lqpl_emulator
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+    , lqpl-common
+    , lqpl-emulator
+  default-language: Haskell2010

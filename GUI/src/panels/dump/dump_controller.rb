@@ -1,4 +1,3 @@
-# encoding: utf-8
 # controller for displaying the dump
 class DumpController < PanelController
   set_model 'DumpModel'

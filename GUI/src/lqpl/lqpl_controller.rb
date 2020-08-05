@@ -1,24 +1,22 @@
-# encoding: utf-8
-java_import java.awt.event.WindowEvent
-require 'dialogs/about/about_controller'
-require 'dialogs/simulate_results/simulate_results_controller'
-require 'exit_handler'
-
 # Main controller for the main controller class
 class LqplController < ApplicationController
-  set_model 'LqplModel'
-  set_view 'LqplView'
-  set_close_action :close
-  DIALOGS = [AboutController, SimulateResultsController]
+  DIALOGS = [AboutController, SimulateResultsController].freeze
   SUBS = [StackTranslationController, ClassicalStackController, DumpController,
-          ExecutingCodeController, QuantumStackController]
-  attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler, :qpl_dialog
+          ExecutingCodeController, QuantumStackController].freeze
+  attr_accessor :cmp, :sub_controllers_handler, :dialogs_handler
 
-  LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
+  def self.set_up_controller
+    set_model 'LqplModel'
+    set_view 'LqplView'
+    set_close_action :close
+    LqplMenu.prepare_menu_actions(->(opts) { add_listener(opts) })
+  end
+
+  set_up_controller
 
   def close
-    dialogs_handler.dispose_all if dialogs_handler
-    sub_controllers_handler.dispose_all if sub_controllers_handler
+    dialogs_handler&.dispose_all
+    sub_controllers_handler&.dispose_all
     ExitHandler.instance.close_servers
     super
   end
@@ -43,42 +41,35 @@ class LqplController < ApplicationController
   end
 
   def file_compile_action_performed
-    chooser = LqplFileChooser.lqpl_source_file_opener
-    if chooser.show_open_dialog(my_frame) == JFileChooser::APPROVE_OPTION
-      model.compile(chooser.get_selected_file)
-    else
-      model.messages_text = 'Compile action cancelled.'
-    end
+    LqplFileChooser.open_and_compile(my_frame, model)
     update_view
   end
 
   def file_load_action_performed
-    @qpl_dialog = LqplFileChooser.lqpl_assembled_file_opener
-    if @qpl_dialog.show_open_dialog(nil) == JFileChooser::APPROVE_OPTION
-      model.load_and_enable! @qpl_dialog.selected_file
-      initialize_sub_controllers
-    else
-      model.messages_text = 'QPO file load cancelled.'
-    end
+    LqplFileChooser.open_and_load_qpl(model) && initialize_sub_controllers
     update_view
   end
 
   def file_simulate_action_performed
     SimulateResultsController.instance
-      .set_simulate_results(model.recursion_spinner.int_value,
-                            StackTranslationController.instance.stack_translation)
+                             .set_simulate_results(recursion_depth,
+                                                   StackTranslationController.instance.stack_translation)
     SimulateResultsController.instance.open
   end
 
-  def view_sub_panel_action_performed(e)
-    command_and_sub_panel = e.action_command.scan(/\w+/)
+  def recursion_depth
+    model.recursion_spinner.int_value
+  end
+
+  def view_sub_panel_action_performed(event)
+    command_and_sub_panel = event.action_command.scan(/\w+/)
     PanelController.controller_from_name(command_and_sub_panel).instance.toggle_visibility
     model.toggle_view_menu(command_and_sub_panel)
     update_view
   end
 
   def initialize_sub_controllers
-    ExecutingCodeController.instance.update_code_and_code_pointer model.recursion_spinner.int_value
+    ExecutingCodeController.instance.update_code_and_code_pointer recursion_depth
     sub_controllers_handler.update_and_open(model)
     model.enable_view_menu_items
   end
@@ -103,9 +94,17 @@ class LqplController < ApplicationController
   end
 
   def tree_depth_spinner_state_changed
-    model.tree_depth_spinner = java.lang.Integer.new(view_model.tree_depth_spinner)
-    model.messages_text = "Tree Depth set to #{model.tree_depth_spinner}"
+    model.tree_depth_spinner = model_tree_depth_spinner_value
+    model.messages_text = message_text_tree_depth_spinner
     update_all
+  end
+
+  def model_tree_depth_spinner_value
+    java.lang.Integer.new(view_model.tree_depth_spinner)
+  end
+
+  def message_text_tree_depth_spinner
+    "Tree Depth set to #{model.tree_depth_spinner}"
   end
 
   def step_button_action_performed

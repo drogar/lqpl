@@ -1,12 +1,6 @@
-# Encoding: UTF-8
-require 'rubocop/rake_task'
 require 'rake/clean'
 
-unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
-  abort 'Sorry - Building LQPL requires JRuby. You are using some other ruby engine.'
-end
-
-RuboCop::RakeTask.new
+abort 'Sorry - Building LQPL requires JRuby. You are using some other ruby engine.' unless defined? RUBY_ENGINE && RUBY_ENGINE == 'jruby'
 
 Dir.glob('tasks/**/*.rake').each do |rake_file|
   load File.expand_path(File.dirname(__FILE__) + '/' + rake_file)

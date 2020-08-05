@@ -1,4 +1,3 @@
-# encoding: UTF-8
 Then(/^the dialog "([\w\s]*)" should have one of:$/) do |dialog_title, message_text_table|
   # table is a Cucumber::Ast::Table
   dialog_fixture = WindowFinder.find_dialog(DialogMatcher

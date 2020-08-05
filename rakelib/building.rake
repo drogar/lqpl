@@ -1,6 +1,6 @@
 require 'ant'
 $LOAD_PATH << Dir.pwd
-require 'GUI/src/version'
+require 'GUI/src/lqpl_version'
 require 'config/build_config'
 require 'rspec/core/rake_task'
 
@@ -8,7 +8,7 @@ directory 'out/bin'
 directory 'out/lqpl_gui'
 directory 'out/lib/java'
 
-abs_out = File.absolute_path('out')
+# abs_out = File.absolute_path('out')
 redist_jars = FileList.new('GUI/lib/java/*')
 
 haskell_source_files = FileList.new('Common/src/**/*hs')
@@ -18,30 +18,30 @@ haskell_source_files.include('Emulator/src/Assembler/AssemLexer.hs')
 haskell_source_files.include('Emulator/src/Assembler/AssemParser.ly')
 
 build = namespace :build do
+  desc 'clean servers'
   task :server_clean do
-    sh 'runghc Setup.hs clean'
+    sh 'stack clean'
     sh 'rm out/bin/lqpl*'
   end
-  task :server_config do
-    unless uptodate?('dist/setup-config', ['lqpl.cabal'])
-      sh "runghc Setup.hs configure --user --prefix=#{abs_out}"
-    end
-  end
+  # desc 'config server build'
+  # task :server_config do
+  #   sh "runghc Setup.hs configure --user --prefix=#{abs_out}" unless uptodate?('dist/setup-config', ['lqpl.cabal'])
+  # end
 
-  task :server_config_with_tests do
-    sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
-  end
+  # desc 'config server build with tests'
+  # task :server_config_with_tests do
+  #   sh "runghc Setup.hs configure --user --prefix=#{abs_out} --enable-tests"
+  # end
 
   desc 'Build the Haskell Compiler and Emulator'
-  task server: ['out/bin', :server_config] do
-    unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
-      sh 'runghc Setup.hs build && runghc Setup.hs install'
-    end
+  task server: ['out/bin'] do
+    sh 'stack build --copy-bins && cp ~/.local/bin/lqpl* out/bin/' unless uptodate?('out/bin/lqpl', haskell_source_files.to_a)
   end
 
-  task server_with_tests: ['out/bin', :server_config_with_tests] do
-    sh 'runghc Setup.hs build && runghc Setup.hs install'
-  end
+  # desc 'Build Haskell code with tests'
+  # task server_with_tests: ['out/bin'] do
+  #    sh 'stack test'
+  # end
 
   desc 'Copy JRuby files in preparation for JAR'
   task copy_jruby: 'out/lqpl_gui' do
@@ -79,9 +79,9 @@ when /linux/i # Linux specific code
 end
 
 directory 'out'
-directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin"
-directory "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java"
-directory "out/lqpl-#{LQPL_GUI_VERSION}-source"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java"
+directory "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source"
 
 directory 'out/LQPLEmulator.app/Contents/MacOS'
 directory 'out/LQPLEmulator.app/Contents/PkgInfo'
@@ -96,32 +96,32 @@ namespace :dist do
   EXCLUDE_FROM_SOURCE_DIST.each { |exf| source_dist_files.exclude(exf) }
 
   desc "Make a #{tech} binary distribution"
-  task binary: ["out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin",
-                "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java",
+  task binary: ["out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin",
+                "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java",
                 build[:all]] do
-    cp 'out/lqpl_gui.jar', "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/",
+    cp 'out/lqpl_gui.jar', "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/",
        preserve: true
 
     redist_jars.each do |jar|
-      cp jar, "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
+      cp jar, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/lib/java", preserve: true
     end
     bin_dist_includes.each do |f|
-      cp_r "#{f}", "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
+      cp_r f.to_s, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/", preserve: true
     end
-    copy_server_bin "out/lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}/bin/"
-    $stdout << "Creating tar file: lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
-    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-bin-#{tech}.tgz "\
-       " lqpl-#{LQPL_GUI_VERSION}-bin-#{tech})"
+    copy_server_bin "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}/bin/"
+    $stdout << "Creating tar file: lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}.tgz\n"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech}.tgz "\
+       " lqpl-#{LqplVersion::LQPL_GUI_VERSION}-bin-#{tech})"
   end
 
   desc 'Make a source distribution'
-  task source: ["out/lqpl-#{LQPL_GUI_VERSION}-source"] do
+  task source: ["out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source"] do
     source_dist_files.each do |gsource|
-      cp_r("#{gsource}", "out/lqpl-#{LQPL_GUI_VERSION}-source", preserve: true)
+      cp_r(gsource.to_s, "out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source", preserve: true)
     end
-    $stdout << "Creating tar file: out/lqpl-#{LQPL_GUI_VERSION}-source.tgz\n"
-    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LQPL_GUI_VERSION}-source.tgz"\
-       " lqpl-#{LQPL_GUI_VERSION}-source)"
+    $stdout << "Creating tar file: out/lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source.tgz\n"
+    sh "(cd out ; tar #{tar_options} -czf lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source.tgz"\
+       " lqpl-#{LqplVersion::LQPL_GUI_VERSION}-source)"
   end
 
   if mac
@@ -155,12 +155,12 @@ namespace :test do
   task spec: [build[:jar]]
 
   desc 'Run lqpl Compiler and Emulator tests'
-  task server_tests: [build[:server_with_tests]] do
-    sh 'runghc Setup.hs test --show-details=always'
+  task :server_tests do
+    sh "stack test --dump-logs --test-arguments='--format=progress --color'"
   end
 
   desc 'Run all tests'
-  task all: [:features, :spec, :server_tests]
+  task all: %i[features spec server_tests]
 
   begin
     require 'cucumber'
@@ -192,6 +192,7 @@ def copy_server_bin(to_dir)
   incomplete = true
   HASKELL_BIN_DIRS.each do |d|
     next unless incomplete && File.file?("#{d}/lqpl")
+
     copy_executable_dir(d, to_dir)
     incomplete = false
   end
@@ -199,8 +200,8 @@ def copy_server_bin(to_dir)
 end
 
 def copy_executable_dir(from_dir, to_dir)
-  %w(lqpl lqpl-emulator lqpl-compiler-server).each do |subdir|
-    cp "#{from_dir}/#{subdir}", "#{to_dir}"
+  %w[lqpl lqpl-emulator lqpl-compiler-server].each do |subdir|
+    cp "#{from_dir}/#{subdir}", to_dir.to_s
     sh "chmod +x #{to_dir}/#{subdir}"
   end
 end
