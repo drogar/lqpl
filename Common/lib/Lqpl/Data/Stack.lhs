@@ -30,6 +30,8 @@ instance Monad Stack where
     return a   = Stack [a]
     m >>= k    = stkfoldr ( concStack . k) (Stack []) m
     m >> k     = stkfoldr ( concStack . const k) (Stack []) m
+
+instance MonadFail Stack where
     fail _     = Stack []
 
 instance MonadPlus Stack where

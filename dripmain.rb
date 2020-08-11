@@ -1,2 +1,0 @@
-require 'rubocop'
-require 'rake'

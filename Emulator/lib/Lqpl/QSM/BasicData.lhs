@@ -9,6 +9,7 @@ module Lqpl.QSM.BasicData (Label,
                       StackPointer,
                       Quantum,
                       Basis(..),
+                      invalidStackAddress,
                       noAddress,
                       foldToAddress,
                       freshPtr,
@@ -63,6 +64,9 @@ combineNS (nms1,sa1) (nms2,sa2)
   = (List.intersect nms1 nms2, max sa1 sa2)
 
 type StackAddress = Int
+
+invalidStackAddress :: StackAddress
+invalidStackAddress = -1
 
 type StackPointer = String
 

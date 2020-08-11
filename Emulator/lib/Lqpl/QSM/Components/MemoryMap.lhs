@@ -67,14 +67,15 @@ addTranslation sp sa []         = [Map.singleton sp sa]
 addTranslation sp sa (me:rest)  = Map.insert sp sa me : rest
 
 mGetAddress :: (Monad m) => m StackPointer -> MemoryMap -> m StackAddress
-mGetAddress mp []            =  do  p <- mp;
-                                    fail  $ "Name "++p++" not found in stack."
+mGetAddress mp []            =  do  p <- mp
+                                    return invalidStackAddress
+                                    -- fail  $ "Name "++p++" not found in stack."
 mGetAddress mp (mme:items)   =  do  p <- mp
                                     case Map.lookup p mme of
                                        Just a   -> return a
                                        Nothing  -> mGetAddress mp items
 
-getAddress :: StackPointer ->  MemoryMap ->StackAddress
+getAddress :: StackPointer ->  MemoryMap -> StackAddress
 getAddress p    = runIdentity . mGetAddress (Identity p)
 
 repoint :: StackAddress -> StackAddress -> MemoryMap -> MemoryMap
