@@ -1,6 +1,0 @@
-%s
-
-# Generated view class, using generate UI
-class %sView < ApplicationView
-  set_java_class %s
-end

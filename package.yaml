@@ -7,9 +7,9 @@ tested-with:         GHC
 license:             BSD3
 license-file:        LICENCE
 author:              Brett Giles, Robin Cockett
-maintainer:          brett.giles@ucalgary.ca
-bug-reports:         mailto:brett.giles@ucalgary.ca
-homepage:            http://pll.cpsc.ucalgary.ca/lqpl
+maintainer:          brett.giles@drogar.com
+bug-reports:         mailto:brett.giles@drogar.com
+homepage:            http://www.drogar.com/UCWebsite/research/lqpl.html
 build-type:          Simple
 
 tests:

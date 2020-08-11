@@ -1,6 +1,0 @@
-# Generated controller, pulling in model and view
-class %sController < ApplicationController
-  set_model '%sModel'
-  set_view '%sView'
-  set_close_action :exit
-end

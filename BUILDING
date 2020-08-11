@@ -2,131 +2,31 @@ This BUILDING file covers how to build the three components included
 in this distribution:
   - Compiler  (builds 'lqpl' and 'lqpl-compiler-server')
   - Emulator  (builds 'lqpl-emulator-server')
-  - GUI       (builds 'lqpl-gui.jar')
 
-The Compiler and Emulator are Haskell programs, while the GUI is a Java/JRuby
+The Compiler and Emulator are Haskell programs. See http://github.com/drogar/lqpl-jruby-fe for a
+GUI to use with the Compiler and Emulator servers. The lqpl-jruby-fe is a Java/JRuby
 Swing program.
 
-You may build each component individually or you may use rake to automatically
-build all the pieces. The Haskell components use the CABAL build system,
-which is geared to Haskell builds. The GUI component uses the Rake build/control
-system.
+Use the command:
 
-Rake is used to control the automated builds and run tests of all components,
-although you may run the CABAL builds for the Haskell components directly.
+   stack build
+
+to build all the Haskell components.
 
 REQUIREMENTS:
 
 For the Compiler and Emulator, you will need a recent version of Haskell
-(tested with GHC version 7.6.3). I suggest loading the
-Haskell Platform at http://hackage.haskell.org/platform/.
-
-If you choose to install individual pieces, you will need GHC, Happy, Alex,
-Cabal and a variety of libraries. See the lqpl.cabal file for required libraries.
-
-For the GUI and for running the common rake build system, you must install and
-use JRuby. This code is working on version 1.7.5, but may work with earlier
-versions. This will also require a recent JDK (version 7 is suggested) and the 
-ant build system.
-
-See further details in GUI/BUILDING.
-
-
-BUILDING:
-
-Rake (http://rubydoc.info/gems/rake/0.9.2.2/frames) is used to build the system.
-The commands below assume that you have installed JRuby via rvm and set it as
-your default ruby version. If not, you will need to prefix the rake commands with
-
-    jruby -S
-
-for example:
-
-    jruby -S rake -T
-
-would list the rake tasks.
-
-To build a complete system, change to the directory this BUILDING file is
-contained in and at a command line type:
-
-    rake build:all
-
-To run the tests, type
-
-    rake test:all
-
-You can see all the available tasks by typing:
-
-    rake -T
-
-Haskell component details:
-
-To use rake, type:
-
-    rake build:server
-
-which will build and install the server programs in 'out/bin'.
-
-To use the cabal build system directly, run the following commands in the
-same directory where the file 'Setup.hs' is located:
-
-    runghc Setup.hs configure
-    runghc Setup.hs build
-
-Assuming everything runs correctly, you may now run
-
-    runghc Setup.hs install
-
-Note that by default, CABAL installs programs to a hidden subdirectory of your
-home directory. That is, it will normally be installed to:
-
-    {HOME}/.cabal/bin
-
-To use the program, please add this directory to your path.
-
-GUI details
-
-To build just the gui, type:
-
-    rake build:gui
+(tested with GHC version 8.8.3). The Stack build system will do this for
+you (See https://docs.haskellstack.org/en/stable/install_and_upgrade/ for
+installing Stack).
 
 TESTS:
 
-You can run all unit tests in all components by typing:
+You can run all tests by typing:
 
-    rake test:all
+    stack test
 
-This does not run the GUI integration tests (cucumber - see below).
+This will show two failures unless lqpl-compiler-server and lqpl-emulator-server are running.
 
-Haskell Details:
-The tests use "hspec" in addition to other test modules in the Haskell
-platform. To install it, type
-
-    cabal update && cabal install hspec
-
-You can build and run the tests in the following way:
-
-    runghc Setup.hs configure --enable-tests
-    runghc Setup.hs build
-    runghc Setup.hs test
-
-The Haskell portions currently has a variety of test suites, primarily
-covering the compiler server, portions of the compiler and emulator server.
-
-GUI tests:
-
-The GUI uses both cucumber and rspec for testing. rspec tests may be run by
-either typing
-    rake rspec
-or by changing to the GUI directory and typing
-
-    rspec
-
-which again assumes jruby is your default. If not, run via 'jruby -S rspec'.
-
-Cucumber (integration) tests may be run by changing to the GUI directory and
-typing:
-
-    cucumber --profile=all
-
-
+TODO:
+- Provide details of Docker images for the two servers

@@ -20,7 +20,8 @@ The binary distribution contains the following items:
 
 5. lqpl_gui.jar - The executable of the front end UI(this is written in Java and JRuby).
                   lqpl_gui is a front end for the Linear Quantum Programming
-                  Language developed at the University of Calgary.
+                  Language developed at the University of Calgary. This is
+                  now in a separate repository, http://github.com/drogar/lqpl-jruby-fe
 
 6. lqplManual.pdf - The manual of the LQPL language.
 
@@ -28,7 +29,7 @@ The binary distribution contains the following items:
 
 
 ### SYSTEM REQUIREMENTS: ###
-You will need to have a copy of the Java 6 runtime environment installed and
+You will need to have a copy of the Java 8 (or higher) runtime environment installed and
 add the path of bin directory of the JRE into your system path.
 
 ### HOW TO RUN: ###
@@ -36,9 +37,8 @@ add the path of bin directory of the JRE into your system path.
 you can copy the command line binary(lqpl) into a directory on your path and then
 use it to compile lqpl programs.
 
-2. To run LQPL, open a terminal, change to the directory where you expanded the tar file
+2. To run the front end, open a terminal, change to the directory where you expanded the tar file
 and type 'java -jar lqpl_gui.jar' (without quotes).
-
 
 
 ### RELEASE NOTES: ###
@@ -57,12 +57,12 @@ requires Alex and Happy
 
 ### Reporting Issues ###
 
-Please report any issues to brett.giles@ucalgary.ca
+Please report any issues to brett.giles@drogar.com
 If you prefer, you may also enter issues directly at:
 
-      https://bitbucket.org/BrettGilesUofC/lqpl/issues
+      https://github.com/drogar/lqpl/issues
 
 
 ### How You Can Contribute ####
 
-Fork, issue a pull request. Or, get in touch with brett.giles@ucalgary.ca
+Fork, issue a pull request. Or, get in touch with brett.giles@drogar.com
