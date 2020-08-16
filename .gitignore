@@ -14,7 +14,6 @@ dist
 *.iml
 tmp
 out
-GUI/testdata/**/*.qpo
 demo
 package
 Manifest
