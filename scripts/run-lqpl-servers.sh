@@ -9,11 +9,13 @@ else
     run_directory="$HOME/programming/mixed/lqpl/"
 fi
 
-service="lqpl_emulator"
+service="lqpl-emulator"
 
 if [[ "$LQPL_SERVICE" == "COMPILER" ]]
 then
-   service="lqpl_compiler_emulator"
+   service="lqpl-compiler-server"
 fi
 
 echo "Running $run_directory$service"
+
+$run_directory$service
