@@ -11,4 +11,6 @@ COPY --from=build /opt/build/bin/lqpl-compiler-server .
 COPY --from=build /opt/build/scripts/run-lqpl-servers.sh .
 # default to running the emulator
 ENV LQPL_SERVICE="EMULATOR"
+EXPOSE 9502
+EXPOSE 7683
 CMD ["/opt/lqpl/bin/run-lqpl-servers.sh"]
