@@ -6,6 +6,7 @@
 
   import Lqpl.Compiler.CompilerServer
 
+  main:: IO()
   main =  serveLog defaultPort commandHandler defaultLogger
 
 \end{code}

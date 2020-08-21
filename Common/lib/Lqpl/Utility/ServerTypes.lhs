@@ -1,8 +1,8 @@
 \subsection{Types for network server}\label{section:netservertypes}
 \begin{code}
  module Lqpl.Utility.ServerTypes (
-     HandlerFunc(..),
-     Logger(..)
+     HandlerFunc,
+     Logger
      )
  where
 

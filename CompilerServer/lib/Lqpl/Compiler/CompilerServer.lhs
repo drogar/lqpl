@@ -9,6 +9,7 @@
   import Lqpl.Compiler.Qtypes
   import Lqpl.Compiler.Semantic
   import Lqpl.Compiler.GenCode
+  import Lqpl.Compiler.CompilerServiceStatus
 
   import Control.Applicative
   import Control.Concurrent
@@ -37,20 +38,12 @@
   import Data.Version
 
   import qualified Data.ByteString.Char8 as B
-  import qualified Data.Text as DT
+  import qualified Data.Text
   import Data.Aeson
 
   import Paths_lqpl_compiler_server
 
   defaultPort = "7683"
-
-  data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
-                                CS_COMPILED_FAIL String |
-                                CS_VERSION [Int] |
-                                CS_NEED_FILE String |
-                                CS_ILLEGAL_INPUT String
-    deriving (Show,Eq)
-
 
   data QPLFile = QPLFile {
     fileName :: String,
@@ -60,8 +53,8 @@
 
   instance FromJSON QPLFile where
     parseJSON (Object v) =
-        QPLFile <$> v .: DT.pack "file_name"
-                <*> v .: DT.pack "qpl_program"
+        QPLFile <$> v .: Data.Text.pack "file_name"
+                <*> v .: Data.Text.pack "qpl_program"
     parseJSON _          = mzero
 
   data CompilerCommand = CompilerCommand String
@@ -69,15 +62,15 @@
 
   instance FromJSON CompilerCommand where
     parseJSON  (Object v) =
-        CompilerCommand <$> v .: DT.pack "command"
+        CompilerCommand <$> v .: Data.Text.pack "command"
     parseJSON _          = mzero
 
   instance ToJSON AddrInfoFlag where
-    toJSON f = object [ (DT.pack "addressflag") .= (show f) ]
+    toJSON f = object [ (Data.Text.pack "addressflag") .= (show f) ]
 
   instance ToJSON AddrInfo where
     toJSON addrinfo =
-      object [ (DT.pack "flags") .= toJSON (addrFlags addrinfo)]
+      object [ (Data.Text.pack "flags") .= toJSON (addrFlags addrinfo)]
 
 -- addrFlags :: [AddrInfoFlag]
 -- addrFamily :: Family
@@ -88,7 +81,7 @@
 
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (Map (Maybe String) String)       -- ^ Function to handle incoming messages
-           -> Logger               -- ^ Function handle logging
+           -> Logger               -- ^ Function handle logging (SockAddr -> String -> IO() )
            -> IO ()
   serveLog port handlerfunc logger = withSocketsDo $
       do -- Look up the port.  Either raises an exception or returns
@@ -98,36 +91,30 @@
                       Nothing (Just port)
          let serveraddr = head addrinfos
          print serveraddr
-
          -- Create a socket
          sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
-
          -- Bind it to the address we're listening to
          bind sock (addrAddress serveraddr)
-
          -- Start listening for connection requests.  Maximum queue size
          -- of 2 connection requests waiting to be accepted.
          NS.listen sock 2
-
          -- Create a lock to use for synchronizing access to the handler
          lock <- newMVar ()
-
          -- Loop forever waiting for connections.  Ctrl-C to abort.
-         procRequests lock sock
-
+         processIncomingRequests lock sock
       where
             -- | Process incoming connection requests
-            procRequests :: MVar () -> Socket -> IO ()
-            procRequests lock mastersock =
+            processIncomingRequests :: MVar () -> Socket -> IO ()
+            processIncomingRequests lock mastersock =
                 do (connsock, clientaddr) <- accept mastersock
                    logit lock clientaddr
                       "lqpl-compiler-serv: client connnected"
-                   forkIO $ procMessages lock connsock clientaddr
-                   procRequests lock mastersock
+                   forkIO $ processIncomingMessages lock connsock clientaddr
+                   processIncomingRequests lock mastersock
 
             -- | Process incoming messages
-            procMessages :: MVar () -> Socket -> SockAddr -> IO ()
-            procMessages lock connsock clientaddr =
+            processIncomingMessages :: MVar () -> Socket -> SockAddr -> IO ()
+            processIncomingMessages lock connsock clientaddr =
                 do connhdl <- socketToHandle connsock ReadWriteMode
                    hSetBuffering connhdl LineBuffering
                    ref <- newIORef Map.empty
@@ -166,26 +153,6 @@
     --putStrLn $ show css
     hPutStrLn shandle $ resultToJSON css
 --      _                       -> hPutStrLn shandle $ show css
-
-  resultToJSON :: CompilerServiceStatus -> String
-  resultToJSON (CS_COMPILED_SUCCESS l "") =
-    jsonObject [jsonValueArrayElement "qpo" (lines l)]
-
-  resultToJSON (CS_COMPILED_SUCCESS l w) =
-    jsonObject [jsonValueArrayElement "qpo" (lines l),
-                jsonValueElement "warning" w]
-
-  resultToJSON (CS_COMPILED_FAIL message) =
-    jsonObject [jsonValueElement "compile_fail" message]
-
-  resultToJSON (CS_NEED_FILE fileName) =
-    jsonObject [jsonValueElement "send_file" fileName]
-
-  resultToJSON (CS_ILLEGAL_INPUT badInput) =
-    jsonObject [jsonValueElement "illegal_input" badInput]
-
-  resultToJSON (CS_VERSION nums ) =
-    jsonObject [jsonArrayElement "version_number" (Prelude.map show nums)]
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {
@@ -251,12 +218,12 @@
             return $ CS_COMPILED_SUCCESS (toMultiLineString txt) (toMultiLineString logs)
 
   doCompile :: FileProvider -> String -> IO ([String],[String])
-  doCompile fp p = do
-    asyn <- parseQPL fp "" "" p []
-    (ir,cls) <- W.runWriterT $ W.mapWriterT (removeState 0) (makeIr asyn)
-    cd <- ioGenCode ir 0
-    return (cd,cls)
+  doCompile fileProvider program = do
+    abstractSyntax <- parseQPL fileProvider "" "" program []
+    (intermediateRepresentation,cls) <- W.runWriterT $ W.mapWriterT (removeState 0) (makeIr abstractSyntax)
+    code <- ioGenCode intermediateRepresentation 0
+    return (code,cls)
 
-  haskey mp k = k `elem` keys mp
+  haskey map k = k `elem` keys map
 
 \end{code}
