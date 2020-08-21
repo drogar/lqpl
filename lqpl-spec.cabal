@@ -4,9 +4,9 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e9d2d99411b7febdfc162f58d0977f8ebe390407b0b7261ed4cc7e8b47f71ef8
+-- hash: e2cb8f5833ffd1056851a0d55cc4e89b92a52ebb750aad1c19e084fd1babd466
 
-name:           lqpl-compiler-server
+name:           lqpl-spec
 version:        0.9.2
 synopsis:       Compiler and Emulator for Linear-QPL
 description:    A command-line compiler, a server based compiler and a server based emulator for Linear-QPL. LQPL is a functional quantum programming language that allows experimenting with and visualizing the effects of quantum algorithms.
@@ -16,37 +16,51 @@ bug-reports:    mailto:brett.giles@drogar.com
 author:         Brett Giles, Robin Cockett
 maintainer:     brett.giles@drogar.com
 license:        BSD3
+license-file:   LICENCE
 tested-with:    GHC
 build-type:     Simple
 
-library
-  exposed-modules:
-      Lqpl.Compiler.CompilerServer
-      Lqpl.Compiler.CompilerServiceStatus
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
   other-modules:
-      Paths_lqpl_compiler_server
+      Fixture.CompilerData
+      Lqpl.Compiler.CompilerServerConnectSpec
+      Lqpl.Compiler.CompilerServerSpec
+      Lqpl.Compiler.CompilerSpecHelper
+      Lqpl.Compiler.QPLParserSpec
+      Lqpl.Compiler.TypeUnificationSpec
+      Lqpl.Data.LazyNumSpec
+      Lqpl.Server.CodeToJSONSpec
+      Lqpl.Server.EmulatorServerCommandSpec
+      Lqpl.Server.StackToJSONSpec
+      Lqpl.Utility.FileProviderSpec
+      Lqpl.Utility.TestExtras
+      SpecHelper
+      Paths_lqpl_spec
   hs-source-dirs:
-      lib
+      hspec
+  build-tool-depends:
+      hspec-discover:hspec-discover
   build-depends:
-      aeson
+      HUnit
+    , QuickCheck
+    , aeson
     , base
     , bytestring
     , containers
+    , directory
+    , filepath
+    , hspec
+    , hspec-contrib
+    , hspec-core
     , lqpl-common
     , lqpl-compiler
+    , lqpl-compiler-server
+    , lqpl-emulator
     , mtl
     , network
-    , text
-    , time
-  default-language: Haskell2010
-
-executable lqpl-compiler-server
-  main-is: Lqpl/Compiler/ServerMain.lhs
-  other-modules:
-      Paths_lqpl_compiler_server
-  hs-source-dirs:
-      src
-  build-depends:
-      base
-    , lqpl-compiler-server
+    , parsec
+    , process
+    , unix
   default-language: Haskell2010
