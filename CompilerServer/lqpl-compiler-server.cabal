@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fef97ae07466a749c6206e808863c01104053d35a12a6509740d9d2355f41e48
+-- hash: 7360782e27efb5d266bbe481b9d591678088b0df427fcdfac70f70b04eef4311
 
 name:           lqpl-compiler-server
 version:        0.9.2
@@ -51,5 +51,6 @@ executable lqpl-compiler-server
       src
   build-depends:
       base
+    , lqpl-common
     , lqpl-compiler-server
   default-language: Haskell2010

@@ -3,7 +3,7 @@
 module Main where
 
 import Lqpl.Server.Server
-
+import Lqpl.Utility.Logger
 
 defaultPortToUse :: String
 defaultPortToUse = "9502"

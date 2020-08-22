@@ -33,5 +33,6 @@ executable:
    dependencies:
      - base
      - lqpl-compiler-server
+     - lqpl-common
    source-dirs:
      - src

@@ -5,14 +5,20 @@
   module Lqpl.Compiler.CompilerServer where
 
 
+  import Lqpl.Compiler.CompilerCommand
+  import Lqpl.Compiler.CompilerServiceStatus
+  import Lqpl.Compiler.GenCode
   import Lqpl.Compiler.QPLParser
   import Lqpl.Compiler.Qtypes
   import Lqpl.Compiler.Semantic
-  import Lqpl.Compiler.GenCode
-
-  import Lqpl.Compiler.CompilerCommand
-  import Lqpl.Compiler.CompilerServiceStatus
   import Lqpl.Compiler.ServiceQPLFile
+
+
+  import Lqpl.Utility.Extras(filterNonPrintable)
+  import Lqpl.Utility.FileProvider
+  import Lqpl.Utility.Logger
+  import Lqpl.Utility.MakeJSON
+  import Lqpl.Utility.ServerTypes
 
   import Control.Applicative
   import Control.Concurrent
@@ -22,10 +28,13 @@
 
   import Control.Monad.Writer as W
 
+  import Data.Aeson
+  import qualified Data.ByteString.Char8 as B
   import Data.IORef
   import Data.List as List
   import Data.Map as Map
   import Data.Maybe
+  import qualified Data.Text
   import Data.Time
 
   import Network.Socket as NS
@@ -33,15 +42,6 @@
   import System.IO
   import System.IO.Error
 
-  import Lqpl.Utility.ServerTypes
-  import Lqpl.Utility.FileProvider
-
-  import Lqpl.Utility.Extras(filterNonPrintable)
-  import Lqpl.Utility.MakeJSON
-
-  import qualified Data.ByteString.Char8 as B
-  import qualified Data.Text
-  import Data.Aeson
 
   import Paths_lqpl_compiler_server
 
@@ -65,7 +65,7 @@
                       (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
                       Nothing (Just port)
          let serveraddr = head addrinfos
-         print serveraddr
+         logger LogDebug Nothing $ show serveraddr
          -- Create a socket
          sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
          -- Bind it to the address we're listening to
@@ -82,7 +82,7 @@
             processIncomingRequests :: MVar () -> Socket -> IO ()
             processIncomingRequests lock mastersock =
                 do (connsock, clientaddr) <- accept mastersock
-                   logit lock clientaddr
+                   logWithMVarLock logger lock LogInfo (Just clientaddr)
                       "lqpl-compiler-serv: client connnected"
                    forkIO $ processIncomingMessages lock connsock clientaddr
                    processIncomingRequests lock mastersock
@@ -96,7 +96,7 @@
                    messages <- hGetContents connhdl
                    mapM_ (handle lock  ref connhdl clientaddr) (lines messages)
                    hClose connhdl
-                   logit lock clientaddr
+                   logWithMVarLock logger lock LogInfo (Just clientaddr)
                       "lqpl-compiler-serv: client disconnected"
 
             -- Lock the handler before passing data to it.
@@ -104,30 +104,15 @@
             handle lock ref shandle clientaddr msg =
                     withMVar lock  (\a -> handlerfunc ref shandle clientaddr
                                                       (filterNonPrintable msg) >> return a)
-            -- Lock the logger before passing data to it.
-            logit :: MVar () -> Logger
-            logit lock clientaddr msg =
-                    withMVar lock (\a -> logger clientaddr msg >> return a)
 
-  -- A simple logger that prints incoming packets
-  defaultLogger :: Logger
-  defaultLogger addr msg = do
-    now <- getCurrentTime
-    putStrLn $ "{ \"date\": \"" ++ (timeFormatter now) ++ "\", " ++
-      " \"address\": \"" ++ show addr ++ "\", " ++
-      " \"message\": \"" ++ msg ++"\"}"
-
-    where timeformat = iso8601DateFormat (Just "%H:%M:%Q")
-          timeFormatter = formatTime defaultTimeLocale timeformat
 
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (Map (Maybe String) String)
   commandHandler prog shandle addr msg = do
-    --putStrLn $ "From " ++ show addr ++ ": Message: " ++ msg
+    --defaultLogger logDebug Nothing $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService prog msg
-    --putStrLn $ show css
+    --defaultLogger logDebug Nothing $ show css
     hPutStrLn shandle $ resultToJSON css
---      _                       -> hPutStrLn shandle $ show css
 
   fp :: Map (Maybe String) String -> FileProvider
   fp imps = FileProvider {

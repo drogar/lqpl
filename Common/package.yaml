@@ -20,4 +20,5 @@ library:
     - directory
     - filepath
     - network
+    - time
   source-dirs: lib

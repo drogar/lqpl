@@ -2,42 +2,43 @@
 \begin{code}
 module Lqpl.Server.Server (
   serveLog,
-  commandHandler,
-  defaultLogger
+  commandHandler
 ) where
 
 import Lqpl.Assembler.AssemParser
 
+import Lqpl.Data.Computation.BaseType
+
+import Lqpl.QSM.BasicData
+import Lqpl.QSM.QSM
+import Lqpl.QSM.Simulate
+
+import Lqpl.Server.EmulatorServerCommand
+import Lqpl.Server.MachineControl
+import Lqpl.Server.StackToJSON
+import Lqpl.Server.Types
+
+import Lqpl.Utility.Extras(filterNonPrintable)
+import Lqpl.Utility.MakeJSON
+import Lqpl.Utility.Logger
+
+import Control.Concurrent
+import Control.Concurrent.MVar
 import Control.Monad (when)
 import Control.Monad.Trans
 
+import Data.Bits
 import Data.Char
-import Lqpl.Data.Computation.BaseType
 import Data.IORef
 import Data.List as List
 import Data.Map as Map
 import Data.Maybe (isJust, fromJust)
 
-import Data.Bits
-
 import Network.Socket
-
-import Control.Concurrent
-import Control.Concurrent.MVar
 
 import System.IO
 import System.Directory
 
-import Lqpl.QSM.BasicData
-import Lqpl.QSM.QSM
-import Lqpl.QSM.Simulate
-import Lqpl.Server.Types
-import Lqpl.Server.MachineControl
-import Lqpl.Server.EmulatorServerCommand
-import Lqpl.Server.StackToJSON
-
-import Lqpl.Utility.Extras(filterNonPrintable)
-import Lqpl.Utility.MakeJSON
 
 \end{code}
 
@@ -57,7 +58,7 @@ serveLog port handlerfunc logger = withSocketsDo $
                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
                     Nothing (Just port)
        let serveraddr = head addrinfos
-
+       logger LogDebug Nothing $ show serveraddr
        -- Create a socket
        sock <- socket (addrFamily serveraddr) Network.Socket.Stream defaultProtocol
 
@@ -79,7 +80,7 @@ serveLog port handlerfunc logger = withSocketsDo $
           procRequests :: MVar () -> Socket -> IO ()
           procRequests lock mastersock =
               do (connsock, clientaddr) <- accept mastersock
-                 logit lock clientaddr
+                 logWithMVarLock logger lock LogInfo (Just clientaddr)
                     "lqpl-serv: client connnected"
                  forkIO $ procMessages lock connsock clientaddr
                  procRequests lock mastersock
@@ -93,26 +94,13 @@ serveLog port handlerfunc logger = withSocketsDo $
                  messages <- hGetContents connhdl
                  mapM_ (handle lock  ms connhdl clientaddr) (lines messages)
                  hClose connhdl
-                 logit lock clientaddr
+                 logWithMVarLock logger lock LogInfo (Just clientaddr)
                     "lqpl-serv: client disconnected"
 
           -- Lock the handler before passing data to it.
           handle :: MVar () -> HandlerFunc (MachineState BaseType)
           handle lock machineState shandle clientaddr msg =
                   withMVar lock  (\a -> handlerfunc machineState shandle clientaddr (filterNonPrintable msg) >> return a)
-          -- Lock the logger before passing data to it.
-          logit :: MVar () -> Logger
-          logit lock clientaddr msg =
-                  withMVar lock (\a -> logger clientaddr msg >> return a)
-
--- A simple logger that prints incoming packets
-defaultLogger :: Logger
-defaultLogger addr msg =
-     putStrLn $ "LOGGED: " ++ show addr ++ ": " ++ msg
-
-
-
-
 
 
 -- A simple handler that prints incoming packets
@@ -238,6 +226,6 @@ dumpMachine depth machineStateRef =
     ms <- readIORef machineStateRef
     let bms =  pickIthMS  depth ms
         qs  = quantumStack bms
-    putStrLn $ "QuantumStack: "++ show qs
+    defaultLogger LogDebug Nothing $ "QuantumStack: "++ show qs
 
 \end{code}

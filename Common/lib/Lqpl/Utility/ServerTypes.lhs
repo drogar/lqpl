@@ -1,8 +1,7 @@
 \subsection{Types for network server}\label{section:netservertypes}
 \begin{code}
  module Lqpl.Utility.ServerTypes (
-     HandlerFunc,
-     Logger
+     HandlerFunc
      )
  where
 
@@ -13,8 +12,5 @@
  import System.IO
 
  type HandlerFunc a = IORef a -> Handle -> SockAddr -> String -> IO ()
-
- type Logger = SockAddr -> String -> IO ()
-
 
 \end{code}
