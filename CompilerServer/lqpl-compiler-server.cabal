@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e9d2d99411b7febdfc162f58d0977f8ebe390407b0b7261ed4cc7e8b47f71ef8
+-- hash: fef97ae07466a749c6206e808863c01104053d35a12a6509740d9d2355f41e48
 
 name:           lqpl-compiler-server
 version:        0.9.2
@@ -21,8 +21,11 @@ build-type:     Simple
 
 library
   exposed-modules:
+      Lqpl.Compiler.CompilerCommand
       Lqpl.Compiler.CompilerServer
       Lqpl.Compiler.CompilerServiceStatus
+      Lqpl.Compiler.Service.Data.NetInfo
+      Lqpl.Compiler.ServiceQPLFile
   other-modules:
       Paths_lqpl_compiler_server
   hs-source-dirs:

@@ -1,4 +1,4 @@
-\incsec{Compiler server status}\label{incsec:compiler server status data type}
+\incsubsec{Compiler service status}\label{incsec:css}
 
 \begin{code}
 
@@ -8,6 +8,30 @@
 ) where
 
   import Lqpl.Utility.MakeJSON
+
+\end{code}
+
+\incsubsubsec{\hasktypenoref{CompilerServiceStatus}}
+\label{haskelltype:CompilerServiceStatus}\index{Compiler Server Data Types!Communication!CompilerServiceStatus}
+This data type comprises the possible statuses we want to pass back to a client
+to give them information about their requested compilation.
+The \hasktypenoref{CompilerServiceStatus} type will convey information back to a client, either
+at the end of a compilation, or in response to a specific request for information, or to
+gather more input from the client.
+\begin{description}
+\item[\haskcons{CS_COMPILED_SUCCESS}] This holds the compiled program for the client along with the compiler
+log output.
+\item[\haskcons{CS_COMPILED_FAIL}] This indicates the compilation failed for some reason, which is included in data in the
+constructor.
+\item[\haskcons{CS_VERSION}] This is used when responding to a request for the version number of the compiler.
+\item[\haskcons{CS_NEED_FILE}] When compiling, the compiler will determine it needs other files as it
+encounters import statements. This data will be sent to the client with the expectation the client
+will then send the file contents to the server.
+\item[\haskcons{CS_ILLEGAL_INPUT}] The compiler server did not understand the command or request sent by the server.
+\end{description}
+\CodeResetNumbers
+
+\begin{code}
 
   data CompilerServiceStatus =  CS_COMPILED_SUCCESS String String |
                                 CS_COMPILED_FAIL String |

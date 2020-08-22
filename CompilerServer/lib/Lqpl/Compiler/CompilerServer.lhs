@@ -9,13 +9,16 @@
   import Lqpl.Compiler.Qtypes
   import Lqpl.Compiler.Semantic
   import Lqpl.Compiler.GenCode
+
+  import Lqpl.Compiler.CompilerCommand
   import Lqpl.Compiler.CompilerServiceStatus
+  import Lqpl.Compiler.ServiceQPLFile
 
   import Control.Applicative
   import Control.Concurrent
   import Control.Concurrent.MVar
 
-  import Control.Exception as CE
+  import Control.Exception as CException
 
   import Control.Monad.Writer as W
 
@@ -35,7 +38,6 @@
 
   import Lqpl.Utility.Extras(filterNonPrintable)
   import Lqpl.Utility.MakeJSON
-  import Data.Version
 
   import qualified Data.ByteString.Char8 as B
   import qualified Data.Text
@@ -44,41 +46,14 @@
   import Paths_lqpl_compiler_server
 
   defaultPort = "7683"
-
-  data QPLFile = QPLFile {
-    fileName :: String,
-    qplProgram :: [String]
-  }
-    deriving(Eq, Show)
-
-  instance FromJSON QPLFile where
-    parseJSON (Object v) =
-        QPLFile <$> v .: Data.Text.pack "file_name"
-                <*> v .: Data.Text.pack "qpl_program"
-    parseJSON _          = mzero
-
-  data CompilerCommand = CompilerCommand String
-    deriving(Eq, Show)
-
-  instance FromJSON CompilerCommand where
-    parseJSON  (Object v) =
-        CompilerCommand <$> v .: Data.Text.pack "command"
-    parseJSON _          = mzero
-
+  {-
   instance ToJSON AddrInfoFlag where
     toJSON f = object [ (Data.Text.pack "addressflag") .= (show f) ]
 
   instance ToJSON AddrInfo where
     toJSON addrinfo =
       object [ (Data.Text.pack "flags") .= toJSON (addrFlags addrinfo)]
-
--- addrFlags :: [AddrInfoFlag]
--- addrFamily :: Family
--- addrSocketType :: SocketType
--- addrProtocol :: ProtocolNumber
--- addrAddress :: SockAddr
--- addrCanonName :: Maybe String
-
+-}
   serveLog :: String              -- ^ Port number or name;
            -> HandlerFunc  (Map (Maybe String) String)       -- ^ Function to handle incoming messages
            -> Logger               -- ^ Function handle logging (SockAddr -> String -> IO() )
@@ -186,25 +161,22 @@
                       String ->
                       IO CompilerServiceStatus
   compilerService ior input = do
-    let qplfile = decodeStrict $ B.pack input :: Maybe QPLFile
+    let qplfile = decodeStrict $ B.pack input :: Maybe ServiceQPLFile
     case qplfile of
       Just q  -> do
         addProgramToIOREF ior (fileName q) (qplProgram q)
         tryCompiling ior
       Nothing -> do
         let command = decodeStrict $ B.pack input :: Maybe CompilerCommand
-        case command of
-          Just (CompilerCommand "send_version") ->
-             return $ CS_VERSION (versionBranch version)
-          Just (CompilerCommand s) -> return $ CS_ILLEGAL_INPUT input
-          Nothing -> return $ CS_ILLEGAL_INPUT input
+        return $ commandToServiceStatus command
+
 
   tryCompiling :: IORef (Map (Maybe String) String) ->
                   IO CompilerServiceStatus
   tryCompiling ior = do
     imps <- readIORef ior
     let compile_file = fromJust $ Map.lookup compileMe imps
-    errOrTxt <- CE.try $ doCompile (fp imps) compile_file
+    errOrTxt <- CException.try $ doCompile (fp imps) compile_file
     case errOrTxt of
       Left e    -> do
         let errString = ioeGetErrorString e
