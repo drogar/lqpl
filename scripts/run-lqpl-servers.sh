@@ -18,4 +18,4 @@ fi
 
 echo "Running $run_directory$service"
 
-$run_directory$service
+exec $run_directory$service

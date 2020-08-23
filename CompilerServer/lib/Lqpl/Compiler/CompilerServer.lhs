@@ -59,24 +59,27 @@
            -> Logger               -- ^ Function handle logging (SockAddr -> String -> IO() )
            -> IO ()
   serveLog port handlerfunc logger = withSocketsDo $
-      do -- Look up the port.  Either raises an exception or returns
+      do -- Set buffering to line level so Docker outputs the info
+        hSetBuffering stdout LineBuffering
+        hSetBuffering stderr LineBuffering
+         -- Look up the port.  Either raises an exception or returns
          -- a nonempty list.
-         addrinfos <- getAddrInfo
-                      (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
-                      Nothing (Just port)
-         let serveraddr = head addrinfos
-         logger LogDebug Nothing $ show serveraddr
-         -- Create a socket
-         sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
-         -- Bind it to the address we're listening to
-         bind sock (addrAddress serveraddr)
-         -- Start listening for connection requests.  Maximum queue size
-         -- of 2 connection requests waiting to be accepted.
-         NS.listen sock 2
-         -- Create a lock to use for synchronizing access to the handler
-         lock <- newMVar ()
-         -- Loop forever waiting for connections.  Ctrl-C to abort.
-         processIncomingRequests lock sock
+        addrinfos <- getAddrInfo
+                     (Just (defaultHints {addrFlags = [AI_PASSIVE]}))
+                     Nothing (Just port)
+        let serveraddr = head addrinfos
+        logger LogDebug Nothing $ show serveraddr
+        -- Create a socket
+        sock <- socket (addrFamily serveraddr) NS.Stream defaultProtocol
+        -- Bind it to the address we're listening to
+        bind sock (addrAddress serveraddr)
+        -- Start listening for connection requests.  Maximum queue size
+        -- of 2 connection requests waiting to be accepted.
+        NS.listen sock 2
+        -- Create a lock to use for synchronizing access to the handler
+        lock <- newMVar ()
+        -- Loop forever waiting for connections.  Ctrl-C to abort.
+        processIncomingRequests lock sock
       where
             -- | Process incoming connection requests
             processIncomingRequests :: MVar () -> Socket -> IO ()

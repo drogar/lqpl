@@ -7,6 +7,7 @@
   import Lqpl.Compiler.CompilerServer
   import Lqpl.Utility.Logger
 
+
   main:: IO()
   main =  serveLog defaultPort commandHandler defaultLogger
 
