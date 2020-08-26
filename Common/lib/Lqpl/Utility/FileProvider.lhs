@@ -3,8 +3,6 @@
        FileProvider(..)
   )where
 
-    import System.FilePath
-
     data FileProvider = FileProvider {
       fpDoesFileExist :: String -> IO Bool,
       fpReadFile :: String -> IO String,

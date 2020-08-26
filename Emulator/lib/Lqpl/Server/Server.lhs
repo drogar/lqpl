@@ -105,6 +105,7 @@ serveLog port handlerfunc logger = withSocketsDo $
 commandHandler :: HandlerFunc (MachineState BaseType)
 commandHandler machineStateRef shandle addr msg =
   do
+    defaultLogger LogDebug Nothing $ "From " ++ show addr ++ ": Message: " ++ msg
     case (getCommand msg) of
       Right (QCLoad depthmult assemblyCode)  ->
         assemble depthmult assemblyCode machineStateRef shandle

@@ -7,25 +7,32 @@
     import Test.Hspec.QuickCheck
     import Test.QuickCheck hiding (property)
 
-    import Network.Socket
-    import System.IO
-    import Data.IORef
-
-    import System.Exit
+    import Fixture.CompilerData
 
     import SpecHelper
 
-    import Lqpl.Compiler.CompilerServer
-
     import Control.Concurrent
-    import Lqpl.Compiler.CompilerSpecHelper
 
-    import Data.Version
-    import Data.Map
     import Data.Aeson
     import qualified Data.ByteString.Char8 as B
+    import Data.IORef
+    import Data.Map
+    import Data.Version
 
-    import Fixture.CompilerData
+    import Network.Socket
+
+    import System.Exit
+    import System.IO
+
+
+    import Lqpl.Compiler.CompilerCommand
+    import Lqpl.Compiler.CompilerServer
+    import Lqpl.Compiler.CompilerServiceStatus
+    import Lqpl.Compiler.ServiceQPLFile
+
+    import Lqpl.Compiler.CompilerSpecHelper
+
+
     import Paths_lqpl_spec
 
     checkCompileStatus rc = do
@@ -60,13 +67,13 @@
               resultToJSON (CS_NEED_FILE "t") `shouldBe` "{\"send_file\" : \"t\"}"
           context "qpl file" $ do
             it "should parse a single line file" $ do
-              ((decodeStrict $ B.pack program_bad):: Maybe QPLFile) `shouldBe`
-                          (Just $  QPLFile "g" ["qdata Coin = {head}"])
+              ((decodeStrict $ B.pack program_bad):: Maybe ServiceQPLFile) `shouldBe`
+                          (Just $ ServiceQPLFile "g" ["qdata Coin = {head}"])
             it "should parse a multi line file" $ do
-              ((decodeStrict $ B.pack program_one):: Maybe QPLFile) `shouldBe`
-                                        (Just $ QPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"])
+              ((decodeStrict $ B.pack program_one):: Maybe ServiceQPLFile) `shouldBe`
+                                        (Just $ ServiceQPLFile "f" ["qdata C = {H|T}", "app::(| ; )= {skip}"])
             it "should fail on non file inputs" $ do
-              ((decodeStrict $ B.pack jsonSendVersion):: Maybe QPLFile) `shouldBe` Nothing
+              ((decodeStrict $ B.pack jsonSendVersion):: Maybe ServiceQPLFile) `shouldBe` Nothing
           context "command" $ do
             it "should parse a command object" $ do
               ((decodeStrict $ B.pack jsonSendVersion) :: Maybe CompilerCommand) `shouldBe`
@@ -84,7 +91,7 @@
               it "responds to bad input with a CS_ILLEGAL_INPUT" $ \ior -> do
                 rc <- cstester ior "junk"
                 case rc of
-                  CS_ILLEGAL_INPUT "junk" -> 1 `shouldBe` 1
+                  CS_ILLEGAL_INPUT "Unable to understand last input" -> 1 `shouldBe` 1
                   a                       -> expectationFailure $ show a
               it "accepts a complete file and responds with the QPO" $ \ior ->  do
                     rc <- cstester ior program_one

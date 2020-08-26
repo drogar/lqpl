@@ -5,6 +5,8 @@ The |Stack| is implemented by a |List|. Instances  of
 |Functor|, |Monad| and |MonadPlus| are defined for the type.
 %if false
 \begin{code}
+
+{-# OPTIONS_GHC -Wno-unused-imports #-}
 module Lqpl.Data.Stack
   ( Stack(..),
     emptyStack,push,pushM, popM, pop,fromList, toList,
@@ -94,7 +96,7 @@ multiPop n stk
 -}
 getM ::Stack a -> Maybe a
 getM (Stack []) = Nothing
-getM (Stack (a:as)) = Just a
+getM (Stack (a:_)) = Just a
 
 get :: Stack a -> a
 get s = let v = getM s

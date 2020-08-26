@@ -54,7 +54,7 @@ getCodes inCexps inQexps = do
    let (names,eQcode) = unzip nmsAndEQcode
    return (eCcode, names, eQcode)
 
-codesForCall nm inCexps inQexps frmlids outQids= do
+codesForCall nm inCexps inQexps frmlids outQids = do
    (eCcode, names,eQcode) <- getCodes inCexps inQexps
    renamesto <- doRenames (reverse names) $ fst $ snd frmlids
    callcd <- call (length inCexps) nm
@@ -69,7 +69,7 @@ instance GenCode Istmt where
                          xs<- genCodeList as
                          return $ combineProgs x xs
 
- genCode (IClassicalAssign nm off  expr)
+ genCode (IClassicalAssign _ off  expr)
      = do ecode <- genCode expr
           tocstk <- classicalPut off
           return $ combineProgs ecode  tocstk
@@ -80,7 +80,7 @@ instance GenCode Istmt where
           setCurrentActive nm
           return $ combineProgs ecode  tostk
 
- genCode (Iassign nm (Right expr@(IrQubit qv)))
+ genCode (Iassign nm (Right (IrQubit qv)))
      = do setCurrentActive nm
           allocQubit nm qv
 
@@ -91,7 +91,8 @@ instance GenCode Istmt where
           if oldnm == nm then return ecode
              else do reuseStackName oldnm
                      return $ combineProgs ecode  rn
- genCode (Iassign nm (Right expr@(IrVar oldnm _)))
+
+ genCode (Iassign nm (Right (IrVar oldnm _)))
      = do rn <- rename oldnm nm
           reuseStackName oldnm
           return rn
@@ -108,16 +109,16 @@ instance GenCode Istmt where
              Nothing ->
                  fail unableToDetermineQstackTop
 
- genCode (IuseAssign nm (Right exp)) -- todo - see IUse
-     = do icode <- genCode (Iassign nm (Right exp))
+ genCode (IuseAssign nm (Right expr)) -- todo - see IUse
+     = do icode <- genCode (Iassign nm (Right expr))
           unsetCurrentActive
           (startuse,enduse) <- delayedUse nm
           addDelayedCode enduse
           return $ combineProgs icode  startuse
 
- genCode (IuseAssign nm (Left exp)) -- todo - see IUse
+ genCode (IuseAssign nm (Left expr)) -- todo - see IUse
      = do --snm <- getStackName
-          ecode <- genCode (Iassign nm (Left exp))
+          ecode <- genCode (Iassign nm (Left expr))
           --unsetCurrentActive
           (startuse,enduse) <- delayedUse nm
           addDelayedCode enduse
@@ -187,7 +188,7 @@ of the generated code will now be:
           endit <- labelizeM endlbl nooperation
           return $ combineProgs usebdy endit
 
- genCode (Imeas (IrVar nm t) s1 s2)
+ genCode (Imeas (IrVar nm _) s1 s2)
      =  do pu <- pullup nm
            mc <- measCode nm (genCode (Iblock s1)) (genCode (Iblock s2))
            return $ combineProgs pu mc
@@ -197,10 +198,10 @@ of the generated code will now be:
           nm <- getCurrentActive -- No pullup needed.
           case nm of
              Nothing   ->  error $ unsetTop e (Imeas e s1 s2)
-             Just nm   ->  do  meascode <- measCode nm (genCode (Iblock s1)) (genCode (Iblock s2))
+             Just anm  ->  do  meascode <- measCode anm (genCode (Iblock s1)) (genCode (Iblock s2))
                                return $ combineProgs ecode  meascode
 
- genCode (Icase (IrVar nm t) clauses)
+ genCode (Icase (IrVar nm _) clauses)
      = do pu <- pullup nm
           makeSplitCode pu nm clauses  (genCode :: Istmt -> CodeMonad ProgramCode)
 
@@ -209,7 +210,7 @@ of the generated code will now be:
           nm <- getCurrentActive --No pull up needed.
           case nm of
             Nothing  ->  error $ unsetTop e (Icase e clauses)
-            Just nm  ->  makeSplitCode ec nm clauses (genCode :: Istmt -> CodeMonad ProgramCode)
+            Just anm ->  makeSplitCode ec anm clauses (genCode :: Istmt -> CodeMonad ProgramCode)
 
 \end{code}
 For |Icall| we need to first calculate any classical expressions

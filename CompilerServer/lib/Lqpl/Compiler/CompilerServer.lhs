@@ -97,7 +97,7 @@
                    hSetBuffering connhdl LineBuffering
                    ref <- newIORef Map.empty
                    messages <- hGetContents connhdl
-                   mapM_ (handle lock  ref connhdl clientaddr) (lines messages)
+                   mapM_ (handle lock ref connhdl clientaddr) (lines messages)
                    hClose connhdl
                    logWithMVarLock logger lock LogInfo (Just clientaddr)
                       "lqpl-compiler-serv: client disconnected"
@@ -112,9 +112,9 @@
   -- A simple handler that prints incoming packets
   commandHandler :: HandlerFunc (Map (Maybe String) String)
   commandHandler prog shandle addr msg = do
-    --defaultLogger logDebug Nothing $ "From " ++ show addr ++ ": Message: " ++ msg
+    defaultLogger LogDebug Nothing $ "From " ++ show addr ++ ": Message: " ++ msg
     css <- compilerService prog msg
-    --defaultLogger logDebug Nothing $ show css
+    defaultLogger LogDebug Nothing $ show css
     hPutStrLn shandle $ resultToJSON css
 
   fp :: Map (Maybe String) String -> FileProvider

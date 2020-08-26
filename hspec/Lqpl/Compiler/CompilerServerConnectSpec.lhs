@@ -1,18 +1,11 @@
 \begin{code}
   module Lqpl.Compiler.CompilerServerConnectSpec(spec) where
     import Test.Hspec
-    import Test.Hspec.Runner
-    import Test.Hspec.Formatters
-    import Test.Hspec.Contrib.HUnit
-    import Test.HUnit
 
     import Network.Socket hiding (defaultPort)
     import System.IO
     import System.IO.Error
     import System.Process
-    import System.Exit
-
-    import SpecHelper
 
     import Lqpl.Compiler.CompilerServer
 
@@ -22,9 +15,11 @@
 
     import Fixture.CompilerData
 
+    spec:: SpecWith()
     spec = compilerSpecs
     -- main = hspec compilerSpecs
 
+    compilerSpecs:: SpecWith()
     compilerSpecs = describe "compiler server connection" $ do
       context "startup" $ do
         it ("runs on port "++defaultPort++" by default") $ do

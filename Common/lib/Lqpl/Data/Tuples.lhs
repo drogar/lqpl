@@ -1,4 +1,5 @@
 \begin{code}
+{-# OPTIONS_GHC -Wno-unused-imports #-}
 module Lqpl.Data.Tuples where
 import Data.Tuple
 

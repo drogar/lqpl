@@ -6,7 +6,6 @@ module Lqpl.Server.EmulatorServerCommand (
        )
 where
 
-  import Control.Applicative
   import Control.Monad
 
   import Lqpl.Server.Types
@@ -61,8 +60,8 @@ where
         Just (EmulatorCommand "simulate"              [a])   -> Right $ QCSimulate a
         Just (EmulatorCommand "depth_multiple"        [a])   -> Right $ QCDepthMultiple a
         Just (EmulatorCommand "trim"                  [])    -> Right $ QCTrim
-        Just (EmulatorCommand s                       prms)  -> Left $ "Unrecognized command: '" ++
-                                                           s ++ "', parms: '"  ++ (show prms) ++"'"
+        Just (EmulatorCommand bad                     prms)  -> Left $ "Unrecognized command: '" ++
+                                                                   bad ++ "', parms: '"  ++ (show prms) ++"'"
         Nothing -> Left $ "Unrecognized input: " ++ s
 
 \end{code}

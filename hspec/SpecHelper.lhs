@@ -1,6 +1,8 @@
 \begin{code}
 
   {-#LANGUAGE FlexibleInstances#-}
+  {-# OPTIONS_GHC -Wno-orphans #-}
+
   module SpecHelper (
     getTempFile,
     getTempFileWithContent,
@@ -8,12 +10,10 @@
     )
   where
 
-
-  import System.Process
   import System.Posix.Process
   import System.Directory
   import System.FilePath
-  import System.IO
+
   --import Test.Hspec
   import Test.Hspec.Core.Spec(Example(..),Result(..), FailureReason(..), ResultStatus(..))
 
