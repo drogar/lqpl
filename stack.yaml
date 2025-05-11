@@ -18,7 +18,8 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: lts-16.8
+# To see the most recent LTS versions - https://www.stackage.org/
+resolver: lts-23.21
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -34,14 +35,13 @@ resolver: lts-16.8
 #  - auto-update
 #  - wai
 packages:
-- Compiler
-- Common
-- CompilerServer
-- Emulator
-- .
+  - Compiler
+  - Common
+  - CompilerServer
+  - Emulator
+  - .
 
 local-bin-path: ./bin
-
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)

@@ -103,7 +103,7 @@ data  QuantumStack b
 
 data  StackDescriptor b
     = StackZero  |
-      StackValue ! b |
+      StackValue ( b ) |
       StackClassical [ClassicalData] |
       StackQubit [(Basis,Basis)]|
       StackData [(Constructor,[StackAddress])]

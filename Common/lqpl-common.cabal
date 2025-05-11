@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f993ad3dc61297ad7d310fafe172c6e39ef8c5ad6ec302d236049e412f348403
+-- hash: 12dea107a0198e0d5d203e3854fa7a6f099d43667205ee3038094604854d0f4f
 
 name:           lqpl-common
 version:        0.9.2
@@ -16,7 +16,8 @@ bug-reports:    mailto:brett.giles@drogar.com
 author:         Brett Giles, Robin Cockett
 maintainer:     brett.giles@drogar.com
 license:        BSD3
-tested-with:    GHC
+tested-with:
+    GHC
 build-type:     Simple
 
 library

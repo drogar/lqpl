@@ -6,6 +6,7 @@ module Lqpl.Compiler.Semantic where
 
 import Control.Arrow
 import Control.Monad.State as State
+import Control.Monad(unless)
 
 import Control.Monad.Writer
 
@@ -22,7 +23,7 @@ import Lqpl.Compiler.SemTypes
 import Lqpl.Compiler.SemanticErrors
 import Lqpl.Compiler.SymbolTable
 import Lqpl.Compiler.TypeUnification
-import Lqpl.Compiler.Qtypes
+import Lqpl.Compiler.Qtypes as Qtypes
 
 import Lqpl.Data.Stack
 import Lqpl.Data.Tuples
@@ -685,15 +686,15 @@ applyNot fe          = return (IrNot fe)
 applyOp :: BinOp -> IrExpression -> IrExpression ->  WriterT CompilerLogs SemStateMonad IrExpression
 applyOp op (IrNum  i1) (IrNum  i2)
      = return (case op of
-                         Add -> IrNum (i1 + i2)
+                         Qtypes.Add -> IrNum (i1 + i2)
                          Sub -> IrNum (i1 - i2)
                          Mul -> IrNum (i1 * i2)
                          Div -> IrNum (div i1  i2)
                          Rem -> IrNum (rem i1  i2)
                          Mod -> IrNum (mod i1 i2)
-                         And -> IrNum (i1 .&. i2)
+                         Qtypes.And -> IrNum (i1 .&. i2)
                          Or  -> IrNum ( i1 .|. i2)
-                         Xor -> IrNum (xor i1 i2)
+                         Qtypes.Xor -> IrNum (xor i1 i2)
                          Opeq -> IrBool $ i1 == i2
                          Opneq -> IrBool $ i1 == i2
                          Oplt -> IrBool $ i1 < i2

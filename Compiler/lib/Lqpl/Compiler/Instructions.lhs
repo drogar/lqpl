@@ -3,6 +3,8 @@ module Lqpl.Compiler.Instructions where
 
 import Control.Monad.State
 
+import Control.Monad(when)
+
 import Data.List as List
 import Data.Map as Map
 
@@ -387,7 +389,7 @@ applyTransform :: Int -> UnitaryTransform -> [NodeName]->CodeMonad ProgramCode
 applyTransform sz ut []
     = error $ illegalTransform ut
 applyTransform sz ut (nm:_)
-    = scode $ glue3 inameTransform (show sz) $"!" ++  show ut ++ " " ++ address nm
+    = scode $ glue3 inameTransform (show sz) $ "!" ++  show ut ++ " " ++ address nm
 
 trans  ::  UnitaryTransform ->  CodeMonad ProgramCode
 trans  =   scode . glue2 inamepartPut . show

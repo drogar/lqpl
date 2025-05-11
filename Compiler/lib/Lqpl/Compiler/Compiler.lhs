@@ -14,6 +14,8 @@ import Control.Monad.State
 import Control.Monad.Trans
 import Control.Monad.Writer
 
+import Control.Monad(when, unless)
+
 import Lqpl.Compiler.GenCode
 import Lqpl.Compiler.Opts
 import Lqpl.Compiler.QPLParser

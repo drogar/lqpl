@@ -49,7 +49,7 @@ freshPtr :: NameSupply -> (NameSupply, StackPointer)
 freshPtr  = fresh' 1
 fresh' :: Int-> NameSupply -> (NameSupply, StackPointer)
 fresh' start ([],i) = (([start],i),mkName  start)
-fresh' start ~((j:ns),i)
+fresh' start ~(j:ns,i)
     | j > start = ((start:j:ns,i),mkName start)
     | otherwise = app1of2 (app1of2 (j:)) $ fresh' (start+1) (ns,i)
 mkName :: Int -> StackPointer

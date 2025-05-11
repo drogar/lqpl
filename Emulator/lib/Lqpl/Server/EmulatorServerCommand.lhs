@@ -1,5 +1,6 @@
 \subsection{Parse Commands for the Quantum Machine Server}\label{section:quantummachineserver.parsecommand}
 \begin{code}
+{-# LANGUAGE OverloadedStrings #-}
 module Lqpl.Server.EmulatorServerCommand (
        getCommand,
        sendResult
@@ -7,35 +8,37 @@ module Lqpl.Server.EmulatorServerCommand (
 where
 
   import Control.Monad
+  import Control.Applicative
 
   import Lqpl.Server.Types
 
   import Lqpl.Utility.MakeJSON
 
   import qualified Data.ByteString.Char8 as B
-  import qualified Data.Text as DT
+  import Data.Text(Text, unpack)
   import Data.Aeson
 
   data LoadFile = LoadFile {
     load_entry :: Int,
-    load_lines :: [String]
+    load_lines :: [Text]
   }
     deriving(Eq, Show)
 
   instance FromJSON LoadFile where
     parseJSON (Object v) =
-        LoadFile <$> v .: (DT.pack "load_entry")
-                <*> v .: (DT.pack "load_lines")
-    parseJSON _          = mzero
+        LoadFile <$> v .:  "load_entry"  <*> v .:  "load_lines"
+    parseJSON _          = empty
 
-  data EmulatorCommand = EmulatorCommand String [Int]
+  data EmulatorCommand = EmulatorCommand  Text [Int]
     deriving(Eq, Show)
 
   instance FromJSON EmulatorCommand where
-    parseJSON  (Object v) =
-        EmulatorCommand <$> v .: (DT.pack "command")
-                        <*> v .: (DT.pack "parameters")
+    parseJSON  (Object v) =  EmulatorCommand <$> v .:  "command"  <*> v .:  "parameters"
     parseJSON _          = mzero
+
+  instance ToJSON EmulatorCommand where
+    toJSON (EmulatorCommand cmd parms) = object["command" .= cmd, "parameters" .= parms]
+
 
   sendResult :: String -> String
   sendResult s = jsonObject [jsonValueElement "result" s]
@@ -43,7 +46,7 @@ where
   getCommand :: String -> Either String QCommand
   getCommand s =
     case (decodeStrict $ B.pack s :: Maybe LoadFile) of
-      Just (LoadFile e l)  -> Right $ QCLoad e (toMultiLineString l)
+      Just (LoadFile e l)  -> Right $ QCLoad e (toMultiLineString $ map Data.Text.unpack l)
       Nothing              -> getEmulatorCommand s
 
   getEmulatorCommand :: String -> Either String QCommand
@@ -60,8 +63,7 @@ where
         Just (EmulatorCommand "simulate"              [a])   -> Right $ QCSimulate a
         Just (EmulatorCommand "depth_multiple"        [a])   -> Right $ QCDepthMultiple a
         Just (EmulatorCommand "trim"                  [])    -> Right $ QCTrim
-        Just (EmulatorCommand bad                     prms)  -> Left $ "Unrecognized command: '" ++
-                                                                   bad ++ "', parms: '"  ++ (show prms) ++"'"
+        Just (EmulatorCommand bad                     prms)  -> Left $ "Unrecognized command: '" ++  (Data.Text.unpack bad)  ++ "', parms: '"  ++ (show prms) ++"'"
         Nothing -> Left $ "Unrecognized input: " ++ s
 
 \end{code}

@@ -1,7 +1,7 @@
 \incsubsec{Compiler Command}\label{incsec:ccommand}
 
 \begin{code}
-
+{-# LANGUAGE OverloadedStrings #-}
   module Lqpl.Compiler.CompilerCommand (
     CompilerCommand(..),
     commandToServiceStatus
@@ -35,7 +35,7 @@ This data type holds the commands sent to the compiler service
 
   instance FromJSON CompilerCommand where
     parseJSON (Object v) =
-        CompilerCommand <$> v .: Data.Text.pack "command"
+        CompilerCommand <$> v .: "command"
     parseJSON _          = mzero
 
   commandToServiceStatus:: Maybe CompilerCommand -> CompilerServiceStatus

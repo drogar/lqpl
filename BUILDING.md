@@ -1,9 +1,12 @@
+# How to build
+
 This BUILDING file covers how to build the three components included
 in this distribution:
-  - Compiler  (builds 'lqpl' and 'lqpl-compiler-server')
-  - Emulator  (builds 'lqpl-emulator-server')
 
-The Compiler and Emulator are Haskell programs. See http://github.com/drogar/lqpl-jruby-fe for a
+- Compiler  (builds 'lqpl' and 'lqpl-compiler-server')
+- Emulator  (builds 'lqpl-emulator-server')
+
+The Compiler and Emulator are Haskell programs. See <http://github.com/drogar/lqpl-jruby-fe> for a
 GUI to use with the Compiler and Emulator servers. The lqpl-jruby-fe is a Java/JRuby
 Swing program.
 
@@ -13,11 +16,13 @@ Use the command:
 
 to build all the Haskell components.
 
+See details in `stack.yaml` and `lqpl-spec.cabal`
+
 REQUIREMENTS:
 
 For the Compiler and Emulator, you will need a recent version of Haskell
 (tested with GHC version 8.8.3). The Stack build system will do this for
-you (See https://docs.haskellstack.org/en/stable/install_and_upgrade/ for
+you (See <https://docs.haskellstack.org/en/stable/install_and_upgrade/> for
 installing Stack).
 
 TESTS:
@@ -29,4 +34,5 @@ You can run all tests by typing:
 This will show two failures unless lqpl-compiler-server and lqpl-emulator-server are running.
 
 TODO:
+
 - Provide details of Docker images for the two servers

@@ -2,6 +2,7 @@
 
 \begin{code}
 
+{-# LANGUAGE OverloadedStrings #-}
   module Lqpl.Compiler.ServiceQPLFile (
     ServiceQPLFile(..)
   )
@@ -30,9 +31,7 @@ The file name is used to check against requested files and to satisfy imports.
     deriving(Eq, Show)
 
   instance FromJSON ServiceQPLFile where
-    parseJSON (Object v) =
-        ServiceQPLFile <$> v .: Data.Text.pack "file_name"
-                       <*> v .: Data.Text.pack "qpl_program"
+    parseJSON (Object v) =  ServiceQPLFile <$> v .:  "file_name" <*> v .:  "qpl_program"
     parseJSON _          = mzero
 
 

@@ -7,6 +7,8 @@ module Lqpl.Compiler.SemTypes where
 import Control.Monad.State
 import Control.Monad.Writer
 
+import Control.Monad(when)
+
 import Data.Map as Map
 import Data.List as List( delete, map)
 import Data.Set as Set

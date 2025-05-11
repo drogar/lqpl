@@ -2,6 +2,7 @@
 module Lqpl.Compiler.GenCode where
 
 import Control.Monad.State
+import Control.Monad(liftM, foldM)
 
 import Data.Map as Map
 import Data.Char(toLower)
