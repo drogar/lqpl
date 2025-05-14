@@ -3,7 +3,8 @@
   module Lqpl.Server.MachineControl (
        stepMachine,
        executeMachine,
-       resetDepthMultiplier
+       resetDepthMultiplier,
+       runIt
        )
   where
 

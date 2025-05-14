@@ -17,6 +17,8 @@
     import Control.Monad.State
     import Control.Monad.Writer
 
+    import Control.Monad(liftM)
+
     import Lqpl.Compiler.TypeUnification
     import Lqpl.Compiler.Qtypes
     import Lqpl.Compiler.SemTypes
@@ -39,18 +41,20 @@
       return $ evalStateT (liftM fst $ runWriterT $ instanceOf whichtv tv1 tv2 (Map.singleton "b" INT)) startsemstate
 
 
-    unificationSpecs = describe "TypeUnification" $ do
-      context "instanceOf" $ do
-        it "accepts a typevariable to INT when called with rigid"    $ do
-              let tva = TypeVariable "a"
-                  inttype  =  INT
-              iomp <- runinstanceOf isRigidTypeVar tva inttype
-              do mp <- iomp
-                 if Map.null mp
-                   then return False
-                   else return $ (mp ! "a") == INT
-        it "accepts when both tvs are the same " $ do
-          iomp <- runinstanceOf isRigidTypeVar INT INT
-          do mp <- iomp
-             return (1 == size mp)
+    unificationSpecs =
+      describe "TypeUnification" $ do
+        context "instanceOf" $ do
+          it "accepts a typevariable to INT when called with rigid"  $ do
+                let tva = TypeVariable "a"
+                    inttype  =  INT
+                iomp <- runinstanceOf isRigidTypeVar tva inttype
+                do mp <- iomp
+                   if Map.null mp
+                     then return False
+                     else return $ (mp ! "a") == INT
+          it "accepts when both tvs are the same " $ do
+            iomp <- runinstanceOf isRigidTypeVar INT INT
+            do mp <- iomp
+               return (1 == size mp)
+
 \end{code}
